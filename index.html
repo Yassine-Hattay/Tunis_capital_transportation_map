@@ -5,17 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#0f1117" />
-  <meta name="description" content="Offline-first open map with GPS tracking and routing" />
   <title>Atlas — Offline Maps</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-
-  <!-- MapLibre GL JS (loaded from CDN, cached by SW on first visit) -->
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-  <!-- PMTiles library - lowercase global variable -->
   <script src="https://unpkg.com/pmtiles@3.2.1/dist/pmtiles.js"></script>
-
   <style>
     :root {
       --c-bg: #0f1117;
@@ -25,7 +19,6 @@
       --c-accent2: #818cf8;
       --c-text: #e8eaf0;
       --c-muted: #6b7280;
-      --c-danger: #f87171;
       --c-warn: #fbbf24;
       --r: 10px;
       --panel-w: 320px;
@@ -35,7 +28,7 @@
     * {
       box-sizing: border-box;
       margin: 0;
-      padding: 0;
+      padding: 0
     }
 
     body {
@@ -44,17 +37,15 @@
       height: 100dvh;
       overflow: hidden;
       display: flex;
-      flex-direction: column;
+      flex-direction: column
     }
 
-    /* ─── Map Container ─────────────────────── */
     #map {
       flex: 1;
       width: 100%;
-      position: relative;
+      position: relative
     }
 
-    /* ─── Top Bar ───────────────────────────── */
     #topbar {
       position: absolute;
       top: 12px;
@@ -63,7 +54,7 @@
       z-index: 100;
       display: flex;
       gap: 8px;
-      align-items: center;
+      align-items: center
     }
 
     #search-box {
@@ -77,11 +68,11 @@
       height: 44px;
       gap: 10px;
       backdrop-filter: blur(12px);
-      transition: border-color 0.2s;
+      transition: border-color .2s
     }
 
     #search-box:focus-within {
-      border-color: var(--c-accent);
+      border-color: var(--c-accent)
     }
 
     #search-input {
@@ -91,11 +82,11 @@
       outline: none;
       color: var(--c-text);
       font-size: 14px;
-      font-family: inherit;
+      font-family: inherit
     }
 
     #search-input::placeholder {
-      color: var(--c-muted);
+      color: var(--c-muted)
     }
 
     .icon-btn {
@@ -109,23 +100,22 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all .15s;
       backdrop-filter: blur(12px);
-      flex-shrink: 0;
+      flex-shrink: 0
     }
 
     .icon-btn:hover {
       border-color: var(--c-accent);
-      color: var(--c-accent);
+      color: var(--c-accent)
     }
 
     .icon-btn.active {
       background: var(--c-accent);
       color: #0f1117;
-      border-color: var(--c-accent);
+      border-color: var(--c-accent)
     }
 
-    /* ─── Status Bar ────────────────────────── */
     #statusbar {
       position: absolute;
       bottom: 20px;
@@ -133,7 +123,7 @@
       z-index: 100;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 8px
     }
 
     .status-pill {
@@ -146,8 +136,7 @@
       padding: 6px 14px;
       font-size: 12px;
       color: var(--c-muted);
-      backdrop-filter: blur(12px);
-      transition: all 0.3s;
+      backdrop-filter: blur(12px)
     }
 
     .status-dot {
@@ -156,37 +145,36 @@
       border-radius: 50%;
       background: var(--c-muted);
       flex-shrink: 0;
-      transition: background 0.3s;
+      transition: background .3s
     }
 
     .status-dot.online {
       background: var(--c-accent);
-      box-shadow: 0 0 6px var(--c-accent);
+      box-shadow: 0 0 6px var(--c-accent)
     }
 
     .status-dot.gps-active {
       background: var(--c-accent2);
       box-shadow: 0 0 6px var(--c-accent2);
-      animation: pulse 2s infinite;
+      animation: pulse 2s infinite
     }
 
     .status-dot.offline {
-      background: var(--c-warn);
+      background: var(--c-warn)
     }
 
     @keyframes pulse {
 
       0%,
       100% {
-        opacity: 1;
+        opacity: 1
       }
 
       50% {
-        opacity: 0.4;
+        opacity: .4
       }
     }
 
-    /* ─── Info Panel (slide-in) ─────────────── */
     #panel {
       position: absolute;
       bottom: 0;
@@ -198,13 +186,13 @@
       padding: 20px 20px 32px;
       z-index: 200;
       transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      transition: transform .35s cubic-bezier(.32, .72, 0, 1);
       max-height: 70dvh;
-      overflow-y: auto;
+      overflow-y: auto
     }
 
     #panel.open {
-      transform: translateY(0);
+      transform: translateY(0)
     }
 
     .panel-handle {
@@ -212,22 +200,21 @@
       height: 4px;
       background: var(--c-border);
       border-radius: 2px;
-      margin: 0 auto 20px;
+      margin: 0 auto 20px
     }
 
     .panel-title {
       font-size: 18px;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 4px
     }
 
     .panel-sub {
       font-size: 13px;
       color: var(--c-muted);
-      margin-bottom: 20px;
+      margin-bottom: 20px
     }
 
-    /* ─── Route Card ────────────────────────── */
     .route-card {
       background: var(--c-bg);
       border: 1px solid var(--c-border);
@@ -238,11 +225,11 @@
       align-items: center;
       gap: 12px;
       cursor: pointer;
-      transition: border-color 0.15s;
+      transition: border-color .15s
     }
 
     .route-card:hover {
-      border-color: var(--c-accent);
+      border-color: var(--c-accent)
     }
 
     .route-icon {
@@ -253,24 +240,23 @@
       align-items: center;
       justify-content: center;
       font-size: 18px;
-      flex-shrink: 0;
+      flex-shrink: 0
     }
 
     .route-info {
-      flex: 1;
+      flex: 1
     }
 
     .route-label {
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 500
     }
 
     .route-meta {
       font-size: 12px;
-      color: var(--c-muted);
+      color: var(--c-muted)
     }
 
-    /* ─── Routing Panel ─────────────────────── */
     #routing-panel {
       position: absolute;
       top: 68px;
@@ -282,11 +268,11 @@
       padding: 16px;
       z-index: 100;
       backdrop-filter: blur(12px);
-      display: none;
+      display: none
     }
 
     #routing-panel.open {
-      display: block;
+      display: block
     }
 
     .route-input {
@@ -300,110 +286,37 @@
       font-family: inherit;
       outline: none;
       margin-bottom: 8px;
-      transition: border-color 0.2s;
+      transition: border-color .2s
     }
 
     .route-input:focus {
-      border-color: var(--c-accent);
+      border-color: var(--c-accent)
     }
 
     .btn-primary {
-      width: 100%;
+      flex: 1;
       padding: 10px;
-      background: var(--c-accent);
       border: none;
       border-radius: 8px;
-      color: #0f1117;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
-      transition: opacity 0.15s;
+      transition: opacity .15s
     }
 
     .btn-primary:hover {
-      opacity: 0.85;
+      opacity: .85
     }
 
     .section-label {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: .08em;
       color: var(--c-muted);
-      margin-bottom: 8px;
+      margin-bottom: 8px
     }
 
-    /* ─── Tooltip ────────────────────────────── */
-    .maplibregl-popup-content {
-      background: var(--c-surface) !important;
-      border: 1px solid var(--c-border) !important;
-      border-radius: 8px !important;
-      color: var(--c-text) !important;
-      font-family: inherit !important;
-      font-size: 13px !important;
-      padding: 10px 14px !important;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
-    }
-
-    .maplibregl-popup-tip {
-      display: none !important;
-    }
-
-    /* ─── Map Controls Override ─────────────── */
-    .maplibregl-ctrl-group {
-      background: var(--c-surface) !important;
-      border: 1px solid var(--c-border) !important;
-      border-radius: var(--r) !important;
-      overflow: hidden;
-      backdrop-filter: blur(12px);
-    }
-
-    .maplibregl-ctrl-group button {
-      background: none !important;
-      border-color: var(--c-border) !important;
-      width: 36px !important;
-      height: 36px !important;
-    }
-
-    .maplibregl-ctrl-group button span {
-      filter: invert(1) !important;
-    }
-
-    .maplibregl-ctrl-attrib {
-      display: none !important;
-    }
-
-    .maplibregl-ctrl-bottom-right {
-      bottom: 24px;
-      right: 12px;
-    }
-
-    /* ─── GPS Marker ────────────────────────── */
-    .gps-marker {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--c-accent2);
-      border: 3px solid white;
-      box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.3);
-      animation: gpsPulse 2s infinite;
-    }
-
-    @keyframes gpsPulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(129, 140, 248, 0.5);
-      }
-
-      70% {
-        box-shadow: 0 0 0 12px rgba(129, 140, 248, 0);
-      }
-
-      100% {
-        box-shadow: 0 0 0 0 rgba(129, 140, 248, 0);
-      }
-    }
-
-    /* ─── Layer switcher ────────────────────── */
     #layers-menu {
       position: absolute;
       top: 68px;
@@ -415,10 +328,11 @@
       z-index: 100;
       display: none;
       backdrop-filter: blur(12px);
+      min-width: 180px
     }
 
     #layers-menu.open {
-      display: block;
+      display: block
     }
 
     .layer-option {
@@ -428,24 +342,23 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      transition: background 0.1s;
+      transition: background .1s;
       border-bottom: 1px solid var(--c-border);
-      color: var(--c-text);
+      color: var(--c-text)
     }
 
     .layer-option:last-child {
-      border-bottom: none;
+      border-bottom: none
     }
 
     .layer-option:hover {
-      background: var(--c-bg);
+      background: var(--c-bg)
     }
 
     .layer-option.active {
-      color: var(--c-accent);
+      color: var(--c-accent)
     }
 
-    /* ─── Offline Notice ─────────────────────── */
     #offline-notice {
       position: absolute;
       top: 68px;
@@ -460,16 +373,38 @@
       z-index: 200;
       display: none;
       white-space: nowrap;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px)
     }
 
     #offline-notice.show {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 8px
     }
 
-    /* ─── Coord display ─────────────────────── */
+    #debug-panel {
+      position: absolute;
+      top: 68px;
+      left: 12px;
+      right: 12px;
+      background: #0a0f1a;
+      border: 1px solid var(--c-accent2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 11px;
+      color: #a0c0ff;
+      z-index: 300;
+      font-family: monospace;
+      display: none;
+      line-height: 1.8;
+      max-height: 200px;
+      overflow-y: auto
+    }
+
+    #debug-panel.show {
+      display: block
+    }
+
     #coords-display {
       position: absolute;
       bottom: 20px;
@@ -480,50 +415,109 @@
       padding: 6px 12px;
       font-size: 11px;
       color: var(--c-muted);
-      font-variant-numeric: tabular-nums;
       z-index: 100;
       backdrop-filter: blur(12px);
-      font-family: 'DM Mono', monospace;
+      font-family: monospace
     }
 
-    @media (max-width: 480px) {
-      :root {
-        --panel-w: calc(100vw - 24px);
+    .maplibregl-popup-content {
+      background: var(--c-surface) !important;
+      border: 1px solid var(--c-border) !important;
+      border-radius: 8px !important;
+      color: var(--c-text) !important;
+      font-family: inherit !important;
+      font-size: 13px !important;
+      padding: 10px 14px !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .4) !important
+    }
+
+    .maplibregl-popup-tip {
+      display: none !important
+    }
+
+    .maplibregl-ctrl-group {
+      background: var(--c-surface) !important;
+      border: 1px solid var(--c-border) !important;
+      border-radius: var(--r) !important;
+      backdrop-filter: blur(12px)
+    }
+
+    .maplibregl-ctrl-group button {
+      background: none !important;
+      border-color: var(--c-border) !important;
+      width: 36px !important;
+      height: 36px !important
+    }
+
+    .maplibregl-ctrl-group button span {
+      filter: invert(1) !important
+    }
+
+    .maplibregl-ctrl-attrib {
+      display: none !important
+    }
+
+    .maplibregl-ctrl-bottom-right {
+      bottom: 24px;
+      right: 12px
+    }
+
+    .gps-marker {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--c-accent2);
+      border: 3px solid white;
+      box-shadow: 0 0 0 4px rgba(129, 140, 248, .3);
+      animation: gpsPulse 2s infinite
+    }
+
+    @keyframes gpsPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(129, 140, 248, .5)
       }
 
-      #routing-panel {
-        width: var(--panel-w);
+      70% {
+        box-shadow: 0 0 0 12px rgba(129, 140, 248, 0)
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(129, 140, 248, 0)
+      }
+    }
+
+    @media(max-width:480px) {
+      :root {
+        --panel-w: calc(100vw - 24px)
       }
     }
   </style>
 </head>
 
 <body>
-
   <div id="map"></div>
 
-  <!-- Top bar -->
   <div id="topbar">
     <div id="search-box">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" opacity="0.5">
         <circle cx="11" cy="11" r="8" />
         <path d="m21 21-4.35-4.35" />
       </svg>
-      <input id="search-input" type="text" placeholder="Search places…" autocomplete="off" />
+      <input id="search-input" type="text" placeholder="Search Tunisia…" autocomplete="off" />
       <span id="search-clear" style="cursor:pointer;opacity:0.5;display:none" onclick="clearSearch()">✕</span>
     </div>
-    <button class="icon-btn" id="btn-gps" title="My location" onclick="toggleGPS()">
+    <button class="icon-btn" id="btn-gps" onclick="toggleGPS()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="3" />
         <path d="M12 2v3m0 14v3M2 12h3m14 0h3" />
       </svg>
     </button>
-    <button class="icon-btn" id="btn-route" title="Route" onclick="toggleRoutingPanel()">
+    <button class="icon-btn" id="btn-route" onclick="toggleRoutingPanel()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 17l4-10 4 6 4-4 6 4" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </button>
-    <button class="icon-btn" id="btn-layers" title="Map layers" onclick="toggleLayers()">
+    <button class="icon-btn" id="btn-layers" onclick="toggleLayers()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polygon points="12 2 22 8.5 12 15 2 8.5" />
         <polyline points="2 15.5 12 22 22 15.5" />
@@ -532,18 +526,16 @@
     </button>
   </div>
 
-  <!-- Offline notice -->
-  <div id="offline-notice">
-    <span>⚠</span> Offline mode — using cached Tunisia map
-  </div>
+  <div id="offline-notice"><span>⚠</span> Offline — using cached map</div>
+  <div id="debug-panel"></div>
 
-  <!-- Routing panel -->
   <div id="routing-panel">
-    <p class="section-label">Route</p>
-    <input class="route-input" id="from-input" placeholder="From (lat,lng or click map)" type="text" />
-    <input class="route-input" id="to-input" placeholder="To (lat,lng or click map)" type="text" />
+    <p class="section-label">Plan a route</p>
+    <input class="route-input" id="from-input" placeholder="From — click map or type lat,lng" />
+    <input class="route-input" id="to-input" placeholder="To — click map or type lat,lng" />
     <div style="display:flex;gap:6px;margin-bottom:12px">
-      <button class="btn-primary" style="background:var(--c-accent)" onclick="planRoute('walk')">🚶 Walk</button>
+      <button class="btn-primary" style="background:var(--c-accent);color:#0f1117" onclick="planRoute('walk')">🚶
+        Walk</button>
       <button class="btn-primary" style="background:var(--c-accent2);color:#fff" onclick="planRoute('bike')">🚲
         Bike</button>
       <button class="btn-primary" style="background:#374151;color:#e8eaf0" onclick="planRoute('car')">🚗 Drive</button>
@@ -551,532 +543,684 @@
     <div id="route-result" style="font-size:13px;color:var(--c-muted);min-height:20px"></div>
   </div>
 
-  <!-- Layer switcher -->
   <div id="layers-menu">
-    <div class="layer-option active" id="layer-streets" onclick="setStyle('streets')">
-      <span>🗺️</span> Streets
-    </div>
-    <div class="layer-option" id="layer-dark" onclick="setStyle('dark')">
-      <span>🌑</span> Dark
-    </div>
-    <div class="layer-option" style="opacity:0.5;cursor:not-allowed" title="Requires online API key">
-      <span>🛰️</span> Satellite (online only)
-    </div>
+    <div class="layer-option active" id="layer-dark" onclick="setTheme('dark')"><span>🌑</span> Dark</div>
+    <div class="layer-option" id="layer-light" onclick="setTheme('light')"><span>🗺️</span> Light</div>
   </div>
 
-  <!-- Status bar -->
   <div id="statusbar">
-    <div class="status-pill" id="network-status">
+    <div class="status-pill">
       <div class="status-dot" id="net-dot"></div>
       <span id="net-label">Checking…</span>
     </div>
     <div class="status-pill" id="gps-status" style="display:none">
-      <div class="status-dot gps-active" id="gps-dot"></div>
+      <div class="status-dot gps-active"></div>
       <span id="gps-label">GPS active</span>
     </div>
-    <div class="status-pill" id="tile-status">
+    <div class="status-pill">
       <div class="status-dot" style="background:var(--c-accent2)"></div>
-      <span>Tunisia offline map</span>
+      <span id="tile-label">Tunisia offline map</span>
     </div>
   </div>
 
-  <!-- Coord display -->
-  <div id="coords-display">0.000000, 0.000000</div>
+  <div id="coords-display">—</div>
 
-  <!-- Bottom panel -->
   <div id="panel">
     <div class="panel-handle"></div>
     <div class="panel-title" id="panel-title">Location</div>
-    <div class="panel-sub" id="panel-sub">0.000, 0.000</div>
+    <div class="panel-sub" id="panel-sub"></div>
     <div id="panel-content"></div>
   </div>
 
   <script>
-    // ─── PMTiles URL setup ──────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    //  ROOT CAUSE OF THE BLACK MAP (now fixed):
+    //
+    //  The PMTiles() constructor needs a real HTTP URL like:
+    //    http://localhost:3000/data/tunis.pmtiles
+    //
+    //  Passing a bare path like '/data/tunis.pmtiles' causes the library's
+    //  internal fetch worker to resolve it against the wrong base and produce
+    //  "pmtiles:///data/tunis.pmtiles" — which fails with "URL scheme not
+    //  supported" because pmtiles:// is only valid for MapLibre sources,
+    //  not for JS fetch() calls.
+    //
+    //  Fix: always build the full URL at runtime using window.location.
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // ── 1. Build the absolute HTTP URL for the PMTiles file ──────────────────
+    //    This works regardless of what port `serve` uses.
     const PMTILES_HTTP_URL = new URL('./data/tunis.pmtiles', window.location.href).href;
     const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
 
-    // ─── Build style function using OpenMapTiles Bright style ───────────
+    dbg('PMTiles HTTP URL: ' + PMTILES_HTTP_URL);
+    dbg('PMTiles style URL: ' + PMTILES_STYLE_URL);
+
+    // ✅ ADD THIS LINE
+    const protocol = new pmtiles.Protocol();
+    maplibregl.addProtocol("pmtiles", protocol.tile);
+
+    // ✅ register the file correctly
+    const pmtilesFile = new pmtiles.PMTiles(PMTILES_HTTP_URL);
+    protocol.add(pmtilesFile);
+
+    // ── 3. Build full OpenMapTiles v3.11 style ────────────────────────────────
+    //    Layer names confirmed from: pmtiles show data/tunis.pmtiles
+    //    Schema: OpenMapTiles v3.11, id: openmaptiles
+    //    Bounds: 9.978–10.493 lng, 36.659–37.008 lat (Tunis metro area)
     function buildStyle(theme) {
-      const isDark = theme === 'dark';
-      
-      // Color overrides for dark theme (Bright style is light by default)
-      const c = isDark ? {
-        bg: '#0d1017', water: '#111e32', landuse: '#111318',
-        building: '#171b27', road: '#252c42', roadLabel: '#6a7a9a',
-        placeLabel: '#b8c8e0', border: '#281830', tunnel: '#1a1f2e',
-        bridge: '#2a314a', rail: '#3a3a5a', ferry: '#1a2a3a',
-        park: '#122018', pitch: '#101820', glacier: '#1a2a3a',
-        sand: '#1a1510', wood: '#0f1812', scrub: '#101814',
-        grass: '#101812', wetland: '#0f1a1f', aeroway: '#1a1a2a',
-        cemetery: '#101814', school: '#181820', hospital: '#201818',
-        industrial: '#18181c', commercial: '#18181c', stadium: '#101818'
+      const d = theme === 'dark';
+      const c = d ? {
+        bg: '#0d1017', water: '#111e32', waterline: '#172840',
+        park: '#0c1a10', res: '#111318',
+        bld: '#171b27', bld2: '#1e2235',
+        rmin: '#1e2335', rmaj: '#252c42', rhwy: '#38405e', rhwy2: '#1c2338',
+        rail: '#1a2030',
+        rlabel: '#6a7a9a', plabel: '#b8c8e0', wlabel: '#304e78', poi: '#5a6a88',
+        border: '#281830',
       } : {
-        bg: '#f8f4f0', water: 'hsl(210, 67%, 85%)', landuse: 'hsla(30, 19%, 90%, 0.4)',
-        building: '#dfdbd7', road: '#fea', roadLabel: '#765',
-        placeLabel: '#333', border: '#9e9cab', tunnel: '#e8e4e0',
-        bridge: '#f0ebe5', rail: '#bbb', ferry: '#aad3df',
-        park: '#d8e8c8', pitch: '#c8d8e8', glacier: '#dde8f0',
-        sand: '#f0e8d8', wood: '#c8d8c0', scrub: '#d0e0c8',
-        grass: '#d8e8c8', wetland: '#cce0f0', aeroway: '#e8e8f0',
-        cemetery: '#d0e0d0', school: '#f0e8e8', hospital: '#f0e0e0',
-        industrial: '#e8e8e8', commercial: '#e8e8e8', stadium: '#d8e0d8'
+        bg: '#f5f2ed', water: '#a8d0e0', waterline: '#70b0d0',
+        park: '#d0e8c0', res: '#ece8df',
+        bld: '#ddd8cf', bld2: '#ccc8be',
+        rmin: '#ffffff', rmaj: '#f8f2e8', rhwy: '#f8cc80', rhwy2: '#cc8830',
+        rail: '#aaaaaa',
+        rlabel: '#505070', plabel: '#202030', wlabel: '#3a5880', poi: '#405060',
+        border: '#cc88aa',
       };
 
+      // Confirmed OMT v3.11 source-layer names (from the mbtiles metadata):
+      // water, waterway, landcover, landuse, mountain_peak, park, boundary,
+      // aeroway, transportation, transportation_name, building, water_name,
+      // place, housenumber, poi, aerodrome_label
+
       return {
-        "version": 8,
-        "name": "Bright (Offline)",
-        "glyphs": "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf",
-        "sprite": "https://openmaptiles.github.io/osm-bright-gl-style/sprite",
-        "sources": {
-          "omt": {
-            "type": "vector",
-            "url": PMTILES_STYLE_URL
+        version: 8,
+        glyphs: './font/{fontstack}/{range}.pbf',
+        sources: {
+          omt: {
+            type: 'vector',
+            url: PMTILES_STYLE_URL,   // pmtiles://http://localhost:3000/data/tunis.pmtiles
+            attribution: '© OpenStreetMap contributors · © MapTiler'
           }
         },
-        "layers": [
-          {"id":"background","type":"background","paint":{"background-color":c.bg}},
-          {"id":"landcover-glacier","type":"fill","source":"omt","source-layer":"landcover","filter":["==","subclass","glacier"],"paint":{"fill-color":c.glacier,"fill-opacity":0.7}},
-          {"id":"landuse-residential","type":"fill","source":"omt","source-layer":"landuse","filter":["in","class","residential","suburb","neighbourhood"],"paint":{"fill-color":c.landuse,"fill-opacity":0.7}},
-          {"id":"landuse-commercial","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","commercial"],"paint":{"fill-color":c.commercial}},
-          {"id":"landuse-industrial","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","industrial"],"paint":{"fill-color":c.industrial}},
-          {"id":"landuse-park","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","park"],"paint":{"fill-color":c.park}},
-          {"id":"landuse-cemetery","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","cemetery"],"paint":{"fill-color":c.cemetery}},
-          {"id":"landuse-hospital","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","hospital"],"paint":{"fill-color":c.hospital}},
-          {"id":"landuse-school","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","school"],"paint":{"fill-color":c.school}},
-          {"id":"landuse-stadium","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","stadium"],"paint":{"fill-color":c.stadium}},
-          {"id":"landuse-aeroway","type":"fill","source":"omt","source-layer":"aeroway","paint":{"fill-color":c.aeroway}},
-          {"id":"landuse-wood","type":"fill","source":"omt","source-layer":"landuse","filter":["in","class","wood","scrub","grass"],"paint":{"fill-color":c.wood}},
-          {"id":"water","type":"fill","source":"omt","source-layer":"water","filter":["all",["!=","intermittent",1],["!=","brunnel","tunnel"]],"paint":{"fill-color":c.water}},
-          {"id":"water-intermittent","type":"fill","source":"omt","source-layer":"water","filter":["all",["==","intermittent",1],["!=","brunnel","tunnel"]],"paint":{"fill-color":c.water,"fill-opacity":0.7}},
-          {"id":"water-tunnel","type":"fill","source":"omt","source-layer":"water","filter":["==","brunnel","tunnel"],"paint":{"fill-color":c.water}},
-          {"id":"landcover-wood","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","wood"],"paint":{"fill-color":c.wood,"fill-opacity":0.6}},
-          {"id":"landcover-scrub","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","scrub"],"paint":{"fill-color":c.scrub,"fill-opacity":0.6}},
-          {"id":"landcover-grass","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","grass"],"paint":{"fill-color":c.grass,"fill-opacity":0.6}},
-          {"id":"landcover-wetland","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","wetland"],"paint":{"fill-color":c.wetland,"fill-opacity":0.8}},
-          {"id":"landcover-sand","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","sand"],"paint":{"fill-color":c.sand}},
-          {"id":"boundary-land-level4","type":"line","source":"omt","source-layer":"boundary","filter":["all",[">=","admin_level",3],["<=","admin_level",6],["!=","maritime",1]],"paint":{"line-color":c.border,"line-width":1,"line-dasharray":[3,1,1,1]}},
-          {"id":"boundary-land-level2","type":"line","source":"omt","source-layer":"boundary","filter":["all",["==","admin_level",2],["!=","maritime",1],["!=","disputed",1]],"paint":{"line-color":c.border,"line-width":1.5}},
-          {"id":"boundary-disputed","type":"line","source":"omt","source-layer":"boundary","filter":["all",["==","disputed",1]],"paint":{"line-color":c.border,"line-width":1,"line-dasharray":[2,2]}},
-          {"id":"transportation-tunnel-path","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","path","track"]],"paint":{"line-color":c.tunnel,"line-width":1,"line-dasharray":[2,2]}},
-          {"id":"transportation-tunnel-minor","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","minor","service"]],"paint":{"line-color":c.tunnel,"line-width":2,"line-dasharray":[3,3]}},
-          {"id":"transportation-tunnel-link","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","trunk","primary","secondary","tertiary"],"==","ramp",1],"paint":{"line-color":c.tunnel,"line-width":3,"line-dasharray":[3,3]}},
-          {"id":"transportation-tunnel-trunk-primary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","trunk","primary"]],"paint":{"line-color":c.tunnel,"line-width":4,"line-dasharray":[3,3]}},
-          {"id":"transportation-tunnel-secondary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["==","class","secondary"]],"paint":{"line-color":c.tunnel,"line-width":3,"line-dasharray":[3,3]}},
-          {"id":"transportation-tunnel-tertiary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["==","class","tertiary"]],"paint":{"line-color":c.tunnel,"line-width":3,"line-dasharray":[3,3]}},
-          {"id":"transportation-tunnel-motorway","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["==","class","motorway"]],"paint":{"line-color":c.tunnel,"line-width":5,"line-dasharray":[3,3]}},
-          {"id":"transportation-tunnel-rail","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["==","class","rail"]],"paint":{"line-color":c.rail,"line-width":2,"line-dasharray":[2,2]}},
-          {"id":"transportation-tunnel-transit","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","transit"]],"paint":{"line-color":c.rail,"line-width":2,"line-dasharray":[2,2]}},
-          {"id":"transportation-path","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","path","track"]],"paint":{"line-color":c.road,"line-width":1,"line-opacity":0.6}},
-          {"id":"transportation-minor","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","minor","service"]],"paint":{"line-color":c.road,"line-width":2}},
-          {"id":"transportation-link","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","trunk","primary","secondary","tertiary"],"==","ramp",1],"paint":{"line-color":c.road,"line-width":3}},
-          {"id":"transportation-trunk-primary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","trunk","primary"]],"paint":{"line-color":c.road,"line-width":4}},
-          {"id":"transportation-secondary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","secondary"]],"paint":{"line-color":c.road,"line-width":3.5}},
-          {"id":"transportation-tertiary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","tertiary"]],"paint":{"line-color":c.road,"line-width":3}},
-          {"id":"transportation-motorway","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","motorway"]],"paint":{"line-color":c.road,"line-width":5}},
-          {"id":"transportation-rail","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","rail"]],"paint":{"line-color":c.rail,"line-width":2}},
-          {"id":"transportation-transit","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","transit"]],"paint":{"line-color":c.rail,"line-width":2}},
-          {"id":"transportation-ferry","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","ferry"]],"paint":{"line-color":c.ferry,"line-width":2,"line-dasharray":[3,3]}},
-          {"id":"transportation-bridge-path","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["in","class","path","track"]],"paint":{"line-color":c.bridge,"line-width":1}},
-          {"id":"transportation-bridge-minor","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["in","class","minor","service"]],"paint":{"line-color":c.bridge,"line-width":2}},
-          {"id":"transportation-bridge-link","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["in","class","trunk","primary","secondary","tertiary"],"==","ramp",1],"paint":{"line-color":c.bridge,"line-width":3}},
-          {"id":"transportation-bridge-trunk-primary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["in","class","trunk","primary"]],"paint":{"line-color":c.bridge,"line-width":4}},
-          {"id":"transportation-bridge-secondary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["==","class","secondary"]],"paint":{"line-color":c.bridge,"line-width":3.5}},
-          {"id":"transportation-bridge-tertiary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["==","class","tertiary"]],"paint":{"line-color":c.bridge,"line-width":3}},
-          {"id":"transportation-bridge-motorway","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["==","class","motorway"]],"paint":{"line-color":c.bridge,"line-width":5}},
-          {"id":"transportation-bridge-rail","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["==","class","rail"]],"paint":{"line-color":c.rail,"line-width":2}},
-          {"id":"building","type":"fill","source":"omt","source-layer":"building","paint":{"fill-color":c.building,"fill-opacity":0.9}},
-          {"id":"building-top","type":"fill","source":"omt","source-layer":"building","paint":{"fill-color":"#f0ebe5","fill-opacity":0.8,"fill-translate":[-2,-2]}},
-          {"id":"waterway","type":"line","source":"omt","source-layer":"waterway","filter":["all",["!=","brunnel","tunnel"]],"paint":{"line-color":c.water,"line-width":1.5}},
-          {"id":"waterway-tunnel","type":"line","source":"omt","source-layer":"waterway","filter":["all",["==","brunnel","tunnel"]],"paint":{"line-color":c.water,"line-width":1.5,"line-dasharray":[3,3]}},
-          {"id":"place-other","type":"symbol","source":"omt","source-layer":"place","filter":["in","class","hamlet","island","islet","neighbourhood","quarter"],"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"text-transform":"uppercase"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1}},
-          {"id":"place-village","type":"symbol","source":"omt","source-layer":"place","filter":["==","class","village"],"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":12},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1}},
-          {"id":"place-town","type":"symbol","source":"omt","source-layer":"place","filter":["==","class","town"],"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":14},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1}},
-          {"id":"place-city","type":"symbol","source":"omt","source-layer":"place","filter":["all",["==","class","city"],["!=","capital",2]],"layout":{"text-field":"{name}","text-font":["Noto Sans Bold"],"text-size":16},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
-          {"id":"place-city-capital","type":"symbol","source":"omt","source-layer":"place","filter":["all",["==","class","city"],["==","capital",2]],"layout":{"text-field":"{name}","text-font":["Noto Sans Bold"],"text-size":16,"icon-image":"star_11","icon-size":0.8,"text-offset":[1,0],"text-anchor":"left"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
-          {"id":"place-state","type":"symbol","source":"omt","source-layer":"place","filter":["in","class","state"],"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":12,"text-transform":"uppercase"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1}},
-          {"id":"place-country","type":"symbol","source":"omt","source-layer":"place","filter":["all",["==","class","country"],[">=","rank",3]],"layout":{"text-field":"{name}","text-font":["Noto Sans Bold"],"text-size":14},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
-          {"id":"place-country-2","type":"symbol","source":"omt","source-layer":"place","filter":["all",["==","class","country"],["<","rank",3]],"layout":{"text-field":"{name}","text-font":["Noto Sans Bold"],"text-size":16},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
-          {"id":"poi-level3","type":"symbol","source":"omt","source-layer":"poi","filter":["all",[">=","rank",3]],"minzoom":14,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"icon-image":"{class}_11","text-offset":[0,0.6],"text-anchor":"top"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":0.8}},
-          {"id":"poi-level2","type":"symbol","source":"omt","source-layer":"poi","filter":["all",["==","rank",2]],"minzoom":14,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"icon-image":"{class}_11","text-offset":[0,0.6],"text-anchor":"top"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":0.8}},
-          {"id":"poi-level1","type":"symbol","source":"omt","source-layer":"poi","filter":["all",["==","rank",1]],"minzoom":14,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":12,"icon-image":"{class}_11","text-offset":[0,0.6],"text-anchor":"top"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":0.8}},
-          {"id":"poi-railway","type":"symbol","source":"omt","source-layer":"poi","filter":["==","class","railway"],"minzoom":13,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"icon-image":"{class}_11","text-offset":[0,0.6],"text-anchor":"top"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":0.8}},
-          {"id":"road-label-minor","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["in","class","minor","service","path","track"],"minzoom":15,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":10,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1}},
-          {"id":"road-label-link","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["in","class","trunk","primary","secondary","tertiary"],"minzoom":14,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1}},
-          {"id":"road-label-primary","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["in","class","trunk","primary"],"minzoom":11,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":12,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
-          {"id":"road-label-secondary","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["in","class","secondary","tertiary"],"minzoom":12,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
-          {"id":"road-label-motorway","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["==","class","motorway"],"minzoom":10,"layout":{"text-field":"{ref}","text-font":["Noto Sans Bold"],"text-size":12,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1.5}}
+        layers: [
+          // Background
+          { id: 'bg', type: 'background', paint: { 'background-color': c.bg } },
+
+          // ── Water ─────────────────────────────────────────────────────────
+          {
+            id: 'water-fill', type: 'fill', source: 'omt', 'source-layer': 'water',
+            paint: { 'fill-color': c.water, 'fill-antialias': true }
+          },
+          {
+            id: 'waterway', type: 'line', source: 'omt', 'source-layer': 'waterway',
+            paint: {
+              'line-color': c.waterline,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 8, .4, 14, 2.5]
+            }
+          },
+
+          // ── Land cover ────────────────────────────────────────────────────
+          {
+            id: 'landcover', type: 'fill', source: 'omt', 'source-layer': 'landcover',
+            paint: { 'fill-color': c.park, 'fill-opacity': .8 }
+          },
+
+          // ── Land use ──────────────────────────────────────────────────────
+          {
+            id: 'landuse-green', type: 'fill', source: 'omt', 'source-layer': 'landuse',
+            filter: ['in', 'class', 'park', 'forest', 'grass', 'pitch', 'recreation_ground', 'golf', 'cemetery'],
+            paint: { 'fill-color': c.park }
+          },
+          {
+            id: 'landuse-res', type: 'fill', source: 'omt', 'source-layer': 'landuse',
+            filter: ['in', 'class', 'residential', 'suburb', 'neighbourhood'],
+            paint: { 'fill-color': c.res }
+          },
+
+          // ── Boundaries ────────────────────────────────────────────────────
+          {
+            id: 'boundary-4', type: 'line', source: 'omt', 'source-layer': 'boundary',
+            filter: ['==', 'admin_level', 4],
+            paint: {
+              'line-color': c.border, 'line-width': 1,
+              'line-dasharray': [5, 3]
+            }
+          },
+
+          // ── Buildings ─────────────────────────────────────────────────────
+          {
+            id: 'building-fill', type: 'fill', source: 'omt', 'source-layer': 'building',
+            minzoom: 14,
+            paint: { 'fill-color': c.bld }
+          },
+          {
+            id: 'building-line', type: 'line', source: 'omt', 'source-layer': 'building',
+            minzoom: 15,
+            paint: { 'line-color': c.bld2, 'line-width': .5 }
+          },
+
+          // ── Roads — casings ───────────────────────────────────────────────
+          // ─────────────────────────────────────────────────────────────
+          // ROADS — CASINGS (always below fills)
+          // ─────────────────────────────────────────────────────────────
+
+          {
+            id: 'road-hwy-case',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: ['in', 'class', 'motorway', 'trunk'],
+            layout: { 'line-join': 'round', 'line-cap': 'round' },
+            paint: {
+              'line-color': c.rhwy2,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 5, 3, 14, 16, 18, 28]
+            }
+          },
+
+          {
+            id: 'road-pri-case',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: ['in', 'class', 'primary', 'secondary'],
+            minzoom: 9,
+            layout: { 'line-join': 'round', 'line-cap': 'round' },
+            paint: {
+              'line-color': c.bg,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 9, 2, 14, 12, 18, 20]
+            }
+          },
+
+          // ─────────────────────────────────────────────────────────────
+          // ROADS — NORMAL (NO bridges/tunnels)
+          // ─────────────────────────────────────────────────────────────
+
+          {
+            id: 'road-service',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['in', 'class', 'minor', 'service', 'track'],
+              ['!=', 'brunnel', 'bridge'],
+              ['!=', 'brunnel', 'tunnel']
+            ],
+            minzoom: 14,
+            layout: { 'line-join': 'round', 'line-cap': 'round' },
+            paint: {
+              'line-color': c.rmin,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 14, 0.5, 18, 4]
+            }
+          },
+
+          {
+            id: 'road-tertiary',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['==', 'class', 'tertiary'],
+              ['!=', 'brunnel', 'bridge'],
+              ['!=', 'brunnel', 'tunnel']
+            ],
+            minzoom: 11,
+            layout: { 'line-join': 'round', 'line-cap': 'round' },
+            paint: {
+              'line-color': c.rmin,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 11, 0.5, 14, 5, 18, 10]
+            }
+          },
+          {
+            id: 'road-secondary',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['==', 'class', 'secondary'],
+              ['!=', 'brunnel', 'bridge'],
+              ['!=', 'brunnel', 'tunnel']
+            ],
+            minzoom: 9,
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            paint: {
+              // 👇 much cooler / neutral tone (kills orange effect)
+              'line-color': c.rhwy2,
+
+              // 👇 aggressively reduced thickness
+              'line-width': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                9, 0.2,
+                12, 1.2,
+                14, 2.5,
+                18, 5
+              ],
+
+              // 👇 slightly softer so it doesn't dominate visually
+              'line-opacity': 0.9
+            }
+          },
+
+          {
+            id: 'road-primary',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['==', 'class', 'primary'],
+              ['!=', 'brunnel', 'bridge'],
+              ['!=', 'brunnel', 'tunnel']
+            ],
+            minzoom: 7,
+            layout: { 'line-join': 'round', 'line-cap': 'round' },
+            paint: {
+              'line-color': c.rmaj,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 7, 0.5, 14, 9, 18, 16]
+            }
+          },
+
+          // ─────────────────────────────────────────────────────────────
+          // ROADS — BRIDGES (MUST BE LAST ROAD LAYER BLOCK)
+          // ─────────────────────────────────────────────────────────────
+
+          {
+            id: 'road-hwy-bridge',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['in', 'class', 'motorway', 'trunk'],
+              ['==', 'brunnel', 'bridge']
+            ],
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            paint: {
+              'line-color': c.rhwy,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 5, 4, 14, 18, 18, 30]
+            }
+          },
+
+
+
+          // ── Rail ──────────────────────────────────────────────────────────
+          {
+            id: 'rail', type: 'line', source: 'omt', 'source-layer': 'transportation',
+            filter: ['in', 'class', 'rail', 'transit'],
+            minzoom: 10,
+            paint: {
+              'line-color': c.rail,
+              'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1, 14, 2],
+              'line-dasharray': [6, 4]
+            }
+          },
+
+          // ── Road labels ───────────────────────────────────────────────────
+          {
+            id: 'road-label', type: 'symbol', source: 'omt', 'source-layer': 'transportation_name',
+            minzoom: 14,
+            layout: {
+              'symbol-placement': 'line',
+              'text-field': ['coalesce', ['get', 'name:en'], ['get', 'name:latin'], ['get', 'name']],
+              'text-size': 11, 'text-font': ['Noto Sans Regular'], 'text-max-angle': 30,
+            },
+            paint: { 'text-color': c.rlabel, 'text-halo-color': c.bg, 'text-halo-width': 1.5 }
+          },
+
+          // ── Place labels ──────────────────────────────────────────────────
+          {
+            id: 'place-neighbourhood', type: 'symbol', source: 'omt', 'source-layer': 'place',
+            filter: ['in', 'class', 'suburb', 'neighbourhood', 'quarter'],
+            minzoom: 13,
+            layout: {
+              'text-field': ['coalesce', ['get', 'name:en'], ['get', 'name:latin'], ['get', 'name']],
+              'text-size': ['interpolate', ['linear'], ['zoom'], 13, 10, 17, 13],
+              'text-font': ['Noto Sans Regular'], 'text-max-width': 8,
+            },
+            paint: { 'text-color': c.poi, 'text-halo-color': c.bg, 'text-halo-width': 1.5 }
+          },
+          {
+            id: 'place-town', type: 'symbol', source: 'omt', 'source-layer': 'place',
+            filter: ['in', 'class', 'town', 'village', 'hamlet'],
+            minzoom: 8,
+            layout: {
+              'text-field': ['coalesce', ['get', 'name:en'], ['get', 'name:latin'], ['get', 'name']],
+              'text-size': ['interpolate', ['linear'], ['zoom'], 8, 11, 14, 15],
+              'text-font': ['Noto Sans Regular'], 'text-max-width': 8,
+            },
+            paint: { 'text-color': c.plabel, 'text-halo-color': c.bg, 'text-halo-width': 2 }
+          },
+          {
+            id: 'place-city', type: 'symbol', source: 'omt', 'source-layer': 'place',
+            filter: ['in', 'class', 'city', 'capital'],
+            minzoom: 4,
+            layout: {
+              'text-field': ['coalesce', ['get', 'name:en'], ['get', 'name:latin'], ['get', 'name']],
+              'text-size': ['interpolate', ['linear'], ['zoom'], 4, 12, 12, 22],
+              'text-font': ['Noto Sans Bold'], 'text-max-width': 8,
+              'text-anchor': 'center',
+            },
+            paint: { 'text-color': c.plabel, 'text-halo-color': c.bg, 'text-halo-width': 2 }
+          },
+
+          // ── Water labels ──────────────────────────────────────────────────
+          {
+            id: 'water-label', type: 'symbol', source: 'omt', 'source-layer': 'water_name',
+            layout: {
+              'text-field': ['coalesce', ['get', 'name:en'], ['get', 'name:latin'], ['get', 'name']],
+              'text-size': 12, 'text-font': ['Noto Sans Italic'],
+            },
+            paint: { 'text-color': c.wlabel, 'text-halo-color': c.bg, 'text-halo-width': 1 }
+          },
         ]
       };
     }
 
-    // ─── Register PMTiles protocol ────────────────────────────────────────
-    const protocol = new pmtiles.Protocol();
-    maplibregl.addProtocol("pmtiles", protocol.tile);
-
-    // ─── Init map FIRST (before any map.on() calls) ─────────────────────────
+    // ── 4. Create the map ─────────────────────────────────────────────────────
     const map = new maplibregl.Map({
       container: 'map',
-      style: buildStyle('light'),
-      center: [10.1815, 36.8065], // Tunis default
+      style: buildStyle('dark'),
+      center: [10.1815, 36.8065],  // Tunis
       zoom: 12,
-      attributionControl: false
+      attributionControl: false,
+      // Lock to the tile bounds from pmtiles show output
+      maxBounds: [[9.5, 36.3], [11.0, 37.4]]
     });
 
     map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
     map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
 
-    // ─── PMTiles metadata loading & debug (AFTER map exists) ──────────────
+    // ── 5. On load: verify tiles are coming in ────────────────────────────────
     map.on('load', async () => {
+      map.getStyle().layers.forEach(l => {
+        console.log("LAYER:", l.id, "SOURCE:", l["source-layer"]);
+      });
+      debugRoads();
+
+      dbg('Map loaded. Verifying tile connection…');
       try {
-        const p = new pmtiles.PMTiles(PMTILES_HTTP_URL);
-        const meta = await p.getMetadata();
-        const layers = meta.vector_layers?.map(l => l.id) || [];
-        console.log('✅ PMTiles source-layers:', layers);
-        
-        const required = ['water', 'transportation', 'building', 'place'];
-        const missing = required.filter(l => !layers.includes(l));
-        if (missing.length) {
-          console.warn('⚠️ Missing source-layers:', missing);
+        // Try a direct byte-range request to confirm the file is accessible
+        const r = await fetch(PMTILES_HTTP_URL, {
+          headers: { Range: 'bytes=0-127' }
+        });
+        if (r.ok || r.status === 206) {
+          dbg('✓ PMTiles file reachable (' + r.status + ')');
+          // Read metadata to confirm layer names
+          const header = await pmtilesFile.getHeader();
+          const metadata = await pmtilesFile.getMetadata();
+          const layers = (metadata?.vector_layers || []).map(l => l.id);
+          dbg('Spec v' + header.specVersion + ' · bounds: ' +
+            header.minLon.toFixed(2) + '→' + header.maxLon.toFixed(2));
+          dbg('Layers: ' + (layers.length ? layers.join(', ') : '(empty — check metadata)'));
+          console.log("VECTOR LAYERS RAW:", metadata.vector_layers);
+          document.getElementById('tile-label').textContent =
+            'Tunis offline (' + layers.length + ' layers)';
+          if (layers.length && !layers.includes('transportation')) {
+            dbg('⚠ No "transportation" layer found. Actual layers listed above.');
+            dbg('Update source-layer names in buildStyle() to match.');
+          }
+        } else {
+          dbg('✗ File fetch failed: HTTP ' + r.status);
+          dbg('Make sure data/tunis.pmtiles exists at: ' + PMTILES_HTTP_URL);
         }
       } catch (e) {
-        console.error('❌ Failed to read PMTiles metadata:', e);
+        dbg('✗ Cannot reach file: ' + e.message);
+        dbg('Is the file at data/tunis.pmtiles relative to index.html?');
       }
     });
-
-    // Update coords on move
-    map.on('mousemove', (e) => {
-      document.getElementById('coords-display').textContent =
-        `${e.lngLat.lat.toFixed(6)}, ${e.lngLat.lng.toFixed(6)}`;
+    map.on('zoom', () => {
+      console.log("ZOOM:", map.getZoom());
+    });
+    map.on('error', e => {
+      const msg = e.error?.message || '';
+      if (msg.includes('canceled') || msg.includes('abort')) return;
+      dbg('Map error: ' + msg);
     });
 
-    // Click to show panel
-    map.on('click', (e) => {
-      if (routingMode) { handleRoutingClick(e.lngLat); return; }
-      const coords = e.lngLat;
-      showPanel(
-        `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`,
-        'Tapped location',
-        `
-      <div class="route-card" onclick="setRouteDest(${coords.lat}, ${coords.lng})">
-        <div class="route-icon" style="background:rgba(74,222,128,0.15)">📍</div>
-        <div class="route-info">
-          <div class="route-label">Route here</div>
-          <div class="route-meta">Set as destination</div>
-        </div>
-      </div>
-      <div class="route-card" onclick="copyCoords(${coords.lat}, ${coords.lng})">
-        <div class="route-icon" style="background:rgba(129,140,248,0.15)">📋</div>
-        <div class="route-info">
-          <div class="route-label">Copy coordinates</div>
-          <div class="route-meta">${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}</div>
-        </div>
-      </div>
-    `
-      );
-      new maplibregl.Marker({ color: '#4ade80', scale: 0.7 })
-        .setLngLat([coords.lng, coords.lat])
-        .addTo(map);
-    });
-
-    // ─── GPS Tracking ──────────────────────────────────────────────────────
-    let gpsWatcher = null;
-    let gpsMarker = null;
-    let gpsActive = false;
-
-    function toggleGPS() {
-      if (gpsActive) {
-        stopGPS();
-      } else {
-        startGPS();
-      }
+    // Debug panel (auto-hides after 12s, click to dismiss)
+    function dbg(msg) {
+      console.log('[Atlas]', msg);
+      const el = document.getElementById('debug-panel');
+      el.classList.add('show');
+      el.innerHTML += msg + '<br>';
+      clearTimeout(window._dbgTimer);
+      window._dbgTimer = setTimeout(() => el.classList.remove('show'), 12000);
     }
+    document.getElementById('debug-panel').addEventListener('click', () => {
+      document.getElementById('debug-panel').classList.remove('show');
+    });
 
+    // Coords on hover
+    map.on('mousemove', e => {
+      document.getElementById('coords-display').textContent =
+        `${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`;
+    });
+
+    // Map click
+    let routingClickActive = false;
+    map.on('click', e => {
+      const features = map.queryRenderedFeatures(e.point);
+      console.log("FEATURES UNDER CLICK:", features);
+      if (routingClickActive) { handleRoutingClick(e.lngLat); return; }
+      const { lat, lng } = e.lngLat;
+      showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
+        `<div class="route-card" onclick="setRouteDest(${lat},${lng})">
+       <div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div>
+       <div class="route-info"><div class="route-label">Route here</div>
+       <div class="route-meta">Set as destination</div></div></div>
+     <div class="route-card" onclick="copyCoords(${lat},${lng})">
+       <div class="route-icon" style="background:rgba(129,140,248,.15)">📋</div>
+       <div class="route-info"><div class="route-label">Copy coordinates</div>
+       <div class="route-meta">${lat.toFixed(6)}, ${lng.toFixed(6)}</div></div></div>`);
+      new maplibregl.Marker({ color: '#4ade80', scale: .7 }).setLngLat([lng, lat]).addTo(map);
+      document.getElementById('layers-menu').classList.remove('open');
+    });
+
+    // ── Theme ──────────────────────────────────────────────────────────────────
+    function setTheme(t) {
+      document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
+      document.getElementById('layer-' + t).classList.add('active');
+      document.getElementById('layers-menu').classList.remove('open');
+      map.setStyle(buildStyle(t));
+      map.once('styledata', () => {
+        // re-add route if exists
+        // re-add markers if needed
+      });
+    }
+    function toggleLayers() { document.getElementById('layers-menu').classList.toggle('open'); }
+
+    // ── GPS ────────────────────────────────────────────────────────────────────
+    let gpsWatcher = null, gpsMarker = null, gpsActive = false;
+    function toggleGPS() { gpsActive ? stopGPS() : startGPS(); }
     function startGPS() {
-      if (!navigator.geolocation) {
-        alert('Geolocation not supported by this browser.');
-        return;
-      }
+      if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
       document.getElementById('btn-gps').classList.add('active');
       document.getElementById('gps-status').style.display = 'flex';
       gpsActive = true;
-
       gpsWatcher = navigator.geolocation.watchPosition(
-        (pos) => {
-          const { latitude: lat, longitude: lng, accuracy } = pos.coords;
-          document.getElementById('gps-label').textContent =
-            `±${Math.round(accuracy)}m`;
-
+        ({ coords: { latitude: lat, longitude: lng, accuracy } }) => {
+          document.getElementById('gps-label').textContent = `±${Math.round(accuracy)}m`;
           if (!gpsMarker) {
-            const el = document.createElement('div');
-            el.className = 'gps-marker';
-            gpsMarker = new maplibregl.Marker({ element: el })
-              .setLngLat([lng, lat])
-              .addTo(map);
+            const el = document.createElement('div'); el.className = 'gps-marker';
+            gpsMarker = new maplibregl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map);
             map.flyTo({ center: [lng, lat], zoom: 15, duration: 1200 });
-          } else {
-            gpsMarker.setLngLat([lng, lat]);
-          }
+          } else gpsMarker.setLngLat([lng, lat]);
         },
-        (err) => {
-          document.getElementById('gps-label').textContent = 'GPS error';
-          console.error('GPS error:', err);
-        },
+        () => { document.getElementById('gps-label').textContent = 'GPS error'; },
         { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
       );
     }
-
     function stopGPS() {
-      if (gpsWatcher !== null) {
-        navigator.geolocation.clearWatch(gpsWatcher);
-        gpsWatcher = null;
-      }
+      if (gpsWatcher !== null) navigator.geolocation.clearWatch(gpsWatcher);
       if (gpsMarker) { gpsMarker.remove(); gpsMarker = null; }
       gpsActive = false;
       document.getElementById('btn-gps').classList.remove('active');
       document.getElementById('gps-status').style.display = 'none';
     }
 
-    // ─── Routing ───────────────────────────────────────────────────────────
-    let routingMode = false;
-    let routeWaypoints = [];
-    let routeLayer = null;
-
+    // ── Routing ────────────────────────────────────────────────────────────────
     function toggleRoutingPanel() {
       const p = document.getElementById('routing-panel');
       const btn = document.getElementById('btn-route');
       p.classList.toggle('open');
       btn.classList.toggle('active', p.classList.contains('open'));
+      routingClickActive = p.classList.contains('open');
       closePanel();
     }
-
-    function handleRoutingClick(lngLat) {
-      const fromInput = document.getElementById('from-input');
-      const toInput = document.getElementById('to-input');
-      const val = `${lngLat.lat.toFixed(5)},${lngLat.lng.toFixed(5)}`;
-      if (!fromInput.value) {
-        fromInput.value = val;
-      } else if (!toInput.value) {
-        toInput.value = val;
-      } else {
-        fromInput.value = val;
-        toInput.value = '';
-      }
+    function handleRoutingClick({ lat, lng }) {
+      const from = document.getElementById('from-input');
+      const to = document.getElementById('to-input');
+      const v = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+      if (!from.value) from.value = v;
+      else if (!to.value) to.value = v;
+      else { from.value = v; to.value = ''; }
     }
-
     function setRouteDest(lat, lng) {
       document.getElementById('to-input').value = `${lat.toFixed(5)},${lng.toFixed(5)}`;
       document.getElementById('routing-panel').classList.add('open');
       document.getElementById('btn-route').classList.add('active');
-      closePanel();
+      routingClickActive = true; closePanel();
     }
-
-    function parseLatLng(str) {
-      const parts = str.split(',').map(Number);
-      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-        return { lat: parts[0], lng: parts[1] };
-      }
-      return null;
+    function parseLatLng(s) {
+      const p = s.split(',').map(Number);
+      return p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]) ? { lat: p[0], lng: p[1] } : null;
     }
-
     async function planRoute(mode) {
-      const fromStr = document.getElementById('from-input').value.trim();
-      const toStr = document.getElementById('to-input').value.trim();
-
-      if (!fromStr || !toStr) {
-        document.getElementById('route-result').textContent = 'Enter start and end points.';
-        return;
-      }
-
-      const from = parseLatLng(fromStr);
-      const to = parseLatLng(toStr);
-      if (!from || !to) {
-        document.getElementById('route-result').textContent = 'Invalid coordinates. Use lat,lng format.';
-        return;
-      }
-
-      document.getElementById('route-result').textContent = 'Calculating route…';
-
-      // Try OSRM demo server (online) - in a real offline app this hits local Valhalla
-      const profile = mode === 'car' ? 'driving' : mode === 'bike' ? 'cycling' : 'foot';
-      const url = `https://router.project-osrm.org/route/v1/${profile}/${from.lng},${from.lat};${to.lng},${to.lat}?overview=full&geometries=geojson`;
-
+      const from = parseLatLng(document.getElementById('from-input').value.trim());
+      const to = parseLatLng(document.getElementById('to-input').value.trim());
+      if (!from || !to) { document.getElementById('route-result').textContent = 'Enter valid coordinates.'; return; }
+      document.getElementById('route-result').textContent = 'Calculating…';
+      const prof = { car: 'driving', bike: 'cycling', walk: 'foot' }[mode];
       try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data.code !== 'Ok' || !data.routes?.[0]) {
-          throw new Error('No route found');
-        }
-        const route = data.routes[0];
-        const dist = (route.distance / 1000).toFixed(1);
-        const mins = Math.round(route.duration / 60);
-        const geom = route.geometry;
-
-        // Draw route on map
-        drawRoute(geom, mode);
-
+        const res = await fetch(`https://router.project-osrm.org/route/v1/${prof}/${from.lng},${from.lat};${to.lng},${to.lat}?overview=full&geometries=geojson`);
+        const d = await res.json();
+        if (d.code !== 'Ok' || !d.routes?.[0]) throw new Error();
+        const r = d.routes[0];
+        drawRoute(r.geometry, mode);
         document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-accent);font-weight:600">${dist} km</span> · ${mins} min · ${modeLabel(mode)}`;
-
-        map.fitBounds([
-          [from.lng, from.lat],
-          [to.lng, to.lat]
-        ], { padding: 80, duration: 1000 });
-
-      } catch (e) {
-        // Offline fallback: show straight line
-        const geom = {
-          type: 'LineString',
-          coordinates: [[from.lng, from.lat], [to.lng, to.lat]]
-        };
-        drawRoute(geom, mode, true);
+          `<span style="color:var(--c-accent);font-weight:600">${(r.distance / 1000).toFixed(1)} km</span> · ${Math.round(r.duration / 60)} min`;
+        map.fitBounds([[from.lng, from.lat], [to.lng, to.lat]], { padding: 80, duration: 1000 });
+      } catch {
+        drawRoute({ type: 'LineString', coordinates: [[from.lng, from.lat], [to.lng, to.lat]] }, mode, true);
         document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-warn)">⚠ Offline</span> — showing straight line. Local Valhalla needed for real routing.`;
+          `<span style="color:var(--c-warn)">⚠ Offline</span> — straight line shown`;
       }
     }
-
-    function modeLabel(m) {
-      return { walk: '🚶 Walking', bike: '🚲 Cycling', car: '🚗 Driving' }[m] || m;
-    }
-
     function drawRoute(geom, mode, dashed = false) {
       const colors = { walk: '#4ade80', bike: '#818cf8', car: '#60a5fa' };
       const id = 'route-line';
       if (map.getLayer(id)) map.removeLayer(id);
       if (map.getSource(id)) map.removeSource(id);
-
       map.addSource(id, { type: 'geojson', data: { type: 'Feature', geometry: geom } });
       map.addLayer({
-        id,
-        type: 'line',
-        source: id,
+        id, type: 'line', source: id,
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
-          'line-color': colors[mode] || '#4ade80',
-          'line-width': 4,
-          'line-opacity': 0.9,
+          'line-color': colors[mode] || '#4ade80', 'line-width': 4, 'line-opacity': .9,
           ...(dashed ? { 'line-dasharray': [2, 2] } : {})
         }
       });
     }
 
-    // ─── Layer switcher ────────────────────────────────────────────────────
-    function toggleLayers() {
-      const m = document.getElementById('layers-menu');
-      m.classList.toggle('open');
+    // ── Search ─────────────────────────────────────────────────────────────────
+    let st;
+    document.getElementById('search-input').addEventListener('input', function () {
+      clearTimeout(st);
+      const q = this.value.trim();
+      document.getElementById('search-clear').style.display = q ? 'block' : 'none';
+      if (q.length < 3) return;
+      st = setTimeout(() => searchPlaces(q), 500);
+    });
+    async function searchPlaces(q) {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=tn`,
+          { headers: { 'Accept-Language': 'en' } });
+        const results = await res.json();
+        if (!results.length) { showPanel(`"${q}"`, 'No results', '<p style="color:var(--c-muted);font-size:13px">Nothing found.</p>'); return; }
+        showPanel(`"${q}"`, `${results.length} results`,
+          results.map(r =>
+            `<div class="route-card" onclick="goTo(${r.lat},${r.lon},'${r.display_name.replace(/'/g, "\\'")}')">
+           <div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div>
+           <div class="route-info">
+             <div class="route-label">${r.display_name.split(',')[0]}</div>
+             <div class="route-meta">${r.display_name.split(',').slice(1, 3).join(',').trim()}</div>
+           </div></div>`).join(''));
+      } catch {
+        showPanel('Search', 'Offline',
+          `<p style="color:var(--c-warn);font-size:13px">⚠ No internet — geocoding unavailable.</p>`);
+      }
+    }
+    function goTo(lat, lon, name) {
+      map.flyTo({ center: [lon, lat], zoom: 15, duration: 1000 });
+      new maplibregl.Marker({ color: '#4ade80', scale: .7 })
+        .setLngLat([lon, lat]).setPopup(new maplibregl.Popup().setText(name.split(',')[0]))
+        .addTo(map).togglePopup();
+      closePanel();
+      document.getElementById('search-input').value = name.split(',')[0];
+    }
+    function clearSearch() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('search-clear').style.display = 'none';
+      closePanel();
+    }
+    function copyCoords(lat, lng) {
+      navigator.clipboard?.writeText(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+      closePanel();
     }
 
-    function setStyle(name) {
-      // Use buildStyle function with theme support
-      const styles = {
-        streets: buildStyle('light'),
-        dark: buildStyle('dark'),
-      };
-      document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
-      document.getElementById('layer-' + name)?.classList.add('active');
-      document.getElementById('layers-menu').classList.remove('open');
-      const style = styles[name];
-      if (style) map.setStyle(style);
-    }
-
-    // ─── Panel helpers ─────────────────────────────────────────────────────
+    // ── Panel ──────────────────────────────────────────────────────────────────
     function showPanel(title, sub, content) {
       document.getElementById('panel-title').textContent = title;
       document.getElementById('panel-sub').textContent = sub;
       document.getElementById('panel-content').innerHTML = content;
       document.getElementById('panel').classList.add('open');
     }
-    function closePanel() {
-      document.getElementById('panel').classList.remove('open');
-    }
+    function closePanel() { document.getElementById('panel').classList.remove('open'); }
 
-    document.getElementById('panel').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('panel')) closePanel();
-    });
-
-    // ─── Search (using Nominatim — switches to offline fallback msg when down) ──
-    let searchTimeout;
-    document.getElementById('search-input').addEventListener('input', function () {
-      clearTimeout(searchTimeout);
-      const q = this.value.trim();
-      document.getElementById('search-clear').style.display = q ? 'block' : 'none';
-      if (q.length < 3) return;
-      searchTimeout = setTimeout(() => searchPlaces(q), 500);
-    });
-
-    async function searchPlaces(q) {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5`,
-          { headers: { 'Accept-Language': 'en' } }
-        );
-        const results = await res.json();
-        if (!results.length) {
-          showPanel('No results', q, '<p style="color:var(--c-muted);font-size:13px">No places found. Try a different search.</p>');
-          return;
-        }
-        const content = results.map(r => `
-      <div class="route-card" onclick="goTo(${r.lat}, ${r.lon}, '${r.display_name.replace(/'/g, "\\'")}')">
-        <div class="route-icon" style="background:rgba(74,222,128,0.15)">📍</div>
-        <div class="route-info">
-          <div class="route-label">${r.display_name.split(',')[0]}</div>
-          <div class="route-meta">${r.display_name.split(',').slice(1, 3).join(',').trim()}</div>
-        </div>
-      </div>
-    `).join('');
-        showPanel(`Results for "${q}"`, `${results.length} found`, content);
-      } catch (e) {
-        showPanel('Offline search', q, `
-      <p style="color:var(--c-warn);font-size:13px;margin-bottom:12px">⚠ No internet — geocoding unavailable.</p>
-      <p style="color:var(--c-muted);font-size:12px">In the full app, a local Photon/MOTIS geocoder handles offline search.</p>
-    `);
-      }
-    }
-
-    function goTo(lat, lon, name) {
-      map.flyTo({ center: [lon, lat], zoom: 15, duration: 1000 });
-      new maplibregl.Marker({ color: '#4ade80', scale: 0.7 })
-        .setLngLat([lon, lat])
-        .setPopup(new maplibregl.Popup().setText(name.split(',')[0]))
-        .addTo(map)
-        .togglePopup();
-      closePanel();
-      document.getElementById('search-input').value = name.split(',')[0];
-    }
-
-    function clearSearch() {
-      document.getElementById('search-input').value = '';
-      document.getElementById('search-clear').style.display = 'none';
-      closePanel();
-    }
-
-    function copyCoords(lat, lng) {
-      navigator.clipboard.writeText(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-      closePanel();
-    }
-
-    // ─── Network status ────────────────────────────────────────────────────
+    // ── Network status ─────────────────────────────────────────────────────────
     function updateNetworkStatus() {
       const online = navigator.onLine;
       document.getElementById('net-dot').className = 'status-dot ' + (online ? 'online' : 'offline');
       document.getElementById('net-label').textContent = online ? 'Online' : 'Offline';
-      const notice = document.getElementById('offline-notice');
-      notice.classList.toggle('show', !online);
+      document.getElementById('offline-notice').classList.toggle('show', !online);
     }
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
     updateNetworkStatus();
 
-    // Close menus on map click
-    map.on('click', () => {
-      document.getElementById('layers-menu').classList.remove('open');
-    });
-
-    // Register service worker
+    // ── Service Worker ─────────────────────────────────────────────────────────
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').then(() => {
-        console.log('[Atlas] Service worker registered');
-      }).catch(err => console.log('[Atlas] SW error:', err));
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('[Atlas] SW registered'))
+        .catch(e => console.warn('[Atlas] SW error:', e));
+    }
+
+    function debugRoads() {
+      const features = map.querySourceFeatures('omt', {
+        sourceLayer: 'transportation'
+      });
+
+      console.log("TOTAL ROAD FEATURES:", features.length);
+      console.log("SAMPLE:", features.slice(0, 10));
+    }
+
+    map.on('zoom', countVisibleRoads);
+
+    function countVisibleRoads() {
+      const features = map.queryRenderedFeatures({ layers: ['road-primary', 'road-hwy'] });
+      console.log("VISIBLE ROADS:", features.length);
     }
   </script>
 </body>

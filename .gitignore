@@ -1,5 +1,4 @@
-```gitignore
-# Compiled and build artifacts
+
 *.pyc
 __pycache__/
 *.o
@@ -72,3 +71,5 @@ __pycache__/
 *.tar.xz
 *.tar.zst
 ```
+/font
+print_file_name_recursive.py
