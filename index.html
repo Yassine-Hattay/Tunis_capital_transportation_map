@@ -592,19 +592,73 @@
   </div>
 
   <script>
-    // ─── PMTiles protocol registration (FIXED: lowercase pmtiles) ───────────
-    if (typeof pmtiles !== 'undefined' && pmtiles.Protocol) {
-      const protocol = new pmtiles.Protocol();
-      maplibregl.addProtocol('pmtiles', protocol.tile);
-      console.log('[Atlas] PMTiles protocol registered');
-    } else {
-      console.warn('[Atlas] PMTiles library not loaded — map may not render');
-    }
-
     // ─── Local PMTiles source for Tunisia (offline-first) ───────────────────
     const LOCAL_PMTILES = 'pmtiles:///data/tunis.pmtiles';
 
-    // Map style pointing to local PMTiles — embedded style used if available
+    // ─── PMTiles setup: Protocol for MapLibre + PMTiles class for metadata ─
+    let pmtilesInstance = null;
+
+    if (typeof pmtiles !== 'undefined') {
+      // 1. Register protocol for MapLibre tile loading (lowercase pmtiles)
+      const protocol = new pmtiles.Protocol();
+      maplibregl.addProtocol('pmtiles', protocol.tile);
+      console.log('[Atlas] PMTiles protocol registered');
+      
+      // 2. Create PMTiles instance to read metadata/embedded style
+      pmtilesInstance = new pmtiles.PMTiles(LOCAL_PMTILES);
+      
+      // 3. Try to load embedded style after map is ready
+      map.on('load', async () => {
+        try {
+          const header = await pmtilesInstance.getHeader();
+          
+          // Debug: log available layers
+          console.log('[Atlas] PMTiles header loaded:', {
+            vector_layers: header.tileJson?.vector_layers?.map(l => l.id) || []
+          });
+          
+          if (header?.tileJson?.vector_layers?.length > 0) {
+            // PMTiles has vector layers — check for embedded style
+            if (header.tileJson?.styles) {
+              map.setStyle(header.tileJson.styles);
+              console.log('[Atlas] Applied embedded PMTiles style');
+            }
+          } else {
+            console.warn('[Atlas] PMTiles has no vector layers — using minimal fallback');
+            applyMinimalFallbackStyle();
+          }
+        } catch (err) {
+          console.error('[Atlas] Failed to read PMTiles header:', err);
+          applyMinimalFallbackStyle();
+        }
+      });
+    } else {
+      console.warn('[Atlas] PMTiles library not loaded — using online fallback');
+      map.setStyle('https://tiles.openfreemap.org/styles/liberty ');
+    }
+
+    // Minimal fallback style if PMTiles has no embedded style
+    function applyMinimalFallbackStyle() {
+      map.setStyle({
+        version: 8,
+        sources: {
+          protomaps: {
+            type: 'vector',
+            tiles: [LOCAL_PMTILES],
+            attribution: '© OpenStreetMap'
+          }
+        },
+        layers: [
+          {
+            id: 'background',
+            type: 'background',
+            paint: { 'background-color': '#1a1a2e' }
+          }
+        ]
+      });
+    }
+
+    // Base style object — will be overridden by embedded style if available
     const MAP_STYLE = {
       version: 8,
       glyphs: 'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
@@ -615,9 +669,8 @@
           attribution: '© OpenStreetMap contributors'
         }
       },
-      layers: [] // Empty = use embedded style from PMTiles metadata
+      layers: [] // Empty = wait for embedded style or apply fallback
     };
-    // Disable online-only styles for offline consistency
     const MAP_STYLE_DARK = MAP_STYLE;
     const MAP_STYLE_POSITRON = MAP_STYLE;
 
@@ -632,39 +685,6 @@
 
     map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
     map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
-
-    // Fallback: load embedded style from PMTiles if available
-    if (typeof pmtiles !== 'undefined') {
-      const protocol = new pmtiles.Protocol();
-      protocol.load(LOCAL_PMTILES).then(header => {
-        if (header?.json?.layers && header.json.layers.length > 0) {
-          // PMTiles has embedded style, apply it
-          map.setStyle({
-            version: 8,
-            glyphs: 'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
-            sources: { protomaps: { type: 'vector', tiles: [LOCAL_PMTILES] } },
-            layers: header.json.layers
-          });
-          console.log('[Atlas] Applied embedded PMTiles style');
-        } else {
-          console.warn('[Atlas] PMTiles has no embedded style — using minimal fallback');
-          // Minimal fallback style to at least show background
-          map.setStyle({
-            version: 8,
-            sources: {
-              protomaps: { type: 'vector', tiles: [LOCAL_PMTILES] }
-            },
-            layers: [{
-              id: 'background',
-              type: 'background',
-              paint: { 'background-color': '#1a1a2e' }
-            }]
-          });
-        }
-      }).catch(err => {
-        console.error('[Atlas] Failed to load PMTiles:', err);
-      });
-    }
 
     // Update coords on move
     map.on('mousemove', (e) => {
