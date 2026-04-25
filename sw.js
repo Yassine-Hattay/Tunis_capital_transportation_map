@@ -10,7 +10,12 @@ const APP_SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/data/tunis.pmtiles',  // ← ADDED: Local Tunisia PMTiles file
+  '/data/tunis.pmtiles',
+  // Sprites for POI icons, road shields, etc.
+  'https://openmaptiles.github.io/osm-bright-gl-style/sprite',
+  'https://openmaptiles.github.io/osm-bright-gl-style/sprite@2x',
+  'https://openmaptiles.github.io/osm-bright-gl-style/sprite.json',
+  'https://openmaptiles.github.io/osm-bright-gl-style/sprite@2x.json',
 ];
 
 // CDN assets to cache on first use
