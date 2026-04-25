@@ -592,29 +592,132 @@
   </div>
 
   <script>
-    // ─── Local PMTiles source for Tunisia (offline-first) ───────────────────
-    const LOCAL_PMTILES = 'pmtiles:///data/tunis.pmtiles';
+    // ─── PMTiles URL setup ──────────────────────────────────────────────
+    const PMTILES_HTTP_URL = new URL('./data/tunis.pmtiles', window.location.href).href;
+    const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
 
-    // Base style object — will be overridden by embedded style if available
-    const MAP_STYLE = {
-      version: 8,
-      glyphs: 'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
-      sources: {
-        protomaps: {
-          type: 'vector',
-          tiles: [LOCAL_PMTILES],
-          attribution: '© OpenStreetMap contributors'
-        }
-      },
-      layers: [] // Empty = wait for embedded style or apply fallback
-    };
-    const MAP_STYLE_DARK = MAP_STYLE;
-    const MAP_STYLE_POSITRON = MAP_STYLE;
+    // ─── Build style function using OpenMapTiles Bright style ───────────
+    function buildStyle(theme) {
+      const isDark = theme === 'dark';
+      
+      // Color overrides for dark theme (Bright style is light by default)
+      const c = isDark ? {
+        bg: '#0d1017', water: '#111e32', landuse: '#111318',
+        building: '#171b27', road: '#252c42', roadLabel: '#6a7a9a',
+        placeLabel: '#b8c8e0', border: '#281830', tunnel: '#1a1f2e',
+        bridge: '#2a314a', rail: '#3a3a5a', ferry: '#1a2a3a',
+        park: '#122018', pitch: '#101820', glacier: '#1a2a3a',
+        sand: '#1a1510', wood: '#0f1812', scrub: '#101814',
+        grass: '#101812', wetland: '#0f1a1f', aeroway: '#1a1a2a',
+        cemetery: '#101814', school: '#181820', hospital: '#201818',
+        industrial: '#18181c', commercial: '#18181c', stadium: '#101818'
+      } : {
+        bg: '#f8f4f0', water: 'hsl(210, 67%, 85%)', landuse: 'hsla(30, 19%, 90%, 0.4)',
+        building: '#dfdbd7', road: '#fea', roadLabel: '#765',
+        placeLabel: '#333', border: '#9e9cab', tunnel: '#e8e4e0',
+        bridge: '#f0ebe5', rail: '#bbb', ferry: '#aad3df',
+        park: '#d8e8c8', pitch: '#c8d8e8', glacier: '#dde8f0',
+        sand: '#f0e8d8', wood: '#c8d8c0', scrub: '#d0e0c8',
+        grass: '#d8e8c8', wetland: '#cce0f0', aeroway: '#e8e8f0',
+        cemetery: '#d0e0d0', school: '#f0e8e8', hospital: '#f0e0e0',
+        industrial: '#e8e8e8', commercial: '#e8e8e8', stadium: '#d8e0d8'
+      };
+
+      return {
+        "version": 8,
+        "name": "Bright (Offline)",
+        "glyphs": "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf",
+        "sprite": "https://openmaptiles.github.io/osm-bright-gl-style/sprite",
+        "sources": {
+          "omt": {
+            "type": "vector",
+            "url": PMTILES_STYLE_URL
+          }
+        },
+        "layers": [
+          {"id":"background","type":"background","paint":{"background-color":c.bg}},
+          {"id":"landcover-glacier","type":"fill","source":"omt","source-layer":"landcover","filter":["==","subclass","glacier"],"paint":{"fill-color":c.glacier,"fill-opacity":0.7}},
+          {"id":"landuse-residential","type":"fill","source":"omt","source-layer":"landuse","filter":["in","class","residential","suburb","neighbourhood"],"paint":{"fill-color":c.landuse,"fill-opacity":0.7}},
+          {"id":"landuse-commercial","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","commercial"],"paint":{"fill-color":c.commercial}},
+          {"id":"landuse-industrial","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","industrial"],"paint":{"fill-color":c.industrial}},
+          {"id":"landuse-park","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","park"],"paint":{"fill-color":c.park}},
+          {"id":"landuse-cemetery","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","cemetery"],"paint":{"fill-color":c.cemetery}},
+          {"id":"landuse-hospital","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","hospital"],"paint":{"fill-color":c.hospital}},
+          {"id":"landuse-school","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","school"],"paint":{"fill-color":c.school}},
+          {"id":"landuse-stadium","type":"fill","source":"omt","source-layer":"landuse","filter":["==","class","stadium"],"paint":{"fill-color":c.stadium}},
+          {"id":"landuse-aeroway","type":"fill","source":"omt","source-layer":"aeroway","paint":{"fill-color":c.aeroway}},
+          {"id":"landuse-wood","type":"fill","source":"omt","source-layer":"landuse","filter":["in","class","wood","scrub","grass"],"paint":{"fill-color":c.wood}},
+          {"id":"water","type":"fill","source":"omt","source-layer":"water","filter":["all",["!=","intermittent",1],["!=","brunnel","tunnel"]],"paint":{"fill-color":c.water}},
+          {"id":"water-intermittent","type":"fill","source":"omt","source-layer":"water","filter":["all",["==","intermittent",1],["!=","brunnel","tunnel"]],"paint":{"fill-color":c.water,"fill-opacity":0.7}},
+          {"id":"water-tunnel","type":"fill","source":"omt","source-layer":"water","filter":["==","brunnel","tunnel"],"paint":{"fill-color":c.water}},
+          {"id":"landcover-wood","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","wood"],"paint":{"fill-color":c.wood,"fill-opacity":0.6}},
+          {"id":"landcover-scrub","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","scrub"],"paint":{"fill-color":c.scrub,"fill-opacity":0.6}},
+          {"id":"landcover-grass","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","grass"],"paint":{"fill-color":c.grass,"fill-opacity":0.6}},
+          {"id":"landcover-wetland","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","wetland"],"paint":{"fill-color":c.wetland,"fill-opacity":0.8}},
+          {"id":"landcover-sand","type":"fill","source":"omt","source-layer":"landcover","filter":["==","class","sand"],"paint":{"fill-color":c.sand}},
+          {"id":"boundary-land-level4","type":"line","source":"omt","source-layer":"boundary","filter":["all",[">=","admin_level",3],["<=","admin_level",6],["!=","maritime",1]],"paint":{"line-color":c.border,"line-width":1,"line-dasharray":[3,1,1,1]}},
+          {"id":"boundary-land-level2","type":"line","source":"omt","source-layer":"boundary","filter":["all",["==","admin_level",2],["!=","maritime",1],["!=","disputed",1]],"paint":{"line-color":c.border,"line-width":1.5}},
+          {"id":"boundary-disputed","type":"line","source":"omt","source-layer":"boundary","filter":["all",["==","disputed",1]],"paint":{"line-color":c.border,"line-width":1,"line-dasharray":[2,2]}},
+          {"id":"transportation-tunnel-path","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","path","track"]],"paint":{"line-color":c.tunnel,"line-width":1,"line-dasharray":[2,2]}},
+          {"id":"transportation-tunnel-minor","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","minor","service"]],"paint":{"line-color":c.tunnel,"line-width":2,"line-dasharray":[3,3]}},
+          {"id":"transportation-tunnel-link","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","trunk","primary","secondary","tertiary"],"==","ramp",1],"paint":{"line-color":c.tunnel,"line-width":3,"line-dasharray":[3,3]}},
+          {"id":"transportation-tunnel-trunk-primary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","trunk","primary"]],"paint":{"line-color":c.tunnel,"line-width":4,"line-dasharray":[3,3]}},
+          {"id":"transportation-tunnel-secondary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["==","class","secondary"]],"paint":{"line-color":c.tunnel,"line-width":3,"line-dasharray":[3,3]}},
+          {"id":"transportation-tunnel-tertiary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["==","class","tertiary"]],"paint":{"line-color":c.tunnel,"line-width":3,"line-dasharray":[3,3]}},
+          {"id":"transportation-tunnel-motorway","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["==","class","motorway"]],"paint":{"line-color":c.tunnel,"line-width":5,"line-dasharray":[3,3]}},
+          {"id":"transportation-tunnel-rail","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["==","class","rail"]],"paint":{"line-color":c.rail,"line-width":2,"line-dasharray":[2,2]}},
+          {"id":"transportation-tunnel-transit","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","tunnel"],["in","class","transit"]],"paint":{"line-color":c.rail,"line-width":2,"line-dasharray":[2,2]}},
+          {"id":"transportation-path","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","path","track"]],"paint":{"line-color":c.road,"line-width":1,"line-opacity":0.6}},
+          {"id":"transportation-minor","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","minor","service"]],"paint":{"line-color":c.road,"line-width":2}},
+          {"id":"transportation-link","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","trunk","primary","secondary","tertiary"],"==","ramp",1],"paint":{"line-color":c.road,"line-width":3}},
+          {"id":"transportation-trunk-primary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","trunk","primary"]],"paint":{"line-color":c.road,"line-width":4}},
+          {"id":"transportation-secondary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","secondary"]],"paint":{"line-color":c.road,"line-width":3.5}},
+          {"id":"transportation-tertiary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","tertiary"]],"paint":{"line-color":c.road,"line-width":3}},
+          {"id":"transportation-motorway","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","motorway"]],"paint":{"line-color":c.road,"line-width":5}},
+          {"id":"transportation-rail","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","rail"]],"paint":{"line-color":c.rail,"line-width":2}},
+          {"id":"transportation-transit","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["in","class","transit"]],"paint":{"line-color":c.rail,"line-width":2}},
+          {"id":"transportation-ferry","type":"line","source":"omt","source-layer":"transportation","filter":["all",["!in","brunnel","bridge","tunnel"],["==","class","ferry"]],"paint":{"line-color":c.ferry,"line-width":2,"line-dasharray":[3,3]}},
+          {"id":"transportation-bridge-path","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["in","class","path","track"]],"paint":{"line-color":c.bridge,"line-width":1}},
+          {"id":"transportation-bridge-minor","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["in","class","minor","service"]],"paint":{"line-color":c.bridge,"line-width":2}},
+          {"id":"transportation-bridge-link","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["in","class","trunk","primary","secondary","tertiary"],"==","ramp",1],"paint":{"line-color":c.bridge,"line-width":3}},
+          {"id":"transportation-bridge-trunk-primary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["in","class","trunk","primary"]],"paint":{"line-color":c.bridge,"line-width":4}},
+          {"id":"transportation-bridge-secondary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["==","class","secondary"]],"paint":{"line-color":c.bridge,"line-width":3.5}},
+          {"id":"transportation-bridge-tertiary","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["==","class","tertiary"]],"paint":{"line-color":c.bridge,"line-width":3}},
+          {"id":"transportation-bridge-motorway","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["==","class","motorway"]],"paint":{"line-color":c.bridge,"line-width":5}},
+          {"id":"transportation-bridge-rail","type":"line","source":"omt","source-layer":"transportation","filter":["all",["==","brunnel","bridge"],["==","class","rail"]],"paint":{"line-color":c.rail,"line-width":2}},
+          {"id":"building","type":"fill","source":"omt","source-layer":"building","paint":{"fill-color":c.building,"fill-opacity":0.9}},
+          {"id":"building-top","type":"fill","source":"omt","source-layer":"building","paint":{"fill-color":"#f0ebe5","fill-opacity":0.8,"fill-translate":[-2,-2]}},
+          {"id":"waterway","type":"line","source":"omt","source-layer":"waterway","filter":["all",["!=","brunnel","tunnel"]],"paint":{"line-color":c.water,"line-width":1.5}},
+          {"id":"waterway-tunnel","type":"line","source":"omt","source-layer":"waterway","filter":["all",["==","brunnel","tunnel"]],"paint":{"line-color":c.water,"line-width":1.5,"line-dasharray":[3,3]}},
+          {"id":"place-other","type":"symbol","source":"omt","source-layer":"place","filter":["in","class","hamlet","island","islet","neighbourhood","quarter"],"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"text-transform":"uppercase"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1}},
+          {"id":"place-village","type":"symbol","source":"omt","source-layer":"place","filter":["==","class","village"],"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":12},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1}},
+          {"id":"place-town","type":"symbol","source":"omt","source-layer":"place","filter":["==","class","town"],"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":14},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1}},
+          {"id":"place-city","type":"symbol","source":"omt","source-layer":"place","filter":["all",["==","class","city"],["!=","capital",2]],"layout":{"text-field":"{name}","text-font":["Noto Sans Bold"],"text-size":16},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
+          {"id":"place-city-capital","type":"symbol","source":"omt","source-layer":"place","filter":["all",["==","class","city"],["==","capital",2]],"layout":{"text-field":"{name}","text-font":["Noto Sans Bold"],"text-size":16,"icon-image":"star_11","icon-size":0.8,"text-offset":[1,0],"text-anchor":"left"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
+          {"id":"place-state","type":"symbol","source":"omt","source-layer":"place","filter":["in","class","state"],"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":12,"text-transform":"uppercase"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1}},
+          {"id":"place-country","type":"symbol","source":"omt","source-layer":"place","filter":["all",["==","class","country"],[">=","rank",3]],"layout":{"text-field":"{name}","text-font":["Noto Sans Bold"],"text-size":14},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
+          {"id":"place-country-2","type":"symbol","source":"omt","source-layer":"place","filter":["all",["==","class","country"],["<","rank",3]],"layout":{"text-field":"{name}","text-font":["Noto Sans Bold"],"text-size":16},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
+          {"id":"poi-level3","type":"symbol","source":"omt","source-layer":"poi","filter":["all",[">=","rank",3]],"minzoom":14,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"icon-image":"{class}_11","text-offset":[0,0.6],"text-anchor":"top"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":0.8}},
+          {"id":"poi-level2","type":"symbol","source":"omt","source-layer":"poi","filter":["all",["==","rank",2]],"minzoom":14,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"icon-image":"{class}_11","text-offset":[0,0.6],"text-anchor":"top"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":0.8}},
+          {"id":"poi-level1","type":"symbol","source":"omt","source-layer":"poi","filter":["all",["==","rank",1]],"minzoom":14,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":12,"icon-image":"{class}_11","text-offset":[0,0.6],"text-anchor":"top"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":0.8}},
+          {"id":"poi-railway","type":"symbol","source":"omt","source-layer":"poi","filter":["==","class","railway"],"minzoom":13,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"icon-image":"{class}_11","text-offset":[0,0.6],"text-anchor":"top"},"paint":{"text-color":c.placeLabel,"text-halo-color":c.bg,"text-halo-width":0.8}},
+          {"id":"road-label-minor","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["in","class","minor","service","path","track"],"minzoom":15,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":10,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1}},
+          {"id":"road-label-link","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["in","class","trunk","primary","secondary","tertiary"],"minzoom":14,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1}},
+          {"id":"road-label-primary","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["in","class","trunk","primary"],"minzoom":11,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":12,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
+          {"id":"road-label-secondary","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["in","class","secondary","tertiary"],"minzoom":12,"layout":{"text-field":"{name}","text-font":["Noto Sans Regular"],"text-size":11,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1.5}},
+          {"id":"road-label-motorway","type":"symbol","source":"omt","source-layer":"transportation_name","filter":["==","class","motorway"],"minzoom":10,"layout":{"text-field":"{ref}","text-font":["Noto Sans Bold"],"text-size":12,"symbol-placement":"line","text-rotation-alignment":"map"},"paint":{"text-color":c.roadLabel,"text-halo-color":c.bg,"text-halo-width":1.5}}
+        ]
+      };
+    }
+
+    // ─── Register PMTiles protocol ────────────────────────────────────────
+    const protocol = new pmtiles.Protocol();
+    maplibregl.addProtocol("pmtiles", protocol.tile);
 
     // ─── Init map FIRST (before any map.on() calls) ─────────────────────────
     const map = new maplibregl.Map({
       container: 'map',
-      style: MAP_STYLE,
+      style: buildStyle('light'),
       center: [10.1815, 36.8065], // Tunis default
       zoom: 12,
       attributionControl: false
@@ -623,68 +726,23 @@
     map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
     map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
 
-    // ─── PMTiles setup: Protocol + metadata loading (AFTER map exists) ─────
-    let pmtilesInstance = null;
-
-    if (typeof pmtiles !== 'undefined') {
-      // 1. Register protocol for MapLibre tile loading
-      const protocol = new pmtiles.Protocol();
-      maplibregl.addProtocol('pmtiles', protocol.tile);
-      console.log('[Atlas] PMTiles protocol registered');
-      
-      // 2. Create PMTiles instance to read metadata/embedded style
-      pmtilesInstance = new pmtiles.PMTiles(LOCAL_PMTILES);
-      
-      // 3. Try to load embedded style after map is ready (map exists now!)
-      map.on('load', async () => {
-        try {
-          const header = await pmtilesInstance.getHeader();
-          
-          // Debug: log available layers
-          console.log('[Atlas] PMTiles header loaded:', {
-            vector_layers: header.tileJson?.vector_layers?.map(l => l.id) || []
-          });
-          
-          if (header?.tileJson?.vector_layers?.length > 0) {
-            // PMTiles has vector layers — check for embedded style
-            if (header.tileJson?.styles) {
-              map.setStyle(header.tileJson.styles);
-              console.log('[Atlas] Applied embedded PMTiles style');
-            }
-          } else {
-            console.warn('[Atlas] PMTiles has no vector layers — using minimal fallback');
-            applyMinimalFallbackStyle();
-          }
-        } catch (err) {
-          console.error('[Atlas] Failed to read PMTiles header:', err);
-          applyMinimalFallbackStyle();
+    // ─── PMTiles metadata loading & debug (AFTER map exists) ──────────────
+    map.on('load', async () => {
+      try {
+        const p = new pmtiles.PMTiles(PMTILES_HTTP_URL);
+        const meta = await p.getMetadata();
+        const layers = meta.vector_layers?.map(l => l.id) || [];
+        console.log('✅ PMTiles source-layers:', layers);
+        
+        const required = ['water', 'transportation', 'building', 'place'];
+        const missing = required.filter(l => !layers.includes(l));
+        if (missing.length) {
+          console.warn('⚠️ Missing source-layers:', missing);
         }
-      });
-    } else {
-      console.warn('[Atlas] PMTiles library not loaded — using online fallback');
-      map.setStyle('https://tiles.openfreemap.org/styles/liberty ');
-    }
-
-    // Minimal fallback style if PMTiles has no embedded style
-    function applyMinimalFallbackStyle() {
-      map.setStyle({
-        version: 8,
-        sources: {
-          protomaps: {
-            type: 'vector',
-            tiles: [LOCAL_PMTILES],
-            attribution: '© OpenStreetMap'
-          }
-        },
-        layers: [
-          {
-            id: 'background',
-            type: 'background',
-            paint: { 'background-color': '#1a1a2e' }
-          }
-        ]
-      });
-    }
+      } catch (e) {
+        console.error('❌ Failed to read PMTiles metadata:', e);
+      }
+    });
 
     // Update coords on move
     map.on('mousemove', (e) => {
@@ -909,17 +967,16 @@
     }
 
     function setStyle(name) {
-      // Only support local styles for offline consistency
+      // Use buildStyle function with theme support
       const styles = {
-        streets: MAP_STYLE,
-        dark: MAP_STYLE_DARK,
-        // satellite removed — requires online MapTiler API key
+        streets: buildStyle('light'),
+        dark: buildStyle('dark'),
       };
       document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
       document.getElementById('layer-' + name)?.classList.add('active');
       document.getElementById('layers-menu').classList.remove('open');
-      const url = styles[name];
-      if (url) map.setStyle(url);
+      const style = styles[name];
+      if (style) map.setStyle(style);
     }
 
     // ─── Panel helpers ─────────────────────────────────────────────────────
