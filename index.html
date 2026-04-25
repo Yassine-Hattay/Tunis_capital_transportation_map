@@ -595,11 +595,39 @@
     // ─── Local PMTiles source for Tunisia (offline-first) ───────────────────
     const LOCAL_PMTILES = 'pmtiles:///data/tunis.pmtiles';
 
-    // ─── PMTiles setup: Protocol for MapLibre + PMTiles class for metadata ─
+    // Base style object — will be overridden by embedded style if available
+    const MAP_STYLE = {
+      version: 8,
+      glyphs: 'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
+      sources: {
+        protomaps: {
+          type: 'vector',
+          tiles: [LOCAL_PMTILES],
+          attribution: '© OpenStreetMap contributors'
+        }
+      },
+      layers: [] // Empty = wait for embedded style or apply fallback
+    };
+    const MAP_STYLE_DARK = MAP_STYLE;
+    const MAP_STYLE_POSITRON = MAP_STYLE;
+
+    // ─── Init map FIRST (before any map.on() calls) ─────────────────────────
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: MAP_STYLE,
+      center: [10.1815, 36.8065], // Tunis default
+      zoom: 12,
+      attributionControl: false
+    });
+
+    map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
+    map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
+
+    // ─── PMTiles setup: Protocol + metadata loading (AFTER map exists) ─────
     let pmtilesInstance = null;
 
     if (typeof pmtiles !== 'undefined') {
-      // 1. Register protocol for MapLibre tile loading (lowercase pmtiles)
+      // 1. Register protocol for MapLibre tile loading
       const protocol = new pmtiles.Protocol();
       maplibregl.addProtocol('pmtiles', protocol.tile);
       console.log('[Atlas] PMTiles protocol registered');
@@ -607,7 +635,7 @@
       // 2. Create PMTiles instance to read metadata/embedded style
       pmtilesInstance = new pmtiles.PMTiles(LOCAL_PMTILES);
       
-      // 3. Try to load embedded style after map is ready
+      // 3. Try to load embedded style after map is ready (map exists now!)
       map.on('load', async () => {
         try {
           const header = await pmtilesInstance.getHeader();
@@ -657,34 +685,6 @@
         ]
       });
     }
-
-    // Base style object — will be overridden by embedded style if available
-    const MAP_STYLE = {
-      version: 8,
-      glyphs: 'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
-      sources: {
-        protomaps: {
-          type: 'vector',
-          tiles: [LOCAL_PMTILES],
-          attribution: '© OpenStreetMap contributors'
-        }
-      },
-      layers: [] // Empty = wait for embedded style or apply fallback
-    };
-    const MAP_STYLE_DARK = MAP_STYLE;
-    const MAP_STYLE_POSITRON = MAP_STYLE;
-
-    // ─── Init map ──────────────────────────────────────────────────────────
-    const map = new maplibregl.Map({
-      container: 'map',
-      style: MAP_STYLE,
-      center: [10.1815, 36.8065], // Tunis default
-      zoom: 12,
-      attributionControl: false
-    });
-
-    map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
-    map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
 
     // Update coords on move
     map.on('mousemove', (e) => {
