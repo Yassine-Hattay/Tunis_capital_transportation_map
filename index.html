@@ -635,7 +635,7 @@
 
       return {
         version: 8,
-        glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
+        glyphs: './font/{fontstack}/{range}.pbf',
         sources: {
           omt: {
             type: 'vector',
@@ -701,8 +701,15 @@
           },
 
           // ── Roads — casings ───────────────────────────────────────────────
+          // ─────────────────────────────────────────────────────────────
+          // ROADS — CASINGS (always below fills)
+          // ─────────────────────────────────────────────────────────────
+
           {
-            id: 'road-hwy-case', type: 'line', source: 'omt', 'source-layer': 'transportation',
+            id: 'road-hwy-case',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
             filter: ['in', 'class', 'motorway', 'trunk'],
             layout: { 'line-join': 'round', 'line-cap': 'round' },
             paint: {
@@ -710,8 +717,12 @@
               'line-width': ['interpolate', ['linear'], ['zoom'], 5, 3, 14, 16, 18, 28]
             }
           },
+
           {
-            id: 'road-pri-case', type: 'line', source: 'omt', 'source-layer': 'transportation',
+            id: 'road-pri-case',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
             filter: ['in', 'class', 'primary', 'secondary'],
             minzoom: 9,
             layout: { 'line-join': 'round', 'line-cap': 'round' },
@@ -721,56 +732,127 @@
             }
           },
 
-          // ── Roads — fills ─────────────────────────────────────────────────
+          // ─────────────────────────────────────────────────────────────
+          // ROADS — NORMAL (NO bridges/tunnels)
+          // ─────────────────────────────────────────────────────────────
+
           {
-            id: 'road-service', type: 'line', source: 'omt', 'source-layer': 'transportation',
-            filter: ['in', 'class', 'minor', 'service', 'track'],
+            id: 'road-service',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['in', 'class', 'minor', 'service', 'track'],
+              ['!=', 'brunnel', 'bridge'],
+              ['!=', 'brunnel', 'tunnel']
+            ],
             minzoom: 14,
             layout: { 'line-join': 'round', 'line-cap': 'round' },
             paint: {
               'line-color': c.rmin,
-              'line-width': ['interpolate', ['linear'], ['zoom'], 14, .5, 18, 4]
+              'line-width': ['interpolate', ['linear'], ['zoom'], 14, 0.5, 18, 4]
             }
           },
+
           {
-            id: 'road-tertiary', type: 'line', source: 'omt', 'source-layer': 'transportation',
-            filter: ['==', 'class', 'tertiary'],
+            id: 'road-tertiary',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['==', 'class', 'tertiary'],
+              ['!=', 'brunnel', 'bridge'],
+              ['!=', 'brunnel', 'tunnel']
+            ],
             minzoom: 11,
             layout: { 'line-join': 'round', 'line-cap': 'round' },
             paint: {
               'line-color': c.rmin,
-              'line-width': ['interpolate', ['linear'], ['zoom'], 11, .5, 14, 5, 18, 10]
+              'line-width': ['interpolate', ['linear'], ['zoom'], 11, 0.5, 14, 5, 18, 10]
             }
           },
           {
-            id: 'road-secondary', type: 'line', source: 'omt', 'source-layer': 'transportation',
-            filter: ['==', 'class', 'secondary'],
+            id: 'road-secondary',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['==', 'class', 'secondary'],
+              ['!=', 'brunnel', 'bridge'],
+              ['!=', 'brunnel', 'tunnel']
+            ],
             minzoom: 9,
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
             paint: {
-              'line-color': c.rmaj,
-              'line-width': ['interpolate', ['linear'], ['zoom'], 9, .5, 14, 7, 18, 14]
+              // 👇 much cooler / neutral tone (kills orange effect)
+              'line-color': c.rhwy2,
+
+              // 👇 aggressively reduced thickness
+              'line-width': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                9, 0.2,
+                12, 1.2,
+                14, 2.5,
+                18, 5
+              ],
+
+              // 👇 slightly softer so it doesn't dominate visually
+              'line-opacity': 0.9
             }
           },
+
           {
-            id: 'road-primary', type: 'line', source: 'omt', 'source-layer': 'transportation',
-            filter: ['==', 'class', 'primary'],
+            id: 'road-primary',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['==', 'class', 'primary'],
+              ['!=', 'brunnel', 'bridge'],
+              ['!=', 'brunnel', 'tunnel']
+            ],
             minzoom: 7,
             layout: { 'line-join': 'round', 'line-cap': 'round' },
             paint: {
               'line-color': c.rmaj,
-              'line-width': ['interpolate', ['linear'], ['zoom'], 7, .5, 14, 9, 18, 16]
+              'line-width': ['interpolate', ['linear'], ['zoom'], 7, 0.5, 14, 9, 18, 16]
             }
           },
+
+          // ─────────────────────────────────────────────────────────────
+          // ROADS — BRIDGES (MUST BE LAST ROAD LAYER BLOCK)
+          // ─────────────────────────────────────────────────────────────
+
           {
-            id: 'road-hwy', type: 'line', source: 'omt', 'source-layer': 'transportation',
-            filter: ['in', 'class', 'motorway', 'trunk'],
-            layout: { 'line-join': 'round', 'line-cap': 'round' },
+            id: 'road-hwy-bridge',
+            type: 'line',
+            source: 'omt',
+            'source-layer': 'transportation',
+            filter: [
+              'all',
+              ['in', 'class', 'motorway', 'trunk'],
+              ['==', 'brunnel', 'bridge']
+            ],
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
             paint: {
               'line-color': c.rhwy,
-              'line-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 14, 10, 18, 20]
+              'line-width': ['interpolate', ['linear'], ['zoom'], 5, 4, 14, 18, 18, 30]
             }
           },
+
+
 
           // ── Rail ──────────────────────────────────────────────────────────
           {
@@ -861,6 +943,11 @@
 
     // ── 5. On load: verify tiles are coming in ────────────────────────────────
     map.on('load', async () => {
+      map.getStyle().layers.forEach(l => {
+        console.log("LAYER:", l.id, "SOURCE:", l["source-layer"]);
+      });
+      debugRoads();
+
       dbg('Map loaded. Verifying tile connection…');
       try {
         // Try a direct byte-range request to confirm the file is accessible
@@ -876,6 +963,7 @@
           dbg('Spec v' + header.specVersion + ' · bounds: ' +
             header.minLon.toFixed(2) + '→' + header.maxLon.toFixed(2));
           dbg('Layers: ' + (layers.length ? layers.join(', ') : '(empty — check metadata)'));
+          console.log("VECTOR LAYERS RAW:", metadata.vector_layers);
           document.getElementById('tile-label').textContent =
             'Tunis offline (' + layers.length + ' layers)';
           if (layers.length && !layers.includes('transportation')) {
@@ -891,7 +979,9 @@
         dbg('Is the file at data/tunis.pmtiles relative to index.html?');
       }
     });
-
+    map.on('zoom', () => {
+      console.log("ZOOM:", map.getZoom());
+    });
     map.on('error', e => {
       const msg = e.error?.message || '';
       if (msg.includes('canceled') || msg.includes('abort')) return;
@@ -920,6 +1010,8 @@
     // Map click
     let routingClickActive = false;
     map.on('click', e => {
+      const features = map.queryRenderedFeatures(e.point);
+      console.log("FEATURES UNDER CLICK:", features);
       if (routingClickActive) { handleRoutingClick(e.lngLat); return; }
       const { lat, lng } = e.lngLat;
       showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
@@ -1113,6 +1205,22 @@
       navigator.serviceWorker.register('sw.js')
         .then(() => console.log('[Atlas] SW registered'))
         .catch(e => console.warn('[Atlas] SW error:', e));
+    }
+
+    function debugRoads() {
+      const features = map.querySourceFeatures('omt', {
+        sourceLayer: 'transportation'
+      });
+
+      console.log("TOTAL ROAD FEATURES:", features.length);
+      console.log("SAMPLE:", features.slice(0, 10));
+    }
+
+    map.on('zoom', countVisibleRoads);
+
+    function countVisibleRoads() {
+      const features = map.queryRenderedFeatures({ layers: ['road-primary', 'road-hwy'] });
+      console.log("VISIBLE ROADS:", features.length);
     }
   </script>
 </body>
