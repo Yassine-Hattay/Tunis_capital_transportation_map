@@ -439,8 +439,8 @@
   <div class="layer-option" id="layer-dark" onclick="setStyle('dark')">
     <span>🌑</span> Dark
   </div>
-  <div class="layer-option" id="layer-satellite" onclick="setStyle('satellite')">
-    <span>🛰️</span> Satellite (online)
+  <div class="layer-option" style="opacity:0.5;cursor:not-allowed" title="Requires online API key">
+    <span>🛰️</span> Satellite (online only)
   </div>
 </div>
 
@@ -476,29 +476,25 @@
 const protocol = new PMTiles.Protocol();
 maplibregl.addProtocol('pmtiles', protocol.tile);
 
-// ─── Map style using Protomaps (free, no key needed) ─────────────────
-// Uses the public Protomaps tile server (works online; SW caches for offline)
-const PROTO_TILES = 'https://api.protomaps.com/tiles/v4/{z}/{x}/{y}.mvt?key=1003762824b9687f';
-// Fallback: OpenFreeMap (truly free, no key)
-const FREE_TILES_URL = 'https://tiles.openfreemap.org/planet';
+// ─── Local PMTiles source for Tunisia (offline-first) ───────────────
+const LOCAL_PMTILES = 'pmtiles:///data/tunis.pmtiles';
 
-const darkStyle = {
+// Map style pointing to local PMTiles — embedded style used if available
+const MAP_STYLE = {
   version: 8,
   glyphs: 'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
   sources: {
     protomaps: {
       type: 'vector',
-      tiles: ['https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=get_your_own_OpIi9ZULNHzrESv6T2vL'],
-      attribution: '© OpenMapTiles © OpenStreetMap contributors'
+      tiles: [LOCAL_PMTILES],
+      attribution: '© OpenStreetMap contributors'
     }
   },
-  layers: []
+  layers: [] // Empty = use embedded style from PMTiles metadata
 };
-
-// Using OpenFreeMap Liberty style (free, good looking, works offline after caching)
-const MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
-const MAP_STYLE_DARK = 'https://tiles.openfreemap.org/styles/dark';
-const MAP_STYLE_POSITRON = 'https://tiles.openfreemap.org/styles/positron';
+// Disable online-only styles for offline consistency
+const MAP_STYLE_DARK = MAP_STYLE;
+const MAP_STYLE_POSITRON = MAP_STYLE;
 
 // ─── Init map ──────────────────────────────────────────────────────────
 const map = new maplibregl.Map({
@@ -508,6 +504,18 @@ const map = new maplibregl.Map({
   zoom: 12,
   attributionControl: false
 });
+
+// Fallback: load embedded style from PMTiles if available
+protocol.load(LOCAL_PMTILES).then(header => {
+  if (header?.json?.layers) {
+    map.setStyle({
+      version: 8,
+      glyphs: 'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
+      sources: { protomaps: { type: 'vector', tiles: [LOCAL_PMTILES] } },
+      layers: header.json.layers
+    });
+  }
+}).catch(err => console.warn('[Atlas] PMTiles style fallback:', err));
 
 map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
 map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
@@ -735,15 +743,15 @@ function toggleLayers() {
 }
 
 function setStyle(name) {
+  // Only support local styles for offline consistency
   const styles = {
     streets: MAP_STYLE,
     dark: MAP_STYLE_DARK,
-    satellite: 'https://api.maptiler.com/maps/satellite/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL'
+    // satellite removed — requires online MapTiler API key
   };
   document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
-  document.getElementById('layer-' + name).classList.add('active');
+  document.getElementById('layer-' + name)?.classList.add('active');
   document.getElementById('layers-menu').classList.remove('open');
-
   const url = styles[name];
   if (url) map.setStyle(url);
 }

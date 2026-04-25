@@ -10,6 +10,7 @@ const APP_SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/data/tunis.pmtiles',
 ];
 
 // CDN assets to cache on first use
@@ -59,6 +60,12 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET and chrome-extension requests
   if (event.request.method !== 'GET') return;
   if (url.protocol === 'chrome-extension:') return;
+
+  // Handle local PMTiles file requests with cache-first strategy
+  if (url.pathname.endsWith('.pmtiles') && url.origin === self.location.origin) {
+    event.respondWith(cacheFirst(event.request, RUNTIME_CACHE));
+    return;
+  }
 
   // Map tiles — Cache First (tiles rarely change)
   if (isTileRequest(url)) {
