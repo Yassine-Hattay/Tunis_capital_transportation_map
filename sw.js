@@ -10,7 +10,7 @@ const APP_SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/data/tunis.pmtiles',
+  '/data/tunis.pmtiles',  // ← ADDED: Local Tunisia PMTiles file
 ];
 
 // CDN assets to cache on first use
