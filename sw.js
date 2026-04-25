@@ -10,7 +10,6 @@ const APP_SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/data/tunis.pmtiles',  // ← ADDED: Local Tunisia PMTiles file
 ];
 
 // CDN assets to cache on first use
@@ -62,10 +61,10 @@ self.addEventListener('fetch', (event) => {
   if (url.protocol === 'chrome-extension:') return;
 
   // Handle local PMTiles file requests with cache-first strategy
-  if (url.pathname.endsWith('.pmtiles') && url.origin === self.location.origin) {
-    event.respondWith(cacheFirst(event.request, RUNTIME_CACHE));
-    return;
-  }
+  // PMTiles MUST bypass Service Worker cache (uses HTTP range requests)
+if (url.pathname.endsWith('.pmtiles')) {
+  return; // let browser handle it directly
+}
 
   // Map tiles — Cache First (tiles rarely change)
   if (isTileRequest(url)) {
@@ -134,7 +133,12 @@ async function cacheFirst(request, cacheName) {
 
   try {
     const response = await fetch(request);
-    if (response.ok) cache.put(request, response.clone());
+
+    // ❗ Skip caching partial responses (206)
+    if (response.ok && response.status !== 206) {
+      cache.put(request, response.clone());
+    }
+
     return response;
   } catch (err) {
     return new Response('Offline', { status: 503 });

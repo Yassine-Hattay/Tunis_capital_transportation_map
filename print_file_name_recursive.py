@@ -26,7 +26,7 @@ def scan_files(root_dir=".", extensions=(".py",)):
 
 if __name__ == "__main__":
     # 🔧 Change extensions here
-    extensions_to_scan = (".html",".json",".js")  # e.g. (".py", ".txt", ".md")
+    extensions_to_scan = (".html",".json",".js",".md")  # e.g. (".py", ".txt", ".md")
     
     # 🔧 Change directory if needed
     root_directory = "."  # current working directory
