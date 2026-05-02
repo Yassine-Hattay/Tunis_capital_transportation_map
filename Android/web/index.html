@@ -592,59 +592,175 @@
   </div>
 
   <script>
+document.addEventListener("DOMContentLoaded", () => {
+  
+  // ✅ 1. Worker fix (MUST be first, before any MapLibre usage)
+  if (typeof maplibregl !== 'undefined') {
     maplibregl.workerUrl = './lib/maplibre-gl.js';
-    // ─────────────────────────────────────────────────────────────────────────
-    //  ROOT CAUSE OF THE BLACK MAP (now fixed):
-    //
-    //  The PMTiles() constructor needs a real HTTP URL like:
-    //    http://localhost:3000/data/tunis.pmtiles
-    //
-    //  Passing a bare path like '/data/tunis.pmtiles' causes the library's
-    //  internal fetch worker to resolve it against the wrong base and produce
-    //  "pmtiles:///data/tunis.pmtiles" — which fails with "URL scheme not
-    //  supported" because pmtiles:// is only valid for MapLibre sources,
-    //  not for JS fetch() calls.
-    //
-    //  Fix: always build the full URL at runtime using window.location.
-    // ─────────────────────────────────────────────────────────────────────────
+  }
 
-    // ── 1. Build the absolute HTTP URL for the PMTiles file ──────────────────
-    //    This works regardless of what port `serve` uses.
-    // Capacitor-safe PMTiles URL resolution
-    // ── 1. Build the absolute HTTP URL for the PMTiles file (Capacitor-safe) ─
-    console.log('🔍 Debug:', {
-      protocol: window.location.protocol,
-      origin: window.location.origin,
-      href: window.location.href,
-      isCapacitor: typeof Capacitor !== 'undefined'
+  // ✅ 2. PMTiles URL resolution (Capacitor-safe absolute path)
+  const PMTILES_HTTP_URL = '/data/tunis.pmtiles';
+  const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
+
+  // ✅ 3. Register PMTiles protocol BEFORE map creation
+  const protocol = new pmtiles.Protocol();
+  maplibregl.addProtocol("pmtiles", protocol.tile);
+  const pmtilesFile = new pmtiles.PMTiles(PMTILES_HTTP_URL);
+
+  // ✅ 4. CREATE MAP (only after protocol is registered)
+  const map = new maplibregl.Map({
+    container: 'map',
+    style: buildStyle('dark'),
+    center: [10.1815, 36.8065],  // Tunis coordinates
+    zoom: 12,
+    attributionControl: false,
+    maxBounds: [[9.5, 36.3], [11.0, 37.4]]  // Tunisia bounds
+  });
+
+  // Force map resize after WebView renders (Capacitor fix)
+  setTimeout(() => {
+    map.resize();
+  }, 500);
+
+  // Also resize on orientation change
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => map.resize(), 300);
+  });
+
+  map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
+  map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
+
+  // ✅ 5. ALL map.* calls go INSIDE on('load') or AFTER creation
+  map.on('load', async () => {
+    console.log("✅ Map loaded");
+    
+    // Debug: list loaded layers
+    map.getStyle().layers?.forEach(l => {
+      console.log("LAYER:", l.id, "SOURCE:", l["source-layer"]);
     });
+    
+    // Safe to call helper functions here
+    if (typeof debugRoads === 'function') {
+      debugRoads();
+    }
+    
+    // Verify PMTiles file accessibility
+    dbg('Map loaded. Verifying tile connection…');
+    try {
+      const r = await fetch(PMTILES_HTTP_URL, { headers: { Range: 'bytes=0-127' } });
+      if (r.ok || r.status === 206) {
+        dbg('✓ PMTiles file reachable (' + r.status + ')');
+        const header = await pmtilesFile.getHeader();
+        const metadata = await pmtilesFile.getMetadata();
+        const layers = (metadata?.vector_layers || []).map(l => l.id);
+        dbg('Spec v' + header.specVersion + ' · Layers: ' + (layers.join(', ') || '(empty)'));
+        document.getElementById('tile-label').textContent = 'Tunis offline (' + layers.length + ' layers)';
+      } else {
+        dbg('✗ File fetch failed: HTTP ' + r.status);
+        dbg('Make sure data/tunis.pmtiles exists at: ' + PMTILES_HTTP_URL);
+      }
+    } catch (e) {
+      dbg('✗ Cannot reach file: ' + e.message);
+      dbg('Is the file at data/tunis.pmtiles relative to index.html?');
+    }
+  });
 
+  map.on('zoom', () => {
+    console.log("ZOOM:", map.getZoom());
+  });
 
-    // ✅ FIXED PMTiles URL (NO localhost, NO origin)
-    const PMTILES_HTTP_URL = '/data/tunis.pmtiles';
-    const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
+  map.on('error', e => {
+    const msg = e.error?.message || '';
+    if (msg.includes('canceled') || msg.includes('abort')) return;
+    dbg('Map error: ' + msg);
+  });
 
-    // Debug
-    console.log('PMTiles HTTP URL:', PMTILES_HTTP_URL);
-    console.log('PMTiles style URL:', PMTILES_STYLE_URL);
+  // Debug panel (auto-hides after 12s, click to dismiss)
+  function dbg(msg) {
+    console.log('[Atlas]', msg);
+    const el = document.getElementById('debug-panel');
+    el.classList.add('show');
+    el.innerHTML += msg + '<br>';
+    clearTimeout(window._dbgTimer);
+    window._dbgTimer = setTimeout(() => el.classList.remove('show'), 12000);
+  }
+  document.getElementById('debug-panel').addEventListener('click', () => {
+    document.getElementById('debug-panel').classList.remove('show');
+  });
 
-    dbg('PMTiles HTTP URL: ' + PMTILES_HTTP_URL);
-    dbg('PMTiles style URL: ' + PMTILES_STYLE_URL);
+  // Coords on hover
+  map.on('mousemove', e => {
+    document.getElementById('coords-display').textContent =
+      `${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`;
+  });
 
+  // Map click
+  let routingClickActive = false;
+  map.on('click', e => {
+    const features = map.queryRenderedFeatures(e.point);
+    console.log("FEATURES UNDER CLICK:", features);
+    if (routingClickActive) { handleRoutingClick(e.lngLat); return; }
+    const { lat, lng } = e.lngLat;
+    showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
+      `<div class="route-card" onclick="setRouteDest(${lat},${lng})">
+       <div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div>
+       <div class="route-info"><div class="route-label">Route here</div>
+       <div class="route-meta">Set as destination</div></div></div>
+     <div class="route-card" onclick="copyCoords(${lat},${lng})">
+       <div class="route-icon" style="background:rgba(129,140,248,.15)">📋</div>
+       <div class="route-info"><div class="route-label">Copy coordinates</div>
+       <div class="route-meta">${lat.toFixed(6)}, ${lng.toFixed(6)}</div></div></div>`);
+    new maplibregl.Marker({ color: '#4ade80', scale: .7 }).setLngLat([lng, lat]).addTo(map);
+    document.getElementById('layers-menu').classList.remove('open');
+  });
 
+  // ── Theme ──────────────────────────────────────────────────────────────────
+  function setTheme(t) {
+    document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
+    document.getElementById('layer-' + t).classList.add('active');
+    document.getElementById('layers-menu').classList.remove('open');
+    map.setStyle(buildStyle(t));
+    map.once('styledata', () => {
+      // re-add route if exists
+      // re-add markers if needed
+    });
+  }
+  function toggleLayers() { document.getElementById('layers-menu').classList.toggle('open'); }
 
-    pmtilesFile.getHeader().then(header => {
-      console.log('✅ PMTiles header loaded:', {
-        specVersion: header.specVersion,
-        minZoom: header.minZoom,
-        maxZoom: header.maxZoom,
-        minLon: header.minLon,
-        maxLon: header.maxLon
+}); // ← END of DOMContentLoaded wrapper
+
+// ✅ Helper functions defined OUTSIDE DOMContentLoaded (but guard map access)
+function debugRoads() {
+  if (typeof map !== 'undefined' && map.isStyleLoaded?.()) {
+    try {
+      const features = map.querySourceFeatures('omt', { sourceLayer: 'transportation' });
+      console.log("TOTAL ROAD FEATURES:", features.length);
+    } catch (e) {
+      console.log("debugRoads: style not ready yet");
+    }
+  }
+}
+
+function countVisibleRoads() {
+  if (typeof map !== 'undefined' && map.isStyleLoaded?.()) {
+    try {
+      const features = map.queryRenderedFeatures({
+        layers: ['highway-primary', 'highway-secondary', 'highway-motorway']
       });
-    }).catch(err => {
-      console.error('❌ PMTiles header failed:', err.message);
-      dbg('✗ PMTiles file not accessible: ' + err.message);
-    });
+      console.log("VISIBLE ROADS:", features.length);
+    } catch (e) {
+      // Silently ignore if layers don't exist
+    }
+  }
+}
+
+// Attach zoom listener after DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof map !== 'undefined') {
+    map.on('zoom', countVisibleRoads);
+  }
+});
     // ── 3. Build full OpenMapTiles v3.11 style ────────────────────────────────
     //    Layer names confirmed from: pmtiles show data/tunis.pmtiles
     //    Schema: OpenMapTiles v3.11, id: openmaptiles
@@ -676,8 +792,8 @@
       return {
         version: 8,
         name: "Bright (Offline) — Full Layer Set",
-        glyphs: './font/{fontstack}/{range}.pbf',
-        sprite: window.location.origin + "/sprites/sprite", spritePixelRatio: 1,
+        glyphs: null,    // Disable remote fonts (add local /fonts/ folder if needed later)
+        sprite: null,    // Disable sprites to avoid 404 errors
         sources: {
           omt: {
             type: "vector",
@@ -2504,28 +2620,6 @@
         .catch(e => console.warn('[Atlas] SW error:', e));
     }
 
-    function debugRoads() {
-      const features = map.querySourceFeatures('omt', {
-        sourceLayer: 'transportation'
-      });
-
-      console.log("TOTAL ROAD FEATURES:", features.length);
-      console.log("SAMPLE:", features.slice(0, 10));
-    }
-
-    map.on('zoom', countVisibleRoads);
-
-    function countVisibleRoads() {
-      try {
-        // OpenFreeMap Liberty uses 'highway-*' layer names, not 'road-*'
-        const features = map.queryRenderedFeatures({
-          layers: ['highway-primary', 'highway-secondary', 'highway-motorway']
-        });
-        console.log("VISIBLE ROADS:", features.length);
-      } catch (e) {
-        // Silently ignore if layers don't exist
-      }
-    }
   </script>
 </body>
 
