@@ -593,11 +593,19 @@
 
   <script>
 // ============================================================================
-// === PHASE 0: GLOBAL HELPER FUNCTIONS (no dependencies on map or constants) ===
+// === PHASE 0: GLOBAL CONSTANTS (NO DEPENDENCIES) ===
 // ============================================================================
-console.log('[Atlas] PHASE 0: Defining global helper functions');
+console.log('[Atlas] PHASE 0: Defining constants');
+const PMTILES_HTTP_URL = '/data/tunis.pmtiles';
+const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
+console.log('[Atlas] PMTILES_HTTP_URL:', PMTILES_HTTP_URL);
 
-// Debug function for dual output (console + UI panel)
+// ============================================================================
+// === PHASE 1: PURE HELPER FUNCTIONS (no map dependency) ===
+// ============================================================================
+console.log('[Atlas] PHASE 1: Defining pure functions');
+
+// Debug function for dual output (console + UI panel) - defined ONCE globally
 function dbg(msg) {
   console.log('[Atlas DBG]', msg);
   const el = document.getElementById('debug-panel');
@@ -609,46 +617,54 @@ function dbg(msg) {
   }
 }
 
-// Helper: debug roads - guards against map not being ready
-function debugRoads() {
-  console.log('[Atlas] debugRoads() called');
-  if (typeof map === 'undefined' || !map) {
-    console.warn('[Atlas] debugRoads: map not initialized');
-    return;
-  }
-  if (!map.isStyleLoaded?.()) {
-    console.warn('[Atlas] debugRoads: style not loaded yet');
-    return;
-  }
-  try {
-    const features = map.querySourceFeatures('omt', { sourceLayer: 'transportation' });
-    console.log('[Atlas] debugRoads: TOTAL ROAD FEATURES:', features.length);
-  } catch (e) {
-    console.log('[Atlas] debugRoads: style not ready yet -', e.message);
-  }
+// Helper: parse lat/lng from string
+function parseLatLng(s) {
+  const p = s.split(',').map(Number);
+  return p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]) ? { lat: p[0], lng: p[1] } : null;
 }
 
-// Helper: count visible roads - guards against map not being ready
-function countVisibleRoads() {
-  if (typeof map === 'undefined' || !map) {
-    console.warn('[Atlas] countVisibleRoads: map not initialized');
-    return;
+// Decode Valhalla's 6-digit precision polyline (no map dependency)
+function decodeValhallaPolyline(encoded) {
+  const coords = [];
+  let index = 0, lat = 0, lng = 0;
+  while (index < encoded.length) {
+    let b, shift = 0, result = 0;
+    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    const dlat = ((result & 1) ? ~(result >> 1) : (result >> 1)); lat += dlat;
+    shift = 0; result = 0;
+    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    const dlng = ((result & 1) ? ~(result >> 1) : (result >> 1)); lng += dlng;
+    coords.push([lng / 1e6, lat / 1e6]);
   }
-  if (!map.isStyleLoaded?.()) {
-    return;
-  }
-  try {
-    const features = map.queryRenderedFeatures({
-      layers: ['highway-primary', 'highway-secondary', 'highway-motorway']
-    });
-    console.log('[Atlas] countVisibleRoads: VISIBLE ROADS:', features.length);
-  } catch (e) {
-    // Silently ignore if layers don't exist yet
-  }
+  return coords;
 }
 
-// Pure function: build map style (no map dependency, uses constants defined later)
-function buildStyle(theme, PMTILES_STYLE_URL) {
+// Helper: decode polyline6 (no map dependency)
+function decodePolyline6(encoded) {
+  if (!encoded) return { type: 'LineString', coordinates: [] };
+  let index = 0, lat = 0, lng = 0;
+  const coordinates = [];
+  const factor = 1e6;
+  while (index < encoded.length) {
+    let b, shift = 0, result = 0;
+    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+    lat += dlat;
+    shift = 0; result = 0;
+    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
+    lng += dlng;
+    coordinates.push([lng / factor, lat / factor]);
+  }
+  return { type: 'LineString', coordinates };
+}
+
+// ============================================================================
+// === PHASE 2: buildStyle() — MUST ONLY RETURN STYLE OBJECT ===
+// ============================================================================
+console.log('[Atlas] PHASE 2: Defining buildStyle()');
+
+function buildStyle(theme) {
   console.log('[Atlas] buildStyle() called with theme:', theme);
   const isDark = theme === 'dark';
 
@@ -684,64 +700,7 @@ function buildStyle(theme, PMTILES_STYLE_URL) {
         url: PMTILES_STYLE_URL
       }
     },
-
-  // Force map resize after WebView renders (Capacitor fix)
-  setTimeout(() => {
-    map.resize();
-  }, 500);
-
-  // Also resize on orientation change
-  window.addEventListener('orientationchange', () => {
-    setTimeout(() => map.resize(), 300);
-  });
-
-  map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
-  map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
-
-  // ✅ 5. ALL map.* calls go INSIDE on('load') or AFTER creation
-  map.on('load', async () => {
-    console.log("✅ Map loaded");
-    
-    // Debug: list loaded layers
-    map.getStyle().layers?.forEach(l => {
-      console.log("LAYER:", l.id, "SOURCE:", l["source-layer"]);
-    });
-    
-    // Safe to call helper functions here
-    if (typeof debugRoads === 'function') {
-      debugRoads();
-    }
-    
-    // Verify PMTiles file accessibility
-    dbg('Map loaded. Verifying tile connection…');
-    try {
-      const r = await fetch(PMTILES_HTTP_URL, { headers: { Range: 'bytes=0-127' } });
-      if (r.ok || r.status === 206) {
-        dbg('✓ PMTiles file reachable (' + r.status + ')');
-        const header = await pmtilesFile.getHeader();
-        const metadata = await pmtilesFile.getMetadata();
-        const layers = (metadata?.vector_layers || []).map(l => l.id);
-        dbg('Spec v' + header.specVersion + ' · Layers: ' + (layers.join(', ') || '(empty)'));
-        document.getElementById('tile-label').textContent = 'Tunis offline (' + layers.length + ' layers)';
-      } else {
-        dbg('✗ File fetch failed: HTTP ' + r.status);
-        dbg('Make sure data/tunis.pmtiles exists at: ' + PMTILES_HTTP_URL);
-      }
-    } catch (e) {
-      dbg('✗ Cannot reach file: ' + e.message);
-      dbg('Is the file at data/tunis.pmtiles relative to index.html?');
-    }
-  });
-
-  map.on('zoom', () => {
-    console.log("ZOOM:", map.getZoom());
-  });
-
-  map.on('error', e => {
-    const msg = e.error?.message || '';
-    if (msg.includes('canceled') || msg.includes('abort')) return;
-    dbg('Map error: ' + msg);
-  });
+    layers: [
 
   // Debug panel (auto-hides after 12s, click to dismiss)
   function dbg(msg) {
