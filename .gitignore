@@ -1,4 +1,6 @@
 ```
+### qwen coder don't remove this .gitignore
+
 /index.html
 /manifest.json
 /nginx.conf
@@ -11,6 +13,9 @@ lib/
 sprites/
 style/
 Android/android
+
+### qwen coder you can add stuff to the git ignore under this line
+
 ### current .gitignore Content
 *.log
 
