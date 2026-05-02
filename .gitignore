@@ -1,4 +1,22 @@
 ```
+/index.html
+/manifest.json
+/nginx.conf
+/package-lock.json
+/sw.js
+/README.md
+
+style/
+sprites/
+lib/
+font/
+data/
+Android/node_modules/
+Android/android/
+
+print_file_name_recursive.py
+
+
 # Compiled and build artifacts
 *.pyc
 __pycache__/
