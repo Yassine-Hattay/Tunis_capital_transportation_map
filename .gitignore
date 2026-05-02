@@ -1,200 +1,53 @@
-```
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-dist/
-build/
-target/
+# Examples 1:
 
-# Dependencies
-.venv/
-venv/
-node_modules/
-.julia/
-zig*/
-.jest/
-.nyc_output/
+    Input:
+    ### Added files:
+    [src/main.py, README.md, config.json]
 
-# Logs and temp files
+    ### Deleted files:
+    [old/unused.py]
+    ### Modified files:
+    [utils.py]
+    ###current .gitignore Content
+    (empty)
+    Expected Output:
+    (empty — output nothing)
+
+# Example 2 (Project with artifacts):
+Input:
+### Added files:
+[pycache/main.cpython-310.pyc, dist/app.js, .env.local, .vscode/settings.json
+
+### Deleted files:
+    []
+
+### Modified files:
+[]
+### current .gitignore Content
 *.log
-*.tmp
-*.swp
-*.swo
-*.out
-
-# Environment
-.env
-.env.local
-.env.*
-
-# Editors
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# System files
-.DS_Store
-Thumbs.db
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Compression
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
-
-# Python specific
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-.Python
-*.so
-.coverage
-.pytest_cache/
-.mypy_cache/
-
-# Node.js specific
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-node_modules/
-dist/
-build/
-
-# Java specific
-*.class
-*.jar
-*.war
-*.ear
-*.nar
-target/
-.gradle/
-build/
-
-# C/C++ specific
-*.o
-*.obj
-*.so
-*.a
-*.dll
-*.exe
-*.out
-*.dylib
-*.lib
-*.pdb
-*.ilk
-
-# Go specific
-*.o
-*.a
-*.so
-*.exe
-*.test
-*.prof
-bin/
-
-# Ruby specific
-*.gem
-*.rbc
-.bundle/
-.coverage
-.rake_tasks
-.rbx/
-.vendor/
-
-# Rust specific
-target/
-Cargo.lock
-*.so
-*.dylib
-*.dll
-
-# PHP specific
-vendor/
-composer.lock
-
-# Dotnet specific
-*.sln
-*.csproj.user
-*.pidb
-*.userprefs
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-_xlog/
-*.xlog
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Tt]emp/
-[Bb]uild/
-[Aa]rtifacts/
-packages/
-*.nupkg
-[Nn]u[Pp]kg[s]/
-[Nn]ew[Tt]emp/
-
-# Android specific
-*.apk
-*.aar
-*.dex
-build/
-.externalNativeBuild/
-.gradle/
-local.properties
-captures/
-
-# iOS specific
-*.ipa
-*.dSYM.zip
-*.dSYM/
-build/
-*.mobileprovision
-
-# Web specific
-.sass-cache/
-.npm/
-bower_components/
-coverage/
-lib-cov/
-
-# Database
-*.db
-*.db-journal
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-```
+Expected Output:
+    #Compiled and build artifacts
+    *.pyc
+    pycache/
+    *.o
+    *.obj
+    dist/
+    build/
+    #Dependencies
+    .venv/
+    venv/
+    node_modules/
+    #Logs and temp files
+    *.log
+    *.tmp
+    *.swp
+    #Environment
+    .env
+    .env.local
+    .env.
+    #Editors
+    .vscode/
+    .idea/
+    #Original rules preserved
+    *.log
+Final reminder: Output ONLY the .gitignore content. If nothing should be ignored, output NOTHING.

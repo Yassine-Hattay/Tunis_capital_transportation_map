@@ -592,31 +592,98 @@
   </div>
 
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-  
-  // ✅ 1. Worker fix (MUST be first, before any MapLibre usage)
-  if (typeof maplibregl !== 'undefined') {
-    maplibregl.workerUrl = './lib/maplibre-gl.js';
+// ============================================================================
+// === PHASE 0: GLOBAL HELPER FUNCTIONS (no dependencies on map or constants) ===
+// ============================================================================
+console.log('[Atlas] PHASE 0: Defining global helper functions');
+
+// Debug function for dual output (console + UI panel)
+function dbg(msg) {
+  console.log('[Atlas DBG]', msg);
+  const el = document.getElementById('debug-panel');
+  if (el) {
+    el.classList.add('show');
+    el.innerHTML += msg + '<br>';
+    clearTimeout(window._dbgTimer);
+    window._dbgTimer = setTimeout(() => el.classList.remove('show'), 12000);
   }
+}
 
-  // ✅ 2. PMTiles URL resolution (Capacitor-safe absolute path)
-  const PMTILES_HTTP_URL = '/data/tunis.pmtiles';
-  const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
+// Helper: debug roads - guards against map not being ready
+function debugRoads() {
+  console.log('[Atlas] debugRoads() called');
+  if (typeof map === 'undefined' || !map) {
+    console.warn('[Atlas] debugRoads: map not initialized');
+    return;
+  }
+  if (!map.isStyleLoaded?.()) {
+    console.warn('[Atlas] debugRoads: style not loaded yet');
+    return;
+  }
+  try {
+    const features = map.querySourceFeatures('omt', { sourceLayer: 'transportation' });
+    console.log('[Atlas] debugRoads: TOTAL ROAD FEATURES:', features.length);
+  } catch (e) {
+    console.log('[Atlas] debugRoads: style not ready yet -', e.message);
+  }
+}
 
-  // ✅ 3. Register PMTiles protocol BEFORE map creation
-  const protocol = new pmtiles.Protocol();
-  maplibregl.addProtocol("pmtiles", protocol.tile);
-  const pmtilesFile = new pmtiles.PMTiles(PMTILES_HTTP_URL);
+// Helper: count visible roads - guards against map not being ready
+function countVisibleRoads() {
+  if (typeof map === 'undefined' || !map) {
+    console.warn('[Atlas] countVisibleRoads: map not initialized');
+    return;
+  }
+  if (!map.isStyleLoaded?.()) {
+    return;
+  }
+  try {
+    const features = map.queryRenderedFeatures({
+      layers: ['highway-primary', 'highway-secondary', 'highway-motorway']
+    });
+    console.log('[Atlas] countVisibleRoads: VISIBLE ROADS:', features.length);
+  } catch (e) {
+    // Silently ignore if layers don't exist yet
+  }
+}
 
-  // ✅ 4. CREATE MAP (only after protocol is registered)
-  const map = new maplibregl.Map({
-    container: 'map',
-    style: buildStyle('dark'),
-    center: [10.1815, 36.8065],  // Tunis coordinates
-    zoom: 12,
-    attributionControl: false,
-    maxBounds: [[9.5, 36.3], [11.0, 37.4]]  // Tunisia bounds
-  });
+// Pure function: build map style (no map dependency, uses constants defined later)
+function buildStyle(theme, PMTILES_STYLE_URL) {
+  console.log('[Atlas] buildStyle() called with theme:', theme);
+  const isDark = theme === 'dark';
+
+  // Theme color tokens
+  const c = isDark ? {
+    bg: '#0d1017', water: '#111e32', waterline: '#172840',
+    park: '#0c1a10', res: '#111318',
+    bld: '#171b27', bld2: '#1e2235',
+    rmin: '#1e2335', rmaj: '#252c42', rhwy: '#38405e', rhwy2: '#1c2338',
+    rail: '#1a2030',
+    rlabel: '#6a7a9a', plabel: '#b8c8e0', wlabel: '#304e78', poi: '#5a6a88',
+    border: '#281830', peak: '#8b949e', peakLabel: '#9ca3af',
+    houseNum: '#6b7280',
+  } : {
+    bg: '#f5f5ed', water: '#a8d0e0', waterline: '#70b0d0',
+    park: '#d0e8c0', res: '#ece8df',
+    bld: '#ddd8cf', bld2: '#ccc8be',
+    rmin: '#ffffff', rmaj: '#f8f2e8', rhwy: '#f8cc80', rhwy2: '#cc8830',
+    rail: '#aaaaaa',
+    rlabel: '#505070', plabel: '#202030', wlabel: '#3a5880', poi: '#405060',
+    border: '#cc88aa', peak: '#6b7280', peakLabel: '#374151',
+    houseNum: '#6b7280',
+  };
+
+  return {
+    version: 8,
+    name: "Bright (Offline) — Full Layer Set",
+    glyphs: null,    // Disable remote fonts (add local /fonts/ folder if needed later)
+    sprite: null,    // Disable sprites to avoid 404 errors
+    sources: {
+      omt: {
+        type: "vector",
+        url: PMTILES_STYLE_URL
+      }
+    },
 
   // Force map resize after WebView renders (Capacitor fix)
   setTimeout(() => {
