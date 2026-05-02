@@ -1,43 +1,53 @@
 ```
-/index.html
-/manifest.json
-/nginx.conf
-/package-lock.json
-/sw.js
-/README.md
-data/
-font/
-lib/
-sprites/
-style/
-Android/android
-### current .gitignore Content
-*.log
-
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-dist/
+# Build artifacts
 build/
-target/
+dist/
+*.apk
+*.aab
 
 # Dependencies
-.venv/
-venv/
 node_modules/
-.julia/
-zig*/
-.jest/
-.nyc_output/
+.gradle/
+target/
 
-# Logs and temp files
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
 *.log
-*.tmp
-*.swp
-*.swo
-*.out
+*.pot
+*.pyc
+*.pyo
+*.pyd
+.MF
+tags
+TAGS
+ID
+GPATH
+GTAGS
+GSYMS
+GRTAGS
+static/css/
+static/js/
+media/
+*.mo
+*.pot
+.DS_Store
+Thumbs.db
 
 # Environment
 .env
@@ -49,163 +59,16 @@ zig*/
 .idea/
 *.swp
 *.swo
+*.tmp
 
-# System files
+# OS generated
 .DS_Store
 Thumbs.db
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Compression
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
-
-# Python specific
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-.Python
-*.so
-.coverage
-.pytest_cache/
-.mypy_cache/
-
-# Node.js specific
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-node_modules/
-dist/
-build/
-
-# Java specific
-*.class
-*.jar
-*.war
-*.ear
-*.nar
-target/
-.gradle/
-build/
-
-# C/C++ specific
-*.o
-*.obj
-*.so
-*.a
-*.dll
-*.exe
-*.out
-*.dylib
-*.lib
-*.pdb
-*.ilk
-
-# Go specific
-*.o
-*.a
-*.so
-*.exe
-*.test
-*.prof
-bin/
-
-# Ruby specific
-*.gem
-*.rbc
-.bundle/
-.coverage
-.rake_tasks
-.rbx/
-.vendor/
-
-# Rust specific
-target/
-Cargo.lock
-*.so
-*.dylib
-*.dll
-
-# PHP specific
-vendor/
-composer.lock
-
-# Dotnet specific
-*.sln
-*.csproj.user
-*.pidb
-*.userprefs
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-_xlog/
-*.xlog
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Tt]emp/
-[Bb]uild/
-[Aa]rtifacts/
-packages/
-*.nupkg
-[Nn]u[Pp]kg[s]/
-[Nn]ew[Tt]emp/
-
-# Android specific
-*.apk
-*.aar
-*.dex
-build/
-.externalNativeBuild/
-.gradle/
-local.properties
-captures/
-
-# iOS specific
-*.ipa
-*.dSYM.zip
-*.dSYM/
-build/
-*.mobileprovision
-
-# Web specific
-.sass-cache/
-.npm/
-bower_components/
-coverage/
-lib-cov/
-
-# Database
-*.db
-*.db-journal
-
-# OS generated files
-.DS_Store
+ehthumbs.db
+Icon?
+.directory
+*.nib
+*~
 .DS_Store?
 ._*
 .Spotlight-V100

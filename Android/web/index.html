@@ -599,6 +599,10 @@ console.log('[Atlas] PHASE 0: Defining constants');
 const PMTILES_HTTP_URL = '/data/tunis.pmtiles';
 const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
 console.log('[Atlas] PMTILES_HTTP_URL:', PMTILES_HTTP_URL);
+console.log('[Atlas] PMTILES_STYLE_URL:', PMTILES_STYLE_URL);
+
+// Module-level state for routing click handler (global scope for HTML onclick)
+window.routingClickActive = false;
 
 // ============================================================================
 // === PHASE 1: PURE HELPER FUNCTIONS (no map dependency) ===
@@ -679,7 +683,7 @@ function buildStyle(theme) {
     border: '#281830', peak: '#8b949e', peakLabel: '#9ca3af',
     houseNum: '#6b7280',
   } : {
-    bg: '#f5f5ed', water: '#a8d0e0', waterline: '#70b0d0',
+    bg: '#f5f2ed', water: '#a8d0e0', waterline: '#70b0d0',
     park: '#d0e8c0', res: '#ece8df',
     bld: '#ddd8cf', bld2: '#ccc8be',
     rmin: '#ffffff', rmaj: '#f8f2e8', rhwy: '#f8cc80', rhwy2: '#cc8830',
@@ -701,132 +705,7 @@ function buildStyle(theme) {
       }
     },
     layers: [
-
-  // Debug panel (auto-hides after 12s, click to dismiss)
-  function dbg(msg) {
-    console.log('[Atlas]', msg);
-    const el = document.getElementById('debug-panel');
-    el.classList.add('show');
-    el.innerHTML += msg + '<br>';
-    clearTimeout(window._dbgTimer);
-    window._dbgTimer = setTimeout(() => el.classList.remove('show'), 12000);
-  }
-  document.getElementById('debug-panel').addEventListener('click', () => {
-    document.getElementById('debug-panel').classList.remove('show');
-  });
-
-  // Coords on hover
-  map.on('mousemove', e => {
-    document.getElementById('coords-display').textContent =
-      `${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`;
-  });
-
-  // Map click
-  let routingClickActive = false;
-  map.on('click', e => {
-    const features = map.queryRenderedFeatures(e.point);
-    console.log("FEATURES UNDER CLICK:", features);
-    if (routingClickActive) { handleRoutingClick(e.lngLat); return; }
-    const { lat, lng } = e.lngLat;
-    showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
-      `<div class="route-card" onclick="setRouteDest(${lat},${lng})">
-       <div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div>
-       <div class="route-info"><div class="route-label">Route here</div>
-       <div class="route-meta">Set as destination</div></div></div>
-     <div class="route-card" onclick="copyCoords(${lat},${lng})">
-       <div class="route-icon" style="background:rgba(129,140,248,.15)">📋</div>
-       <div class="route-info"><div class="route-label">Copy coordinates</div>
-       <div class="route-meta">${lat.toFixed(6)}, ${lng.toFixed(6)}</div></div></div>`);
-    new maplibregl.Marker({ color: '#4ade80', scale: .7 }).setLngLat([lng, lat]).addTo(map);
-    document.getElementById('layers-menu').classList.remove('open');
-  });
-
-  // ── Theme ──────────────────────────────────────────────────────────────────
-  function setTheme(t) {
-    document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
-    document.getElementById('layer-' + t).classList.add('active');
-    document.getElementById('layers-menu').classList.remove('open');
-    map.setStyle(buildStyle(t));
-    map.once('styledata', () => {
-      // re-add route if exists
-      // re-add markers if needed
-    });
-  }
-  function toggleLayers() { document.getElementById('layers-menu').classList.toggle('open'); }
-
-}); // ← END of DOMContentLoaded wrapper
-
-// ✅ Helper functions defined OUTSIDE DOMContentLoaded (but guard map access)
-function debugRoads() {
-  if (typeof map !== 'undefined' && map.isStyleLoaded?.()) {
-    try {
-      const features = map.querySourceFeatures('omt', { sourceLayer: 'transportation' });
-      console.log("TOTAL ROAD FEATURES:", features.length);
-    } catch (e) {
-      console.log("debugRoads: style not ready yet");
-    }
-  }
-}
-
-function countVisibleRoads() {
-  if (typeof map !== 'undefined' && map.isStyleLoaded?.()) {
-    try {
-      const features = map.queryRenderedFeatures({
-        layers: ['highway-primary', 'highway-secondary', 'highway-motorway']
-      });
-      console.log("VISIBLE ROADS:", features.length);
-    } catch (e) {
-      // Silently ignore if layers don't exist
-    }
-  }
-}
-
-// Attach zoom listener after DOMContentLoaded
-document.addEventListener("DOMContentLoaded", () => {
-  if (typeof map !== 'undefined') {
-    map.on('zoom', countVisibleRoads);
-  }
-});
-    // ── 3. Build full OpenMapTiles v3.11 style ────────────────────────────────
-    //    Layer names confirmed from: pmtiles show data/tunis.pmtiles
-    //    Schema: OpenMapTiles v3.11, id: openmaptiles
-    //    Bounds: 9.978–10.493 lng, 36.659–37.008 lat (Tunis metro area)
-    function buildStyle(theme) {
-      const isDark = theme === 'dark';
-
-      // Theme color tokens
-      const c = isDark ? {
-        bg: '#0d1017', water: '#111e32', waterline: '#172840',
-        park: '#0c1a10', res: '#111318',
-        bld: '#171b27', bld2: '#1e2235',
-        rmin: '#1e2335', rmaj: '#252c42', rhwy: '#38405e', rhwy2: '#1c2338',
-        rail: '#1a2030',
-        rlabel: '#6a7a9a', plabel: '#b8c8e0', wlabel: '#304e78', poi: '#5a6a88',
-        border: '#281830', peak: '#8b949e', peakLabel: '#9ca3af',
-        houseNum: '#6b7280',
-      } : {
-        bg: '#f5f2ed', water: '#a8d0e0', waterline: '#70b0d0',
-        park: '#d0e8c0', res: '#ece8df',
-        bld: '#ddd8cf', bld2: '#ccc8be',
-        rmin: '#ffffff', rmaj: '#f8f2e8', rhwy: '#f8cc80', rhwy2: '#cc8830',
-        rail: '#aaaaaa',
-        rlabel: '#505070', plabel: '#202030', wlabel: '#3a5880', poi: '#405060',
-        border: '#cc88aa', peak: '#6b7280', peakLabel: '#374151',
-        houseNum: '#6b7280',
-      };
-
-      return {
-        version: 8,
-        name: "Bright (Offline) — Full Layer Set",
-        glyphs: null,    // Disable remote fonts (add local /fonts/ folder if needed later)
-        sprite: null,    // Disable sprites to avoid 404 errors
-        sources: {
-          omt: {
-            type: "vector",
-            url: PMTILES_STYLE_URL
-          }
-        },
-        layers: [
+      // Debug panel click handler will be added in DOMContentLoaded
           // ── BACKGROUND ─────────────────────────────────────────────────────
           { id: "background", type: "background", paint: { "background-color": c.bg } },
 
@@ -2155,29 +2034,41 @@ document.addEventListener("DOMContentLoaded", () => {
         ]
       };
     }
-    // ── Capacitor Range Request Fix for PMTiles ──────────────────────────────
-    if (typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform()) {
-      const originalFetch = window.fetch;
-      window.fetch = async function (input, init) {
-        const url = typeof input === 'string' ? input : input.url;
 
-        // Intercept PMTiles requests to ensure range headers are preserved
-        if (url.includes('/data/tunis.pmtiles') && init?.headers?.Range) {
-          // CapacitorHttp should handle this if enabled in config
-          return originalFetch(input, init);
-        }
+// ============================================================================
+// === PHASE 3: DOMContentLoaded - Map initialization and event binding ===
+// ============================================================================
+console.log('[Atlas] PHASE 3: Setting up DOMContentLoaded');
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log('[Atlas] DOMContentLoaded fired');
+
+  // ── Capacitor Range Request Fix for PMTiles ──────────────────────────────
+  if (typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform()) {
+    const originalFetch = window.fetch;
+    window.fetch = async function (input, init) {
+      const url = typeof input === 'string' ? input : input.url;
+
+      // Intercept PMTiles requests to ensure range headers are preserved
+      if (url.includes('/data/tunis.pmtiles') && init?.headers?.Range) {
+        // CapacitorHttp should handle this if enabled in config
         return originalFetch(input, init);
-      };
-    }
-    // ✅ ADD THIS LINE
-    const protocol = new pmtiles.Protocol();
-    maplibregl.addProtocol("pmtiles", protocol.tile);
+      }
+      return originalFetch(input, init);
+    };
+  }
+  // ✅ Register protocol BEFORE map creation
+  const protocol = new pmtiles.Protocol();
+  maplibregl.addProtocol("pmtiles", protocol.tile);
 
-    // ✅ register the file correctly
-    const pmtilesFile = new pmtiles.PMTiles(PMTILES_HTTP_URL);
-    protocol.add(pmtilesFile);
-    // ── 4. Create the map ─────────────────────────────────────────────────────
-    const map = new maplibregl.Map({
+  // ✅ register the file correctly
+  const pmtilesFile = new pmtiles.PMTiles(PMTILES_HTTP_URL);
+  protocol.add(pmtilesFile);
+  console.log('[Atlas] PMTiles protocol registered');
+
+  // ── 4. Create the map ─────────────────────────────────────────────────────
+  console.log('[Atlas] Creating map instance...');
+  const map = new maplibregl.Map({
       container: 'map',
       style: buildStyle('dark'),
       center: [10.1815, 36.8065],  // Tunis
@@ -2203,14 +2094,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ── 5. On load: verify tiles are coming in ────────────────────────────────
     map.on('load', async () => {
+      console.log('[Atlas] ✅ Map load event fired');
       map.getStyle().layers.forEach(l => {
-        console.log("LAYER:", l.id, "SOURCE:", l["source-layer"]);
+        console.log("[Atlas] LAYER:", l.id, "SOURCE:", l["source-layer"]);
       });
       debugRoads();
 
       dbg('Map loaded. Verifying tile connection…');
       try {
         // Try a direct byte-range request to confirm the file is accessible
+        const r = await fetch(PMTILES_HTTP_URL, { headers: { Range: 'bytes=0-127' } });
+        console.log('[Atlas] PMTiles fetch status:', r.status);
 
         if (r.ok || r.status === 206) {
           dbg('✓ PMTiles file reachable (' + r.status + ')');
@@ -2243,18 +2137,10 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on('error', e => {
       const msg = e.error?.message || '';
       if (msg.includes('canceled') || msg.includes('abort')) return;
-      dbg('Map error: ' + msg);
+      console.warn('[Atlas] Map error:', msg);
     });
 
-    // Debug panel (auto-hides after 12s, click to dismiss)
-    function dbg(msg) {
-      console.log('[Atlas]', msg);
-      const el = document.getElementById('debug-panel');
-      el.classList.add('show');
-      el.innerHTML += msg + '<br>';
-      clearTimeout(window._dbgTimer);
-      window._dbgTimer = setTimeout(() => el.classList.remove('show'), 12000);
-    }
+    // Debug panel click handler
     document.getElementById('debug-panel').addEventListener('click', () => {
       document.getElementById('debug-panel').classList.remove('show');
     });
@@ -2266,11 +2152,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Map click
-    let routingClickActive = false;
     map.on('click', e => {
       const features = map.queryRenderedFeatures(e.point);
-      console.log("FEATURES UNDER CLICK:", features);
-      if (routingClickActive) { handleRoutingClick(e.lngLat); return; }
+      console.log("[Atlas] FEATURES UNDER CLICK:", features);
+      if (window.routingClickActive) { handleRoutingClick(e.lngLat); return; }
       const { lat, lng } = e.lngLat;
       showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
         `<div class="route-card" onclick="setRouteDest(${lat},${lng})">
@@ -2427,7 +2312,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const btn = document.getElementById('btn-route');
       p.classList.toggle('open');
       btn.classList.toggle('active', p.classList.contains('open'));
-      routingClickActive = p.classList.contains('open');
+      window.routingClickActive = p.classList.contains('open');
       closePanel();
     }
     function handleRoutingClick({ lat, lng }) {
@@ -2442,7 +2327,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('to-input').value = `${lat.toFixed(5)},${lng.toFixed(5)}`;
       document.getElementById('routing-panel').classList.add('open');
       document.getElementById('btn-route').classList.add('active');
-      routingClickActive = true; closePanel();
+      window.routingClickActive = true; closePanel();
     }
     function parseLatLng(s) {
       const p = s.split(',').map(Number);
@@ -2645,6 +2530,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(() => console.log('[Atlas] SW registered'))
         .catch(e => console.warn('[Atlas] SW error:', e));
     }
+
+  }); // ✅ CLOSE DOMContentLoaded wrapper
 
   </script>
 </body>
