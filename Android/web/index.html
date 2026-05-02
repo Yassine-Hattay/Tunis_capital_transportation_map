@@ -592,120 +592,121 @@
   </div>
 
   <script>
-// ============================================================================
-// === PHASE 0: GLOBAL CONSTANTS (NO DEPENDENCIES) ===
-// ============================================================================
-console.log('[Atlas] PHASE 0: Defining constants');
-const PMTILES_HTTP_URL = '/data/tunis.pmtiles';
-const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
-console.log('[Atlas] PMTILES_HTTP_URL:', PMTILES_HTTP_URL);
-console.log('[Atlas] PMTILES_STYLE_URL:', PMTILES_STYLE_URL);
+    maplibregl.workerUrl = './lib/maplibre-gl.js';
+    // ============================================================================
+    // === PHASE 0: GLOBAL CONSTANTS (NO DEPENDENCIES) ===
+    // ============================================================================
+    console.log('[Atlas] PHASE 0: Defining constants');
+    const PMTILES_HTTP_URL = '/data/tunis.pmtiles';
+    const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
+    console.log('[Atlas] PMTILES_HTTP_URL:', PMTILES_HTTP_URL);
+    console.log('[Atlas] PMTILES_STYLE_URL:', PMTILES_STYLE_URL);
 
-// Module-level state for routing click handler (global scope for HTML onclick)
-window.routingClickActive = false;
+    // Module-level state for routing click handler (global scope for HTML onclick)
+    window.routingClickActive = false;
 
-// ============================================================================
-// === PHASE 1: PURE HELPER FUNCTIONS (no map dependency) ===
-// ============================================================================
-console.log('[Atlas] PHASE 1: Defining pure functions');
+    // ============================================================================
+    // === PHASE 1: PURE HELPER FUNCTIONS (no map dependency) ===
+    // ============================================================================
+    console.log('[Atlas] PHASE 1: Defining pure functions');
 
-// Debug function for dual output (console + UI panel) - defined ONCE globally
-function dbg(msg) {
-  console.log('[Atlas DBG]', msg);
-  const el = document.getElementById('debug-panel');
-  if (el) {
-    el.classList.add('show');
-    el.innerHTML += msg + '<br>';
-    clearTimeout(window._dbgTimer);
-    window._dbgTimer = setTimeout(() => el.classList.remove('show'), 12000);
-  }
-}
-
-// Helper: parse lat/lng from string
-function parseLatLng(s) {
-  const p = s.split(',').map(Number);
-  return p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]) ? { lat: p[0], lng: p[1] } : null;
-}
-
-// Decode Valhalla's 6-digit precision polyline (no map dependency)
-function decodeValhallaPolyline(encoded) {
-  const coords = [];
-  let index = 0, lat = 0, lng = 0;
-  while (index < encoded.length) {
-    let b, shift = 0, result = 0;
-    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-    const dlat = ((result & 1) ? ~(result >> 1) : (result >> 1)); lat += dlat;
-    shift = 0; result = 0;
-    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-    const dlng = ((result & 1) ? ~(result >> 1) : (result >> 1)); lng += dlng;
-    coords.push([lng / 1e6, lat / 1e6]);
-  }
-  return coords;
-}
-
-// Helper: decode polyline6 (no map dependency)
-function decodePolyline6(encoded) {
-  if (!encoded) return { type: 'LineString', coordinates: [] };
-  let index = 0, lat = 0, lng = 0;
-  const coordinates = [];
-  const factor = 1e6;
-  while (index < encoded.length) {
-    let b, shift = 0, result = 0;
-    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-    const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
-    lat += dlat;
-    shift = 0; result = 0;
-    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-    const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
-    lng += dlng;
-    coordinates.push([lng / factor, lat / factor]);
-  }
-  return { type: 'LineString', coordinates };
-}
-
-// ============================================================================
-// === PHASE 2: buildStyle() — MUST ONLY RETURN STYLE OBJECT ===
-// ============================================================================
-console.log('[Atlas] PHASE 2: Defining buildStyle()');
-
-function buildStyle(theme) {
-  console.log('[Atlas] buildStyle() called with theme:', theme);
-  const isDark = theme === 'dark';
-
-  // Theme color tokens
-  const c = isDark ? {
-    bg: '#0d1017', water: '#111e32', waterline: '#172840',
-    park: '#0c1a10', res: '#111318',
-    bld: '#171b27', bld2: '#1e2235',
-    rmin: '#1e2335', rmaj: '#252c42', rhwy: '#38405e', rhwy2: '#1c2338',
-    rail: '#1a2030',
-    rlabel: '#6a7a9a', plabel: '#b8c8e0', wlabel: '#304e78', poi: '#5a6a88',
-    border: '#281830', peak: '#8b949e', peakLabel: '#9ca3af',
-    houseNum: '#6b7280',
-  } : {
-    bg: '#f5f2ed', water: '#a8d0e0', waterline: '#70b0d0',
-    park: '#d0e8c0', res: '#ece8df',
-    bld: '#ddd8cf', bld2: '#ccc8be',
-    rmin: '#ffffff', rmaj: '#f8f2e8', rhwy: '#f8cc80', rhwy2: '#cc8830',
-    rail: '#aaaaaa',
-    rlabel: '#505070', plabel: '#202030', wlabel: '#3a5880', poi: '#405060',
-    border: '#cc88aa', peak: '#6b7280', peakLabel: '#374151',
-    houseNum: '#6b7280',
-  };
-
-  return {
-    version: 8,
-    name: "Bright (Offline) — Full Layer Set",
-    glyphs: null,    // Disable remote fonts (add local /fonts/ folder if needed later)
-    sprite: null,    // Disable sprites to avoid 404 errors
-    sources: {
-      omt: {
-        type: "vector",
-        url: PMTILES_STYLE_URL
+    // Debug function for dual output (console + UI panel) - defined ONCE globally
+    function dbg(msg) {
+      console.log('[Atlas DBG]', msg);
+      const el = document.getElementById('debug-panel');
+      if (el) {
+        el.classList.add('show');
+        el.innerHTML += msg + '<br>';
+        clearTimeout(window._dbgTimer);
+        window._dbgTimer = setTimeout(() => el.classList.remove('show'), 12000);
       }
-    },
-    layers: [
-      // Debug panel click handler will be added in DOMContentLoaded
+    }
+
+    // Helper: parse lat/lng from string
+    function parseLatLng(s) {
+      const p = s.split(',').map(Number);
+      return p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]) ? { lat: p[0], lng: p[1] } : null;
+    }
+
+    // Decode Valhalla's 6-digit precision polyline (no map dependency)
+    function decodeValhallaPolyline(encoded) {
+      const coords = [];
+      let index = 0, lat = 0, lng = 0;
+      while (index < encoded.length) {
+        let b, shift = 0, result = 0;
+        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        const dlat = ((result & 1) ? ~(result >> 1) : (result >> 1)); lat += dlat;
+        shift = 0; result = 0;
+        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        const dlng = ((result & 1) ? ~(result >> 1) : (result >> 1)); lng += dlng;
+        coords.push([lng / 1e6, lat / 1e6]);
+      }
+      return coords;
+    }
+
+    // Helper: decode polyline6 (no map dependency)
+    function decodePolyline6(encoded) {
+      if (!encoded) return { type: 'LineString', coordinates: [] };
+      let index = 0, lat = 0, lng = 0;
+      const coordinates = [];
+      const factor = 1e6;
+      while (index < encoded.length) {
+        let b, shift = 0, result = 0;
+        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+        lat += dlat;
+        shift = 0; result = 0;
+        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
+        lng += dlng;
+        coordinates.push([lng / factor, lat / factor]);
+      }
+      return { type: 'LineString', coordinates };
+    }
+
+    // ============================================================================
+    // === PHASE 2: buildStyle() — MUST ONLY RETURN STYLE OBJECT ===
+    // ============================================================================
+    console.log('[Atlas] PHASE 2: Defining buildStyle()');
+
+    function buildStyle(theme) {
+      console.log('[Atlas] buildStyle() called with theme:', theme);
+      const isDark = theme === 'dark';
+
+      // Theme color tokens
+      const c = isDark ? {
+        bg: '#0d1017', water: '#111e32', waterline: '#172840',
+        park: '#0c1a10', res: '#111318',
+        bld: '#171b27', bld2: '#1e2235',
+        rmin: '#1e2335', rmaj: '#252c42', rhwy: '#38405e', rhwy2: '#1c2338',
+        rail: '#1a2030',
+        rlabel: '#6a7a9a', plabel: '#b8c8e0', wlabel: '#304e78', poi: '#5a6a88',
+        border: '#281830', peak: '#8b949e', peakLabel: '#9ca3af',
+        houseNum: '#6b7280',
+      } : {
+        bg: '#f5f2ed', water: '#a8d0e0', waterline: '#70b0d0',
+        park: '#d0e8c0', res: '#ece8df',
+        bld: '#ddd8cf', bld2: '#ccc8be',
+        rmin: '#ffffff', rmaj: '#f8f2e8', rhwy: '#f8cc80', rhwy2: '#cc8830',
+        rail: '#aaaaaa',
+        rlabel: '#505070', plabel: '#202030', wlabel: '#3a5880', poi: '#405060',
+        border: '#cc88aa', peak: '#6b7280', peakLabel: '#374151',
+        houseNum: '#6b7280',
+      };
+
+      return {
+        version: 8,
+        name: "Bright (Offline) — Full Layer Set",
+        glyphs: null,    // Disable remote fonts (add local /fonts/ folder if needed later)
+        sprite: null,    // Disable sprites to avoid 404 errors
+        sources: {
+          omt: {
+            type: "vector",
+            url: PMTILES_STYLE_URL
+          }
+        },
+        layers: [
+          // Debug panel click handler will be added in DOMContentLoaded
           // ── BACKGROUND ─────────────────────────────────────────────────────
           { id: "background", type: "background", paint: { "background-color": c.bg } },
 
@@ -2035,130 +2036,130 @@ function buildStyle(theme) {
       };
     }
 
-// ============================================================================
-// === PHASE 3: DOMContentLoaded - Map initialization and event binding ===
-// ============================================================================
-console.log('[Atlas] PHASE 3: Setting up DOMContentLoaded');
+    // ============================================================================
+    // === PHASE 3: DOMContentLoaded - Map initialization and event binding ===
+    // ============================================================================
+    console.log('[Atlas] PHASE 3: Setting up DOMContentLoaded');
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log('[Atlas] DOMContentLoaded fired');
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log('[Atlas] DOMContentLoaded fired');
 
-  // ── Capacitor Range Request Fix for PMTiles ──────────────────────────────
-  if (typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform()) {
-    const originalFetch = window.fetch;
-    window.fetch = async function (input, init) {
-      const url = typeof input === 'string' ? input : input.url;
+      // ── Capacitor Range Request Fix for PMTiles ──────────────────────────────
+      if (typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform()) {
+        const originalFetch = window.fetch;
+        window.fetch = async function (input, init) {
+          const url = typeof input === 'string' ? input : input.url;
 
-      // Intercept PMTiles requests to ensure range headers are preserved
-      if (url.includes('/data/tunis.pmtiles') && init?.headers?.Range) {
-        // CapacitorHttp should handle this if enabled in config
-        return originalFetch(input, init);
-      }
-      return originalFetch(input, init);
-    };
-  }
-  // ✅ Register protocol BEFORE map creation
-  const protocol = new pmtiles.Protocol();
-  maplibregl.addProtocol("pmtiles", protocol.tile);
-
-  // ✅ register the file correctly
-  const pmtilesFile = new pmtiles.PMTiles(PMTILES_HTTP_URL);
-  protocol.add(pmtilesFile);
-  console.log('[Atlas] PMTiles protocol registered');
-
-  // ── 4. Create the map ─────────────────────────────────────────────────────
-  console.log('[Atlas] Creating map instance...');
-  const map = new maplibregl.Map({
-      container: 'map',
-      style: buildStyle('dark'),
-      center: [10.1815, 36.8065],  // Tunis
-      zoom: 12,
-      attributionControl: false,
-      // Lock to the tile bounds from pmtiles show output
-      maxBounds: [[9.5, 36.3], [11.0, 37.4]]
-    });
-
-
-    // Force map resize after WebView renders (Capacitor fix)
-    setTimeout(() => {
-      map.resize();
-    }, 500);
-
-    // Also resize on orientation change
-    window.addEventListener('orientationchange', () => {
-      setTimeout(() => map.resize(), 300);
-    });
-
-    map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
-    map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
-
-    // ── 5. On load: verify tiles are coming in ────────────────────────────────
-    map.on('load', async () => {
-      console.log('[Atlas] ✅ Map load event fired');
-      map.getStyle().layers.forEach(l => {
-        console.log("[Atlas] LAYER:", l.id, "SOURCE:", l["source-layer"]);
-      });
-      debugRoads();
-
-      dbg('Map loaded. Verifying tile connection…');
-      try {
-        // Try a direct byte-range request to confirm the file is accessible
-        const r = await fetch(PMTILES_HTTP_URL, { headers: { Range: 'bytes=0-127' } });
-        console.log('[Atlas] PMTiles fetch status:', r.status);
-
-        if (r.ok || r.status === 206) {
-          dbg('✓ PMTiles file reachable (' + r.status + ')');
-          // Read metadata to confirm layer names
-          const header = await pmtilesFile.getHeader();
-          const metadata = await pmtilesFile.getMetadata();
-          const layers = (metadata?.vector_layers || []).map(l => l.id);
-          dbg('Spec v' + header.specVersion + ' · bounds: ' +
-            header.minLon.toFixed(2) + '→' + header.maxLon.toFixed(2));
-          dbg('Layers: ' + (layers.length ? layers.join(', ') : '(empty — check metadata)'));
-          console.log("VECTOR LAYERS RAW:", metadata.vector_layers);
-          document.getElementById('tile-label').textContent =
-            'Tunis offline (' + layers.length + ' layers)';
-          if (layers.length && !layers.includes('transportation')) {
-            dbg('⚠ No "transportation" layer found. Actual layers listed above.');
-            dbg('Update source-layer names in buildStyle() to match.');
+          // Intercept PMTiles requests to ensure range headers are preserved
+          if (url.includes('/data/tunis.pmtiles') && init?.headers?.Range) {
+            // CapacitorHttp should handle this if enabled in config
+            return originalFetch(input, init);
           }
-        } else {
-          dbg('✗ File fetch failed: HTTP ' + r.status);
-          dbg('Make sure data/tunis.pmtiles exists at: ' + PMTILES_HTTP_URL);
-        }
-      } catch (e) {
-        dbg('✗ Cannot reach file: ' + e.message);
-        dbg('Is the file at data/tunis.pmtiles relative to index.html?');
+          return originalFetch(input, init);
+        };
       }
-    });
-    map.on('zoom', () => {
-      console.log("ZOOM:", map.getZoom());
-    });
-    map.on('error', e => {
-      const msg = e.error?.message || '';
-      if (msg.includes('canceled') || msg.includes('abort')) return;
-      console.warn('[Atlas] Map error:', msg);
-    });
+      // ✅ Register protocol BEFORE map creation
+      const protocol = new pmtiles.Protocol();
+      maplibregl.addProtocol("pmtiles", protocol.tile);
 
-    // Debug panel click handler
-    document.getElementById('debug-panel').addEventListener('click', () => {
-      document.getElementById('debug-panel').classList.remove('show');
-    });
+      // ✅ register the file correctly
+      const pmtilesFile = new pmtiles.PMTiles(PMTILES_HTTP_URL);
+      protocol.add(pmtilesFile);
+      console.log('[Atlas] PMTiles protocol registered');
 
-    // Coords on hover
-    map.on('mousemove', e => {
-      document.getElementById('coords-display').textContent =
-        `${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`;
-    });
+      // ── 4. Create the map ─────────────────────────────────────────────────────
+      console.log('[Atlas] Creating map instance...');
+      const map = new maplibregl.Map({
+        container: 'map',
+        style: buildStyle('dark'),
+        center: [10.1815, 36.8065],  // Tunis
+        zoom: 12,
+        attributionControl: false,
+        // Lock to the tile bounds from pmtiles show output
+        maxBounds: [[9.5, 36.3], [11.0, 37.4]]
+      });
 
-    // Map click
-    map.on('click', e => {
-      const features = map.queryRenderedFeatures(e.point);
-      console.log("[Atlas] FEATURES UNDER CLICK:", features);
-      if (window.routingClickActive) { handleRoutingClick(e.lngLat); return; }
-      const { lat, lng } = e.lngLat;
-      showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
-        `<div class="route-card" onclick="setRouteDest(${lat},${lng})">
+
+      // Force map resize after WebView renders (Capacitor fix)
+      setTimeout(() => {
+        map.resize();
+      }, 500);
+
+      // Also resize on orientation change
+      window.addEventListener('orientationchange', () => {
+        setTimeout(() => map.resize(), 300);
+      });
+
+      map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
+      map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
+
+      // ── 5. On load: verify tiles are coming in ────────────────────────────────
+      map.on('load', async () => {
+        console.log('[Atlas] ✅ Map load event fired');
+        map.getStyle().layers.forEach(l => {
+          console.log("[Atlas] LAYER:", l.id, "SOURCE:", l["source-layer"]);
+        });
+        debugRoads();
+
+        dbg('Map loaded. Verifying tile connection…');
+        try {
+          // Try a direct byte-range request to confirm the file is accessible
+          const r = await fetch(PMTILES_HTTP_URL, { headers: { Range: 'bytes=0-127' } });
+          console.log('[Atlas] PMTiles fetch status:', r.status);
+
+          if (r.ok || r.status === 206) {
+            dbg('✓ PMTiles file reachable (' + r.status + ')');
+            // Read metadata to confirm layer names
+            const header = await pmtilesFile.getHeader();
+            const metadata = await pmtilesFile.getMetadata();
+            const layers = (metadata?.vector_layers || []).map(l => l.id);
+            dbg('Spec v' + header.specVersion + ' · bounds: ' +
+              header.minLon.toFixed(2) + '→' + header.maxLon.toFixed(2));
+            dbg('Layers: ' + (layers.length ? layers.join(', ') : '(empty — check metadata)'));
+            console.log("VECTOR LAYERS RAW:", metadata.vector_layers);
+            document.getElementById('tile-label').textContent =
+              'Tunis offline (' + layers.length + ' layers)';
+            if (layers.length && !layers.includes('transportation')) {
+              dbg('⚠ No "transportation" layer found. Actual layers listed above.');
+              dbg('Update source-layer names in buildStyle() to match.');
+            }
+          } else {
+            dbg('✗ File fetch failed: HTTP ' + r.status);
+            dbg('Make sure data/tunis.pmtiles exists at: ' + PMTILES_HTTP_URL);
+          }
+        } catch (e) {
+          dbg('✗ Cannot reach file: ' + e.message);
+          dbg('Is the file at data/tunis.pmtiles relative to index.html?');
+        }
+      });
+      map.on('zoom', () => {
+        console.log("ZOOM:", map.getZoom());
+      });
+      map.on('error', e => {
+        const msg = e.error?.message || '';
+        if (msg.includes('canceled') || msg.includes('abort')) return;
+        console.warn('[Atlas] Map error:', msg);
+      });
+
+      // Debug panel click handler
+      document.getElementById('debug-panel').addEventListener('click', () => {
+        document.getElementById('debug-panel').classList.remove('show');
+      });
+
+      // Coords on hover
+      map.on('mousemove', e => {
+        document.getElementById('coords-display').textContent =
+          `${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`;
+      });
+
+      // Map click
+      map.on('click', e => {
+        const features = map.queryRenderedFeatures(e.point);
+        console.log("[Atlas] FEATURES UNDER CLICK:", features);
+        if (window.routingClickActive) { handleRoutingClick(e.lngLat); return; }
+        const { lat, lng } = e.lngLat;
+        showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
+          `<div class="route-card" onclick="setRouteDest(${lat},${lng})">
        <div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div>
        <div class="route-info"><div class="route-label">Route here</div>
        <div class="route-meta">Set as destination</div></div></div>
@@ -2166,372 +2167,372 @@ document.addEventListener("DOMContentLoaded", () => {
        <div class="route-icon" style="background:rgba(129,140,248,.15)">📋</div>
        <div class="route-info"><div class="route-label">Copy coordinates</div>
        <div class="route-meta">${lat.toFixed(6)}, ${lng.toFixed(6)}</div></div></div>`);
-      new maplibregl.Marker({ color: '#4ade80', scale: .7 }).setLngLat([lng, lat]).addTo(map);
-      document.getElementById('layers-menu').classList.remove('open');
-    });
-
-    // ── Theme ──────────────────────────────────────────────────────────────────
-    function setTheme(t) {
-      document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
-      document.getElementById('layer-' + t).classList.add('active');
-      document.getElementById('layers-menu').classList.remove('open');
-      map.setStyle(buildStyle(t));
-      map.once('styledata', () => {
-        // re-add route if exists
-        // re-add markers if needed
+        new maplibregl.Marker({ color: '#4ade80', scale: .7 }).setLngLat([lng, lat]).addTo(map);
+        document.getElementById('layers-menu').classList.remove('open');
       });
-    }
-    function toggleLayers() { document.getElementById('layers-menu').classList.toggle('open'); }
 
-    // ── GPS ────────────────────────────────────────────────────────────────────
-    // ── GPS ────────────────────────────────────────────────────────────────────
-    let gpsWatcher = null, gpsMarker = null, gpsActive = false;
+      // ── Theme ──────────────────────────────────────────────────────────────────
+      function setTheme(t) {
+        document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
+        document.getElementById('layer-' + t).classList.add('active');
+        document.getElementById('layers-menu').classList.remove('open');
+        map.setStyle(buildStyle(t));
+        map.once('styledata', () => {
+          // re-add route if exists
+          // re-add markers if needed
+        });
+      }
+      function toggleLayers() { document.getElementById('layers-menu').classList.toggle('open'); }
 
-    function toggleGPS() {
-      gpsActive ? stopGPS() : startGPS();
-    }
+      // ── GPS ────────────────────────────────────────────────────────────────────
+      // ── GPS ────────────────────────────────────────────────────────────────────
+      let gpsWatcher = null, gpsMarker = null, gpsActive = false;
 
-    async function startGPS() {
-      // ── Try Capacitor Geolocation first (for mobile apps) ───────────────────
-      if (typeof Capacitor !== 'undefined' && Capacitor.isPluginAvailable('Geolocation')) {
-        try {
-          const { Geolocation } = await import('@capacitor/geolocation');
+      function toggleGPS() {
+        gpsActive ? stopGPS() : startGPS();
+      }
 
-          document.getElementById('btn-gps').classList.add('active');
-          document.getElementById('gps-status').style.display = 'flex';
-          gpsActive = true;
+      async function startGPS() {
+        // ── Try Capacitor Geolocation first (for mobile apps) ───────────────────
+        if (typeof Capacitor !== 'undefined' && Capacitor.isPluginAvailable('Geolocation')) {
+          try {
+            const { Geolocation } = await import('@capacitor/geolocation');
 
-          // Start watching position with Capacitor
-          const watchId = await Geolocation.watchPosition(
-            {
-              enableHighAccuracy: true,
-              timeout: 10000,
-              maximumAge: 5000
-            },
-            (position, err) => {
-              if (err) {
-                document.getElementById('gps-label').textContent = 'GPS error';
-                return;
+            document.getElementById('btn-gps').classList.add('active');
+            document.getElementById('gps-status').style.display = 'flex';
+            gpsActive = true;
+
+            // Start watching position with Capacitor
+            const watchId = await Geolocation.watchPosition(
+              {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 5000
+              },
+              (position, err) => {
+                if (err) {
+                  document.getElementById('gps-label').textContent = 'GPS error';
+                  return;
+                }
+
+                const { latitude: lat, longitude: lng, accuracy } = position.coords;
+                updateGPSUI(lat, lng, accuracy);
               }
+            );
 
-              const { latitude: lat, longitude: lng, accuracy } = position.coords;
-              updateGPSUI(lat, lng, accuracy);
-            }
-          );
+            gpsWatcher = watchId; // store for cleanup
+            return;
 
-          gpsWatcher = watchId; // store for cleanup
+          } catch (e) {
+            console.warn('Capacitor Geolocation failed, falling back to browser:', e);
+            // Fall through to browser geolocation below
+          }
+        }
+
+        // ── Fallback to browser geolocation ─────────────────────────────────────
+        if (!navigator.geolocation) {
+          alert('Geolocation not supported');
           return;
+        }
+
+        document.getElementById('btn-gps').classList.add('active');
+        document.getElementById('gps-status').style.display = 'flex';
+        gpsActive = true;
+
+        gpsWatcher = navigator.geolocation.watchPosition(
+          ({ coords: { latitude: lat, longitude: lng, accuracy } }) => {
+            updateGPSUI(lat, lng, accuracy);
+          },
+          () => {
+            document.getElementById('gps-label').textContent = 'GPS error';
+          },
+          {
+            enableHighAccuracy: true,
+            maximumAge: 5000,
+            timeout: 10000
+          }
+        );
+      }
+
+      // ── Shared helper: update GPS UI and map marker ───────────────────────────
+      function updateGPSUI(lat, lng, accuracy) {
+        // Update accuracy label
+        document.getElementById('gps-label').textContent = `±${Math.round(accuracy)}m`;
+
+        // Create or update GPS marker
+        if (!gpsMarker) {
+          const el = document.createElement('div');
+          el.className = 'gps-marker';
+          gpsMarker = new maplibregl.Marker({ element: el })
+            .setLngLat([lng, lat])
+            .addTo(map);
+
+          // Fly to location on first fix
+          map.flyTo({
+            center: [lng, lat],
+            zoom: 15,
+            duration: 1200,
+            essential: true
+          });
+        } else {
+          gpsMarker.setLngLat([lng, lat]);
+        }
+
+        // Optional: pan map to keep marker in view (uncomment if desired)
+        // if (!map.getBounds().contains([lng, lat])) {
+        //   map.panTo([lng, lat], { duration: 500 });
+        // }
+      }
+
+      function stopGPS() {
+        // ── Stop Capacitor watch ────────────────────────────────────────────────
+        if (typeof Capacitor !== 'undefined' && gpsWatcher !== null && typeof gpsWatcher === 'object') {
+          // Capacitor watchPosition returns a Promise-resolved watchId object
+          const { Geolocation } = require('@capacitor/geolocation');
+          Geolocation.clearWatch({ id: gpsWatcher });
+        }
+        // ── Stop browser watch ──────────────────────────────────────────────────
+        else if (typeof gpsWatcher === 'number' && navigator.geolocation) {
+          navigator.geolocation.clearWatch(gpsWatcher);
+        }
+
+        // Clean up marker and state
+        if (gpsMarker) {
+          gpsMarker.remove();
+          gpsMarker = null;
+        }
+        gpsActive = false;
+        document.getElementById('btn-gps').classList.remove('active');
+        document.getElementById('gps-status').style.display = 'none';
+        gpsWatcher = null;
+      }
+
+      // ── Routing ────────────────────────────────────────────────────────────────
+      function toggleRoutingPanel() {
+        const p = document.getElementById('routing-panel');
+        const btn = document.getElementById('btn-route');
+        p.classList.toggle('open');
+        btn.classList.toggle('active', p.classList.contains('open'));
+        window.routingClickActive = p.classList.contains('open');
+        closePanel();
+      }
+      function handleRoutingClick({ lat, lng }) {
+        const from = document.getElementById('from-input');
+        const to = document.getElementById('to-input');
+        const v = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+        if (!from.value) from.value = v;
+        else if (!to.value) to.value = v;
+        else { from.value = v; to.value = ''; }
+      }
+      function setRouteDest(lat, lng) {
+        document.getElementById('to-input').value = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+        document.getElementById('routing-panel').classList.add('open');
+        document.getElementById('btn-route').classList.add('active');
+        window.routingClickActive = true; closePanel();
+      }
+      function parseLatLng(s) {
+        const p = s.split(',').map(Number);
+        return p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]) ? { lat: p[0], lng: p[1] } : null;
+      }
+      // Decode Valhalla's 6-digit precision polyline
+      function decodeValhallaPolyline(encoded) {
+        const coords = [];
+        let index = 0, lat = 0, lng = 0;
+
+        while (index < encoded.length) {
+          let b, shift = 0, result = 0;
+          do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+          const dlat = ((result & 1) ? ~(result >> 1) : (result >> 1)); lat += dlat;
+
+          shift = 0; result = 0;
+          do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+          const dlng = ((result & 1) ? ~(result >> 1) : (result >> 1)); lng += dlng;
+
+          coords.push([lng / 1e6, lat / 1e6]);
+        }
+        return coords;
+      }
+      async function planRoute(mode) {
+        const from = parseLatLng(document.getElementById('from-input').value.trim());
+        const to = parseLatLng(document.getElementById('to-input').value.trim());
+        if (!from || !to) {
+          document.getElementById('route-result').textContent = 'Enter valid coordinates.';
+          return;
+        }
+        document.getElementById('route-result').textContent = 'Calculating…';
+
+        // Valhalla costing mapping
+        const costing = { car: 'auto', bike: 'bicycle', walk: 'pedestrian' }[mode];
+
+        // Valhalla POST payload
+        const body = {
+          locations: [
+            { lat: from.lat, lon: from.lng },
+            { lat: to.lat, lon: to.lng }
+          ],
+          costing: costing,
+          directions_options: { units: 'kilometers' }
+        };
+
+        try {
+          const res = await fetch('http://192.168.1.106/route', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          });
+
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const d = await res.json();
+
+          if (!d.trip?.legs?.[0]?.shape) throw new Error('No route geometry');
+
+          // Decode Valhalla's encoded polyline
+          const coordinates = decodeValhallaPolyline(d.trip.legs[0].shape);
+          drawRoute({ type: 'LineString', coordinates }, mode);
+
+          const distance = d.trip.summary.length; // km
+          const duration = d.trip.summary.time; // seconds
+          document.getElementById('route-result').innerHTML =
+            `<span style="color:var(--c-accent);font-weight:600">${distance.toFixed(1)} km</span> · ${Math.round(duration / 60)} min`;
+
+          map.fitBounds([[from.lng, from.lat], [to.lng, to.lat]], { padding: 80, duration: 1000 });
 
         } catch (e) {
-          console.warn('Capacitor Geolocation failed, falling back to browser:', e);
-          // Fall through to browser geolocation below
+          console.error('Routing error:', e);
+          drawRoute({ type: 'LineString', coordinates: [[from.lng, from.lat], [to.lng, to.lat]] }, mode, true);
+          document.getElementById('route-result').innerHTML =
+            `<span style="color:var(--c-warn)">⚠ Routing failed</span> — straight line shown`;
         }
       }
 
-      // ── Fallback to browser geolocation ─────────────────────────────────────
-      if (!navigator.geolocation) {
-        alert('Geolocation not supported');
-        return;
-      }
 
-      document.getElementById('btn-gps').classList.add('active');
-      document.getElementById('gps-status').style.display = 'flex';
-      gpsActive = true;
 
-      gpsWatcher = navigator.geolocation.watchPosition(
-        ({ coords: { latitude: lat, longitude: lng, accuracy } }) => {
-          updateGPSUI(lat, lng, accuracy);
-        },
-        () => {
-          document.getElementById('gps-label').textContent = 'GPS error';
-        },
-        {
-          enableHighAccuracy: true,
-          maximumAge: 5000,
-          timeout: 10000
-        }
-      );
-    }
-
-    // ── Shared helper: update GPS UI and map marker ───────────────────────────
-    function updateGPSUI(lat, lng, accuracy) {
-      // Update accuracy label
-      document.getElementById('gps-label').textContent = `±${Math.round(accuracy)}m`;
-
-      // Create or update GPS marker
-      if (!gpsMarker) {
-        const el = document.createElement('div');
-        el.className = 'gps-marker';
-        gpsMarker = new maplibregl.Marker({ element: el })
-          .setLngLat([lng, lat])
-          .addTo(map);
-
-        // Fly to location on first fix
-        map.flyTo({
-          center: [lng, lat],
-          zoom: 15,
-          duration: 1200,
-          essential: true
+      function drawRoute(geom, mode, dashed = false) {
+        const colors = { walk: '#4ade80', bike: '#818cf8', car: '#60a5fa' };
+        const id = 'route-line';
+        if (map.getLayer(id)) map.removeLayer(id);
+        if (map.getSource(id)) map.removeSource(id);
+        map.addSource(id, { type: 'geojson', data: { type: 'Feature', geometry: geom } });
+        map.addLayer({
+          id, type: 'line', source: id,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': colors[mode] || '#4ade80', 'line-width': 4, 'line-opacity': .9,
+            ...(dashed ? { 'line-dasharray': [2, 2] } : {})
+          }
         });
-      } else {
-        gpsMarker.setLngLat([lng, lat]);
       }
+      // Decode Valhalla's polyline6 encoded shape to GeoJSON LineString coordinates
+      function decodePolyline6(encoded) {
+        if (!encoded) return { type: 'LineString', coordinates: [] };
 
-      // Optional: pan map to keep marker in view (uncomment if desired)
-      // if (!map.getBounds().contains([lng, lat])) {
-      //   map.panTo([lng, lat], { duration: 500 });
-      // }
-    }
+        let index = 0, lat = 0, lng = 0;
+        const coordinates = [];
+        const factor = 1e6; // polyline6 uses 1e6 precision
 
-    function stopGPS() {
-      // ── Stop Capacitor watch ────────────────────────────────────────────────
-      if (typeof Capacitor !== 'undefined' && gpsWatcher !== null && typeof gpsWatcher === 'object') {
-        // Capacitor watchPosition returns a Promise-resolved watchId object
-        const { Geolocation } = require('@capacitor/geolocation');
-        Geolocation.clearWatch({ id: gpsWatcher });
-      }
-      // ── Stop browser watch ──────────────────────────────────────────────────
-      else if (typeof gpsWatcher === 'number' && navigator.geolocation) {
-        navigator.geolocation.clearWatch(gpsWatcher);
-      }
+        while (index < encoded.length) {
+          // Decode latitude
+          let b, shift = 0, result = 0;
+          do {
+            b = encoded.charCodeAt(index++) - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+          } while (b >= 0x20);
+          const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+          lat += dlat;
 
-      // Clean up marker and state
-      if (gpsMarker) {
-        gpsMarker.remove();
-        gpsMarker = null;
-      }
-      gpsActive = false;
-      document.getElementById('btn-gps').classList.remove('active');
-      document.getElementById('gps-status').style.display = 'none';
-      gpsWatcher = null;
-    }
+          // Decode longitude
+          shift = 0; result = 0;
+          do {
+            b = encoded.charCodeAt(index++) - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+          } while (b >= 0x20);
+          const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
+          lng += dlng;
 
-    // ── Routing ────────────────────────────────────────────────────────────────
-    function toggleRoutingPanel() {
-      const p = document.getElementById('routing-panel');
-      const btn = document.getElementById('btn-route');
-      p.classList.toggle('open');
-      btn.classList.toggle('active', p.classList.contains('open'));
-      window.routingClickActive = p.classList.contains('open');
-      closePanel();
-    }
-    function handleRoutingClick({ lat, lng }) {
-      const from = document.getElementById('from-input');
-      const to = document.getElementById('to-input');
-      const v = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-      if (!from.value) from.value = v;
-      else if (!to.value) to.value = v;
-      else { from.value = v; to.value = ''; }
-    }
-    function setRouteDest(lat, lng) {
-      document.getElementById('to-input').value = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-      document.getElementById('routing-panel').classList.add('open');
-      document.getElementById('btn-route').classList.add('active');
-      window.routingClickActive = true; closePanel();
-    }
-    function parseLatLng(s) {
-      const p = s.split(',').map(Number);
-      return p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]) ? { lat: p[0], lng: p[1] } : null;
-    }
-    // Decode Valhalla's 6-digit precision polyline
-    function decodeValhallaPolyline(encoded) {
-      const coords = [];
-      let index = 0, lat = 0, lng = 0;
-
-      while (index < encoded.length) {
-        let b, shift = 0, result = 0;
-        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-        const dlat = ((result & 1) ? ~(result >> 1) : (result >> 1)); lat += dlat;
-
-        shift = 0; result = 0;
-        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-        const dlng = ((result & 1) ? ~(result >> 1) : (result >> 1)); lng += dlng;
-
-        coords.push([lng / 1e6, lat / 1e6]);
-      }
-      return coords;
-    }
-    async function planRoute(mode) {
-      const from = parseLatLng(document.getElementById('from-input').value.trim());
-      const to = parseLatLng(document.getElementById('to-input').value.trim());
-      if (!from || !to) {
-        document.getElementById('route-result').textContent = 'Enter valid coordinates.';
-        return;
-      }
-      document.getElementById('route-result').textContent = 'Calculating…';
-
-      // Valhalla costing mapping
-      const costing = { car: 'auto', bike: 'bicycle', walk: 'pedestrian' }[mode];
-
-      // Valhalla POST payload
-      const body = {
-        locations: [
-          { lat: from.lat, lon: from.lng },
-          { lat: to.lat, lon: to.lng }
-        ],
-        costing: costing,
-        directions_options: { units: 'kilometers' }
-      };
-
-      try {
-        const res = await fetch('http://192.168.1.106/route', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const d = await res.json();
-
-        if (!d.trip?.legs?.[0]?.shape) throw new Error('No route geometry');
-
-        // Decode Valhalla's encoded polyline
-        const coordinates = decodeValhallaPolyline(d.trip.legs[0].shape);
-        drawRoute({ type: 'LineString', coordinates }, mode);
-
-        const distance = d.trip.summary.length; // km
-        const duration = d.trip.summary.time; // seconds
-        document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-accent);font-weight:600">${distance.toFixed(1)} km</span> · ${Math.round(duration / 60)} min`;
-
-        map.fitBounds([[from.lng, from.lat], [to.lng, to.lat]], { padding: 80, duration: 1000 });
-
-      } catch (e) {
-        console.error('Routing error:', e);
-        drawRoute({ type: 'LineString', coordinates: [[from.lng, from.lat], [to.lng, to.lat]] }, mode, true);
-        document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-warn)">⚠ Routing failed</span> — straight line shown`;
-      }
-    }
-
-
-
-    function drawRoute(geom, mode, dashed = false) {
-      const colors = { walk: '#4ade80', bike: '#818cf8', car: '#60a5fa' };
-      const id = 'route-line';
-      if (map.getLayer(id)) map.removeLayer(id);
-      if (map.getSource(id)) map.removeSource(id);
-      map.addSource(id, { type: 'geojson', data: { type: 'Feature', geometry: geom } });
-      map.addLayer({
-        id, type: 'line', source: id,
-        layout: { 'line-join': 'round', 'line-cap': 'round' },
-        paint: {
-          'line-color': colors[mode] || '#4ade80', 'line-width': 4, 'line-opacity': .9,
-          ...(dashed ? { 'line-dasharray': [2, 2] } : {})
+          coordinates.push([lng / factor, lat / factor]);
         }
+
+        return { type: 'LineString', coordinates };
+      }
+      // ── Search ─────────────────────────────────────────────────────────────────
+      let st;
+      document.getElementById('search-input').addEventListener('input', function () {
+        clearTimeout(st);
+        const q = this.value.trim();
+        document.getElementById('search-clear').style.display = q ? 'block' : 'none';
+        if (q.length < 3) return;
+        st = setTimeout(() => searchPlaces(q), 500);
       });
-    }
-    // Decode Valhalla's polyline6 encoded shape to GeoJSON LineString coordinates
-    function decodePolyline6(encoded) {
-      if (!encoded) return { type: 'LineString', coordinates: [] };
-
-      let index = 0, lat = 0, lng = 0;
-      const coordinates = [];
-      const factor = 1e6; // polyline6 uses 1e6 precision
-
-      while (index < encoded.length) {
-        // Decode latitude
-        let b, shift = 0, result = 0;
-        do {
-          b = encoded.charCodeAt(index++) - 63;
-          result |= (b & 0x1f) << shift;
-          shift += 5;
-        } while (b >= 0x20);
-        const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
-        lat += dlat;
-
-        // Decode longitude
-        shift = 0; result = 0;
-        do {
-          b = encoded.charCodeAt(index++) - 63;
-          result |= (b & 0x1f) << shift;
-          shift += 5;
-        } while (b >= 0x20);
-        const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
-        lng += dlng;
-
-        coordinates.push([lng / factor, lat / factor]);
-      }
-
-      return { type: 'LineString', coordinates };
-    }
-    // ── Search ─────────────────────────────────────────────────────────────────
-    let st;
-    document.getElementById('search-input').addEventListener('input', function () {
-      clearTimeout(st);
-      const q = this.value.trim();
-      document.getElementById('search-clear').style.display = q ? 'block' : 'none';
-      if (q.length < 3) return;
-      st = setTimeout(() => searchPlaces(q), 500);
-    });
-    async function searchPlaces(q) {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=tn`,
-          { headers: { 'Accept-Language': 'en' } });
-        const results = await res.json();
-        if (!results.length) { showPanel(`"${q}"`, 'No results', '<p style="color:var(--c-muted);font-size:13px">Nothing found.</p>'); return; }
-        showPanel(`"${q}"`, `${results.length} results`,
-          results.map(r =>
-            `<div class="route-card" onclick="goTo(${r.lat},${r.lon},'${r.display_name.replace(/'/g, "\\'")}')">
+      async function searchPlaces(q) {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=tn`,
+            { headers: { 'Accept-Language': 'en' } });
+          const results = await res.json();
+          if (!results.length) { showPanel(`"${q}"`, 'No results', '<p style="color:var(--c-muted);font-size:13px">Nothing found.</p>'); return; }
+          showPanel(`"${q}"`, `${results.length} results`,
+            results.map(r =>
+              `<div class="route-card" onclick="goTo(${r.lat},${r.lon},'${r.display_name.replace(/'/g, "\\'")}')">
            <div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div>
            <div class="route-info">
              <div class="route-label">${r.display_name.split(',')[0]}</div>
              <div class="route-meta">${r.display_name.split(',').slice(1, 3).join(',').trim()}</div>
            </div></div>`).join(''));
-      } catch {
-        showPanel('Search', 'Offline',
-          `<p style="color:var(--c-warn);font-size:13px">⚠ No internet — geocoding unavailable.</p>`);
+        } catch {
+          showPanel('Search', 'Offline',
+            `<p style="color:var(--c-warn);font-size:13px">⚠ No internet — geocoding unavailable.</p>`);
+        }
       }
-    }
-    function goTo(lat, lon, name) {
-      map.flyTo({ center: [lon, lat], zoom: 15, duration: 1000 });
-      new maplibregl.Marker({ color: '#4ade80', scale: .7 })
-        .setLngLat([lon, lat]).setPopup(new maplibregl.Popup().setText(name.split(',')[0]))
-        .addTo(map).togglePopup();
-      closePanel();
-      document.getElementById('search-input').value = name.split(',')[0];
-    }
-    function clearSearch() {
-      document.getElementById('search-input').value = '';
-      document.getElementById('search-clear').style.display = 'none';
-      closePanel();
-    }
-    function copyCoords(lat, lng) {
-      navigator.clipboard?.writeText(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-      closePanel();
-    }
+      function goTo(lat, lon, name) {
+        map.flyTo({ center: [lon, lat], zoom: 15, duration: 1000 });
+        new maplibregl.Marker({ color: '#4ade80', scale: .7 })
+          .setLngLat([lon, lat]).setPopup(new maplibregl.Popup().setText(name.split(',')[0]))
+          .addTo(map).togglePopup();
+        closePanel();
+        document.getElementById('search-input').value = name.split(',')[0];
+      }
+      function clearSearch() {
+        document.getElementById('search-input').value = '';
+        document.getElementById('search-clear').style.display = 'none';
+        closePanel();
+      }
+      function copyCoords(lat, lng) {
+        navigator.clipboard?.writeText(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+        closePanel();
+      }
 
-    // ── Panel ──────────────────────────────────────────────────────────────────
-    function showPanel(title, sub, content) {
-      document.getElementById('panel-title').textContent = title;
-      document.getElementById('panel-sub').textContent = sub;
-      document.getElementById('panel-content').innerHTML = content;
-      document.getElementById('panel').classList.add('open');
-    }
-    function closePanel() { document.getElementById('panel').classList.remove('open'); }
+      // ── Panel ──────────────────────────────────────────────────────────────────
+      function showPanel(title, sub, content) {
+        document.getElementById('panel-title').textContent = title;
+        document.getElementById('panel-sub').textContent = sub;
+        document.getElementById('panel-content').innerHTML = content;
+        document.getElementById('panel').classList.add('open');
+      }
+      function closePanel() { document.getElementById('panel').classList.remove('open'); }
 
-    // ── Network status ─────────────────────────────────────────────────────────
-    function updateNetworkStatus() {
-      const online = navigator.onLine;
-      document.getElementById('net-dot').className = 'status-dot ' + (online ? 'online' : 'offline');
-      document.getElementById('net-label').textContent = online ? 'Online' : 'Offline';
-      document.getElementById('offline-notice').classList.toggle('show', !online);
-    }
-    window.addEventListener('online', updateNetworkStatus);
-    window.addEventListener('offline', updateNetworkStatus);
-    updateNetworkStatus();
+      // ── Network status ─────────────────────────────────────────────────────────
+      function updateNetworkStatus() {
+        const online = navigator.onLine;
+        document.getElementById('net-dot').className = 'status-dot ' + (online ? 'online' : 'offline');
+        document.getElementById('net-label').textContent = online ? 'Online' : 'Offline';
+        document.getElementById('offline-notice').classList.toggle('show', !online);
+      }
+      window.addEventListener('online', updateNetworkStatus);
+      window.addEventListener('offline', updateNetworkStatus);
+      updateNetworkStatus();
 
-    // ── Service Worker ─────────────────────────────────────────────────────────
-    // ── Service Worker ─────────────────────────────────────────────────────────
-    const isNative = typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform();
-    if ('serviceWorker' in navigator && !isNative) {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('[Atlas] SW registered'))
-        .catch(e => console.warn('[Atlas] SW error:', e));
-    }
+      // ── Service Worker ─────────────────────────────────────────────────────────
+      // ── Service Worker ─────────────────────────────────────────────────────────
+      const isNative = typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform();
+      if ('serviceWorker' in navigator && !isNative) {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log('[Atlas] SW registered'))
+          .catch(e => console.warn('[Atlas] SW error:', e));
+      }
 
-  }); // ✅ CLOSE DOMContentLoaded wrapper
+    }); // ✅ CLOSE DOMContentLoaded wrapper
 
   </script>
 </body>
