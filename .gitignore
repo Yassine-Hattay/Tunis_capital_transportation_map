@@ -1,9 +1,9 @@
-./index.html
-./manifest.json
-./nginx.conf
-./package-lock.json
-./sw.js
-./README.md
+/index.html
+/manifest.json
+/nginx.conf
+/package-lock.json
+/sw.js
+/README.md
 
 style/
 sprites/
