@@ -1,0 +1,23 @@
+{
+  "appId": "tn.atlas.maps",
+  "appName": "Atlas",
+  "webDir": "./web",
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#0f1117"
+  },
+  "server": {
+    "androidScheme": "http",
+    "cleartext": true
+  },
+  "plugins": {
+    
+      "CapacitorHttp": {
+    "enabled": true
+  },
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "backgroundColor": "#0f1117"
+    }
+  }
+}

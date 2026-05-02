@@ -73,3 +73,17 @@ __pycache__/
 ```
 /font
 print_file_name_recursive.py
+
+index.html
+manifest.json
+nginx.conf
+package-lock.json
+sw.js
+README.md
+style/
+sprites/
+lib/
+font/
+data
+Android/node_modules/
+Android/android/

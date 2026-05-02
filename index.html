@@ -7,9 +7,9 @@
   <meta name="theme-color" content="#0f1117" />
   <title>Atlas — Offline Maps</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
-  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-  <script src="https://unpkg.com/pmtiles@3.2.1/dist/pmtiles.js"></script>
+  <link rel="stylesheet" href="./lib/maplibre-gl.css" />
+  <script src="./lib/maplibre-gl.js"></script>
+  <script src="./lib/pmtiles.js"></script>
   <style>
     :root {
       --c-bg: #0f1117;
@@ -636,7 +636,8 @@
         version: 8,
         name: "Bright (Offline) — Full Layer Set",
         glyphs: './font/{fontstack}/{range}.pbf',
-        sprite: "https://openmaptiles.github.io/osm-bright-gl-style/sprite",
+        sprite: "./sprites/sprite",
+        spritePixelRatio: 1,
         sources: {
           omt: {
             type: "vector",
@@ -1140,15 +1141,6 @@
                 ]
               },
               "fill-opacity": { base: 1, stops: [[14, 0.7], [16, 1]] }  // slightly transparent at lower zoom
-            }
-          },
-          {
-            id: "building-outline", type: "line", source: "omt",
-            "source-layer": "building", minzoom: 15,
-            paint: {
-              "line-color": isDark ? "#2a2f40" : "#b8b4ac",
-              "line-width": 0.5,
-              "line-opacity": 0.6
             }
           },
           {
@@ -2150,27 +2142,79 @@
       const p = s.split(',').map(Number);
       return p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]) ? { lat: p[0], lng: p[1] } : null;
     }
+    // Decode Valhalla's 6-digit precision polyline
+    function decodeValhallaPolyline(encoded) {
+      const coords = [];
+      let index = 0, lat = 0, lng = 0;
+
+      while (index < encoded.length) {
+        let b, shift = 0, result = 0;
+        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        const dlat = ((result & 1) ? ~(result >> 1) : (result >> 1)); lat += dlat;
+
+        shift = 0; result = 0;
+        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        const dlng = ((result & 1) ? ~(result >> 1) : (result >> 1)); lng += dlng;
+
+        coords.push([lng / 1e6, lat / 1e6]);
+      }
+      return coords;
+    }
     async function planRoute(mode) {
       const from = parseLatLng(document.getElementById('from-input').value.trim());
       const to = parseLatLng(document.getElementById('to-input').value.trim());
-      if (!from || !to) { document.getElementById('route-result').textContent = 'Enter valid coordinates.'; return; }
+      if (!from || !to) {
+        document.getElementById('route-result').textContent = 'Enter valid coordinates.';
+        return;
+      }
       document.getElementById('route-result').textContent = 'Calculating…';
-      const prof = { car: 'driving', bike: 'cycling', walk: 'foot' }[mode];
+
+      // Valhalla costing mapping
+      const costing = { car: 'auto', bike: 'bicycle', walk: 'pedestrian' }[mode];
+
+      // Valhalla POST payload
+      const body = {
+        locations: [
+          { lat: from.lat, lon: from.lng },
+          { lat: to.lat, lon: to.lng }
+        ],
+        costing: costing,
+        directions_options: { units: 'kilometers' }
+      };
+
       try {
-        const res = await fetch(`https://router.project-osrm.org/route/v1/${prof}/${from.lng},${from.lat};${to.lng},${to.lat}?overview=full&geometries=geojson`);
+        const res = await fetch('http://192.168.1.106/route', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const d = await res.json();
-        if (d.code !== 'Ok' || !d.routes?.[0]) throw new Error();
-        const r = d.routes[0];
-        drawRoute(r.geometry, mode);
+
+        if (!d.trip?.legs?.[0]?.shape) throw new Error('No route geometry');
+
+        // Decode Valhalla's encoded polyline
+        const coordinates = decodeValhallaPolyline(d.trip.legs[0].shape);
+        drawRoute({ type: 'LineString', coordinates }, mode);
+
+        const distance = d.trip.summary.length; // km
+        const duration = d.trip.summary.time; // seconds
         document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-accent);font-weight:600">${(r.distance / 1000).toFixed(1)} km</span> · ${Math.round(r.duration / 60)} min`;
+          `<span style="color:var(--c-accent);font-weight:600">${distance.toFixed(1)} km</span> · ${Math.round(duration / 60)} min`;
+
         map.fitBounds([[from.lng, from.lat], [to.lng, to.lat]], { padding: 80, duration: 1000 });
-      } catch {
+
+      } catch (e) {
+        console.error('Routing error:', e);
         drawRoute({ type: 'LineString', coordinates: [[from.lng, from.lat], [to.lng, to.lat]] }, mode, true);
         document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-warn)">⚠ Offline</span> — straight line shown`;
+          `<span style="color:var(--c-warn)">⚠ Routing failed</span> — straight line shown`;
       }
     }
+
+
+
     function drawRoute(geom, mode, dashed = false) {
       const colors = { walk: '#4ade80', bike: '#818cf8', car: '#60a5fa' };
       const id = 'route-line';
@@ -2186,7 +2230,40 @@
         }
       });
     }
+    // Decode Valhalla's polyline6 encoded shape to GeoJSON LineString coordinates
+    function decodePolyline6(encoded) {
+      if (!encoded) return { type: 'LineString', coordinates: [] };
 
+      let index = 0, lat = 0, lng = 0;
+      const coordinates = [];
+      const factor = 1e6; // polyline6 uses 1e6 precision
+
+      while (index < encoded.length) {
+        // Decode latitude
+        let b, shift = 0, result = 0;
+        do {
+          b = encoded.charCodeAt(index++) - 63;
+          result |= (b & 0x1f) << shift;
+          shift += 5;
+        } while (b >= 0x20);
+        const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+        lat += dlat;
+
+        // Decode longitude
+        shift = 0; result = 0;
+        do {
+          b = encoded.charCodeAt(index++) - 63;
+          result |= (b & 0x1f) << shift;
+          shift += 5;
+        } while (b >= 0x20);
+        const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
+        lng += dlng;
+
+        coordinates.push([lng / factor, lat / factor]);
+      }
+
+      return { type: 'LineString', coordinates };
+    }
     // ── Search ─────────────────────────────────────────────────────────────────
     let st;
     document.getElementById('search-input').addEventListener('input', function () {
