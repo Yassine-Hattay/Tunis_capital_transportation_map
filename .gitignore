@@ -12,7 +12,6 @@ font/
 /lib/
 /sprites/
 /style/
-Android/android
 /Android/package-lock.json
 /Android/package.json
 ### qwen coder you can add stuff to the git ignore under this lines
