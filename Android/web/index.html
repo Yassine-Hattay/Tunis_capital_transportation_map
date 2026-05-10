@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="./lib/maplibre-gl.css" />
   <script src="./lib/maplibre-gl.js"></script>
   <script src="./lib/pmtiles.js"></script>
+  <script src="./lib/mapbox-gl-rtl-text.js"></script>
   <style>
     :root {
       --c-bg: #0f1117;
@@ -499,6 +500,23 @@
         --panel-w: calc(100vw - 24px)
       }
     }
+
+    /* Pulsing route animation */
+    @keyframes routePulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+    }
+
+    .route-pulse {
+      animation: routePulse 2s ease-in-out infinite;
+    }
   </style>
 </head>
 
@@ -506,6 +524,7 @@
   <div id="map"></div>
 
   <div id="topbar">
+
     <div id="search-box">
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" opacity="0.5">
         <circle cx="11" cy="11" r="8" />
@@ -514,7 +533,7 @@
       <input id="search-input" type="text" placeholder="Search Tunisia…" autocomplete="off" />
       <span id="search-clear" style="cursor:pointer;opacity:0.5;display:none" onclick="clearSearch()">✕</span>
     </div>
-    <button class="icon-btn" id="btn-gps" onclick="toggleGPS()">
+    <button class="icon-btn" id="btn-gps" onclick="locateMe()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="3" />
         <path d="M12 2v3m0 14v3M2 12h3m14 0h3" />
@@ -532,10 +551,24 @@
         <polyline points="2 12 12 18.5 22 12" />
       </svg>
     </button>
+
+    <button class="icon-btn" id="btn-debug" onclick="toggleDebug()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+      </svg>
+    </button>
   </div>
 
   <div id="offline-notice"><span>⚠</span> Offline — using cached map</div>
-  <div id="debug-panel"></div>
+  <div id="debug-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-weight:600">Debug Logs</span>
+      <button onclick="copyDebugLogs()"
+        style="background:var(--c-accent);color:#0f1117;border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer">📋
+        Copy</button>
+    </div>
+    <div id="debug-content" style="max-height:180px;overflow-y:auto"></div>
+  </div>
 
   <div id="routing-panel">
     <p class="section-label">Plan a route</p>
@@ -604,6 +637,8 @@
     //  Capacitor returns 200 instead of 206 for byte-range requests.
     //  PMTiles requires 206 Partial Content — this polyfill fixes it.
     // ════════════════════════════════════════════════════════════════════════
+    maplibregl.setRTLTextPlugin('./lib/mapbox-gl-rtl-text.js', null, true);
+
     const PMTILES_PATH = '/data/tunis.pmtiles';
     let _fileCache = null;
     const _origFetch = window.fetch;
@@ -2138,11 +2173,22 @@
     // Debug panel (auto-hides after 12s, click to dismiss)
     function dbg(msg) {
       console.log('[Atlas]', msg);
-      const el = document.getElementById('debug-panel');
-      el.classList.add('show');
-      el.innerHTML += msg + '<br>';
+      const content = document.getElementById('debug-content');
+      const panel = document.getElementById('debug-panel');
+
+      // Add timestamp and message
+      const time = new Date().toLocaleTimeString();
+      content.innerHTML += `<div style="border-bottom:1px solid rgba(255,255,255,0.1);padding:2px 0"><span style="color:var(--c-muted)">[${time}]</span> ${msg}</div>`;
+
+      // Auto-scroll to bottom
+      content.scrollTop = content.scrollHeight;
+
+      // Show panel
+      panel.classList.add('show');
+
+      // Auto-hide after 12s (but keep logs)
       clearTimeout(window._dbgTimer);
-      window._dbgTimer = setTimeout(() => el.classList.remove('show'), 12000);
+      window._dbgTimer = setTimeout(() => panel.classList.remove('show'), 12000);
     }
     document.getElementById('debug-panel').addEventListener('click', () => {
       document.getElementById('debug-panel').classList.remove('show');
@@ -2155,7 +2201,6 @@
     });
 
     // Map click
-    let routingClickActive = false;
     map.on('click', e => {
       const features = map.queryRenderedFeatures(e.point);
       console.log("FEATURES UNDER CLICK:", features);
@@ -2187,36 +2232,129 @@
     }
     function toggleLayers() { document.getElementById('layers-menu').classList.toggle('open'); }
 
-    // ── GPS ────────────────────────────────────────────────────────────────────
-    let gpsWatcher = null, gpsMarker = null, gpsActive = false;
-    function toggleGPS() { gpsActive ? stopGPS() : startGPS(); }
-    function startGPS() {
-      if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
-      document.getElementById('btn-gps').classList.add('active');
-      document.getElementById('gps-status').style.display = 'flex';
-      gpsActive = true;
-      gpsWatcher = navigator.geolocation.watchPosition(
-        ({ coords: { latitude: lat, longitude: lng, accuracy } }) => {
-          document.getElementById('gps-label').textContent = `±${Math.round(accuracy)}m`;
-          if (!gpsMarker) {
-            const el = document.createElement('div'); el.className = 'gps-marker';
-            gpsMarker = new maplibregl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map);
-            map.flyTo({ center: [lng, lat], zoom: 15, duration: 1200 });
-          } else gpsMarker.setLngLat([lng, lat]);
-        },
-        () => { document.getElementById('gps-label').textContent = 'GPS error'; },
-        { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+    // ── GPS / Location ─────────────────────────────────────────────────────────
+    async function locateMe() {
+      const btn = document.getElementById('btn-gps');
+      btn.classList.add('active');
+      dbg('📍 Requesting location…');
+
+      try {
+        // Request permission first
+        const { Geolocation } = Capacitor.Plugins;
+
+        const permission = await Geolocation.requestPermissions();
+        if (permission.location !== 'granted') {
+          dbg('❌ Location permission denied');
+          document.getElementById('route-result').textContent = 'Location permission denied.';
+          btn.classList.remove('active');
+          return;
+        }
+
+        // Get current position
+        const pos = await Geolocation.getCurrentPosition({
+          enableHighAccuracy: true,
+          timeout: 10000
+        });
+
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const accuracy = pos.coords.accuracy;
+
+        dbg(`✅ Location: ${lat.toFixed(5)}, ${lng.toFixed(5)} (±${Math.round(accuracy)}m)`);
+
+        // Fly map to location
+        map.flyTo({ center: [lng, lat], zoom: 16, duration: 1000 });
+
+        // Add/update location dot on map
+        updateLocationDot(lat, lng, accuracy);
+
+        // Auto-fill the "from" field in routing panel
+        document.getElementById('from-input').value = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+
+      } catch (e) {
+        dbg('❌ Location error: ' + e.message);
+      } finally {
+        btn.classList.remove('active');
+      }
+    }
+
+    function updateLocationDot(lat, lng, accuracy) {
+      // Remove existing location marker
+      if (window._locationMarker) window._locationMarker.remove();
+
+      // Accuracy circle
+      if (map.getLayer('location-accuracy')) map.removeLayer('location-accuracy');
+      if (map.getSource('location-accuracy')) map.removeSource('location-accuracy');
+
+      map.addSource('location-accuracy', {
+        type: 'geojson',
+        data: { type: 'Feature', geometry: { type: 'Point', coordinates: [lng, lat] } }
+      });
+      map.addLayer({
+        id: 'location-accuracy',
+        type: 'circle',
+        source: 'location-accuracy',
+        paint: {
+          'circle-radius': Math.max(10, accuracy / 2),
+          'circle-color': '#818cf8',
+          'circle-opacity': 0.15,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#818cf8',
+          'circle-stroke-opacity': 0.4
+        }
+      });
+
+      // Location dot marker
+      const el = document.createElement('div');
+      el.style.cssText = `
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #818cf8; border: 3px solid white;
+    box-shadow: 0 0 8px rgba(129,140,248,0.8);
+  `;
+      window._locationMarker = new maplibregl.Marker({ element: el })
+        .setLngLat([lng, lat])
+        .addTo(map);
+    }
+
+    // Optional: watch position continuously
+    let _watchId = null;
+    function startWatchingLocation() {
+      const { Geolocation } = Capacitor.Plugins;
+      _watchId = Geolocation.watchPosition(
+        { enableHighAccuracy: true },
+        (pos, err) => {
+          if (err) { dbg('Watch error: ' + err.message); return; }
+          updateLocationDot(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
+        }
       );
     }
-    function stopGPS() {
-      if (gpsWatcher !== null) navigator.geolocation.clearWatch(gpsWatcher);
-      if (gpsMarker) { gpsMarker.remove(); gpsMarker = null; }
-      gpsActive = false;
-      document.getElementById('btn-gps').classList.remove('active');
-      document.getElementById('gps-status').style.display = 'none';
+    function stopWatchingLocation() {
+      if (_watchId) {
+        Capacitor.Plugins.Geolocation.clearWatch({ id: _watchId });
+        _watchId = null;
+      }
     }
 
     // ── Routing ────────────────────────────────────────────────────────────────
+    // Capacitor Valhalla Plugin integration with HTTP fallback + full debug logging
+
+    let _valhallaPlugin = null;
+    let _pluginReady = false;
+
+    // Initialize Valhalla plugin (called on DOMContentLoaded)
+    async function initValhallaPlugin() {
+      try {
+        const { Plugins } = Capacitor;
+        _valhallaPlugin = Plugins?.Valhalla;
+        _pluginReady = !!_valhallaPlugin && typeof _valhallaPlugin.route === 'function';
+        dbg('🔌 Valhalla plugin: ' + (_pluginReady ? '✓ ready' : '⚠ not available'));
+      } catch (e) {
+        dbg('⚠ Valhalla plugin init error: ' + e.message);
+        _pluginReady = false;
+      }
+    }
+
+    // Toggle routing panel visibility
     function toggleRoutingPanel() {
       const p = document.getElementById('routing-panel');
       const btn = document.getElementById('btn-route');
@@ -2224,120 +2362,51 @@
       btn.classList.toggle('active', p.classList.contains('open'));
       routingClickActive = p.classList.contains('open');
       closePanel();
+      dbg('🗺️ Routing panel: ' + (p.classList.contains('open') ? 'OPEN' : 'CLOSED'));
     }
+
+    // Handle map click when routing mode is active
     function handleRoutingClick({ lat, lng }) {
       const from = document.getElementById('from-input');
       const to = document.getElementById('to-input');
       const v = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-      if (!from.value) from.value = v;
-      else if (!to.value) to.value = v;
-      else { from.value = v; to.value = ''; }
+
+      if (!from.value) {
+        from.value = v;
+        dbg('📍 Set FROM: ' + v);
+      } else if (!to.value) {
+        to.value = v;
+        dbg('📍 Set TO: ' + v);
+      } else {
+        from.value = v;
+        to.value = '';
+        dbg('🔄 Reset: new FROM=' + v + ', TO cleared');
+      }
     }
+
+    // Set destination from panel card click
     function setRouteDest(lat, lng) {
       document.getElementById('to-input').value = `${lat.toFixed(5)},${lng.toFixed(5)}`;
       document.getElementById('routing-panel').classList.add('open');
       document.getElementById('btn-route').classList.add('active');
-      routingClickActive = true; closePanel();
+      routingClickActive = true;
+      closePanel();
+      dbg('🎯 Destination set: ' + lat.toFixed(5) + ',' + lng.toFixed(5));
     }
+
+    // Parse "lat,lng" string to object
     function parseLatLng(s) {
-      const p = s.split(',').map(Number);
-      return p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]) ? { lat: p[0], lng: p[1] } : null;
+      if (!s) return null;
+      const p = s.split(',').map(n => parseFloat(n.trim()));
+      if (p.length !== 2 || isNaN(p[0]) || isNaN(p[1])) return null;
+      return { lat: p[0], lng: p[1] };
     }
-    // Decode Valhalla's 6-digit precision polyline
+
+    // Decode Valhalla's polyline6 (6-digit precision) to [lng, lat] coordinates
     function decodeValhallaPolyline(encoded) {
+      if (!encoded) return [];
       const coords = [];
       let index = 0, lat = 0, lng = 0;
-
-      while (index < encoded.length) {
-        let b, shift = 0, result = 0;
-        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-        const dlat = ((result & 1) ? ~(result >> 1) : (result >> 1)); lat += dlat;
-
-        shift = 0; result = 0;
-        do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-        const dlng = ((result & 1) ? ~(result >> 1) : (result >> 1)); lng += dlng;
-
-        coords.push([lng / 1e6, lat / 1e6]);
-      }
-      return coords;
-    }
-    async function planRoute(mode) {
-      const from = parseLatLng(document.getElementById('from-input').value.trim());
-      const to = parseLatLng(document.getElementById('to-input').value.trim());
-      if (!from || !to) {
-        document.getElementById('route-result').textContent = 'Enter valid coordinates.';
-        return;
-      }
-      document.getElementById('route-result').textContent = 'Calculating…';
-
-      // Valhalla costing mapping
-      const costing = { car: 'auto', bike: 'bicycle', walk: 'pedestrian' }[mode];
-
-      // Valhalla POST payload
-      const body = {
-        locations: [
-          { lat: from.lat, lon: from.lng },
-          { lat: to.lat, lon: to.lng }
-        ],
-        costing: costing,
-        directions_options: { units: 'kilometers' }
-      };
-
-      try {
-        const res = await fetch('http://192.168.1.106/route', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const d = await res.json();
-
-        if (!d.trip?.legs?.[0]?.shape) throw new Error('No route geometry');
-
-        // Decode Valhalla's encoded polyline
-        const coordinates = decodeValhallaPolyline(d.trip.legs[0].shape);
-        drawRoute({ type: 'LineString', coordinates }, mode);
-
-        const distance = d.trip.summary.length; // km
-        const duration = d.trip.summary.time; // seconds
-        document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-accent);font-weight:600">${distance.toFixed(1)} km</span> · ${Math.round(duration / 60)} min`;
-
-        map.fitBounds([[from.lng, from.lat], [to.lng, to.lat]], { padding: 80, duration: 1000 });
-
-      } catch (e) {
-        console.error('Routing error:', e);
-        drawRoute({ type: 'LineString', coordinates: [[from.lng, from.lat], [to.lng, to.lat]] }, mode, true);
-        document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-warn)">⚠ Routing failed</span> — straight line shown`;
-      }
-    }
-
-
-
-    function drawRoute(geom, mode, dashed = false) {
-      const colors = { walk: '#4ade80', bike: '#818cf8', car: '#60a5fa' };
-      const id = 'route-line';
-      if (map.getLayer(id)) map.removeLayer(id);
-      if (map.getSource(id)) map.removeSource(id);
-      map.addSource(id, { type: 'geojson', data: { type: 'Feature', geometry: geom } });
-      map.addLayer({
-        id, type: 'line', source: id,
-        layout: { 'line-join': 'round', 'line-cap': 'round' },
-        paint: {
-          'line-color': colors[mode] || '#4ade80', 'line-width': 4, 'line-opacity': .9,
-          ...(dashed ? { 'line-dasharray': [2, 2] } : {})
-        }
-      });
-    }
-    // Decode Valhalla's polyline6 encoded shape to GeoJSON LineString coordinates
-    function decodePolyline6(encoded) {
-      if (!encoded) return { type: 'LineString', coordinates: [] };
-
-      let index = 0, lat = 0, lng = 0;
-      const coordinates = [];
-      const factor = 1e6; // polyline6 uses 1e6 precision
 
       while (index < encoded.length) {
         // Decode latitude
@@ -2360,10 +2429,154 @@
         const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
         lng += dlng;
 
-        coordinates.push([lng / factor, lat / factor]);
+        coords.push([lng / 1e6, lat / 1e6]);
+      }
+      return coords;
+    }
+
+    // Draw route line on map
+    // Draw route line on map — fixed layer/source cleanup order
+    function drawRoute(geom, mode, dashed = false) {
+      const colors = { walk: '#4ade80', bike: '#818cf8', car: '#60a5fa' };
+      const baseColor = colors[mode] || '#4ade80';
+      const id = 'route-line';
+      const glowId = 'route-line-glow';
+
+      // CRITICAL: remove layers BEFORE their source.
+      // MapLibre will refuse to remove a source while any layer still references it.
+      if (map.getLayer(glowId)) map.removeLayer(glowId);
+      if (map.getLayer(id)) map.removeLayer(id);
+      if (map.getSource(id)) map.removeSource(id);
+
+      // Add source (shared by both layers below)
+      map.addSource(id, {
+        type: 'geojson',
+        data: { type: 'Feature', geometry: geom }
+      });
+
+      // Glow layer — wider, semi-transparent, drawn first (underneath)
+      map.addLayer({
+        id: glowId,
+        type: 'line',
+        source: id,
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-color': baseColor,
+          'line-width': 14,
+          'line-opacity': 0.4,
+          'line-blur': 3
+        }
+      });
+
+      // Main line — white core on top of the glow
+      map.addLayer({
+        id,
+        type: 'line',
+        source: id,
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-color': '#ffffff',
+          'line-width': 5,
+          'line-opacity': 1.0,
+          ...(dashed ? { 'line-dasharray': [5, 3] } : {})
+        }
+      });
+
+      dbg('🎨 Route drawn: ' + geom.coordinates.length + ' points, mode=' + mode + (dashed ? ' (fallback)' : ''));
+    }
+    // Main routing function
+    async function planRoute(mode) {
+      // 🔍 DEBUG: Log entry
+      dbg('🚦 planRoute() called: mode=' + mode);
+
+      const from = parseLatLng(document.getElementById('from-input').value.trim());
+      const to = parseLatLng(document.getElementById('to-input').value.trim());
+
+      dbg('📍 From: ' + (from?.lat + ',' + from?.lng || 'INVALID') +
+        ' | To: ' + (to?.lat + ',' + to?.lng || 'INVALID'));
+
+      if (!from || !to) {
+        dbg('❌ Invalid coordinates - aborting');
+        document.getElementById('route-result').textContent = 'Enter valid coordinates.';
+        return;
       }
 
-      return { type: 'LineString', coordinates };
+      document.getElementById('route-result').textContent = 'Calculating…';
+      const costing = { car: 'auto', bike: 'bicycle', walk: 'pedestrian' }[mode];
+      dbg('🔧 Costing profile: ' + costing);
+
+      try {
+        // ── Use native Valhalla plugin (no IP, fully offline) ───────────────────
+        const { Plugins } = Capacitor;
+        const { Valhalla } = Plugins;
+
+        if (!Valhalla) {
+          throw new Error('Valhalla plugin not available — check MainActivity.java');
+        }
+
+        dbg('🔌 Calling native Valhalla plugin…');
+
+        const response = await Valhalla.route({
+          start: { lat: from.lat, lon: from.lng },
+          end: { lat: to.lat, lon: to.lng },
+          profile: costing  // 'auto', 'bicycle', or 'pedestrian'
+        });
+
+        dbg('✅ Plugin response: distance=' + response.distance + 'km, duration=' + response.duration + 's');
+
+        // Validate response
+        if (!response.geometry) {
+          throw new Error('No route geometry returned from plugin');
+        }
+
+        // Decode the polyline6 geometry to coordinates
+        const coordinates = decodeValhallaPolyline(response.geometry);
+        dbg('🔗 Decoded polyline: ' + coordinates.length + ' coordinates');
+
+        // Draw the route on map
+        drawRoute({ type: 'LineString', coordinates }, mode);
+        // Debug: Confirm route layer was added
+        setTimeout(() => {
+          if (map.getLayer('route-line')) {
+            dbg('✅ Route layer confirmed in map style');
+            console.log('Route layer config:', map.getLayer('route-line'));
+          } else {
+            dbg('❌ Route layer NOT found - check layer ordering');
+          }
+        }, 500);
+        // Update UI with results
+        const distance = Number(response.distance);
+        const duration = Number(response.duration);
+
+        document.getElementById('route-result').innerHTML =
+          `<span style="color:var(--c-accent);font-weight:600">${distance.toFixed(1)} km</span> · ${Math.round(duration / 60)} min`;
+
+        // Fit map to route bounds
+        map.fitBounds([[from.lng, from.lat], [to.lng, to.lat]], { padding: 80, duration: 1000 });
+
+        dbg('🎉 Route complete: ' + distance.toFixed(1) + ' km in ' + Math.round(duration / 60) + ' min');
+
+      } catch (e) {
+        dbg('❌ Routing FAILED: ' + e.message);
+        console.error('Routing error:', e);
+
+        // 🔍 Show full error in UI for debugging
+        document.getElementById('route-result').innerHTML =
+          `<span style="color:var(--c-warn)">⚠ ${e.message}</span><br/>
+     <small style="color:var(--c-muted)">${e.stack || ''}</small>`;
+
+        // Fallback: draw straight line between points
+        drawRoute({ type: 'LineString', coordinates: [[from.lng, from.lat], [to.lng, to.lat]] }, mode, true);
+        // Debug: Confirm route layer was added
+        setTimeout(() => {
+          if (map.getLayer('route-line')) {
+            dbg('✅ Route layer confirmed in map style');
+            console.log('Route layer config:', map.getLayer('route-line'));
+          } else {
+            dbg('❌ Route layer NOT found - check layer ordering');
+          }
+        }, 500);
+      }
     }
     // ── Search ─────────────────────────────────────────────────────────────────
     let st;
@@ -2461,6 +2674,52 @@
         // Silently ignore if layers don't exist
       }
     }
+
+    async function copyDebugLogs() {
+      const content = document.getElementById('debug-content');
+      const text = Array.from(content.children).map(el => el.textContent).join('\n');
+
+      try {
+        await navigator.clipboard.writeText(text);
+        dbg('✓ Debug logs copied to clipboard');
+      } catch (e) {
+        // Fallback for older Android WebView
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        dbg('✓ Debug logs copied (fallback)');
+      }
+    }
+
+    function toggleDebug() {
+      const panel = document.getElementById('debug-panel');
+      panel.classList.toggle('show');
+      document.getElementById('btn-debug').classList.toggle('active', panel.classList.contains('show'));
+    }
+    // Initialize Capacitor plugins when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      // Capacitor auto-loads registered plugins; no explicit init needed
+      // But we can log plugin availability for debugging
+      const { Plugins } = Capacitor;
+      if (Plugins?.Valhalla) {
+        dbg('🔌 Valhalla plugin detected at startup');
+      } else {
+        dbg('⚠ Valhalla plugin NOT detected — check MainActivity.java');
+      }
+    });
+
+    // Log plugin availability on page load
+    window.addEventListener('load', () => {
+      const { Plugins } = Capacitor;
+      if (Plugins?.Valhalla) {
+        dbg('✅ Capacitor sees Valhalla plugin');
+      } else {
+        dbg('❌ Capacitor does NOT see Valhalla plugin — check MainActivity.java');
+      }
+    });
   </script>
 </body>
 

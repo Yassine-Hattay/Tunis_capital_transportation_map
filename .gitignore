@@ -9,9 +9,9 @@
 /README.md
 data/
 font/
-lib/
-sprites/
-style/
+./lib/
+./sprites/
+./style/
 Android/android
 /Android/package-lock.json
 /Android/package.json
@@ -95,3 +95,5 @@ ehthumbs.db
 Thumbs.db
 ```
 Android/package-lock.json
+Android/Print_folder_structure_tree.ipynb
+Android/web/valhala/tiles.tar
