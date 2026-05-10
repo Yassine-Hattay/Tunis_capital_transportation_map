@@ -9,9 +9,9 @@
 /README.md
 data/
 font/
-./lib/
-./sprites/
-./style/
+lib/
+sprites/
+style/
 Android/android
 /Android/package-lock.json
 /Android/package.json
