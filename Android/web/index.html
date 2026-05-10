@@ -22,15 +22,14 @@
   <style>
     :root {
       --c-bg: #0f1117;
-      --c-surface: #191c24;
-      --c-border: rgba(255, 255, 255, 0.08);
+      --c-surface: #1c1f2b;
+      --c-border: rgba(255, 255, 255, 0.09);
       --c-accent: #4ade80;
       --c-accent2: #818cf8;
       --c-text: #e8eaf0;
       --c-muted: #6b7280;
       --c-warn: #fbbf24;
-      --r: 10px;
-      --panel-w: 320px;
+      --r: 14px;
       font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
     }
 
@@ -46,7 +45,7 @@
       height: 100dvh;
       overflow: hidden;
       display: flex;
-      flex-direction: column
+      flex-direction: column;
     }
 
     #map {
@@ -55,33 +54,41 @@
       position: relative
     }
 
+    /* ── Top bar ── */
     #topbar {
       position: absolute;
-      top: 12px;
+      top: 14px;
       left: 12px;
       right: 12px;
       z-index: 100;
       display: flex;
       gap: 8px;
-      align-items: center
+      align-items: flex-start;
+    }
+
+    /* ── Search wrap (holds input + dropdown) ── */
+    #search-wrap {
+      flex: 1;
+      position: relative;
     }
 
     #search-box {
-      flex: 1;
       display: flex;
       align-items: center;
       background: var(--c-surface);
-      border: 1px solid var(--c-border);
+      border: 1.5px solid var(--c-border);
       border-radius: var(--r);
       padding: 0 14px;
-      height: 44px;
+      height: 48px;
       gap: 10px;
-      backdrop-filter: blur(12px);
-      transition: border-color .2s
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .35);
+      transition: border-color .2s, box-shadow .2s;
     }
 
     #search-box:focus-within {
-      border-color: var(--c-accent)
+      border-color: rgba(129, 140, 248, .5);
+      box-shadow: 0 4px 32px rgba(129, 140, 248, .15);
     }
 
     #search-input {
@@ -90,310 +97,162 @@
       border: none;
       outline: none;
       color: var(--c-text);
-      font-size: 14px;
-      font-family: inherit
+      font-size: 15px;
+      font-family: inherit;
+      text-align: right;
+      direction: rtl;
     }
 
     #search-input::placeholder {
-      color: var(--c-muted)
+      color: var(--c-muted);
+      font-size: 14px;
     }
 
-    .icon-btn {
-      width: 44px;
-      height: 44px;
+    #search-input:not(:placeholder-shown) {
+      text-align: left;
+      direction: ltr;
+    }
+
+    #search-clear {
+      cursor: pointer;
+      opacity: 0;
+      font-size: 16px;
+      color: var(--c-muted);
+      transition: opacity .15s;
+      display: none;
+      padding: 2px 4px;
+    }
+
+    #search-clear.visible {
+      display: block;
+      opacity: 0.6;
+    }
+
+    /* ── Results dropdown ── */
+    #search-results {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--r);
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+      display: none;
+      z-index: 200;
+    }
+
+    #search-results.open {
+      display: block;
+    }
+
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--c-border);
+      transition: background .12s;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-item:hover {
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .sri-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(129, 140, 248, .12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .sri-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--c-text);
+      line-height: 1.3;
+    }
+
+    .sri-sub {
+      font-size: 11px;
+      color: var(--c-muted);
+      margin-top: 1px;
+    }
+
+    .search-no-results {
+      padding: 16px;
+      text-align: center;
+      color: var(--c-muted);
+      font-size: 13px;
+    }
+
+    /* ── Flag button ── */
+    #btn-flag {
+      width: 48px;
+      height: 48px;
       border-radius: var(--r);
       background: var(--c-surface);
-      border: 1px solid var(--c-border);
+      border: 1.5px solid var(--c-border);
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .35);
+      flex-shrink: 0;
+      transition: border-color .15s;
+    }
+
+    #btn-flag:hover {
+      border-color: rgba(255, 255, 255, .2);
+    }
+
+    /* ── Debug button ── */
+    .icon-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--r);
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
       color: var(--c-text);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: all .15s;
-      backdrop-filter: blur(12px);
-      flex-shrink: 0
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .35);
+      flex-shrink: 0;
     }
 
     .icon-btn:hover {
       border-color: var(--c-accent);
-      color: var(--c-accent)
+      color: var(--c-accent);
     }
 
     .icon-btn.active {
       background: var(--c-accent);
       color: #0f1117;
-      border-color: var(--c-accent)
+      border-color: var(--c-accent);
     }
 
-    #statusbar {
-      position: absolute;
-      bottom: 20px;
-      left: 12px;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      gap: 8px
-    }
-
-    .status-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      border-radius: 24px;
-      padding: 6px 14px;
-      font-size: 12px;
-      color: var(--c-muted);
-      backdrop-filter: blur(12px)
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--c-muted);
-      flex-shrink: 0;
-      transition: background .3s
-    }
-
-    .status-dot.online {
-      background: var(--c-accent);
-      box-shadow: 0 0 6px var(--c-accent)
-    }
-
-    .status-dot.gps-active {
-      background: var(--c-accent2);
-      box-shadow: 0 0 6px var(--c-accent2);
-      animation: pulse 2s infinite
-    }
-
-    .status-dot.offline {
-      background: var(--c-warn)
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1
-      }
-
-      50% {
-        opacity: .4
-      }
-    }
-
-    #panel {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--c-surface);
-      border-top: 1px solid var(--c-border);
-      border-radius: 16px 16px 0 0;
-      padding: 20px 20px 32px;
-      z-index: 200;
-      transform: translateY(100%);
-      transition: transform .35s cubic-bezier(.32, .72, 0, 1);
-      max-height: 70dvh;
-      overflow-y: auto
-    }
-
-    #panel.open {
-      transform: translateY(0)
-    }
-
-    .panel-handle {
-      width: 36px;
-      height: 4px;
-      background: var(--c-border);
-      border-radius: 2px;
-      margin: 0 auto 20px
-    }
-
-    .panel-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 4px
-    }
-
-    .panel-sub {
-      font-size: 13px;
-      color: var(--c-muted);
-      margin-bottom: 20px
-    }
-
-    .route-card {
-      background: var(--c-bg);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r);
-      padding: 14px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      transition: border-color .15s
-    }
-
-    .route-card:hover {
-      border-color: var(--c-accent)
-    }
-
-    .route-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0
-    }
-
-    .route-info {
-      flex: 1
-    }
-
-    .route-label {
-      font-size: 14px;
-      font-weight: 500
-    }
-
-    .route-meta {
-      font-size: 12px;
-      color: var(--c-muted)
-    }
-
-    #routing-panel {
-      position: absolute;
-      top: 68px;
-      left: 12px;
-      width: var(--panel-w);
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r);
-      padding: 16px;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-      display: none
-    }
-
-    #routing-panel.open {
-      display: block
-    }
-
-    .route-input {
-      width: 100%;
-      background: var(--c-bg);
-      border: 1px solid var(--c-border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      color: var(--c-text);
-      font-size: 13px;
-      font-family: inherit;
-      outline: none;
-      margin-bottom: 8px;
-      transition: border-color .2s
-    }
-
-    .route-input:focus {
-      border-color: var(--c-accent)
-    }
-
-    .btn-primary {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: opacity .15s
-    }
-
-    .btn-primary:hover {
-      opacity: .85
-    }
-
-    .section-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--c-muted);
-      margin-bottom: 8px
-    }
-
-    #layers-menu {
-      position: absolute;
-      top: 68px;
-      right: 12px;
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r);
-      overflow: hidden;
-      z-index: 100;
-      display: none;
-      backdrop-filter: blur(12px);
-      min-width: 180px
-    }
-
-    #layers-menu.open {
-      display: block
-    }
-
-    .layer-option {
-      padding: 12px 16px;
-      font-size: 13px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: background .1s;
-      border-bottom: 1px solid var(--c-border);
-      color: var(--c-text)
-    }
-
-    .layer-option:last-child {
-      border-bottom: none
-    }
-
-    .layer-option:hover {
-      background: var(--c-bg)
-    }
-
-    .layer-option.active {
-      color: var(--c-accent)
-    }
-
-    #offline-notice {
-      position: absolute;
-      top: 68px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--c-surface);
-      border: 1px solid var(--c-warn);
-      border-radius: 24px;
-      padding: 8px 18px;
-      font-size: 12px;
-      color: var(--c-warn);
-      z-index: 200;
-      display: none;
-      white-space: nowrap;
-      backdrop-filter: blur(12px)
-    }
-
-    #offline-notice.show {
-      display: flex;
-      align-items: center;
-      gap: 8px
-    }
-
+    /* ── Debug panel ── */
     #debug-panel {
       position: absolute;
-      top: 68px;
+      top: 76px;
       left: 12px;
       right: 12px;
       background: #0a0f1a;
@@ -407,26 +266,56 @@
       display: none;
       line-height: 1.8;
       max-height: 200px;
-      overflow-y: auto
+      overflow-y: auto;
     }
 
     #debug-panel.show {
-      display: block
+      display: block;
     }
 
-    #coords-display {
-      position: absolute;
-      bottom: 20px;
+    /* ── Boundary highlight ── */
+    .boundary-pulse {
+      animation: bPulse 2s ease-out forwards;
+    }
+
+    @keyframes bPulse {
+      0% {
+        opacity: 0.8;
+      }
+
+      60% {
+        opacity: 0.5;
+      }
+
+      100% {
+        opacity: 0.25;
+      }
+    }
+
+    /* ── MapLibre overrides ── */
+    .maplibregl-ctrl-group {
+      background: var(--c-surface) !important;
+      border: 1px solid var(--c-border) !important;
+      border-radius: var(--r) !important;
+    }
+
+    .maplibregl-ctrl-group button {
+      background: none !important;
+      width: 36px !important;
+      height: 36px !important;
+    }
+
+    .maplibregl-ctrl-group button span {
+      filter: invert(1) !important;
+    }
+
+    .maplibregl-ctrl-attrib {
+      display: none !important;
+    }
+
+    .maplibregl-ctrl-bottom-right {
+      bottom: 24px;
       right: 12px;
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 11px;
-      color: var(--c-muted);
-      z-index: 100;
-      backdrop-filter: blur(12px);
-      font-family: monospace
     }
 
     .maplibregl-popup-content {
@@ -437,11 +326,19 @@
       font-family: inherit !important;
       font-size: 13px !important;
       padding: 10px 14px !important;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .4) !important
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .4) !important;
     }
 
     .maplibregl-popup-tip {
-      display: none !important
+      display: none !important;
+    }
+
+    @media(max-width:480px) {
+      #topbar {
+        top: 10px;
+        left: 8px;
+        right: 8px;
+      }
     }
 
     .maplibregl-ctrl-group {
@@ -521,35 +418,26 @@
 </head>
 
 <body>
+  <!-- ✅ ONLY THE MAP -->
   <div id="map"></div>
 
+  <!-- ✅ ONLY SEARCH + DEBUG BUTTON -->
   <div id="topbar">
-
-    <div id="search-box">
-      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" opacity="0.5">
-        <circle cx="11" cy="11" r="8" />
-        <path d="m21 21-4.35-4.35" />
-      </svg>
-      <input id="search-input" type="text" placeholder="Search Tunisia…" autocomplete="off" />
-      <span id="search-clear" style="cursor:pointer;opacity:0.5;display:none" onclick="clearSearch()">✕</span>
+    <div id="search-wrap">
+      <div id="search-box">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+          opacity="0.4">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input id="search-input" type="text" placeholder="وين تحب تمشي؟" autocomplete="off" dir="auto" />
+        <span id="search-clear" onclick="clearSearch()">✕</span>
+      </div>
+      <div id="search-results"></div>
     </div>
-    <button class="icon-btn" id="btn-gps" onclick="locateMe()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M12 2v3m0 14v3M2 12h3m14 0h3" />
-      </svg>
-    </button>
-    <button class="icon-btn" id="btn-route" onclick="toggleRoutingPanel()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M3 17l4-10 4 6 4-4 6 4" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-    </button>
-    <button class="icon-btn" id="btn-layers" onclick="toggleLayers()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polygon points="12 2 22 8.5 12 15 2 8.5" />
-        <polyline points="2 15.5 12 22 22 15.5" />
-        <polyline points="2 12 12 18.5 22 12" />
-      </svg>
+
+    <button id="btn-flag" title="English" onclick="/* future */">
+      🇬🇧
     </button>
 
     <button class="icon-btn" id="btn-debug" onclick="toggleDebug()">
@@ -559,7 +447,7 @@
     </button>
   </div>
 
-  <div id="offline-notice"><span>⚠</span> Offline — using cached map</div>
+  <!-- ✅ DEBUG PANEL (kept for development) -->
   <div id="debug-panel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <span style="font-weight:600">Debug Logs</span>
@@ -570,73 +458,14 @@
     <div id="debug-content" style="max-height:180px;overflow-y:auto"></div>
   </div>
 
-  <div id="routing-panel">
-    <p class="section-label">Plan a route</p>
-    <input class="route-input" id="from-input" placeholder="From — click map or type lat,lng" />
-    <input class="route-input" id="to-input" placeholder="To — click map or type lat,lng" />
-    <div style="display:flex;gap:6px;margin-bottom:12px">
-      <button class="btn-primary" style="background:var(--c-accent);color:#0f1117" onclick="planRoute('walk')">🚶
-        Walk</button>
-      <button class="btn-primary" style="background:var(--c-accent2);color:#fff" onclick="planRoute('bike')">🚲
-        Bike</button>
-      <button class="btn-primary" style="background:#374151;color:#e8eaf0" onclick="planRoute('car')">🚗 Drive</button>
-    </div>
-    <div id="route-result" style="font-size:13px;color:var(--c-muted);min-height:20px"></div>
-  </div>
-
-  <div id="layers-menu">
-    <div class="layer-option active" id="layer-dark" onclick="setTheme('dark')"><span>🌑</span> Dark</div>
-    <div class="layer-option" id="layer-light" onclick="setTheme('light')"><span>🗺️</span> Light</div>
-  </div>
-
-  <div id="statusbar">
-    <div class="status-pill">
-      <div class="status-dot" id="net-dot"></div>
-      <span id="net-label">Checking…</span>
-    </div>
-    <div class="status-pill" id="gps-status" style="display:none">
-      <div class="status-dot gps-active"></div>
-      <span id="gps-label">GPS active</span>
-    </div>
-    <div class="status-pill">
-      <div class="status-dot" style="background:var(--c-accent2)"></div>
-      <span id="tile-label">Tunisia offline map</span>
-    </div>
-  </div>
-
-  <div id="coords-display">—</div>
-
-  <div id="panel">
+  <!-- ✅ ADD THIS PANEL for offline search results -->
+  <div id="panel" style="display:none">
     <div class="panel-handle"></div>
-    <div class="panel-title" id="panel-title">Location</div>
+    <div class="panel-title" id="panel-title"></div>
     <div class="panel-sub" id="panel-sub"></div>
     <div id="panel-content"></div>
   </div>
-
   <script>
-    // ─────────────────────────────────────────────────────────────────────────
-    //  ROOT CAUSE OF THE BLACK MAP (now fixed):
-    //
-    //  The PMTiles() constructor needs a real HTTP URL like:
-    //    http://localhost:3000/data/tunis.pmtiles
-    //
-    //  Passing a bare path like '/data/tunis.pmtiles' causes the library's
-    //  internal fetch worker to resolve it against the wrong base and produce
-    //  "pmtiles:///data/tunis.pmtiles" — which fails with "URL scheme not
-    //  supported" because pmtiles:// is only valid for MapLibre sources,
-    //  not for JS fetch() calls.
-    //
-    //  Fix: always build the full URL at runtime using window.location.
-    // ─────────────────────────────────────────────────────────────────────────
-
-    // ── 1. Build the absolute HTTP URL for the PMTiles file ──────────────────
-    //    This works regardless of what port `serve` uses.
-
-    // ════════════════════════════════════════════════════════════════════════
-    //  ANDROID/CAPACITOR FIX: fetch() polyfill for Range requests
-    //  Capacitor returns 200 instead of 206 for byte-range requests.
-    //  PMTiles requires 206 Partial Content — this polyfill fixes it.
-    // ════════════════════════════════════════════════════════════════════════
     maplibregl.setRTLTextPlugin('./lib/mapbox-gl-rtl-text.js', null, true);
 
     const PMTILES_PATH = '/data/tunis.pmtiles';
@@ -694,1370 +523,124 @@
     //    Layer names confirmed from: pmtiles show data/tunis.pmtiles
     //    Schema: OpenMapTiles v3.11, id: openmaptiles
     //    Bounds: 9.978–10.493 lng, 36.659–37.008 lat (Tunis metro area)
-    function buildStyle(theme) {
+    // ── Style Loader (uses ./style/style.json) ────────────────────────────────
+    let _cachedStyle = null;
+
+    async function buildStyle(theme) {
       const isDark = theme === 'dark';
 
-      // Theme color tokens
+      // Theme color tokens for overrides
       const c = isDark ? {
-        bg: '#0d1017', water: '#111e32', waterline: '#172840',
-        park: '#0c1a10', res: '#111318',
-        bld: '#171b27', bld2: '#1e2235',
-        rmin: '#1e2335', rmaj: '#252c42', rhwy: '#38405e', rhwy2: '#1c2338',
-        rail: '#1a2030',
-        rlabel: '#6a7a9a', plabel: '#b8c8e0', wlabel: '#304e78', poi: '#5a6a88',
-        border: '#281830', peak: '#8b949e', peakLabel: '#9ca3af',
-        houseNum: '#6b7280',
+        bg: '#0d1017', water: '#111e32', road: '#38405e',
+        bld: '#171b27', bldTop: '#1a1f2e',
+        rlabel: '#6a7a9a', plabel: '#b8c8e0', poi: '#5a6a88',
+        halo: '#0d1017'
       } : {
-        bg: '#f5f2ed', water: '#a8d0e0', waterline: '#70b0d0',
-        park: '#d0e8c0', res: '#ece8df',
-        bld: '#ddd8cf', bld2: '#ccc8be',
-        rmin: '#ffffff', rmaj: '#f8f2e8', rhwy: '#f8cc80', rhwy2: '#cc8830',
-        rail: '#aaaaaa',
-        rlabel: '#505070', plabel: '#202030', wlabel: '#3a5880', poi: '#405060',
-        border: '#cc88aa', peak: '#6b7280', peakLabel: '#374151',
-        houseNum: '#6b7280',
+        bg: '#f5f2ed', water: 'hsl(210,67%,85%)', road: '#fea',
+        bld: '#ddd8cf', bldTop: '#c8c4bc',
+        rlabel: '#765', plabel: '#333', poi: '#666',
+        halo: 'rgba(255,255,255,0.8)'
       };
 
-      return {
-        version: 8,
-        name: "Bright (Offline) — Full Layer Set",
-        glyphs: './font/{fontstack}/{range}.pbf',
-        sprite: "./sprites/sprite",
-        spritePixelRatio: 1,
-        sources: {
-          omt: {
-            type: "vector",
-            url: PMTILES_STYLE_URL
+      // Return cached style if available and theme matches
+      if (_cachedStyle && _cachedStyle._theme === theme) {
+        return _cachedStyle;
+      }
+
+      try {
+        // Fetch base style from external JSON
+        const res = await fetch('./style/style.json', { cache: 'force-cache' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        let style = await res.json();
+
+        // 🔁 Override source to use local PMTiles (critical for offline)
+        style.sources = {
+          openmaptiles: {
+            type: 'vector',
+            url: PMTILES_STYLE_URL  // e.g., 'pmtiles://http://localhost/data/tunis.pmtiles'
           }
-        },
-        layers: [
-          // ── BACKGROUND ─────────────────────────────────────────────────────
-          { id: "background", type: "background", paint: { "background-color": c.bg } },
+        };
 
-          // ── LANDCOVER ──────────────────────────────────────────────────────
-          {
-            id: "landcover-glacier", type: "fill", source: "omt", "source-layer": "landcover",
-            filter: ["==", "subclass", "glacier"],
-            layout: { visibility: "visible" },
-            paint: { "fill-color": "#fff", "fill-opacity": { base: 1, stops: [[0, 0.9], [10, 0.3]] } }
-          },
-          {
-            id: "landcover-wood", type: "fill", source: "omt", "source-layer": "landcover",
-            filter: ["==", "class", "wood"],
-            paint: {
-              "fill-antialias": { base: 1, stops: [[0, false], [9, true]] },
-              "fill-color": "#6a4", "fill-opacity": 0.1, "fill-outline-color": "hsla(0,0%,0%,0.03)"
-            }
-          },
-          {
-            id: "landcover-grass", type: "fill", source: "omt", "source-layer": "landcover",
-            filter: ["==", "class", "grass"],
-            paint: { "fill-color": "#d8e8c8", "fill-opacity": 1 }
-          },
-          {
-            id: "landcover-ice-shelf", type: "fill", source: "omt", "source-layer": "landcover",
-            filter: ["==", "subclass", "ice_shelf"],
-            layout: { visibility: "visible" },
-            paint: { "fill-color": "#fff", "fill-opacity": { base: 1, stops: [[0, 0.9], [10, 0.3]] } }
-          },
-          {
-            id: "landcover-sand", type: "fill", source: "omt", "source-layer": "landcover",
-            filter: ["==", "class", "sand"],
-            layout: { visibility: "visible" },
-            paint: { "fill-color": "rgba(245,238,188,1)", "fill-opacity": 1 }
-          },
+        // 🔁 Fix local asset paths
+        style.glyphs = './font/{fontstack}/{range}.pbf';
+        style.sprite = './sprites/sprite';
+        style.spritePixelRatio = 1;
 
-          // ── LANDUSE ─────────────────────────────────────────────────────────
-          {
-            id: "landuse-residential", type: "fill", source: "omt", "source-layer": "landuse",
-            filter: ["all", ["in", "class", "residential", "suburb", "neighbourhood"]],
-            layout: { visibility: "visible" },
-            paint: {
-              "fill-color": { base: 1, stops: [[12, "hsla(30,19%,90%,0.4)"], [16, "hsla(30,19%,90%,0.2)"]] }
-            }
-          },
-          {
-            id: "landuse-commercial", type: "fill", source: "omt", "source-layer": "landuse",
-            filter: ["all", ["==", "$type", "Polygon"], ["==", "class", "commercial"]],
-            layout: { visibility: "visible" },
-            paint: { "fill-color": "hsla(0,60%,87%,0.23)" }
-          },
-          {
-            id: "landuse-industrial", type: "fill", source: "omt", "source-layer": "landuse",
-            filter: ["all", ["==", "$type", "Polygon"], ["in", "class", "industrial", "garages", "dam"]],
-            layout: { visibility: "visible" },
-            paint: { "fill-color": "hsla(49,100%,88%,0.34)" }
-          },
-          {
-            id: "landuse-cemetery", type: "fill", source: "omt", "source-layer": "landuse",
-            filter: ["==", "class", "cemetery"],
-            paint: { "fill-color": "#e0e4dd" }
-          },
-          {
-            id: "landuse-hospital", type: "fill", source: "omt", "source-layer": "landuse",
-            filter: ["==", "class", "hospital"],
-            paint: { "fill-color": "#fde" }
-          },
-          {
-            id: "landuse-school", type: "fill", source: "omt", "source-layer": "landuse",
-            filter: ["==", "class", "school"],
-            paint: { "fill-color": "#f0e8f8" }
-          },
-          {
-            id: "landuse-railway", type: "fill", source: "omt", "source-layer": "landuse",
-            filter: ["==", "class", "railway"],
-            layout: { visibility: "visible" },
-            paint: { "fill-color": "hsla(30,19%,90%,0.4)" }
-          },
+        // 🎨 Apply theme-based paint overrides
+        style.layers = style.layers.map(layer => {
+          const paint = layer.paint || {};
+          const id = layer.id;
 
-          // ── PARK ────────────────────────────────────────────────────────────
-          {
-            id: "park", type: "fill", source: "omt", "source-layer": "park",
-            filter: ["==", "class", "public_park"],
-            paint: { "fill-color": c.park, "fill-opacity": 0.8 }
-          },
+          // Background
+          if (id === 'background' && paint['background-color']) {
+            paint['background-color'] = c.bg;
+          }
 
-          // ── WATER ───────────────────────────────────────────────────────────
-          {
-            id: "water-offset", type: "fill", source: "omt", "source-layer": "water",
-            maxzoom: 8, filter: ["==", "$type", "Polygon"],
-            layout: { visibility: "visible" },
-            paint: {
-              "fill-color": "#a0c8f0", "fill-opacity": 1,
-              "fill-translate": { base: 1, stops: [[6, [2, 0]], [8, [0, 0]]] }
-            }
-          },
-          {
-            id: "water", type: "fill", source: "omt", "source-layer": "water",
-            filter: ["all", ["!=", "intermittent", 1], ["!=", "brunnel", "tunnel"]],
-            layout: { visibility: "visible" },
-            paint: { "fill-color": isDark ? c.water : "hsl(210,67%,85%)" }
-          },
-          {
-            id: "water-intermittent", type: "fill", source: "omt", "source-layer": "water",
-            filter: ["all", ["==", "intermittent", 1]],
-            layout: { visibility: "visible" },
-            paint: { "fill-color": "hsl(210,67%,85%)", "fill-opacity": 0.7 }
-          },
-          {
-            id: "water-pattern", type: "fill", source: "omt", "source-layer": "water",
-            filter: ["all"],
-            layout: { visibility: "visible" },
-            paint: { "fill-pattern": "wave", "fill-translate": [0, 2.5] }
-          },
-
-          // ── WATERWAY ────────────────────────────────────────────────────────
-          {
-            id: "waterway-river", type: "line", source: "omt", "source-layer": "waterway",
-            filter: ["all", ["==", "class", "river"], ["!=", "brunnel", "tunnel"], ["==", "intermittent", 0]],
-            layout: { "line-cap": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#a0c8f0",
-              "line-width": { base: 1.2, stops: [[10, 0.8], [20, 6]] }
-            }
-          },
-          {
-            id: "waterway-river-intermittent", type: "line", source: "omt", "source-layer": "waterway",
-            filter: ["all", ["==", "class", "river"], ["!=", "brunnel", "tunnel"], ["==", "intermittent", 1]],
-            layout: { "line-cap": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#a0c8f0", "line-dasharray": [3, 2.5],
-              "line-width": { base: 1.2, stops: [[10, 0.8], [20, 6]] }
-            }
-          },
-          {
-            id: "waterway-stream-canal", type: "line", source: "omt", "source-layer": "waterway",
-            filter: ["all", ["in", "class", "canal", "stream"], ["!=", "brunnel", "tunnel"], ["==", "intermittent", 0]],
-            layout: { "line-cap": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#a0c8f0",
-              "line-width": { base: 1.3, stops: [[13, 0.5], [20, 6]] }
-            }
-          },
-          {
-            id: "waterway-stream-canal-intermittent", type: "line", source: "omt", "source-layer": "waterway",
-            filter: ["all", ["in", "class", "canal", "stream"], ["!=", "brunnel", "tunnel"], ["==", "intermittent", 1]],
-            layout: { "line-cap": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#a0c8f0", "line-dasharray": [4, 3],
-              "line-width": { base: 1.3, stops: [[13, 0.5], [20, 6]] }
-            }
-          },
-          {
-            id: "waterway-other", type: "line", source: "omt", "source-layer": "waterway",
-            filter: ["all", ["!in", "class", "canal", "river", "stream"], ["==", "intermittent", 0]],
-            layout: { "line-cap": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#a0c8f0",
-              "line-width": { base: 1.3, stops: [[13, 0.5], [20, 2]] }
-            }
-          },
-          {
-            id: "waterway-other-intermittent", type: "line", source: "omt", "source-layer": "waterway",
-            filter: ["all", ["!in", "class", "canal", "river", "stream"], ["==", "intermittent", 1]],
-            layout: { "line-cap": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#a0c8f0", "line-dasharray": [4, 3],
-              "line-width": { base: 1.3, stops: [[13, 0.5], [20, 2]] }
-            }
-          },
-          {
-            id: "waterway_tunnel", type: "line", source: "omt", "source-layer": "waterway",
-            minzoom: 14,
-            filter: ["all", ["in", "class", "river", "stream", "canal"], ["==", "brunnel", "tunnel"]],
-            layout: { "line-cap": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#a0c8f0", "line-dasharray": [2, 4],
-              "line-width": { base: 1.3, stops: [[13, 0.5], [20, 6]] }
-            }
-          },
-
-          // ── MOUNTAIN PEAK ───────────────────────────────────────────────────
-          {
-            id: "mountain_peak-dot", type: "circle", source: "omt", "source-layer": "mountain_peak",
-            minzoom: 11,
-            filter: ["all", [">=", "rank", 1], ["<=", "rank", 3]],
-            paint: {
-              "circle-color": isDark ? c.peak : "#6b7280",
-              "circle-radius": { base: 1, stops: [[11, 1], [14, 3]] },
-              "circle-stroke-color": isDark ? c.bg : "#fff",
-              "circle-stroke-width": 1
-            }
-          },
-          {
-            id: "mountain_peak-label", type: "symbol", source: "omt", "source-layer": "mountain_peak",
-            minzoom: 12,
-            filter: ["all", [">=", "rank", 1], ["<=", "rank", 3]],
-            layout: {
-              "text-field": ["coalesce", ["get", "name:en"], ["get", "name:latin"], ["get", "name"]],
-              "text-font": ["Noto Sans Regular"],
-              "text-size": { base: 1, stops: [[12, 10], [16, 13]] },
-              "text-offset": [0, 0.6], "text-anchor": "top",
-              "text-optional": true, "icon-image": "", "icon-optional": false
-            },
-            paint: {
-              "text-color": isDark ? c.peakLabel : "#374151",
-              "text-halo-color": isDark ? c.bg : "#fff",
-              "text-halo-width": 1.5
-            }
-          },
-
-
-
-          // ── HOUSENUMBER ─────────────────────────────────────────────────────
-          {
-            id: "housenumber", type: "symbol", source: "omt", "source-layer": "housenumber",
-            minzoom: 17, maxzoom: 24,
-            layout: {
-              "text-field": "{housenumber}",
-              "text-font": ["Noto Sans Regular"],
-              "text-size": { base: 1, stops: [[17, 9], [20, 12]] },
-              "text-anchor": "center",
-              "text-optional": true
-            },
-            paint: {
-              "text-color": isDark ? c.houseNum : "#6b7280",
-              "text-halo-color": isDark ? c.bg : "#fff",
-              "text-halo-width": 1
-            }
-          },
-
-          // ── BOUNDARY ────────────────────────────────────────────────────────
-          {
-            id: "boundary-land-level-4", type: "line", source: "omt", "source-layer": "boundary",
-            minzoom: 2,
-            filter: ["all", [">=", "admin_level", 3], ["<=", "admin_level", 8], ["!=", "maritime", 1]],
-            layout: { "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": isDark ? c.border : "#9e9cab",
-              "line-dasharray": [3, 1, 1, 1],
-              "line-width": { base: 1.4, stops: [[4, 0.4], [5, 1], [12, 3]] }
-            }
-          },
-          {
-            id: "boundary-land-level-2", type: "line", source: "omt", "source-layer": "boundary",
-            filter: ["all", ["==", "admin_level", 2], ["!=", "maritime", 1], ["!=", "disputed", 1]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "hsl(248,7%,66%)",
-              "line-width": { base: 1, stops: [[0, 0.6], [4, 1.4], [5, 2], [12, 8]] }
-            }
-          },
-          {
-            id: "boundary-land-disputed", type: "line", source: "omt", "source-layer": "boundary",
-            filter: ["all", ["!=", "maritime", 1], ["==", "disputed", 1]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "hsl(248,7%,70%)",
-              "line-dasharray": [1, 3],
-              "line-width": { base: 1, stops: [[0, 0.6], [4, 1.4], [5, 2], [12, 8]] }
-            }
-          },
-          {
-            id: "boundary-water", type: "line", source: "omt", "source-layer": "boundary",
-            minzoom: 4,
-            filter: ["all", ["in", "admin_level", 2, 4], ["==", "maritime", 1]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "rgba(154,189,214,1)",
-              "line-opacity": { stops: [[6, 0.6], [10, 1]] },
-              "line-width": { base: 1, stops: [[0, 0.6], [4, 1.4], [5, 2], [12, 8]] }
-            }
-          },
-
-          // ── AEROWAY ─────────────────────────────────────────────────────────
-          {
-            id: "aeroway-area", type: "fill", source: "omt", "source-layer": "aeroway",
-            minzoom: 4,
-            filter: ["all", ["==", "$type", "Polygon"], ["in", "class", "runway", "taxiway"]],
-            layout: { visibility: "visible" },
-            paint: { "fill-color": "rgba(255,255,255,1)", "fill-opacity": { base: 1, stops: [[13, 0], [14, 1]] } }
-          },
-          {
-            id: "aeroway-runway-casing", type: "line", source: "omt", "source-layer": "aeroway",
-            minzoom: 12,
-            filter: ["all", ["in", "class", "runway"]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "rgba(153,153,153,1)", "line-opacity": 1,
-              "line-width": { base: 1.5, stops: [[11, 5], [17, 55]] }
-            }
-          },
-          {
-            id: "aeroway-runway", type: "line", source: "omt", "source-layer": "aeroway",
-            minzoom: 4,
-            filter: ["all", ["in", "class", "runway"], ["==", "$type", "LineString"]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "rgba(255,255,255,1)",
-              "line-opacity": { base: 1, stops: [[11, 0], [12, 1]] },
-              "line-width": { base: 1.5, stops: [[11, 4], [17, 50]] }
-            }
-          },
-          {
-            id: "aeroway-taxiway-casing", type: "line", source: "omt", "source-layer": "aeroway",
-            minzoom: 12,
-            filter: ["all", ["in", "class", "taxiway"]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "rgba(153,153,153,1)", "line-opacity": 1,
-              "line-width": { base: 1.5, stops: [[11, 2], [17, 12]] }
-            }
-          },
-          {
-            id: "aeroway-taxiway", type: "line", source: "omt", "source-layer": "aeroway",
-            minzoom: 4,
-            filter: ["all", ["in", "class", "taxiway"], ["==", "$type", "LineString"]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "rgba(255,255,255,1)",
-              "line-opacity": { base: 1, stops: [[11, 0], [12, 1]] },
-              "line-width": { base: 1.5, stops: [[11, 1], [17, 10]] }
-            }
-          },
-
-          // ── TRANSPORTATION — TUNNELS (casings first) ────────────────────────
-          {
-            id: "tunnel-service-track-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["in", "class", "service", "track"]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#cfcdca", "line-dasharray": [0.5, 0.25],
-              "line-width": { base: 1.2, stops: [[15, 1], [16, 4], [20, 11]] }
-            }
-          },
-          {
-            id: "tunnel-minor-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["==", "class", "minor"]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#cfcdca", "line-opacity": { stops: [[12, 0], [12.5, 1]] },
-              "line-width": { base: 1.2, stops: [[12, 0.5], [13, 1], [14, 4], [20, 15]] },
-              "line-dasharray": [0.5, 0.25]
-            }
-          },
-          {
-            id: "tunnel-link-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["in", "class", "trunk", "primary", "secondary", "tertiary"], ["==", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[12, 1], [13, 3], [14, 4], [20, 15]] },
-              "line-dasharray": [0.5, 0.25]
-            }
-          },
-          {
-            id: "tunnel-secondary-tertiary-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["in", "class", "secondary", "tertiary"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[8, 1.5], [20, 17]] },
-              "line-dasharray": [0.5, 0.25]
-            }
-          },
-          {
-            id: "tunnel-trunk-primary-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["in", "class", "primary", "trunk"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#e9ac77",
-              "line-width": { base: 1.2, stops: [[5, 0.4], [6, 0.6], [7, 1.5], [20, 22]] }
-            }
-          },
-          {
-            id: "tunnel-motorway-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["==", "class", "motorway"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#e9ac77", "line-dasharray": [0.5, 0.25],
-              "line-width": { base: 1.2, stops: [[5, 0.4], [6, 0.6], [7, 1.5], [20, 22]] }
-            }
-          },
-          {
-            id: "tunnel-path-steps-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "brunnel", "tunnel"], ["==", "class", "path"], ["==", "subclass", "steps"]],
-            layout: { "line-cap": "butt", "line-join": "round" },
-            paint: {
-              "line-color": "#cfcdca", "line-opacity": { stops: [[12, 0], [12.5, 1]] },
-              "line-width": { base: 1.2, stops: [[12, 0.5], [13, 1], [14, 2], [20, 9.25]] },
-              "line-dasharray": [0.5, 0.25]
-            }
-          },
-          {
-            id: "tunnel-path-steps", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "brunnel", "tunnel"], ["==", "class", "path"], ["==", "subclass", "steps"]],
-            layout: { "line-join": "bevel", "line-cap": "butt" },
-            paint: {
-              "line-color": "#fff", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[13.5, 0], [14, 1.25], [20, 5.75]] },
-              "line-dasharray": [0.5, 0.25]
-            }
-          },
-          {
-            id: "tunnel-path", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "brunnel", "tunnel"], ["==", "class", "path"], ["!=", "subclass", "steps"]],
-            paint: {
-              "line-color": "#cba", "line-dasharray": [1.5, 0.75],
-              "line-width": { base: 1.2, stops: [[15, 1.2], [20, 4]] }
-            }
-          },
-          {
-            id: "tunnel-service-track", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["in", "class", "service", "track"]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fff",
-              "line-width": { base: 1.2, stops: [[15.5, 0], [16, 2], [20, 7.5]] }
-            }
-          },
-          {
-            id: "tunnel-link", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["in", "class", "trunk", "primary", "secondary", "tertiary"], ["==", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fff4c6",
-              "line-width": { base: 1.2, stops: [[12.5, 0], [13, 1.5], [14, 2.5], [20, 11.5]] }
-            }
-          },
-          {
-            id: "tunnel-minor", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["==", "class", "minor"]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fff", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[13.5, 0], [14, 2.5], [20, 11.5]] }
-            }
-          },
-          {
-            id: "tunnel-secondary-tertiary", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["in", "class", "secondary", "tertiary"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fff4c6",
-              "line-width": { base: 1.2, stops: [[6.5, 0], [7, 0.5], [20, 10]] }
-            }
-          },
-          {
-            id: "tunnel-trunk-primary", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["in", "class", "primary", "trunk"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fff4c6",
-              "line-width": { base: 1.2, stops: [[6.5, 0], [7, 0.5], [20, 18]] }
-            }
-          },
-          {
-            id: "tunnel-motorway", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["==", "class", "motorway"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#ffdaa6",
-              "line-width": { base: 1.2, stops: [[6.5, 0], [7, 0.5], [20, 18]] }
-            }
-          },
-          {
-            id: "tunnel-railway", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "tunnel"], ["==", "class", "rail"]],
-            paint: {
-              "line-color": "#bbb", "line-dasharray": [2, 2],
-              "line-width": { base: 1.4, stops: [[14, 0.4], [15, 0.75], [20, 2]] }
-            }
-          },
-
-          // ── TRANSPORTATION — GROUND LEVEL (casings first) ───────────────────
-          {
-            id: "road_area_pier", type: "fill", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "Polygon"], ["==", "class", "pier"]],
-            layout: { visibility: "visible" },
-            paint: { "fill-antialias": true, "fill-color": "#f8f4f0" }
-          },
-
-          // ── BUILDING ────────────────────────────────────────────────────────
-          {
-            id: "building", type: "fill", source: "omt", "source-layer": "building",
-            minzoom: 14,
-            paint: {
-              "fill-antialias": true,
-              "fill-color": {
-                base: 1,
-                stops: [
-                  [15.5, isDark ? "#0a0d14" : "#b8b4ac"],  // darker for both themes
-                  [16, isDark ? "#0f1320" : "#a8a49c"]     // even darker at high zoom
-                ]
-              },
-              "fill-opacity": { base: 1, stops: [[14, 0.7], [16, 1]] }  // slightly transparent at lower zoom
-            }
-          },
-          {
-            id: "building-top", type: "fill", source: "omt", "source-layer": "building",
-            minzoom: 15,
-            layout: { visibility: "visible" },
-            paint: {
-              "fill-color": isDark ? "#1a1f2e" : "#c8c4bc",  // darker top surface
-              "fill-opacity": { base: 1, stops: [[13, 0], [16, 0.85]] },  // slightly less opaque
-              "fill-outline-color": isDark ? "#252a3a" : "#98948c",      // darker outline
-              "fill-translate": { base: 1, stops: [[14, [0, 0]], [16, [-2, -2]]] }
-            }
-          },
-          {
-            id: "road_pier", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["in", "class", "pier"]],
-            layout: { "line-cap": "round", "line-join": "round" },
-            paint: {
-              "line-color": "#f8f4f0",
-              "line-width": { base: 1.2, stops: [[15, 1], [17, 4]] }
-            }
-          },
-          {
-            id: "highway-area", type: "fill", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "Polygon"], ["!in", "class", "pier"]],
-            layout: { visibility: "visible" },
-            paint: {
-              "fill-antialias": false, "fill-color": "hsla(0,0%,89%,0.56)",
-              "fill-opacity": 0.9, "fill-outline-color": "#cfcdca"
-            }
-          },
-          {
-            id: "highway-path-steps-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "path"], ["in", "subclass", "steps"]],
-            layout: { "line-cap": "butt", "line-join": "round" },
-            paint: {
-              "line-color": "#cfcdca", "line-opacity": { stops: [[12, 0], [12.5, 1]] },
-              "line-width": { base: 1.2, stops: [[12, 0.5], [13, 1], [14, 2], [20, 9.25]] }
-            }
-          },
-          {
-            id: "highway-motorway-link-casing", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 12,
-            filter: ["all", ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "motorway"], ["==", "ramp", 1]],
-            layout: { "line-cap": "round", "line-join": "round" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[12, 1], [13, 3], [14, 4], [20, 15]] }
-            }
-          },
-          {
-            id: "highway-link-casing", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 13,
-            filter: ["all", ["!in", "brunnel", "bridge", "tunnel"], ["in", "class", "trunk", "primary", "secondary", "tertiary"], ["==", "ramp", 1]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[12, 1], [13, 3], [14, 4], [20, 15]] }
-            }
-          },
-          {
-            id: "highway-minor-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["!=", "brunnel", "tunnel"], ["in", "class", "minor", "service", "track"]],
-            layout: { "line-cap": "round", "line-join": "round" },
-            paint: {
-              "line-color": "#cfcdca", "line-opacity": { stops: [[12, 0], [12.5, 1]] },
-              "line-width": { base: 1.2, stops: [[12, 0.5], [13, 1], [14, 4], [20, 15]] }
-            }
-          },
-          {
-            id: "highway-secondary-tertiary-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["!in", "brunnel", "bridge", "tunnel"], ["in", "class", "secondary", "tertiary"], ["!=", "ramp", 1]],
-            layout: { "line-cap": "butt", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[8, 1.5], [20, 17]] }
-            }
-          },
-          {
-            id: "highway-primary-casing", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 5,
-            filter: ["all", ["!in", "brunnel", "bridge", "tunnel"], ["in", "class", "primary"], ["!=", "ramp", 1]],
-            layout: { "line-cap": "butt", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": { stops: [[7, 0], [8, 1]] },
-              "line-width": { base: 1.2, stops: [[7, 0], [8, 0.6], [9, 1.5], [20, 22]] }
-            }
-          },
-          {
-            id: "highway-trunk-casing", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 5,
-            filter: ["all", ["!in", "brunnel", "bridge", "tunnel"], ["in", "class", "trunk"], ["!=", "ramp", 1]],
-            layout: { "line-cap": "butt", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": { stops: [[5, 0], [6, 1]] },
-              "line-width": { base: 1.2, stops: [[5, 0], [6, 0.6], [7, 1.5], [20, 22]] }
-            }
-          },
-          {
-            id: "highway-motorway-casing", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 4,
-            filter: ["all", ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "motorway"], ["!=", "ramp", 1]],
-            layout: { "line-cap": "butt", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": { stops: [[4, 0], [5, 1]] },
-              "line-width": { base: 1.2, stops: [[4, 0], [5, 0.4], [6, 0.6], [7, 1.5], [20, 22]] }
-            }
-          },
-
-          // ── TRANSPORTATION — GROUND LEVEL (fills) ───────────────────────────
-          {
-            id: "highway-path", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "path"], ["!=", "subclass", "steps"]],
-            paint: {
-              "line-color": "#cba", "line-dasharray": [1.5, 0.75],
-              "line-width": { base: 1.2, stops: [[15, 1.2], [20, 4]] }
-            }
-          },
-          {
-            id: "highway-path-steps", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "path"], ["==", "subclass", "steps"]],
-            layout: { "line-join": "bevel", "line-cap": "butt" },
-            paint: {
-              "line-color": "#fff", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[13.5, 0], [14, 1.25], [20, 5.75]] },
-              "line-dasharray": [0.5, 0.25]
-            }
-          },
-          {
-            id: "highway-motorway-link", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 12,
-            filter: ["all", ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "motorway"], ["==", "ramp", 1]],
-            layout: { "line-cap": "round", "line-join": "round" },
-            paint: {
-              "line-color": "#fc8",
-              "line-width": { base: 1.2, stops: [[12.5, 0], [13, 1.5], [14, 2.5], [20, 11.5]] }
-            }
-          },
-          {
-            id: "highway-link", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 13,
-            filter: ["all", ["!in", "brunnel", "bridge", "tunnel"], ["in", "class", "trunk", "primary", "secondary", "tertiary"], ["==", "ramp", 1]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#fea",
-              "line-width": { base: 1.2, stops: [[12.5, 0], [13, 1.5], [14, 2.5], [20, 11.5]] }
-            }
-          },
-          {
-            id: "highway-minor", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["!=", "brunnel", "tunnel"], ["in", "class", "minor", "service", "track"]],
-            layout: { "line-cap": "round", "line-join": "round" },
-            paint: {
-              "line-color": "#fff", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[13.5, 0], [14, 2.5], [20, 11.5]] }
-            }
-          },
-          {
-            id: "highway-secondary-tertiary", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["!in", "brunnel", "bridge", "tunnel"], ["in", "class", "secondary", "tertiary"], ["!=", "ramp", 1]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#fea",
-              "line-width": { base: 1.2, stops: [[6.5, 0], [8, 0.5], [20, 13]] }
-            }
-          },
-          {
-            id: "highway-primary", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["!in", "brunnel", "bridge", "tunnel"], ["in", "class", "primary"], ["!=", "ramp", 1]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#fea",
-              "line-width": { base: 1.2, stops: [[8.5, 0], [9, 0.5], [20, 18]] }
-            }
-          },
-          {
-            id: "highway-trunk", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["!in", "brunnel", "bridge", "tunnel"], ["in", "class", "trunk"], ["!=", "ramp", 1]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#fea",
-              "line-width": { base: 1.2, stops: [[6.5, 0], [7, 0.5], [20, 18]] }
-            }
-          },
-          {
-            id: "highway-motorway", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 5,
-            filter: ["all", ["==", "$type", "LineString"], ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "motorway"], ["!=", "ramp", 1]],
-            layout: { "line-cap": "round", "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "#fc8",
-              "line-width": { base: 1.2, stops: [[6.5, 0], [7, 0.5], [20, 18]] }
-            }
-          },
-          {
-            id: "ferry", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["in", "class", "ferry"]],
-            layout: { "line-join": "round", visibility: "visible" },
-            paint: {
-              "line-color": "rgba(108,159,182,1)", "line-dasharray": [2, 2], "line-width": 1.1
-            }
-          },
-          {
-            id: "cablecar", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 13, filter: ["==", "subclass", "cable_car"],
-            layout: { "line-cap": "round", visibility: "visible" },
-            paint: {
-              "line-color": "hsl(0,0%,70%)",
-              "line-width": { base: 1, stops: [[11, 1], [19, 2.5]] }
-            }
-          },
-          {
-            id: "cablecar-dash", type: "line", source: "omt", "source-layer": "transportation",
-            minzoom: 13, filter: ["==", "subclass", "cable_car"],
-            layout: { "line-cap": "round", visibility: "visible" },
-            paint: {
-              "line-color": "hsl(0,0%,70%)", "line-dasharray": [2, 3],
-              "line-width": { base: 1, stops: [[11, 3], [19, 5.5]] }
-            }
-          },
-
-          // ── RAILWAY ─────────────────────────────────────────────────────────
-          {
-            id: "railway-transit", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "class", "transit"], ["!in", "brunnel", "tunnel"]],
-            layout: { visibility: "visible" },
-            paint: {
-              "line-color": "hsla(0,0%,73%,0.77)",
-              "line-width": { base: 1.4, stops: [[14, 0.4], [20, 1]] }
-            }
-          },
-          {
-            id: "railway-transit-hatching", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "class", "transit"], ["!in", "brunnel", "tunnel"]],
-            layout: { visibility: "visible" },
-            paint: {
-              "line-color": "hsla(0,0%,73%,0.68)", "line-dasharray": [0.2, 8],
-              "line-width": { base: 1.4, stops: [[14.5, 0], [15, 2], [20, 6]] }
-            }
-          },
-          {
-            id: "railway-service", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "class", "rail"], ["has", "service"]],
-            paint: {
-              "line-color": "hsla(0,0%,73%,0.77)",
-              "line-width": { base: 1.4, stops: [[14, 0.4], [20, 1]] }
-            }
-          },
-          {
-            id: "railway-service-hatching", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "class", "rail"], ["has", "service"]],
-            layout: { visibility: "visible" },
-            paint: {
-              "line-color": "hsla(0,0%,73%,0.68)", "line-dasharray": [0.2, 8],
-              "line-width": { base: 1.4, stops: [[14.5, 0], [15, 2], [20, 6]] }
-            }
-          },
-          {
-            id: "railway", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["!has", "service"], ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "rail"]],
-            paint: {
-              "line-color": isDark ? c.rail : "#bbb",
-              "line-width": { base: 1.4, stops: [[14, 0.4], [15, 0.75], [20, 2]] }
-            }
-          },
-          {
-            id: "railway-hatching", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["!has", "service"], ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "rail"]],
-            paint: {
-              "line-color": "#bbb", "line-dasharray": [0.2, 8],
-              "line-width": { base: 1.4, stops: [[14.5, 0], [15, 3], [20, 8]] }
-            }
-          },
-
-          // ── BRIDGES (casings first) ─────────────────────────────────────────
-          {
-            id: "bridge-motorway-link-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["==", "class", "motorway"], ["==", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[12, 1], [13, 3], [14, 4], [20, 19]] }
-            }
-          },
-          {
-            id: "bridge-link-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["in", "class", "trunk", "primary", "secondary", "tertiary"], ["==", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[12, 1], [13, 3], [14, 4], [20, 19]] }
-            }
-          },
-          {
-            id: "bridge-secondary-tertiary-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["in", "class", "secondary", "tertiary"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#e9ac77", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[5, 0.4], [7, 0.6], [8, 1.5], [20, 21]] }
-            }
-          },
-          {
-            id: "bridge-trunk-primary-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["in", "class", "primary", "trunk"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "hsl(28,76%,67%)",
-              "line-width": { base: 1.2, stops: [[5, 0.4], [6, 0.6], [7, 1.5], [20, 26]] }
-            }
-          },
-          {
-            id: "bridge-motorway-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["==", "class", "motorway"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#e9ac77",
-              "line-width": { base: 1.2, stops: [[5, 0.4], [6, 0.6], [7, 1.5], [20, 26]] }
-            }
-          },
-          {
-            id: "bridge-minor-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "brunnel", "bridge"], ["in", "class", "minor", "service", "track"]],
-            layout: { "line-cap": "butt", "line-join": "round" },
-            paint: {
-              "line-color": "#cfcdca", "line-opacity": { stops: [[12, 0], [12.5, 1]] },
-              "line-width": { base: 1.2, stops: [[12, 0.5], [13, 1], [14, 6], [20, 24]] }
-            }
-          },
-          {
-            id: "bridge-path-casing", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "brunnel", "bridge"], ["==", "class", "path"]],
-            paint: {
-              "line-color": "#cfcdca",
-              "line-width": { base: 1.2, stops: [[15, 1.2], [20, 18]] }
-            }
-          },
-          {
-            id: "bridge-path-steps", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "brunnel", "bridge"], ["==", "class", "path"], ["==", "subclass", "steps"]],
-            layout: { "line-join": "round", "line-cap": "butt" },
-            paint: {
-              "line-color": "#fff", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[13.5, 0], [14, 1.25], [20, 5.75]] },
-              "line-dasharray": [0.5, 0.25]
-            }
-          },
-          {
-            id: "bridge-path", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "brunnel", "bridge"], ["==", "class", "path"], ["!=", "subclass", "steps"]],
-            paint: {
-              "line-color": "#cba", "line-dasharray": [1.5, 0.75],
-              "line-width": { base: 1.2, stops: [[15, 1.2], [20, 4]] }
-            }
-          },
-          {
-            id: "bridge-motorway-link", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["==", "class", "motorway"], ["==", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fc8",
-              "line-width": { base: 1.2, stops: [[12.5, 0], [13, 1.5], [14, 2.5], [20, 11.5]] }
-            }
-          },
-          {
-            id: "bridge-link", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["in", "class", "trunk", "primary", "secondary", "tertiary"], ["==", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fea",
-              "line-width": { base: 1.2, stops: [[12.5, 0], [13, 1.5], [14, 2.5], [20, 11.5]] }
-            }
-          },
-          {
-            id: "bridge-minor", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "$type", "LineString"], ["==", "brunnel", "bridge"], ["in", "class", "minor", "service", "track"]],
-            layout: { "line-cap": "round", "line-join": "round" },
-            paint: {
-              "line-color": "#fff", "line-opacity": 1,
-              "line-width": { base: 1.2, stops: [[13.5, 0], [14, 2.5], [20, 11.5]] }
-            }
-          },
-          {
-            id: "bridge-secondary-tertiary", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["in", "class", "secondary", "tertiary"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fea",
-              "line-width": { base: 1.2, stops: [[6.5, 0], [8, 0.5], [20, 13]] }
-            }
-          },
-          {
-            id: "bridge-trunk-primary", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["in", "class", "primary", "trunk"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fea",
-              "line-width": { base: 1.2, stops: [[6.5, 0], [7, 0.5], [20, 18]] }
-            }
-          },
-          {
-            id: "bridge-motorway", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["==", "class", "motorway"], ["!=", "ramp", 1]],
-            layout: { "line-join": "round" },
-            paint: {
-              "line-color": "#fc8",
-              "line-width": { base: 1.2, stops: [[6.5, 0], [7, 0.5], [20, 18]] }
-            }
-          },
-          {
-            id: "bridge-railway", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["==", "class", "rail"]],
-            paint: {
-              "line-color": "#bbb",
-              "line-width": { base: 1.4, stops: [[14, 0.4], [15, 0.75], [20, 2]] }
-            }
-          },
-          {
-            id: "bridge-railway-hatching", type: "line", source: "omt", "source-layer": "transportation",
-            filter: ["all", ["==", "brunnel", "bridge"], ["==", "class", "rail"]],
-            paint: {
-              "line-color": "#bbb", "line-dasharray": [0.2, 8],
-              "line-width": { base: 1.4, stops: [[14.5, 0], [15, 3], [20, 8]] }
-            }
-          },
-
-          // ── WATER LABELS ────────────────────────────────────────────────────
-          {
-            id: "waterway-name", type: "symbol", source: "omt", "source-layer": "waterway",
-            minzoom: 13,
-            filter: ["all", ["==", "$type", "LineString"], ["has", "name"]],
-            layout: {
-              "symbol-placement": "line", "symbol-spacing": 350,
-              "text-field": "{name:latin} {name:nonlatin}",
-              "text-font": ["Noto Sans Italic"], "text-letter-spacing": 0.2,
-              "text-max-width": 5, "text-rotation-alignment": "map", "text-size": 14
-            },
-            paint: {
-              "text-color": "#74aee9", "text-halo-color": "rgba(255,255,255,0.7)", "text-halo-width": 1.5
-            }
-          },
-          {
-            id: "water-name-lakeline", type: "symbol", source: "omt", "source-layer": "water_name",
-            filter: ["==", "$type", "LineString"],
-            layout: {
-              "symbol-placement": "line", "symbol-spacing": 350,
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Italic"], "text-letter-spacing": 0.2,
-              "text-max-width": 5, "text-rotation-alignment": "map", "text-size": 14
-            },
-            paint: {
-              "text-color": "#74aee9", "text-halo-color": "rgba(255,255,255,0.7)", "text-halo-width": 1.5
-            }
-          },
-          {
-            id: "water-name-ocean", type: "symbol", source: "omt", "source-layer": "water_name",
-            filter: ["all", ["==", "$type", "Point"], ["==", "class", "ocean"]],
-            layout: {
-              "symbol-placement": "point", "symbol-spacing": 350,
-              "text-field": "{name:latin}",
-              "text-font": ["Noto Sans Italic"], "text-letter-spacing": 0.2,
-              "text-max-width": 5, "text-rotation-alignment": "map", "text-size": 14
-            },
-            paint: {
-              "text-color": "#74aee9", "text-halo-color": "rgba(255,255,255,0.7)", "text-halo-width": 1.5
-            }
-          },
-          {
-            id: "water-name-other", type: "symbol", source: "omt", "source-layer": "water_name",
-            filter: ["all", ["==", "$type", "Point"], ["!in", "class", "ocean"]],
-            layout: {
-              "symbol-placement": "point", "symbol-spacing": 350,
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Italic"], "text-letter-spacing": 0.2,
-              "text-max-width": 5, "text-rotation-alignment": "map",
-              "text-size": { stops: [[0, 10], [6, 14]] }, visibility: "visible"
-            },
-            paint: {
-              "text-color": "#74aee9", "text-halo-color": "rgba(255,255,255,0.7)", "text-halo-width": 1.5
-            }
-          },
-
-          // ── ROAD LABELS ─────────────────────────────────────────────────────
-          {
-            id: "road_oneway", type: "symbol", source: "omt", "source-layer": "transportation",
-            minzoom: 15,
-            filter: ["all", ["==", "oneway", 1], ["in", "class", "motorway", "trunk", "primary", "secondary", "tertiary", "minor", "service"]],
-            layout: {
-              "icon-image": "oneway", "icon-padding": 2, "icon-rotate": 90,
-              "icon-rotation-alignment": "map",
-              "icon-size": { stops: [[15, 0.5], [19, 1]] },
-              "symbol-placement": "line", "symbol-spacing": 75
-            },
-            paint: { "icon-opacity": 0.5 }
-          },
-          {
-            id: "road_oneway_opposite", type: "symbol", source: "omt", "source-layer": "transportation",
-            minzoom: 15,
-            filter: ["all", ["==", "oneway", -1], ["in", "class", "motorway", "trunk", "primary", "secondary", "tertiary", "minor", "service"]],
-            layout: {
-              "icon-image": "oneway", "icon-padding": 2, "icon-rotate": -90,
-              "icon-rotation-alignment": "map",
-              "icon-size": { stops: [[15, 0.5], [19, 1]] },
-              "symbol-placement": "line", "symbol-spacing": 75
-            },
-            paint: { "icon-opacity": 0.5 }
-          },
-          {
-            id: "highway-name-path", type: "symbol", source: "omt", "source-layer": "transportation_name",
-            minzoom: 15.5, filter: ["==", "class", "path"],
-            layout: {
-              "symbol-placement": "line",
-              "text-field": "{name:latin} {name:nonlatin}",
-              "text-font": ["Noto Sans Regular"],
-              "text-rotation-alignment": "map",
-              "text-size": { base: 1, stops: [[13, 12], [14, 13]] }
-            },
-            paint: {
-              "text-color": "hsl(30,23%,62%)",
-              "text-halo-color": "#f8f4f0", "text-halo-width": 0.5
-            }
-          },
-          {
-            id: "highway-name-minor", type: "symbol", source: "omt", "source-layer": "transportation_name",
-            minzoom: 15,
-            filter: ["all", ["==", "$type", "LineString"], ["in", "class", "minor", "service", "track"]],
-            layout: {
-              "symbol-placement": "line",
-              "text-field": "{name:latin} {name:nonlatin}",
-              "text-font": ["Noto Sans Regular"],
-              "text-rotation-alignment": "map",
-              "text-size": { base: 1, stops: [[13, 12], [14, 13]] }
-            },
-            paint: {
-              "text-color": isDark ? c.rlabel : "#765",
-              "text-halo-blur": 0.5, "text-halo-width": 1
-            }
-          },
-          {
-            id: "highway-name-major", type: "symbol", source: "omt", "source-layer": "transportation_name",
-            minzoom: 12.2,
-            filter: ["in", "class", "primary", "secondary", "tertiary", "trunk"],
-            layout: {
-              "symbol-placement": "line",
-              "text-field": "{name:latin} {name:nonlatin}",
-              "text-font": ["Noto Sans Regular"],
-              "text-rotation-alignment": "map",
-              "text-size": { base: 1, stops: [[13, 12], [14, 13]] }
-            },
-            paint: {
-              "text-color": isDark ? c.rlabel : "#765",
-              "text-halo-blur": 0.5, "text-halo-width": 1
-            }
-          },
-
-          // ── HIGHWAY SHIELDS ─────────────────────────────────────────────────
-          {
-            id: "highway-shield", type: "symbol", source: "omt", "source-layer": "transportation_name",
-            minzoom: 8,
-            filter: ["all", ["<=", "ref_length", 6], ["==", "$type", "LineString"], ["!in", "network", "us-interstate", "us-highway", "us-state"]],
-            layout: {
-              "icon-image": "road_{ref_length}", "icon-rotation-alignment": "viewport", "icon-size": 1,
-              "symbol-placement": { base: 1, stops: [[10, "point"], [11, "line"]] },
-              "symbol-spacing": 200, "text-field": "{ref}",
-              "text-font": ["Noto Sans Regular"], "text-rotation-alignment": "viewport", "text-size": 10
-            },
-            paint: {}
-          },
-          {
-            id: "highway-shield-us-interstate", type: "symbol", source: "omt", "source-layer": "transportation_name",
-            minzoom: 7,
-            filter: ["all", ["<=", "ref_length", 6], ["==", "$type", "LineString"], ["in", "network", "us-interstate"]],
-            layout: {
-              "icon-image": "{network}_{ref_length}", "icon-rotation-alignment": "viewport", "icon-size": 1,
-              "symbol-placement": { base: 1, stops: [[7, "point"], [7, "line"], [8, "line"]] },
-              "symbol-spacing": 200, "text-field": "{ref}",
-              "text-font": ["Noto Sans Regular"], "text-rotation-alignment": "viewport", "text-size": 10
-            },
-            paint: { "text-color": "rgba(0,0,0,1)" }
-          },
-          {
-            id: "highway-shield-us-other", type: "symbol", source: "omt", "source-layer": "transportation_name",
-            minzoom: 9,
-            filter: ["all", ["<=", "ref_length", 6], ["==", "$type", "LineString"], ["in", "network", "us-highway", "us-state"]],
-            layout: {
-              "icon-image": "{network}_{ref_length}", "icon-rotation-alignment": "viewport", "icon-size": 1,
-              "symbol-placement": { base: 1, stops: [[10, "point"], [11, "line"]] },
-              "symbol-spacing": 200, "text-field": "{ref}",
-              "text-font": ["Noto Sans Regular"], "text-rotation-alignment": "viewport", "text-size": 10
-            },
-            paint: { "text-color": "rgba(0,0,0,1)" }
-          },
-
-          // ── POI LABELS ──────────────────────────────────────────────────────
-          {
-            id: "poi-level-3", type: "symbol", source: "omt", "source-layer": "poi",
-            minzoom: 16,
-            filter: ["all", ["==", "$type", "Point"], [">=", "rank", 25], ["any", ["!has", "level"], ["==", "level", 0]]],
-            layout: {
-              "icon-image": "{class}_11", "text-anchor": "top",
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Regular"], "text-max-width": 9,
-              "text-offset": [0, 0.6], "text-padding": 2, "text-size": 12, visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.poi : "#666",
-              "text-halo-blur": 0.5, "text-halo-color": "#ffffff", "text-halo-width": 1
-            }
-          },
-          {
-            id: "poi-level-2", type: "symbol", source: "omt", "source-layer": "poi",
-            minzoom: 15,
-            filter: ["all", ["==", "$type", "Point"], ["<=", "rank", 24], [">=", "rank", 15], ["any", ["!has", "level"], ["==", "level", 0]]],
-            layout: {
-              "icon-image": "{class}_11", "text-anchor": "top",
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Regular"], "text-max-width": 9,
-              "text-offset": [0, 0.6], "text-padding": 2, "text-size": 12, visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.poi : "#666",
-              "text-halo-blur": 0.5, "text-halo-color": "#ffffff", "text-halo-width": 1
-            }
-          },
-          {
-            id: "poi-level-1", type: "symbol", source: "omt", "source-layer": "poi",
-            minzoom: 14,
-            filter: ["all", ["==", "$type", "Point"], ["<=", "rank", 14], ["has", "name"], ["any", ["!has", "level"], ["==", "level", 0]]],
-            layout: {
-              "icon-image": "{class}_11", "text-anchor": "top",
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Regular"], "text-max-width": 9,
-              "text-offset": [0, 0.6], "text-padding": 2, "text-size": 12, visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.poi : "#666",
-              "text-halo-blur": 0.5, "text-halo-color": "#ffffff", "text-halo-width": 1
-            }
-          },
-          {
-            id: "poi-railway", type: "symbol", source: "omt", "source-layer": "poi",
-            minzoom: 13,
-            filter: ["all", ["==", "$type", "Point"], ["has", "name"], ["==", "class", "railway"], ["==", "subclass", "station"]],
-            layout: {
-              "icon-allow-overlap": false, "icon-ignore-placement": false,
-              "icon-image": "{class}_11", "icon-optional": false,
-              "text-allow-overlap": false, "text-anchor": "top",
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Regular"], "text-ignore-placement": false,
-              "text-max-width": 9, "text-offset": [0, 0.6], "text-optional": true,
-              "text-padding": 2, "text-size": 12
-            },
-            paint: {
-              "text-color": isDark ? c.poi : "#666",
-              "text-halo-blur": 0.5, "text-halo-color": "#ffffff", "text-halo-width": 1
-            }
-          },
-
-          // ── AERODROME LABELS ────────────────────────────────────────────────
-          {
-            id: "airport-label-major", type: "symbol", source: "omt", "source-layer": "aerodrome_label",
-            minzoom: 10, filter: ["all", ["has", "iata"]],
-            layout: {
-              "icon-image": "airport_11", "icon-size": 1, "text-anchor": "top",
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Regular"], "text-max-width": 9,
-              "text-offset": [0, 0.6], "text-optional": true,
-              "text-padding": 2, "text-size": 12, visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.poi : "#666",
-              "text-halo-blur": 0.5, "text-halo-color": "#ffffff", "text-halo-width": 1
-            }
-          },
-
-          // ── PLACE LABELS ────────────────────────────────────────────────────
-          {
-            id: "place-other", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["!in", "class", "city", "town", "village", "state", "country", "continent"],
-            layout: {
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Bold"], "text-letter-spacing": 0.1,
-              "text-max-width": 9,
-              "text-size": { base: 1.2, stops: [[12, 10], [15, 14]] },
-              "text-transform": "uppercase", visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.plabel : "#633",
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 1.2
-            }
-          },
-          {
-            id: "place-village", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["==", "class", "village"],
-            layout: {
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Regular"], "text-max-width": 8,
-              "text-size": { base: 1.2, stops: [[10, 12], [15, 22]] }, visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.plabel : "#333",
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 1.2
-            }
-          },
-          {
-            id: "place-town", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["==", "class", "town"],
-            layout: {
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Regular"], "text-max-width": 8,
-              "text-size": { base: 1.2, stops: [[10, 14], [15, 24]] }, visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.plabel : "#333",
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 1.2
-            }
-          },
-          {
-            id: "place-city", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["all", ["!=", "capital", 2], ["==", "class", "city"]],
-            layout: {
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Regular"], "text-max-width": 8,
-              "text-size": { base: 1.2, stops: [[7, 14], [11, 24]] }, visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.plabel : "#333",
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 1.2
-            }
-          },
-          {
-            id: "place-city-capital", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["all", ["==", "capital", 2], ["==", "class", "city"]],
-            layout: {
-              "icon-image": "star_11", "icon-size": 0.8, "text-anchor": "left",
-              "text-field": "{name:latin}\n{name:nonlatin}",
-              "text-font": ["Noto Sans Regular"], "text-max-width": 8,
-              "text-offset": [0.4, 0],
-              "text-size": { base: 1.2, stops: [[7, 14], [11, 24]] }, visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.plabel : "#333",
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 1.2
-            }
-          },
-          {
-            id: "place-state", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["in", "class", "state"],
-            layout: {
-              "text-field": "{name:latin}",
-              "text-font": ["Noto Sans Bold"], "text-letter-spacing": 0.1,
-              "text-max-width": 9,
-              "text-size": { base: 1.2, stops: [[12, 10], [15, 14]] },
-              "text-transform": "uppercase", visibility: "visible"
-            },
-            paint: {
-              "text-color": isDark ? c.plabel : "#633",
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 1.2
-            }
-          },
-          {
-            id: "place-country-other", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["all", ["==", "class", "country"], [">=", "rank", 3], ["!has", "iso_a2"]],
-            layout: {
-              "text-field": "{name:latin}",
-              "text-font": ["Noto Sans Italic"], "text-max-width": 6.25,
-              "text-size": { stops: [[3, 11], [7, 17]] },
-              "text-transform": "uppercase", visibility: "visible"
-            },
-            paint: {
-              "text-color": "#334", "text-halo-blur": 1,
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 2
-            }
-          },
-          {
-            id: "place-country-3", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["all", ["==", "class", "country"], [">=", "rank", 3], ["has", "iso_a2"]],
-            layout: {
-              "text-field": "{name:latin}",
-              "text-font": ["Noto Sans Bold"], "text-max-width": 6.25,
-              "text-size": { stops: [[3, 11], [7, 17]] },
-              "text-transform": "uppercase", visibility: "visible"
-            },
-            paint: {
-              "text-color": "#334", "text-halo-blur": 1,
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 2
-            }
-          },
-          {
-            id: "place-country-2", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["all", ["==", "class", "country"], ["==", "rank", 2], ["has", "iso_a2"]],
-            layout: {
-              "text-field": "{name:latin}",
-              "text-font": ["Noto Sans Bold"], "text-max-width": 6.25,
-              "text-size": { stops: [[2, 11], [5, 17]] },
-              "text-transform": "uppercase", visibility: "visible"
-            },
-            paint: {
-              "text-color": "#334", "text-halo-blur": 1,
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 2
-            }
-          },
-          {
-            id: "place-country-1", type: "symbol", source: "omt", "source-layer": "place",
-            filter: ["all", ["==", "class", "country"], ["==", "rank", 1], ["has", "iso_a2"]],
-            layout: {
-              "text-field": "{name:latin}",
-              "text-font": ["Noto Sans Bold"], "text-max-width": 6.25,
-              "text-size": { stops: [[1, 11], [4, 17]] },
-              "text-transform": "uppercase", visibility: "visible"
-            },
-            paint: {
-              "text-color": "#334", "text-halo-blur": 1,
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 2
-            }
-          },
-          {
-            id: "place-continent", type: "symbol", source: "omt", "source-layer": "place",
-            maxzoom: 1, filter: ["==", "class", "continent"],
-            layout: {
-              "text-field": "{name:latin}",
-              "text-font": ["Noto Sans Bold"], "text-max-width": 6.25,
-              "text-size": 14, "text-transform": "uppercase", visibility: "visible"
-            },
-            paint: {
-              "text-color": "#334", "text-halo-blur": 1,
-              "text-halo-color": "rgba(255,255,255,0.8)", "text-halo-width": 2
+          // Water fills
+          if (id.includes('water') && !id.includes('name') && paint['fill-color']) {
+            if (typeof paint['fill-color'] === 'string' && !paint['fill-color'].includes('hsl')) {
+              paint['fill-color'] = c.water;
             }
           }
-        ]
-      };
+
+          // Roads (exclude labels/shields)
+          if ((id.includes('highway') || id.includes('road')) &&
+            !id.includes('name') && !id.includes('shield') &&
+            paint['line-color']) {
+            if (id.includes('casing')) {
+              paint['line-color'] = isDark ? '#252c42' : '#e9ac77';
+            } else {
+              paint['line-color'] = c.road;
+            }
+          }
+
+          // Buildings
+          if (id === 'building' && paint['fill-color']) {
+            paint['fill-color'] = c.bld;
+          }
+          if (id === 'building-top' && paint['fill-color']) {
+            paint['fill-color'] = c.bldTop;
+          }
+
+          // Text labels (places, POIs, roads)
+          if (layer.type === 'symbol' && layer.layout?.['text-field'] && paint['text-color']) {
+            if (id.includes('place') || id.includes('poi') || id.includes('highway-name')) {
+              paint['text-color'] = c.plabel;
+              paint['text-halo-color'] = c.halo;
+            }
+          }
+
+          return layer;
+        });
+
+        // Cache with theme marker
+        style._theme = theme;
+        _cachedStyle = style;
+
+        dbg(`✓ Style loaded: ${style.name || 'unnamed'} (${theme})`);
+        return style;
+
+      } catch (err) {
+        dbg(`⚠ Style fetch failed: ${err.message} — using fallback`);
+
+        // Fallback to minimal hardcoded style (ensures map still loads)
+        return {
+          version: 8,
+          name: "Fallback",
+          sources: { openmaptiles: { type: 'vector', url: PMTILES_STYLE_URL } },
+          glyphs: './font/{fontstack}/{range}.pbf',
+          layers: [
+            { id: 'background', type: 'background', paint: { 'background-color': c.bg } },
+            { id: 'water', type: 'fill', source: 'openmaptiles', 'source-layer': 'water', paint: { 'fill-color': c.water } },
+            {
+              id: 'road', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation',
+              filter: ['in', 'class', 'primary', 'secondary', 'tertiary', 'trunk', 'motorway'],
+              paint: { 'line-color': c.road, 'line-width': 2 }
+            }
+          ]
+        };
+      }
     }
     // ── 4. Test fetch + init map (Android-safe pattern) ───────────────────────
     async function runFetchTests() {
@@ -2071,10 +654,10 @@
         dbg('Range bytes: ' + buf.byteLength + ' (expect 128)');
       } catch (e) { dbg('Range test FAIL: ' + e.message); }
 
-      initMap(pmtilesUrl);
+      await initMap(pmtilesUrl);
     }
 
-    function initMap(pmtilesUrl) {
+    async function initMap(pmtilesUrl) {
       dbg('Initializing map…');
       const PMTILES_STYLE_URL = 'pmtiles://' + pmtilesUrl;
 
@@ -2089,15 +672,7 @@
       window._pmtilesFile = pmtilesFile;
 
       // ✅ USE SIMPLE STYLE FIRST (verify map loads, then enhance)
-      const style = {
-        version: 8,
-        sources: { omt: { type: 'vector', url: PMTILES_STYLE_URL } },
-        layers: [
-          { id: 'background', type: 'background', paint: { 'background-color': '#0d1017' } },
-          { id: 'water', type: 'fill', source: 'omt', 'source-layer': 'water', paint: { 'fill-color': '#1a3a5c' } },
-          { id: 'road', type: 'line', source: 'omt', 'source-layer': 'transportation', filter: ['in', 'class', 'primary', 'secondary', 'tertiary', 'trunk', 'motorway'], paint: { 'line-color': '#4a5568', 'line-width': 2 } }
-        ]
-      };
+      const style = await buildStyle('light');
 
       const map = new maplibregl.Map({
         container: 'map',
@@ -2124,12 +699,12 @@
           const meta = await window._pmtilesFile.getMetadata();
           const layers = (meta?.vector_layers || []).map(l => l.id);
           dbg('PMTiles layers: ' + layers.join(', '));
-          document.getElementById('tile-label').textContent = 'Tunis offline (' + layers.length + ' layers)';
+          // document.getElementById('tile-label').textContent = 'Tunis offline (' + layers.length + ' layers)';
         } catch (e) { dbg('Meta read failed: ' + e.message); }
       });
 
       map.on('sourcedata', e => {
-        if (e.sourceId === 'omt' && e.isSourceLoaded) dbg('✓ SOURCE LOADED');
+        if (e.sourceId === 'openmaptiles' && e.isSourceLoaded) dbg('✓ SOURCE LOADED');
       });
 
       map.on('data', e => {
@@ -2170,11 +745,12 @@
 
     // Kick off
     runFetchTests();
+
     // Debug panel (auto-hides after 12s, click to dismiss)
+    // Debug panel — logs accumulate, only shown when user clicks debug button
     function dbg(msg) {
       console.log('[Atlas]', msg);
       const content = document.getElementById('debug-content');
-      const panel = document.getElementById('debug-panel');
 
       // Add timestamp and message
       const time = new Date().toLocaleTimeString();
@@ -2182,13 +758,7 @@
 
       // Auto-scroll to bottom
       content.scrollTop = content.scrollHeight;
-
-      // Show panel
-      panel.classList.add('show');
-
-      // Auto-hide after 12s (but keep logs)
-      clearTimeout(window._dbgTimer);
-      window._dbgTimer = setTimeout(() => panel.classList.remove('show'), 12000);
+      // ✅ No auto-show — panel only appears when user clicks debug button
     }
     document.getElementById('debug-panel').addEventListener('click', () => {
       document.getElementById('debug-panel').classList.remove('show');
@@ -2579,50 +1149,163 @@
       }
     }
     // ── Search ─────────────────────────────────────────────────────────────────
-    let st;
+    // ── Search ────────────────────────────────────────────────────────────────
+    let _searchTimer = null;
+    let _lastQuery = '';
+
     document.getElementById('search-input').addEventListener('input', function () {
-      clearTimeout(st);
+      clearTimeout(_searchTimer);
       const q = this.value.trim();
-      document.getElementById('search-clear').style.display = q ? 'block' : 'none';
-      if (q.length < 3) return;
-      st = setTimeout(() => searchPlaces(q), 500);
+      const clearBtn = document.getElementById('search-clear');
+      clearBtn.classList.toggle('visible', q.length > 0);
+
+      if (q.length < 2) { closeResults(); return; }
+      if (q === _lastQuery) return;
+      _lastQuery = q;
+
+      _searchTimer = setTimeout(() => searchPlaces(q), 400);
     });
-    async function searchPlaces(q) {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&countrycodes=tn`,
-          { headers: { 'Accept-Language': 'en' } });
-        const results = await res.json();
-        if (!results.length) { showPanel(`"${q}"`, 'No results', '<p style="color:var(--c-muted);font-size:13px">Nothing found.</p>'); return; }
-        showPanel(`"${q}"`, `${results.length} results`,
-          results.map(r =>
-            `<div class="route-card" onclick="goTo(${r.lat},${r.lon},'${r.display_name.replace(/'/g, "\\'")}')">
-           <div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div>
-           <div class="route-info">
-             <div class="route-label">${r.display_name.split(',')[0]}</div>
-             <div class="route-meta">${r.display_name.split(',').slice(1, 3).join(',').trim()}</div>
-           </div></div>`).join(''));
-      } catch {
-        showPanel('Search', 'Offline',
-          `<p style="color:var(--c-warn);font-size:13px">⚠ No internet — geocoding unavailable.</p>`);
-      }
+
+    document.getElementById('search-input').addEventListener('blur', () => {
+      // Delay so clicks on results register first
+      setTimeout(closeResults, 200);
+    });
+
+    document.getElementById('search-input').addEventListener('focus', () => {
+      const q = document.getElementById('search-input').value.trim();
+      if (q.length >= 2) openResults();
+    });
+
+    function closeResults() {
+      document.getElementById('search-results').classList.remove('open');
     }
-    function goTo(lat, lon, name) {
-      map.flyTo({ center: [lon, lat], zoom: 15, duration: 1000 });
-      new maplibregl.Marker({ color: '#4ade80', scale: .7 })
-        .setLngLat([lon, lat]).setPopup(new maplibregl.Popup().setText(name.split(',')[0]))
-        .addTo(map).togglePopup();
-      closePanel();
-      document.getElementById('search-input').value = name.split(',')[0];
+    function openResults() {
+      document.getElementById('search-results').classList.add('open');
     }
+
+
+    function iconForType(type, cls) {
+      if (cls === 'highway') return '🛣️';
+      if (type === 'residential' || type === 'suburb' || type === 'neighbourhood') return '🏘️';
+      if (type === 'city' || type === 'town' || type === 'village') return '🏙️';
+      if (cls === 'amenity') return '📍';
+      if (cls === 'shop') return '🛒';
+      if (cls === 'tourism') return '🏛️';
+      if (cls === 'leisure') return '🌳';
+      return '📍';
+    }
+
+    function selectResult(index) {
+      const r = window._searchResults?.[index];
+      if (!r) return;
+
+      const lat = parseFloat(r.lat);
+      const lon = parseFloat(r.lon);
+      const name = r.display_name.split(',')[0];
+
+      // Update input
+      document.getElementById('search-input').value = name;
+      document.getElementById('search-clear').classList.add('visible');
+      closeResults();
+
+      // Fly to location
+      const zoom = zoomForType(r.type, r.class);
+      map.flyTo({ center: [lon, lat], zoom, duration: 900 });
+
+      // Try to draw boundary from PMTiles data
+      drawBoundaryHighlight(r);
+
+      // Drop a subtle marker
+      if (window._searchMarker) window._searchMarker.remove();
+      const el = document.createElement('div');
+      el.style.cssText = `
+    width:12px;height:12px;border-radius:50%;
+    background:#818cf8;border:2.5px solid white;
+    box-shadow:0 0 12px rgba(129,140,248,.7);
+  `;
+      window._searchMarker = new maplibregl.Marker({ element: el })
+        .setLngLat([lon, lat])
+        .addTo(map);
+    }
+
+    function zoomForType(type, cls) {
+      if (type === 'city') return 12;
+      if (type === 'town') return 13;
+      if (type === 'suburb' || type === 'neighbourhood' || type === 'village') return 14;
+      if (cls === 'highway') return 16;
+      return 15;
+    }
+
+    function drawBoundaryHighlight(result) {
+      // Remove old highlight
+      ['search-boundary-fill', 'search-boundary-line'].forEach(id => {
+        if (map.getLayer(id)) map.removeLayer(id);
+      });
+      if (map.getSource('search-boundary')) map.removeSource('search-boundary');
+
+      // Build a bbox polygon from Nominatim's boundingbox
+      if (!result.boundingbox) return;
+      const [s, n, w, e] = result.boundingbox.map(Number);
+
+      // Only draw a box for areas (not point POIs)
+      const isArea = (n - s) > 0.001 || (e - w) > 0.001;
+      if (!isArea) return;
+
+      const polygon = {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[
+            [w, s], [e, s], [e, n], [w, n], [w, s]
+          ]]
+        }
+      };
+
+      map.addSource('search-boundary', { type: 'geojson', data: polygon });
+
+      // Fill
+      map.addLayer({
+        id: 'search-boundary-fill',
+        type: 'fill',
+        source: 'search-boundary',
+        paint: {
+          'fill-color': '#818cf8',
+          'fill-opacity': 0.12
+        }
+      });
+
+      // Outline
+      map.addLayer({
+        id: 'search-boundary-line',
+        type: 'line',
+        source: 'search-boundary',
+        paint: {
+          'line-color': '#818cf8',
+          'line-width': 2,
+          'line-opacity': 0.7,
+          'line-dasharray': [4, 3]
+        }
+      });
+
+      // Auto-fade after 4 seconds
+      setTimeout(() => {
+        if (map.getLayer('search-boundary-fill')) {
+          map.setPaintProperty('search-boundary-fill', 'fill-opacity', 0);
+          map.setPaintProperty('search-boundary-line', 'line-opacity', 0);
+        }
+      }, 4000);
+    }
+
     function clearSearch() {
       document.getElementById('search-input').value = '';
-      document.getElementById('search-clear').style.display = 'none';
-      closePanel();
-    }
-    function copyCoords(lat, lng) {
-      navigator.clipboard?.writeText(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-      closePanel();
+      document.getElementById('search-clear').classList.remove('visible');
+      _lastQuery = '';
+      closeResults();
+      if (window._searchMarker) { window._searchMarker.remove(); window._searchMarker = null; }
+      ['search-boundary-fill', 'search-boundary-line'].forEach(id => {
+        if (map.getLayer(id)) map.removeLayer(id);
+      });
+      if (map.getSource('search-boundary')) map.removeSource('search-boundary');
     }
 
     // ── Panel ──────────────────────────────────────────────────────────────────
@@ -2653,7 +1336,7 @@
     }
 
     function debugRoads() {
-      const features = map.querySourceFeatures('omt', {
+      const features = map.querySourceFeatures('openmaptiles', {
         sourceLayer: 'transportation'
       });
 
@@ -2720,6 +1403,156 @@
         dbg('❌ Capacitor does NOT see Valhalla plugin — check MainActivity.java');
       }
     });
+
+
+
+  </script>
+  <!-- ✅ OFFLINE SEARCH MODULE (separate script to ensure execution) -->
+  <script>
+    (function () {
+      // Wait for DOM to be ready
+      if (document.readyState !== 'loading') {
+        initOfflineSearch();
+      } else {
+        document.addEventListener('DOMContentLoaded', initOfflineSearch);
+      }
+
+      function initOfflineSearch() {
+        dbg('🔍 Offline search module initializing...');
+
+        let offlinePlaces = [];
+
+        // Load places.json with detailed debug
+        dbg('🔍 Starting places.json fetch...');
+
+        fetch('./data/places.json', { method: 'HEAD', cache: 'no-store' })
+          .then(headRes => {
+            dbg(`📥 HEAD request: status=${headRes.status}, ok=${headRes.ok}, url=${headRes.url}`);
+            if (!headRes.ok) throw new Error(`HEAD request failed: ${headRes.status}`);
+            return fetch('./data/places.json', { cache: 'force-cache' });
+          })
+          .then(res => {
+            dbg(`📥 GET request: status=${res.status}, ok=${res.ok}, url=${res.url}, type=${res.type}`);
+            if (!res.ok) return res.text().then(txt => { throw new Error(`HTTP ${res.status}: ${txt.slice(0, 100)}`); });
+            return res;
+          })
+          .then(res => res.json())
+          .then(data => {
+            dbg(`✅ Loaded ${Array.isArray(data) ? data.length : 'unknown'} places`);
+            if (Array.isArray(data) && data.length > 0) {
+              dbg(`📋 Sample: ${JSON.stringify(data[0]).slice(0, 100)}...`);
+            }
+            offlinePlaces = data;
+          })
+          .catch(err => {
+            dbg(`❌ Failed to load places.json: ${err.name} - ${err.message}`);
+            const resultsEl = document.getElementById('search-results');
+            if (resultsEl) {
+              resultsEl.innerHTML = `<div class="search-no-results">⚠ خطأ: ${err.message}</div>`;
+              resultsEl.classList.add('open');
+            }
+          });
+
+        const searchInput = document.getElementById('search-input');
+        const clearBtn = document.getElementById('search-clear');
+        const resultsEl = document.getElementById('search-results');
+
+        dbg(`🔧 Elements found: input=${!!searchInput}, clear=${!!clearBtn}, results=${!!resultsEl}`);
+
+        let _searchTimer = null;
+
+        searchInput.addEventListener('input', function (e) {
+          clearTimeout(_searchTimer);
+          const q = e.target.value.trim();
+          clearBtn.classList.toggle('visible', q.length > 0);
+
+          if (q.length < 2) {
+            resultsEl.classList.remove('open');
+            resultsEl.innerHTML = '';
+            return;
+          }
+
+          _searchTimer = setTimeout(() => {
+            dbg(`🔍 Searching for: "${q}" (offlinePlaces.length=${offlinePlaces.length})`);
+            const query = q.toLowerCase();
+
+            const matches = offlinePlaces.filter(p => {
+              const nameAr = (p.na || '').toLowerCase();
+              const nameLatin = (p.nl || '').toLowerCase();
+              const nameDefault = (p.n || '').toLowerCase();
+              return nameAr.includes(query) || nameLatin.includes(query) || nameDefault.includes(query);
+            }).slice(0, 12);
+
+            dbg(`📈 Found ${matches.length} matches`);
+
+            if (matches.length === 0) {
+              resultsEl.innerHTML = '<div class="search-no-results">لا توجد نتائج</div>';
+              resultsEl.classList.add('open');
+            } else {
+              resultsEl.innerHTML = matches.map(p => {
+                const displayName = p.na || p.nl || p.n;
+                const type = p.c || '';
+                const safeName = displayName.replace(/'/g, "\\'");
+
+                // Add coordinate hint for disambiguation
+                const coordHint = `(${p.la.toFixed(3)}, ${p.lo.toFixed(3)})`;
+
+                // Translate common types to Arabic for better UX
+                const typeLabels = {
+                  'city': 'مدينة', 'town': 'بلدة', 'village': 'قرية',
+                  'suburb': 'ضاحية', 'neighbourhood': 'حي', 'quarter': 'حي',
+                  'shop': 'متجر', 'cafe': 'مقهى', 'restaurant': 'مطعم',
+                  'grocery': 'بقالة', 'bus': 'حافلة', 'police': 'شرطة'
+                };
+                const typeLabel = typeLabels[type] || type;
+
+                return `
+    <div class="search-result-item" onclick="window.goToPlace(${p.lo}, ${p.la}, '${safeName}')">
+      <div class="sri-icon">📍</div>
+      <div>
+        <div class="sri-name">${displayName}</div>
+        <div class="sri-sub">${typeLabel} • ${coordHint}</div>
+      </div>
+    </div>
+  `;
+              }).join('');
+              resultsEl.classList.add('open');
+              dbg('✅ Results displayed');
+            }
+          }, 300);
+        });
+
+        clearBtn.addEventListener('click', function () {
+          searchInput.value = '';
+          clearBtn.classList.remove('visible');
+          resultsEl.classList.remove('open');
+          resultsEl.innerHTML = '';
+          searchInput.focus();
+        });
+
+        window.goToPlace = function (lon, lat, name) {
+          dbg(`✈️ goToPlace: [${lon}, ${lat}], "${name}"`);
+
+          if (window.map?.flyTo) {
+            window.map.flyTo({ center: [lon, lat], zoom: 15, duration: 1000 });
+
+            if (typeof maplibregl !== 'undefined') {
+              if (window._searchMarker) window._searchMarker.remove();
+              const el = document.createElement('div');
+              el.style.cssText = `width:12px;height:12px;border-radius:50%;background:#4ade80;border:2px solid white;box-shadow:0 0 10px rgba(74,222,128,0.8);`;
+              window._searchMarker = new maplibregl.Marker({ element: el }).setLngLat([lon, lat]).addTo(window.map);
+            }
+          }
+
+          searchInput.value = name;
+          clearBtn.classList.add('visible');
+          resultsEl.classList.remove('open');
+          resultsEl.innerHTML = '';
+        };
+
+        dbg('🎉 Offline search ready');
+      }
+    })();
   </script>
 </body>
 
