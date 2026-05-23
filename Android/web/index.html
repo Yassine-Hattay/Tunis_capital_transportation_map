@@ -529,121 +529,568 @@
     async function buildStyle(theme) {
       const isDark = theme === 'dark';
 
-      // Theme color tokens for overrides
+      // ── Theme color tokens (keep your existing palette) ─────────────────────────
       const c = isDark ? {
-        bg: '#0d1017', water: '#111e32', road: '#38405e',
-        bld: '#171b27', bldTop: '#1a1f2e',
-        rlabel: '#6a7a9a', plabel: '#b8c8e0', poi: '#5a6a88',
-        halo: '#0d1017'
+        bg: '#0a0e14', land: '#121826', water: '#0d1b3a', waterLine: '#1a3a6a',
+        forest: '#1a3a2a', park: '#1e4a3a', grass: '#1a3a2a', sand: '#3a3a2a',
+        beach: '#4a4a3a', industrial: '#2a2a3a', residential: '#1a1e2a',
+        cemetery: '#2a2a3a', wetland: '#1a2a3a', scrub: '#2a3a2a',
+        roadMotorway: '#5a7aa0', roadTrunk: '#4a6a90', roadPrimary: '#4a5a80',
+        roadSecondary: '#3a4a70', roadMinor: '#5a8ab0', roadPath: '#2a4a60',
+        roadRail: '#5a4a70', building: '#1e2230', buildingTop: '#2a2e3c',
+        siteSchool: '#1e3a2a', siteHospital: '#3a1e2a', siteParking: '#2a2a3a',
+        placeLabel: '#a8b8d8', roadLabel: '#7a8aa8', poiLabel: '#8a9ab8',
+        waterLabel: '#6a8ab8', addressLabel: '#6a7a9a',
+        boundary: '#5a4a6a', boundaryDisputed: '#6a3a4a',
+        poiIcon: '#6a7a9a', ferry: '#1a3a6a', aerialway: '#4a5a7a',
+        halo: '#0a0e14', haloLight: 'rgba(10,14,20,0.8)'
       } : {
-        bg: '#f5f2ed', water: 'hsl(210,67%,85%)', road: '#fea',
-        bld: '#ddd8cf', bldTop: '#c8c4bc',
-        rlabel: '#765', plabel: '#333', poi: '#666',
-        halo: 'rgba(255,255,255,0.8)'
+        bg: '#f8f4f0', land: '#f8f4f0', water: '#a0c8f0', waterLine: '#70a0d0',
+        forest: '#c8e0b8', park: '#d8e8c8', grass: '#e0f0d0', sand: '#f0e8d0',
+        beach: '#f8f0e0', industrial: '#e8e0d8', residential: '#f0f0f0',
+        cemetery: '#e0e0d0', wetland: '#d0e0f0', scrub: '#e0e8d0',
+        roadMotorway: '#ff8800', roadTrunk: '#ff8800', roadPrimary: '#ff8800',
+        roadSecondary: '#ff8800', roadMinor: '#ffcc88', roadPath: '#ff8800',
+        roadRail: '#ff8800', building: '#e0e0e0', buildingTop: '#f0f0f0',
+        siteSchool: '#e8f0e0', siteHospital: '#f0e8e8', siteParking: '#f0f0f0',
+        placeLabel: '#333', roadLabel: '#555', poiLabel: '#666',
+        waterLabel: '#4a6a8a', addressLabel: '#666',
+        boundary: '#aaa', boundaryDisputed: '#c88',
+        poiIcon: '#666', ferry: '#70a0d0', aerialway: '#aaa',
+        halo: '#fff', haloLight: 'rgba(255,255,255,0.8)'
       };
 
-      // Return cached style if available and theme matches
-      if (_cachedStyle && _cachedStyle._theme === theme) {
-        return _cachedStyle;
-      }
-
-      try {
-        // Fetch base style from external JSON
-        const res = await fetch('./style/style.json', { cache: 'force-cache' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        let style = await res.json();
-
-        // 🔁 Override source to use local PMTiles (critical for offline)
-        style.sources = {
-          openmaptiles: {
+      // ── Build style from scratch based on style1.json layer structure ──────────
+      const style = {
+        version: 8,
+        name: "Tunis Shortbread — Adapted",
+        sources: {
+          omt: {
             type: 'vector',
-            url: PMTILES_STYLE_URL  // e.g., 'pmtiles://http://localhost/data/tunis.pmtiles'
+            url: PMTILES_STYLE_URL
           }
-        };
+        },
+        sprite: './sprites/sprites',
+        glyphs: './font/{fontstack}/{range}.pbf',
+        layers: []
+      };
 
-        // 🔁 Fix local asset paths
-        style.glyphs = './font/{fontstack}/{range}.pbf';
-        style.sprite = './sprites/sprite';
-        style.spritePixelRatio = 1;
+      // ── 1. Background ─────────────────────────────────────────────────────────
+      style.layers.push({
+        id: 'background',
+        type: 'background',
+        paint: { 'background-color': c.bg }
+      });
 
-        // 🎨 Apply theme-based paint overrides
-        style.layers = style.layers.map(layer => {
-          const paint = layer.paint || {};
-          const id = layer.id;
+      // ── 2. Water (polygons) ───────────────────────────────────────────────────
+      style.layers.push({
+        id: 'water',
+        type: 'fill',
+        source: 'omt',
+        'source-layer': 'water_polygons',
+        minzoom: 4,
+        paint: {
+          'fill-color': c.water,
+          'fill-opacity': 0.9
+        }
+      });
 
-          // Background
-          if (id === 'background' && paint['background-color']) {
-            paint['background-color'] = c.bg;
+      // Water lines
+      style.layers.push({
+        id: 'water-lines',
+        type: 'line',
+        source: 'omt',
+        'source-layer': 'water_lines',
+        minzoom: 4,
+        paint: {
+          'line-color': c.waterLine,
+          'line-width': { base: 1.2, stops: [[10, 0.8], [14, 2], [20, 6]] }
+        }
+      });
+
+      // ── 3. Land base ──────────────────────────────────────────────────────────
+      style.layers.push({
+        id: 'land-base',
+        type: 'fill',
+        source: 'omt',
+        'source-layer': 'land',
+        minzoom: 7,
+        paint: { 'fill-color': c.land }
+      });
+
+      // Land cover overlays (parks, forest, etc.)
+      const landCoverTypes = [
+        { kind: 'forest', color: c.forest, minzoom: 7 },
+        { kind: 'park', color: c.park, minzoom: 11, filter: ['in', 'kind', 'park', 'village_green', 'recreation_ground'] },
+        { kind: 'grass', color: c.grass, minzoom: 11, filter: ['in', 'kind', 'grass', 'meadow'] },
+        { kind: 'sand', color: c.sand, minzoom: 10, filter: ['in', 'kind', 'sand', 'beach'] },
+        { kind: 'cemetery', color: c.cemetery, minzoom: 13 },
+        { kind: 'wetland', color: c.wetland, minzoom: 11, filter: ['in', 'kind', 'swamp', 'bog', 'marsh', 'wet_meadow'] },
+        { kind: 'scrub', color: c.scrub, minzoom: 11, filter: ['in', 'kind', 'scrub', 'heath', 'grassland'] },
+        { kind: 'residential', color: c.residential, minzoom: 10 },
+        { kind: 'industrial', color: c.industrial, minzoom: 10, filter: ['in', 'kind', 'industrial', 'commercial', 'retail'] }
+      ];
+
+      landCoverTypes.forEach(cfg => {
+        style.layers.push({
+          id: `land-${cfg.kind}`,
+          type: 'fill',
+          source: 'omt',
+          'source-layer': 'land',
+          minzoom: cfg.minzoom,
+          filter: cfg.filter || ['==', 'kind', cfg.kind],
+          paint: {
+            'fill-color': cfg.color,
+            'fill-opacity': { stops: [[cfg.minzoom, 0.4], [13, 0.8]] }
           }
-
-          // Water fills
-          if (id.includes('water') && !id.includes('name') && paint['fill-color']) {
-            if (typeof paint['fill-color'] === 'string' && !paint['fill-color'].includes('hsl')) {
-              paint['fill-color'] = c.water;
-            }
-          }
-
-          // Roads (exclude labels/shields)
-          if ((id.includes('highway') || id.includes('road')) &&
-            !id.includes('name') && !id.includes('shield') &&
-            paint['line-color']) {
-            if (id.includes('casing')) {
-              paint['line-color'] = isDark ? '#252c42' : '#e9ac77';
-            } else {
-              paint['line-color'] = c.road;
-            }
-          }
-
-          // Buildings
-          if (id === 'building' && paint['fill-color']) {
-            paint['fill-color'] = c.bld;
-          }
-          if (id === 'building-top' && paint['fill-color']) {
-            paint['fill-color'] = c.bldTop;
-          }
-
-          // Text labels (places, POIs, roads)
-          if (layer.type === 'symbol' && layer.layout?.['text-field'] && paint['text-color']) {
-            if (id.includes('place') || id.includes('poi') || id.includes('highway-name')) {
-              paint['text-color'] = c.plabel;
-              paint['text-halo-color'] = c.halo;
-            }
-          }
-
-          return layer;
         });
+      });
 
-        // Cache with theme marker
-        style._theme = theme;
-        _cachedStyle = style;
+      // ── 4. Sites (schools, hospitals, parking) ────────────────────────────────
+      style.layers.push(
+        {
+          id: 'sites-school',
+          type: 'fill',
+          source: 'omt',
+          'source-layer': 'sites',
+          filter: ['in', 'kind', 'school', 'college', 'university'],
+          minzoom: 13,
+          paint: { 'fill-color': c.siteSchool, 'fill-opacity': 0.4 }
+        },
+        {
+          id: 'sites-hospital',
+          type: 'fill',
+          source: 'omt',
+          'source-layer': 'sites',
+          filter: ['==', 'kind', 'hospital'],
+          minzoom: 13,
+          paint: { 'fill-color': c.siteHospital, 'fill-opacity': 0.4 }
+        },
+        {
+          id: 'sites-parking',
+          type: 'fill',
+          source: 'omt',
+          'source-layer': 'sites',
+          filter: ['in', 'kind', 'parking', 'bicycle_parking'],
+          minzoom: 13,
+          paint: { 'fill-color': c.siteParking, 'fill-opacity': 0.6 }
+        }
+      );
 
-        dbg(`✓ Style loaded: ${style.name || 'unnamed'} (${theme})`);
-        return style;
+      // ── 5. Streets (CRITICAL FIX: handle zoom-dependent layer structure) ──────
+      // style1.json: streets only has data at zoom 14; lower zooms write to it via streets_med/low
+      // So we style the 'streets' source-layer across all zooms, but adjust visibility/width by zoom
 
-      } catch (err) {
-        dbg(`⚠ Style fetch failed: ${err.message} — using fallback`);
+      const roadStyles = [
+        {
+          kinds: ['motorway', 'motorway_link', 'trunk', 'trunk_link'],
+          color: isDark ? '#ffaa33' : '#ff6600',
+          widths: { base: 1.4, stops: [[5, 1], [10, 3], [14, 10], [16, 18], [18, 24]] },
+          minzoom: 5
+        },
+        {
+          kinds: ['primary', 'primary_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link'],
+          color: isDark ? '#ff9944' : '#ff8822',
+          widths: { base: 1.4, stops: [[8, 0.8], [12, 2], [14, 6], [16, 12], [18, 16]] },
+          minzoom: 8
+        },
+        {
+          kinds: ['residential', 'unclassified', 'service', 'footway', 'cycleway', 'track', 'pedestrian', 'path'],
+          color: isDark ? '#ffcc66' : '#ffaa44',
+          widths: { base: 1.4, stops: [[12, 1.5], [14, 3.5], [16, 6.0], [18, 8.0]] },
+          minzoom: 12
+        },
+        {
+          kinds: ['rail'],
+          color: isDark ? '#aaaaff' : '#8888ff',
+          widths: { base: 1.2, stops: [[8, 0.3], [14, 1], [18, 3]] },
+          minzoom: 8,
+          dasharray: [3, 2]
+        }
+      ];
 
-        // Fallback to minimal hardcoded style (ensures map still loads)
-        return {
-          version: 8,
-          name: "Fallback",
-          sources: { openmaptiles: { type: 'vector', url: PMTILES_STYLE_URL } },
-          glyphs: './font/{fontstack}/{range}.pbf',
-          layers: [
-            { id: 'background', type: 'background', paint: { 'background-color': c.bg } },
-            { id: 'water', type: 'fill', source: 'openmaptiles', 'source-layer': 'water', paint: { 'fill-color': c.water } },
-            {
-              id: 'road', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation',
-              filter: ['in', 'class', 'primary', 'secondary', 'tertiary', 'trunk', 'motorway'],
-              paint: { 'line-color': c.road, 'line-width': 2 }
-            }
-          ]
-        };
-      }
-    }
-    // ── 4. Test fetch + init map (Android-safe pattern) ───────────────────────
-    async function runFetchTests() {
+      roadStyles.forEach((cfg, idx) => {
+        style.layers.push({
+          id: `streets-${cfg.kinds[0]}`,
+          type: 'line',
+          source: 'omt',
+          'source-layer': 'streets',
+          filter: ['in', 'kind', ...cfg.kinds],
+          minzoom: cfg.minzoom,
+          paint: {
+            'line-color': cfg.color,
+            'line-width': cfg.widths,
+            ...(cfg.dasharray ? { 'line-dasharray': cfg.dasharray } : {}),
+            'line-opacity': 1.0
+          }
+        });
+      });
+      // ── FALLBACK: Catch-all roads layer (debug + visibility fix) ─────────────
+      style.layers.push({
+        id: 'streets-fallback',
+        type: 'line',
+        source: 'omt',
+        'source-layer': 'streets',
+        minzoom: 12,
+        paint: {
+          'line-color': isDark ? '#ffaa00' : '#ff6600',
+          'line-width': { base: 1.4, stops: [[12, 1.5], [14, 3], [16, 6], [18, 9]] },
+          'line-opacity': 1.0
+        }
+      });
+
+      // ── TEMPORARY TEST: Render ALL streets without filtering ─────────────────────
+      style.layers.push({
+        id: 'streets-all-test',
+        type: 'line',
+        source: 'omt',
+        'source-layer': 'streets',
+        minzoom: 12,
+        paint: {
+          'line-color': '#ff0000',  // Bright red for testing
+          'line-width': { stops: [[12, 2], [14, 4], [16, 8]] },
+          'line-opacity': 1.0
+        }
+      });
+      // Street polygons (pedestrian areas)
+      style.layers.push({
+        id: 'street-polygons',
+        type: 'fill',
+        source: 'omt',
+        'source-layer': 'street_polygons',
+        filter: ['==', 'kind', 'pedestrian'],
+        minzoom: 14,
+        paint: {
+          'fill-color': isDark ? '#1a1e2a' : '#f8f4f0',
+          'fill-opacity': { stops: [[14, 0.3], [16, 0.6]] }
+        }
+      });
+
+      // Bridges & ferries
+      style.layers.push(
+        {
+          id: 'bridges',
+          type: 'fill',
+          source: 'omt',
+          'source-layer': 'bridges',
+          minzoom: 12,
+          paint: {
+            'fill-color': isDark ? '#2a3040' : '#e0e0e0',
+            'fill-opacity': 0.3,
+            'fill-outline-color': isDark ? '#3a4050' : '#c0c0c0'
+          }
+        },
+        {
+          id: 'ferries',
+          type: 'line',
+          source: 'omt',
+          'source-layer': 'ferries',
+          minzoom: 10,
+          paint: {
+            'line-color': c.ferry,
+            'line-width': 1,
+            'line-dasharray': [4, 2]
+          }
+        },
+        {
+          id: 'aerialways',
+          type: 'line',
+          source: 'omt',
+          'source-layer': 'aerialways',
+          minzoom: 12,
+          paint: {
+            'line-color': c.aerialway,
+            'line-width': 1,
+            'line-dasharray': [2, 2]
+          }
+        }
+      );
+
+      // ── 6. Buildings (minzoom 13 per style1.json) ─────────────────────────────
+      style.layers.push(
+        {
+          id: 'buildings',
+          type: 'fill',
+          source: 'omt',
+          'source-layer': 'buildings',
+          minzoom: 13,
+          paint: {
+            'fill-color': c.building,
+            'fill-opacity': { stops: [[13, 0.5], [15, 0.9]] },
+            'fill-outline-color': isDark ? '#2a3040' : '#c0c0c0'
+          }
+        },
+        {
+          id: 'buildings-outline',
+          type: 'line',
+          source: 'omt',
+          'source-layer': 'buildings',
+          minzoom: 15,
+          paint: {
+            'line-color': isDark ? '#2a3040' : '#c0c0c0',
+            'line-width': { stops: [[15, 0.3], [17, 0.8]] },
+            'line-opacity': 0.3
+          }
+        }
+      );
+
+      // ── 7. POIs & Public Transport (FIXED icon mapping) ───────────────────────
+      // Your data uses amenity/shop/tourism as property NAMES, not a unified 'kind'
+      // Your NEW tunis.pmtiles uses 'kind' property for POI types ✨
+      // Your tunis.pmtiles uses 'class' property for POI types ✨
+      // ── SPRITE ALIAS MAP: Map missing icons to existing ones ✨ ───────────────
+      // Format: 'missing-icon-name': 'existing-icon-name'
+      const spriteAlias = {
+        // Transport / Transit
+        'icon-platform': 'icon-bus',
+        'icon-stop_position': 'icon-bus',
+        'icon-light_rail': 'icon-rail',
+        'icon-tram': 'transport-tram',  // Special: uses different prefix
+        'icon-rail_light': 'icon-rail',
+        'icon-rail_metro': 'icon-rail_metro',  // Already exists!
+        'icon-subway_entrance': 'icon-rail_metro',
+
+        // Food & Drink
+        'icon-ice_cream': 'icon-cafe',
+        'icon-deli': 'icon-restaurant',
+        'icon-beverages': 'icon-cafe',
+        'icon-alcohol_shop': 'icon-bar',
+
+        // Shopping
+        'icon-electronics': 'icon-shop',
+        'icon-car_parts': 'icon-shop',
+        'icon-jewelry_store': 'icon-jewelry_store',  // Already exists!
+        'icon-greengrocer': 'icon-shop',
+
+        // Culture / Leisure
+        'icon-museum': 'icon-museum',  // Already exists! (debug may be premature)
+        'icon-art_gallery': 'icon-art_gallery',  // Already exists!
+        'icon-gallery': 'icon-art_gallery',
+        'icon-attraction': 'icon-viewpoint',
+        'icon-historic': 'icon-historic',  // Already exists!
+
+        // Outdoor / Parks
+        'icon-park': 'icon-pitch',  // Use sports field as generic green icon
+        'icon-garden': 'icon-pitch',
+        'icon-dog_park': 'icon-pitch',
+        'icon-camp_site': 'icon-chalet',
+        'icon-picnic_site': 'icon-pitch',
+
+        // Services / Civic
+        'icon-courthouse': 'icon-town_hall',
+        'icon-community_centre': 'icon-community',
+        'icon-social_facility': 'icon-hospital',
+        'icon-bureau_de_change': 'icon-bank',
+
+        // Education
+        'icon-kindergarten': 'icon-school',
+
+        // Transport (more)
+        'icon-fuel': 'icon-shop',  // Generic shop fallback
+        'icon-parking': 'icon-shop',  // Generic fallback
+        'icon-car_wash': 'icon-shop',
+        'icon-car_rental': 'icon-shop',
+
+        // Fallback for anything else
+        'icon-unknown': 'icon-shop'
+      };
+
+      // Your tunis.pmtiles uses 'class' property for POI types ✨
+      // Wrapped with spriteAlias fallback mapping
+      const poiIconExpr = [
+        'case',
+        // PRIMARY: use 'class' property + alias lookup
+        ['all', ['has', 'class'], ['!=', ['get', 'class'], '']],
+        ['coalesce',
+          ['get', ['concat', 'icon-', ['get', 'class']], ['literal', spriteAlias]],
+          ['concat', 'icon-', ['get', 'class']]
+        ],
+        // Secondary: 'kind' + alias
+        ['all', ['has', 'kind'], ['!=', ['get', 'kind'], '']],
+        ['coalesce',
+          ['get', ['concat', 'icon-', ['get', 'kind']], ['literal', spriteAlias]],
+          ['concat', 'icon-', ['get', 'kind']]
+        ],
+        // Tertiary: amenity/shop/etc. + alias
+        ['all', ['has', 'amenity'], ['!=', ['get', 'amenity'], '']],
+        ['coalesce',
+          ['get', ['concat', 'icon-', ['get', 'amenity']], ['literal', spriteAlias]],
+          ['concat', 'icon-', ['get', 'amenity']]
+        ],
+        ['all', ['has', 'shop'], ['!=', ['get', 'shop'], '']],
+        ['coalesce',
+          ['get', ['concat', 'icon-', ['get', 'shop']], ['literal', spriteAlias]],
+          ['concat', 'icon-', ['get', 'shop']]
+        ],
+        ['all', ['has', 'tourism'], ['!=', ['get', 'tourism'], '']],
+        ['coalesce',
+          ['get', ['concat', 'icon-', ['get', 'tourism']], ['literal', spriteAlias]],
+          ['concat', 'icon-', ['get', 'tourism']]
+        ],
+        // Final fallback: generic shop icon
+        'icon-shop'
+      ];
+
+      style.layers.push(
+        {
+          id: 'public-transport',
+          type: 'symbol',
+          source: 'omt',
+          'source-layer': 'public_transport',
+          minzoom: 10,
+          layout: {
+            'icon-image': poiIconExpr,
+            'icon-optional': true,
+            'text-field': '{name}',
+            'text-font': ['Noto Sans Regular'],
+            'text-size': 10,
+            'text-anchor': 'top',
+            'text-offset': [0, 0.5]
+          },
+          paint: {
+            'text-color': c.poiLabel,
+            'text-halo-color': c.haloLight,
+            'text-halo-width': 1,
+            'icon-color': c.poiIcon
+          }
+        },
+        {
+          id: 'pois',
+          type: 'symbol',
+          source: 'omt',
+          'source-layer': 'pois',
+          minzoom: 11,
+          layout: {
+            'icon-image': poiIconExpr,
+            'icon-optional': true,
+            'text-optional': false,
+            'text-field': '{name}',
+            'text-font': ['Noto Sans Regular'],
+            'text-size': 11,
+            'text-anchor': 'top',
+            'text-offset': [0, 0.6],
+            'icon-size': { stops: [[14, 0.8], [16, 1], [18, 1.2]] }
+          },
+          paint: {
+            'text-color': c.poiLabel,
+            'text-halo-color': c.haloLight,
+            'text-halo-width': 1,
+            'icon-color': c.poiIcon
+          }
+        }
+      );
+
+      // ── 8. Boundaries ─────────────────────────────────────────────────────────
+      style.layers.push(
+        {
+          id: 'boundaries-country',
+          type: 'line',
+          source: 'omt',
+          'source-layer': 'boundaries',
+          filter: ['==', 'admin_level', 2],
+          minzoom: 0,
+          paint: {
+            'line-color': c.boundary,
+            'line-width': { stops: [[4, 0.5], [8, 1], [12, 2]] },
+            'line-dasharray': [2, 2]
+          }
+        },
+        {
+          id: 'boundaries-state',
+          type: 'line',
+          source: 'omt',
+          'source-layer': 'boundaries',
+          filter: ['==', 'admin_level', 4],
+          minzoom: 7,
+          paint: {
+            'line-color': c.boundary,
+            'line-width': 1,
+            'line-dasharray': [3, 2]
+          }
+        }
+      );
+
+      // ── 9. Labels ─────────────────────────────────────────────────────────────
+      style.layers.push(
+        // Place labels
+        {
+          id: 'place-labels',
+          type: 'symbol',
+          source: 'omt',
+          'source-layer': 'place_labels',
+          minzoom: 3,
+          layout: {
+            'text-field': '{name}',
+            'text-font': ['Noto Sans Bold'],
+            'text-size': { base: 1.2, stops: [[7, 12], [10, 16]] },
+            'text-transform': 'uppercase'
+          },
+          paint: {
+            'text-color': c.placeLabel,
+            'text-halo-color': c.halo,
+            'text-halo-width': isDark ? 1.5 : 1.2
+          }
+        },
+        // Street labels
+        {
+          id: 'street-labels',
+          type: 'symbol',
+          source: 'omt',
+          'source-layer': 'street_labels',
+          minzoom: 10,
+          layout: {
+            'symbol-placement': 'line',
+            'text-field': '{name}',
+            'text-font': ['Noto Sans Regular'],
+            'text-size': 11
+          },
+          paint: {
+            'text-color': c.roadLabel,
+            'text-halo-color': c.haloLight,
+            'text-halo-width': 1
+          }
+        },
+        // Water labels
+        {
+          id: 'water-labels',
+          type: 'symbol',
+          source: 'omt',
+          'source-layer': 'water_polygons_labels',
+          minzoom: 10,
+          layout: {
+            'text-field': '{name}',
+            'text-font': ['Noto Sans Italic'],
+            'text-size': { base: 1.2, stops: [[10, 10], [14, 14]] },
+            'text-transform': 'lowercase'
+          },
+          paint: {
+            'text-color': c.waterLabel,
+            'text-halo-color': c.halo,
+            'text-halo-width': 1
+          }
+        },
+        // Address labels (high zoom)
+        {
+          id: 'address-labels',
+          type: 'symbol',
+          source: 'omt',
+          'source-layer': 'addresses',
+          minzoom: 12,
+          layout: {
+            'text-field': '{housenumber}',
+            'text-font': ['Noto Sans Regular'],
+            'text-size': 9
+          },
+          paint: {
+            'text-color': c.addressLabel,
+            'text-halo-color': c.haloLight,
+            'text-halo-width': 1
+          }
+        }
+      );
+
+      return style;
+    } async function runFetchTests() {
       const pmtilesUrl = new URL('./data/tunis.pmtiles', window.location.href).href;
       dbg('Testing PMTiles access: ' + pmtilesUrl);
 
@@ -678,7 +1125,7 @@
         container: 'map',
         style,
         center: [10.1815, 36.8065],
-        zoom: 12,
+        zoom: 14,
         attributionControl: false,
         maxBounds: [[9.5, 36.3], [11.0, 37.4]]
       });
@@ -689,18 +1136,214 @@
       // ✅ Android: force resize after WebView renders
       setTimeout(() => map.resize(), 500);
 
+      // ── SPRITE DEBUGGING ───────────────────────────────────────────────────
+      map.on('styleimagemissing', (e) => {
+        const missing = e.id;
+
+        // Comprehensive suppression list: patterns + known missing POI icons
+        const suppress = [
+          // Pattern fixes (handled separately)
+          'icon-', 'cemetery_11', 'orchard_11',
+
+          // Accommodation (use icon-chalet as fallback visually)
+          'icon-hotel', 'icon-motel', 'icon-hostel', 'icon-guest_house',
+
+          // Education
+          'icon-university',
+
+          // Shopping
+          'icon-supermarket', 'icon-convenience', 'icon-mall',
+          'icon-department_store', 'icon-jewelry',
+
+          // Services
+          'icon-toilets', 'icon-post_office', 'icon-townhall',
+          'icon-fire_hydrant', 'icon-doctors', 'icon-clinic',
+          'icon-vending_machine', 'icon-computer',
+
+          // Culture/Leisure
+          'icon-arts_centre', 'icon-memorial', 'icon-travel_agency',
+          'icon-information', 'icon-swimming_pool', 'icon-sports_centre',
+
+          // Transport
+          'icon-bicycle', 'icon-car', 'icon-alcohol', 'icon-pub',
+          'icon-mobile_phone',
+
+          // Other
+          'icon-public_building'
+        ];
+
+        if (suppress.includes(missing)) {
+          return; // Suppress - labels still show via icon-optional
+        }
+
+        // Log truly unexpected missing sprites for debugging
+        dbg(`❌ MISSING SPRITE: "${missing}"`);
+      });
+
+      map.on('data', (e) => {
+        if (e.dataType === 'sprite') {
+          dbg(`🎨 Sprite event: ${e.id} - loaded: ${e.isSourceLoaded}`);
+        }
+      });
+
+      // Verify sprite files are accessible
+      (async function verifySprites() {
+        const spriteBase = './sprites/sprites';
+        try {
+          const [jsonRes, pngRes] = await Promise.all([
+            fetch(`${spriteBase}.json`, { method: 'HEAD' }).catch(() => null),
+            fetch(`${spriteBase}.png`, { method: 'HEAD' }).catch(() => null)
+          ]);
+
+          dbg(`🔍 Sprite JSON: ${jsonRes?.status || 'FAILED'} ${jsonRes?.ok ? '✓' : '✗'}`);
+          dbg(`🔍 Sprite PNG: ${pngRes?.status || 'FAILED'} ${pngRes?.ok ? '✓' : '✗'}`);
+
+          if (jsonRes?.ok) {
+            const spriteData = await fetch(`${spriteBase}.json`).then(r => r.json());
+            const names = Object.keys(spriteData);
+            dbg(`✨ Loaded ${names.length} sprite names`);
+            dbg(`📋 Sample: ${names.slice(0, 10).join(', ')}`);
+            window._availableSprites = names;
+          }
+        } catch (err) {
+          dbg(`❌ Sprite verification failed: ${err.message}`);
+        }
+      })();
+
+      // After style loads, check what icon names are being requested
+      map.on('style.load', () => {
+        setTimeout(() => {
+          const style = map.getStyle();
+          const iconLayers = style.layers.filter(l =>
+            l.type === 'symbol' && l.layout?.['icon-image']
+          );
+
+          dbg(`🔍 Found ${iconLayers.length} layers using icons:`);
+          iconLayers.forEach(layer => {
+            const expr = layer.layout['icon-image'];
+            dbg(`  • ${layer.id}: ${JSON.stringify(expr)} (source: ${layer['source-layer']})`);
+          });
+
+          if (map.isSourceLoaded('omt')) {
+            const pois = map.querySourceFeatures('omt', { sourceLayer: 'pois' }).slice(0, 5);
+            pois.forEach((f, i) => {
+              // Your schema: property name = category, property value = type
+              const catProps = ['amenity', 'shop', 'tourism', 'leisure', 'historic', 'man_made', 'emergency', 'highway'];
+              let poiType = 'unknown';
+              let usedProp = 'none';
+
+              for (const prop of catProps) {
+                if (f.properties?.[prop]) {
+                  poiType = f.properties[prop];
+                  usedProp = prop;
+                  break;
+                }
+              }
+
+              const expectedIcon = `icon-${poiType}`;
+              const exists = window._availableSprites?.includes(expectedIcon);
+
+              // Log the actual property used
+              const sampleValue = f.properties?.[usedProp] || '';
+              dbg(`📍 POI #${i + 1}: ${usedProp}="${sampleValue}" → expects "${expectedIcon}" ${exists ? '✓' : '❌'}`);
+            });
+          }
+
+          // Query POIs and log their actual properties (using dbg for panel output)
+          setTimeout(() => {
+            if (map.isSourceLoaded('omt')) {
+              const pois = map.querySourceFeatures('omt', { sourceLayer: 'pois' }).slice(0, 5);
+              pois.forEach((f, i) => {
+                const catProps = ['amenity', 'shop', 'tourism', 'leisure', 'historic', 'man_made', 'emergency', 'highway'];
+                let poiType = 'unknown', usedProp = 'none';
+                for (const prop of catProps) {
+                  if (f.properties?.[prop]) { poiType = f.properties[prop]; usedProp = prop; break; }
+                }
+                const expectedIcon = `icon-${poiType}`;
+                const exists = window._availableSprites?.includes(expectedIcon);
+                const sampleValue = f.properties?.[usedProp] || '';
+                dbg(`🔍 POI_DEBUG #${i + 1}: ${usedProp}="${sampleValue}" → expects "${expectedIcon}" ${exists ? '✓' : '❌'} | name="${f.properties?.name || 'N/A'}"`);
+                // 🔍 EXTRA DEBUG: Log ALL properties of POI features to discover schema
+                const allProps = Object.keys(f.properties || {}).filter(k => !['name', 'name_en', 'name_ar'].includes(k));
+                if (allProps.length > 0) {
+                  dbg(`🔎 POI_RAW_PROPS #${i + 1}: {${allProps.map(p => `${p}:"${f.properties[p]}"`).join(', ')}}`);
+                }
+              });
+            }
+          }, 1500);
+        }, 1000);
+      });
+
+
+      // 🔍 Zoom debug: remind when POIs should appear
+      map.on('zoom', () => {
+        const z = Math.round(map.getZoom());
+        if (z >= 13 && !window._spriteDebugNotified) {
+          dbg(`🔍 Zoom ${z}: POI icons should now be visible if sprites are working`);
+          window._spriteDebugNotified = true;
+        }
+      });
+      // ───────────────────────────────────────────────────────────────────────
       map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
       map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
 
       // Events
+      // ── DEBUG: Check if minor roads exist in PMTiles ─────────────────────
       map.on('load', async () => {
         dbg('✓ MAP LOAD FIRED');
+
+        // Wait for source to load
+        const waitForSource = () => {
+          return new Promise(resolve => {
+            if (map.isSourceLoaded('omt')) resolve();
+            else map.once('sourcedata', e => {
+              if (e.sourceId === 'omt' && e.isSourceLoaded) resolve();
+            });
+          });
+        };
+
+        await waitForSource();
+
         try {
-          const meta = await window._pmtilesFile.getMetadata();
-          const layers = (meta?.vector_layers || []).map(l => l.id);
-          dbg('PMTiles layers: ' + layers.join(', '));
-          // document.getElementById('tile-label').textContent = 'Tunis offline (' + layers.length + ' layers)';
-        } catch (e) { dbg('Meta read failed: ' + e.message); }
+          // Query ALL road features at current view
+          const allRoads = map.querySourceFeatures('omt', {
+            sourceLayer: 'streets'
+          });
+
+          const minorRoads = allRoads.filter(f =>
+            ['residential', 'unclassified', 'service', 'footway', 'cycleway', 'track', 'pedestrian'].includes(f.properties?.kind)
+          );
+
+          dbg(`🛣️ Total road features in view: ${allRoads.length}`);
+          dbg(`🛣️ Minor road features in view: ${minorRoads.length}`);
+
+          if (minorRoads.length === 0) {
+            dbg(`⚠️ NO MINOR ROADS FOUND in PMTiles at this zoom/location!`);
+
+            dbg(`💡 Your tunis.pmtiles likely dropped these during generation.`);
+            dbg(`💡 Solution: Use a more detailed PMTiles source or regenerate with less simplification.`);
+          } else {
+            dbg(`✅ Minor roads FOUND in data - this is a styling issue`);
+            const kinds = [...new Set(minorRoads.slice(0, 10).map(f => f.properties?.kind))];
+            dbg(`📋 Sample minor road kinds: ${kinds.join(', ')}`);
+          }
+        } catch (err) {
+          dbg(`❌ Error checking roads: ${err.message}`);
+        }
+        // 🔍 DEBUG: Log actual properties of road features
+        try {
+          const sampleRoads = map.querySourceFeatures('omt', { sourceLayer: 'streets' }).slice(0, 3);
+          sampleRoads.forEach((f, i) => {
+            const props = f.properties || {};
+            const typeProps = ['kind', 'class', 'type', 'highway', 'road_type'];
+            let detectedType = 'unknown';
+            let propName = 'none';
+            for (const p of typeProps) {
+              if (props[p]) { detectedType = props[p]; propName = p; break; }
+            }
+            dbg(`🛣️ Road #${i + 1}: ${propName}="${detectedType}" | props: ${JSON.stringify(props).slice(0, 150)}...`);
+          });
+        } catch (e) { dbg(`❌ Road debug error: ${e.message}`); }
       });
 
       map.on('sourcedata', e => {
