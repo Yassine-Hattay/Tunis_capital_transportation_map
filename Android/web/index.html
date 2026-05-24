@@ -1621,8 +1621,11 @@
 
       // Then use it for mousemove:
       map.on('mousemove', throttle(e => {
-        document.getElementById('coords-display').textContent =
-          `${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`;
+        const coordsDisplay = document.getElementById('coords-display');
+        if (coordsDisplay) {
+          coordsDisplay.textContent =
+            `${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`;
+        }
       }, 100)); // Update max every 100ms
 
       // Map click
@@ -1640,7 +1643,8 @@
              <div class="route-info"><div class="route-label">Copy coordinates</div>
              <div class="route-meta">${lat.toFixed(6)}, ${lng.toFixed(6)}</div></div></div>`);
         new maplibregl.Marker({ color: '#4ade80', scale: .7 }).setLngLat([lng, lat]).addTo(map);
-        document.getElementById('layers-menu').classList.remove('open');
+        const layersMenu = document.getElementById('layers-menu');
+        if (layersMenu) layersMenu.classList.remove('open');
       });
     }
 
@@ -1651,6 +1655,7 @@
     function dbg(msg) {
       console.log('[Atlas]', msg);
       const content = document.getElementById('debug-content');
+      if (!content) return;
       const div = document.createElement('div');
       div.style.cssText = 'border-bottom:1px solid rgba(255,255,255,0.1);padding:2px 0';
       div.innerHTML = `<span style="color:var(--c-muted)">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
@@ -1658,28 +1663,37 @@
       content.scrollTop = content.scrollHeight;
     }
 
-    document.getElementById('debug-panel').addEventListener('click', () => {
-      document.getElementById('debug-panel').classList.remove('show');
-    });
+    const debugPanel = document.getElementById('debug-panel');
+    if (debugPanel) {
+      debugPanel.addEventListener('click', () => {
+        const panel = document.getElementById('debug-panel');
+        if (panel) panel.classList.remove('show');
+      });
+    }
 
 
     // ── Theme ──────────────────────────────────────────────────────────────────
     function setTheme(t) {
       document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
-      document.getElementById('layer-' + t).classList.add('active');
-      document.getElementById('layers-menu').classList.remove('open');
+      const layerEl = document.getElementById('layer-' + t);
+      const layersMenu = document.getElementById('layers-menu');
+      if (layerEl) layerEl.classList.add('active');
+      if (layersMenu) layersMenu.classList.remove('open');
       map.setStyle(buildStyle(t));
       map.once('styledata', () => {
         // re-add route if exists
         // re-add markers if needed
       });
     }
-    function toggleLayers() { document.getElementById('layers-menu').classList.toggle('open'); }
+    function toggleLayers() {
+      const layersMenu = document.getElementById('layers-menu');
+      if (layersMenu) layersMenu.classList.toggle('open');
+    }
 
     // ── GPS / Location ─────────────────────────────────────────────────────────
     async function locateMe() {
       const btn = document.getElementById('btn-gps');
-      btn.classList.add('active');
+      if (btn) btn.classList.add('active');
       dbg('📍 Requesting location…');
 
       try {
@@ -1689,8 +1703,9 @@
         const permission = await Geolocation.requestPermissions();
         if (permission.location !== 'granted') {
           dbg('❌ Location permission denied');
-          document.getElementById('route-result').textContent = 'Location permission denied.';
-          btn.classList.remove('active');
+          const routeResult = document.getElementById('route-result');
+          if (routeResult) routeResult.textContent = 'Location permission denied.';
+          if (btn) btn.classList.remove('active');
           return;
         }
 
@@ -2051,10 +2066,12 @@
     });
 
     function closeResults() {
-      document.getElementById('search-results').classList.remove('open');
+      const results = document.getElementById('search-results');
+      if (results) results.classList.remove('open');
     }
     function openResults() {
-      document.getElementById('search-results').classList.add('open');
+      const results = document.getElementById('search-results');
+      if (results) results.classList.add('open');
     }
 
 
@@ -2078,8 +2095,10 @@
       const name = r.display_name.split(',')[0];
 
       // Update input
-      document.getElementById('search-input').value = name;
-      document.getElementById('search-clear').classList.add('visible');
+      const searchInput = document.getElementById('search-input');
+      const clearBtn = document.getElementById('search-clear');
+      if (searchInput) searchInput.value = name;
+      if (clearBtn) clearBtn.classList.add('visible');
       closeResults();
 
       // Fly to location
@@ -2171,8 +2190,10 @@
     }
 
     function clearSearch() {
-      document.getElementById('search-input').value = '';
-      document.getElementById('search-clear').classList.remove('visible');
+      const searchInput = document.getElementById('search-input');
+      const clearBtn = document.getElementById('search-clear');
+      if (searchInput) searchInput.value = '';
+      if (clearBtn) clearBtn.classList.remove('visible');
       _lastQuery = '';
       closeResults();
       if (window._searchMarker) { window._searchMarker.remove(); window._searchMarker = null; }
@@ -2184,19 +2205,39 @@
 
     // ── Panel ──────────────────────────────────────────────────────────────────
     function showPanel(title, sub, content) {
-      document.getElementById('panel-title').textContent = title;
-      document.getElementById('panel-sub').textContent = sub;
-      document.getElementById('panel-content').innerHTML = content;
-      document.getElementById('panel').classList.add('open');
+      const panelTitle = document.getElementById('panel-title');
+      const panelSub = document.getElementById('panel-sub');
+      const panelContent = document.getElementById('panel-content');
+      const panel = document.getElementById('panel');
+      
+      if (panelTitle) panelTitle.textContent = title;
+      if (panelSub) panelSub.textContent = sub;
+      if (panelContent) panelContent.innerHTML = content;
+      if (panel) panel.classList.add('open');
     }
-    function closePanel() { document.getElementById('panel').classList.remove('open'); }
+    function closePanel() {
+      const panel = document.getElementById('panel');
+      if (panel) panel.classList.remove('open');
+    }
 
     // ── Network status ─────────────────────────────────────────────────────────
     function updateNetworkStatus() {
       const online = navigator.onLine;
-      document.getElementById('net-dot').className = 'status-dot ' + (online ? 'online' : 'offline');
-      document.getElementById('net-label').textContent = online ? 'Online' : 'Offline';
-      document.getElementById('offline-notice').classList.toggle('show', !online);
+
+      const netDot = document.getElementById('net-dot');
+      if (netDot) {
+        netDot.className = 'status-dot ' + (online ? 'online' : 'offline');
+      }
+
+      const netLabel = document.getElementById('net-label');
+      if (netLabel) {
+        netLabel.textContent = online ? 'Online' : 'Offline';
+      }
+
+      const offlineNotice = document.getElementById('offline-notice');
+      if (offlineNotice) {
+        offlineNotice.classList.toggle('show', !online);
+      }
     }
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
@@ -2232,6 +2273,10 @@
 
     async function copyDebugLogs() {
       const content = document.getElementById('debug-content');
+      if (!content) {
+        dbg('❌ Debug content element not found');
+        return;
+      }
       const text = Array.from(content.children).map(el => el.textContent).join('\n');
 
       try {
@@ -2251,8 +2296,10 @@
 
     function toggleDebug() {
       const panel = document.getElementById('debug-panel');
-      panel.classList.toggle('show');
-      document.getElementById('btn-debug').classList.toggle('active', panel.classList.contains('show'));
+      const btn = document.getElementById('btn-debug');
+
+      if (panel) panel.classList.toggle('show');
+      if (btn && panel) btn.classList.toggle('active', panel.classList.contains('show'));
     }
     // Initialize Capacitor plugins when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
@@ -2311,52 +2358,56 @@
 
         let _searchTimer = null;
 
-        searchInput.addEventListener('input', function (e) {
-          clearTimeout(_searchTimer);
-          const q = e.target.value.trim();
-          clearBtn.classList.toggle('visible', q.length > 0);
+        if (searchInput) {
+          searchInput.addEventListener('input', function (e) {
+            clearTimeout(_searchTimer);
+            const q = e.target.value.trim();
+            if (clearBtn) clearBtn.classList.toggle('visible', q.length > 0);
 
-          if (q.length < 2) {
-            resultsEl.classList.remove('open');
-            resultsEl.innerHTML = '';
-            return;
-          }
+            if (q.length < 2) {
+              if (resultsEl) {
+                resultsEl.classList.remove('open');
+                resultsEl.innerHTML = '';
+              }
+              return;
+            }
 
-          _searchTimer = setTimeout(() => {
-            dbg(`🔍 Searching for: "${q}" (offlinePlaces.length=${offlinePlaces.length})`);
-            const query = q.toLowerCase();
+            _searchTimer = setTimeout(() => {
+              dbg(`🔍 Searching for: "${q}" (offlinePlaces.length=${offlinePlaces.length})`);
+              const query = q.toLowerCase();
 
-            const matches = offlinePlaces.filter(p => {
-              const nameAr = (p.na || '').toLowerCase();
-              const nameLatin = (p.nl || '').toLowerCase();
-              const nameDefault = (p.n || '').toLowerCase();
-              return nameAr.includes(query) || nameLatin.includes(query) || nameDefault.includes(query);
-            }).slice(0, 12);
+              const matches = offlinePlaces.filter(p => {
+                const nameAr = (p.na || '').toLowerCase();
+                const nameLatin = (p.nl || '').toLowerCase();
+                const nameDefault = (p.n || '').toLowerCase();
+                return nameAr.includes(query) || nameLatin.includes(query) || nameDefault.includes(query);
+              }).slice(0, 12);
 
-            dbg(`📈 Found ${matches.length} matches`);
+              dbg(`📈 Found ${matches.length} matches`);
 
-            if (matches.length === 0) {
-              resultsEl.innerHTML = '<div class="search-no-results">لا توجد نتائج</div>';
-              resultsEl.classList.add('open');
-            } else {
-              resultsEl.innerHTML = matches.map(p => {
-                const displayName = p.na || p.nl || p.n;
-                const type = p.c || '';
-                const safeName = displayName.replace(/'/g, "\\'");
+              if (resultsEl) {
+                if (matches.length === 0) {
+                  resultsEl.innerHTML = '<div class="search-no-results">لا توجد نتائج</div>';
+                  resultsEl.classList.add('open');
+                } else {
+                  resultsEl.innerHTML = matches.map(p => {
+                    const displayName = p.na || p.nl || p.n;
+                    const type = p.c || '';
+                    const safeName = displayName.replace(/'/g, "\\'");
 
-                // Add coordinate hint for disambiguation
-                const coordHint = `(${p.la.toFixed(3)}, ${p.lo.toFixed(3)})`;
+                    // Add coordinate hint for disambiguation
+                    const coordHint = `(${p.la.toFixed(3)}, ${p.lo.toFixed(3)})`;
 
-                // Translate common types to Arabic for better UX
-                const typeLabels = {
-                  'city': 'مدينة', 'town': 'بلدة', 'village': 'قرية',
-                  'suburb': 'ضاحية', 'neighbourhood': 'حي', 'quarter': 'حي',
-                  'shop': 'متجر', 'cafe': 'مقهى', 'restaurant': 'مطعم',
-                  'grocery': 'بقالة', 'bus': 'حافلة', 'police': 'شرطة'
-                };
-                const typeLabel = typeLabels[type] || type;
+                    // Translate common types to Arabic for better UX
+                    const typeLabels = {
+                      'city': 'مدينة', 'town': 'بلدة', 'village': 'قرية',
+                      'suburb': 'ضاحية', 'neighbourhood': 'حي', 'quarter': 'حي',
+                      'shop': 'متجر', 'cafe': 'مقهى', 'restaurant': 'مطعم',
+                      'grocery': 'بقالة', 'bus': 'حافلة', 'police': 'شرطة'
+                    };
+                    const typeLabel = typeLabels[type] || type;
 
-                return `
+                    return `
     <div class="search-result-item" onclick="window.goToPlace(${p.lo}, ${p.la}, '${safeName}')">
       <div class="sri-icon">📍</div>
       <div>
@@ -2365,20 +2416,26 @@
       </div>
     </div>
   `;
-              }).join('');
-              resultsEl.classList.add('open');
-              dbg('✅ Results displayed');
-            }
-          }, 300);
-        });
+                  }).join('');
+                  resultsEl.classList.add('open');
+                  dbg('✅ Results displayed');
+                }
+              }
+            }, 300);
+          });
+        }
 
-        clearBtn.addEventListener('click', function () {
-          searchInput.value = '';
-          clearBtn.classList.remove('visible');
-          resultsEl.classList.remove('open');
-          resultsEl.innerHTML = '';
-          searchInput.focus();
-        });
+        if (clearBtn) {
+          clearBtn.addEventListener('click', function () {
+            if (searchInput) searchInput.value = '';
+            clearBtn.classList.remove('visible');
+            if (resultsEl) {
+              resultsEl.classList.remove('open');
+              resultsEl.innerHTML = '';
+            }
+            if (searchInput) searchInput.focus();
+          });
+        }
 
         window.goToPlace = function (lon, lat, name) {
           dbg(`✈️ goToPlace: [${lon}, ${lat}], "${name}"`);
@@ -2394,10 +2451,12 @@
             }
           }
 
-          searchInput.value = name;
-          clearBtn.classList.add('visible');
-          resultsEl.classList.remove('open');
-          resultsEl.innerHTML = '';
+          if (searchInput) searchInput.value = name;
+          if (clearBtn) clearBtn.classList.add('visible');
+          if (resultsEl) {
+            resultsEl.classList.remove('open');
+            resultsEl.innerHTML = '';
+          }
         };
 
         dbg('🎉 Offline search ready');

@@ -1,70 +1,26 @@
 ```
-### qwen coder don't remove this .gitignore
-
-/index.html
-/manifest.json
-/nginx.conf
-/package-lock.json
-/sw.js
-/README.md
-data/
-font/
-/lib/
-/sprites/
-/style/
-/Android/package-lock.json
-/Android/package.json
-### qwen coder you can add stuff to the git ignore under this lines
-```
-# Build artifacts
-build/
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
 dist/
-*.apk
-*.aab
-
-# Dependencies
-node_modules/
-.gradle/
+build/
 target/
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
+# Dependencies
 .venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
+venv/
+node_modules/
+.julia/
+zig-cache/
+.deps/
+
+# Logs and temp files
 *.log
-*.pot
-*.pyc
-*.pyo
-*.pyd
-.MF
-tags
-TAGS
-ID
-GPATH
-GTAGS
-GSYMS
-GRTAGS
-static/css/
-static/js/
-media/
-*.mo
-*.pot
-.DS_Store
-Thumbs.db
+*.tmp
+*.swp
+*.swo
 
 # Environment
 .env
@@ -76,23 +32,47 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-*.tmp
 
-# OS generated
+# OS generated files
 .DS_Store
 Thumbs.db
-ehthumbs.db
-Icon?
-.directory
-*.nib
-*~
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Package manager caches
+.npm/
+.yarn/
+.pip/
+.mypy_cache/
+.pytest_cache/
+.gradle/
+.cargo/
+.go/
+
+# Archives
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```
-Android/package-lock.json
-Android/Print_folder_structure_tree.ipynb
-Android/web/valhala/tiles.tar
