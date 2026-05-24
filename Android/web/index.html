@@ -33,6 +33,14 @@
       font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
     }
 
+    html {
+      height: 100%;
+      overflow: hidden;
+      /* Prevent html from scrolling */
+      touch-action: none;
+      /* Disable browser touch gestures on page */
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -51,7 +59,16 @@
     #map {
       flex: 1;
       width: 100%;
-      position: relative
+      position: relative;
+      /* Safe area padding for notches/home indicators */
+      padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+      /* Prevent page scroll while allowing map pan */
+      touch-action: none;
+      /* Critical: disables browser touch scrolling */
+      overscroll-behavior: none;
+      /* Prevents pull-to-refresh bounce */
+      -webkit-overflow-scrolling: touch;
+      /* Smooth scrolling on iOS (for map itself) */
     }
 
     /* ── Top bar ── */
@@ -466,7 +483,58 @@
     <div id="panel-content"></div>
   </div>
   <script>
-    maplibregl.setRTLTextPlugin('./lib/mapbox-gl-rtl-text.js', null, true);
+    // ✅ WebGL compatibility check
+    function checkWebGLSupport() {
+      try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+        if (!gl) {
+          console.error('[Atlas] WebGL not supported');
+          return false;
+        }
+
+        // Check for critical extensions
+        const required = ['OES_texture_float', 'OES_standard_derivatives'];
+        const supported = gl.getSupportedExtensions() || [];
+
+        for (const ext of required) {
+          if (!supported.includes(ext) && !supported.includes(ext.toLowerCase())) {
+            console.warn(`[Atlas] Missing extension: ${ext}`);
+            // Don't fail - just warn, as some devices work without them
+          }
+        }
+
+        return true;
+      } catch (e) {
+        console.error('[Atlas] WebGL check failed:', e);
+        return false;
+      }
+    }
+
+    // Call before initMap:
+    if (!checkWebGLSupport()) {
+      // Show fallback UI
+      document.getElementById('map').innerHTML =
+        '<div style="color:var(--c-text);padding:20px;text-align:center">⚠️ Map not supported on this device</div>';
+      return;
+    }
+
+    // ✅ NEW (safe with feature detection):
+    if (typeof maplibregl?.setRTLTextPlugin === 'function') {
+      maplibregl.setRTLTextPlugin(
+        './lib/mapbox-gl-rtl-text.js',
+        (err) => {
+          if (err) {
+            console.warn('[Atlas] RTL plugin failed to load:', err);
+            // Continue without RTL support rather than crashing
+          }
+        },
+        true // lazy load
+      );
+    } else {
+      console.warn('[Atlas] setRTLTextPlugin not available — skipping RTL support');
+    }
 
     const PMTILES_PATH = '/data/tunis.pmtiles';
     let _fileCache = null;
@@ -710,43 +778,34 @@
         }
       });
 
-      // Subtle land texture for depth (optional)
-      style.layers.push({
-        id: 'land-texture',
-        type: 'fill',
-        source: 'omt',
-        'source-layer': 'land',
-        minzoom: 12,
-        paint: {
-          'fill-color': isDark ? '#1a1e2a' : '#f0f0f5',
-          'fill-opacity': 0.03,
-          'fill-pattern': 'pattern-hatched_thin'  // Uses your existing sprite pattern!
-        }
-      });
-
       const landCoverTypes = [
-        { kind: 'forest', color: c.forest, minzoom: 7 },
-        { kind: 'park', color: c.park, minzoom: 11, filter: ['in', 'class', 'park', 'recreation_ground'] },
-        { kind: 'grass', color: c.grass, minzoom: 11, filter: ['in', 'class', 'grass', 'meadow'] },
-        { kind: 'sand', color: c.sand, minzoom: 10, filter: ['in', 'class', 'sand', 'beach'] },
-        { kind: 'cemetery', color: c.cemetery, minzoom: 13 },
-        { kind: 'wetland', color: c.wetland, minzoom: 11, filter: ['in', 'class', 'wetland'] },
-        { kind: 'scrub', color: c.scrub, minzoom: 11, filter: ['in', 'class', 'scrub', 'heath', 'grassland'] },
-        { kind: 'residential', color: c.residential, minzoom: 10 },
-        { kind: 'industrial', color: c.industrial, minzoom: 10, filter: ['in', 'class', 'industrial', 'commercial', 'retail'] }
+        { kind: 'forest', color: c.forest, minzoom: 11 },  // was 7
+        { kind: 'park', color: c.park, minzoom: 12, filter: ['in', 'class', 'park', 'recreation_ground'] },  // was 11
+        { kind: 'grass', color: c.grass, minzoom: 12, filter: ['in', 'class', 'grass', 'meadow'] },  // was 11
+        { kind: 'sand', color: c.sand, minzoom: 12, filter: ['in', 'class', 'sand', 'beach'] },  // was 10
+        { kind: 'cemetery', color: c.cemetery, minzoom: 14 },  // was 13
+        { kind: 'wetland', color: c.wetland, minzoom: 13, filter: ['in', 'class', 'wetland'] },  // was 11
+        { kind: 'scrub', color: c.scrub, minzoom: 13, filter: ['in', 'class', 'scrub', 'heath', 'grassland'] },  // was 11
+        { kind: 'residential', color: c.residential, minzoom: 13 },  // was 10
+        { kind: 'industrial', color: c.industrial, minzoom: 13, filter: ['in', 'class', 'industrial', 'commercial', 'retail'] }  // was 10
       ];
 
       landCoverTypes.forEach(cfg => {
+        // Ensure opacity stops are always in ascending zoom order
+        const opacityStops = cfg.minzoom < 13
+          ? [[cfg.minzoom, 0.4], [13, 0.8]]   // Normal case: minzoom < 13
+          : [[cfg.minzoom, 0.8]];              // Special case: minzoom >= 13
+
         style.layers.push({
           id: `land-${cfg.kind}`,
           type: 'fill',
           source: 'omt',
           'source-layer': 'land',
           minzoom: cfg.minzoom,
-          filter: cfg.filter || ['==', 'class', cfg.kind],  // ✅ Use 'class' property          
+          filter: cfg.filter || ['==', 'class', cfg.kind],
           paint: {
             'fill-color': cfg.color,
-            'fill-opacity': { stops: [[cfg.minzoom, 0.4], [13, 0.8]] }
+            'fill-opacity': { stops: opacityStops }
           }
         });
       });
@@ -870,44 +929,38 @@
 
 
       const roadStyles = [
-        // ✅ MINOR roads first (drawn underneath)
         {
           kinds: ['residential', 'unclassified', 'service', 'footway', 'cycleway', 'track', 'pedestrian', 'path'],
           color: isDark ? c.roadMinor : c.roadMinor,
-          widths: { base: 1.4, stops: [[12, 0.8], [14, 2], [16, 4], [18, 6]] },
-          minzoom: 12
+          widths: { base: 1.4, stops: [[13, 0.8], [14, 2], [16, 4], [18, 6]] },
+          minzoom: 13   // was 12
         },
-        // ✅ TERTIARY roads next
         {
           kinds: ['tertiary', 'tertiary_link'],
           color: isDark ? c.roadSecondary : c.roadSecondary,
-          widths: { base: 1.4, stops: [[10, 0.8], [12, 1.5], [14, 4], [16, 8], [18, 11]] },
-          minzoom: 10
+          widths: { base: 1.4, stops: [[12, 0.8], [13, 1.5], [14, 4], [16, 8], [18, 11]] },
+          minzoom: 12   // was 10
         },
-        // ✅ PRIMARY/SECONDARY roads
         {
           kinds: ['primary', 'primary_link', 'secondary', 'secondary_link'],
           color: isDark ? c.roadPrimary : c.roadPrimary,
-          widths: { base: 1.4, stops: [[8, 0.8], [12, 2], [14, 5], [16, 10], [18, 14]] },
-          minzoom: 8
+          widths: { base: 1.4, stops: [[10, 0.8], [12, 2], [14, 5], [16, 10], [18, 14]] },
+          minzoom: 10   // was 8
         },
-        // ✅ MAJOR highways last (drawn on top)
         {
           kinds: ['motorway', 'motorway_link', 'trunk', 'trunk_link'],
           color: isDark ? c.roadMotorway : c.roadMotorway,
-          widths: { base: 1.4, stops: [[5, 1], [10, 2.5], [14, 8], [16, 14], [18, 20]] },
-          minzoom: 5,
-          casing: { color: isDark ? '#2a3a4a' : '#c8d8e8', widthOffset: 1.5 }
+          widths: { base: 1.4, stops: [[6, 1], [10, 2.5], [14, 8], [16, 14], [18, 20]] },
+          minzoom: 6    // was 5
         },
-        // ✅ Rail (independent layer)
         {
           kinds: ['rail'],
           color: isDark ? c.roadRail : c.roadRail,
-          widths: { base: 1.2, stops: [[8, 0.3], [14, 1], [18, 3]] },
-          minzoom: 8,
-          dasharray: [3, 2]
+          widths: { base: 1.2, stops: [[10, 0.3], [14, 1], [18, 3]] },
+          minzoom: 10   // was 8
         }
       ];
+
 
       roadStyles.forEach((cfg, idx) => {
         style.layers.push({
@@ -915,7 +968,8 @@
           type: 'line',
           source: 'omt',
           'source-layer': 'streets',
-          filter: ['in', 'class', ...cfg.kinds],  // ✅ Your data uses 'class', not 'kind'          minzoom: cfg.minzoom,
+          filter: ['in', 'class', ...cfg.kinds],
+          minzoom: cfg.minzoom,  // ✅ ADD THIS LINE - was missing!
           layout: {
             'line-cap': 'round',
             'line-join': 'round'
@@ -935,7 +989,7 @@
         type: 'line',
         source: 'omt',
         'source-layer': 'streets',  // Query main streets layer (more reliable)
-        minzoom: 12,
+        minzoom: 13,
         filter: [
           'any',
           ['==', ['get', 'bridge'], 'yes'],  // String "yes"
@@ -1140,7 +1194,7 @@
           type: 'symbol',
           source: 'omt',
           'source-layer': 'public_transport',
-          minzoom: 10,
+          minzoom: 13,
           layout: {
             'icon-image': poiIconExpr,
             'icon-optional': true,
@@ -1162,7 +1216,7 @@
           type: 'symbol',
           source: 'omt',
           'source-layer': 'pois',
-          minzoom: 11,
+          minzoom: 14,
           layout: {
             'icon-image': poiIconExpr,
             'icon-optional': true,
@@ -1319,7 +1373,7 @@
           type: 'symbol',
           source: 'omt',
           'source-layer': 'street_labels',
-          minzoom: 10,
+          minzoom: 13,
           layout: {
             'symbol-placement': 'line',
             'text-field': '{name}',
@@ -1339,7 +1393,7 @@
           type: 'symbol',
           source: 'omt',
           'source-layer': 'street_labels_points',
-          minzoom: 12,
+          minzoom: 14,
           layout: {
             'text-field': '{ref}',
             'text-font': ['Noto Sans Bold'],
@@ -1378,7 +1432,7 @@
           type: 'symbol',
           source: 'omt',
           'source-layer': 'addresses',
-          minzoom: 12,
+          minzoom: 15,
           layout: {
             'text-field': '{housenumber}',
             'text-font': ['Noto Sans Regular'],
@@ -1436,7 +1490,9 @@
         fadeDuration: 0,              // Instant layer switches
         crossSourceCollisions: false, // Faster label placement
         preserveDrawingBuffer: false, // Free GPU memory
-        antialias: false              // Faster rendering
+        antialias: false,            // Faster rendering
+        maxTileCacheSize: 20   // ← add this, default is 200 which is way too much for mobile
+
       });
 
       // ✅ Expose globally for UI handlers
@@ -1487,12 +1543,6 @@
 
         // Log truly unexpected missing sprites for debugging
         dbg(`❌ MISSING SPRITE: "${missing}"`);
-      });
-
-      map.on('data', (e) => {
-        if (e.dataType === 'sprite') {
-          dbg(`🎨 Sprite event: ${e.id} - loaded: ${e.isSourceLoaded}`);
-        }
       });
 
 
@@ -1549,9 +1599,6 @@
         if (e.sourceId === 'openmaptiles' && e.isSourceLoaded) dbg('✓ SOURCE LOADED');
       });
 
-      map.on('data', e => {
-        if (e.dataType === 'tile') dbg('✓ tile: z' + e.tile?.tileID?.z);
-      });
 
       map.on('error', e => {
         const msg = e.error?.message || '';
@@ -1601,41 +1648,20 @@
     runFetchTests();
 
     // Debug panel (auto-hides after 12s, click to dismiss)
-    // Debug panel — logs accumulate, only shown when user clicks debug button
     function dbg(msg) {
       console.log('[Atlas]', msg);
       const content = document.getElementById('debug-content');
-
-      // Add timestamp and message
-      const time = new Date().toLocaleTimeString();
-      content.innerHTML += `<div style="border-bottom:1px solid rgba(255,255,255,0.1);padding:2px 0"><span style="color:var(--c-muted)">[${time}]</span> ${msg}</div>`;
-
-      // Auto-scroll to bottom
+      const div = document.createElement('div');
+      div.style.cssText = 'border-bottom:1px solid rgba(255,255,255,0.1);padding:2px 0';
+      div.innerHTML = `<span style="color:var(--c-muted)">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+      content.appendChild(div);
       content.scrollTop = content.scrollHeight;
-      // ✅ No auto-show — panel only appears when user clicks debug button
     }
+
     document.getElementById('debug-panel').addEventListener('click', () => {
       document.getElementById('debug-panel').classList.remove('show');
     });
 
-    // Map click
-    map.on('click', e => {
-      const features = map.queryRenderedFeatures(e.point);
-      console.log("FEATURES UNDER CLICK:", features);
-      if (routingClickActive) { handleRoutingClick(e.lngLat); return; }
-      const { lat, lng } = e.lngLat;
-      showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
-        `<div class="route-card" onclick="setRouteDest(${lat},${lng})">
-       <div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div>
-       <div class="route-info"><div class="route-label">Route here</div>
-       <div class="route-meta">Set as destination</div></div></div>
-     <div class="route-card" onclick="copyCoords(${lat},${lng})">
-       <div class="route-icon" style="background:rgba(129,140,248,.15)">📋</div>
-       <div class="route-info"><div class="route-label">Copy coordinates</div>
-       <div class="route-meta">${lat.toFixed(6)}, ${lng.toFixed(6)}</div></div></div>`);
-      new maplibregl.Marker({ color: '#4ade80', scale: .7 }).setLngLat([lng, lat]).addTo(map);
-      document.getElementById('layers-menu').classList.remove('open');
-    });
 
     // ── Theme ──────────────────────────────────────────────────────────────────
     function setTheme(t) {
@@ -2192,8 +2218,6 @@
       console.log("SAMPLE:", features.slice(0, 10));
     }
 
-    map.on('zoom', countVisibleRoads);
-
     function countVisibleRoads() {
       try {
         // OpenFreeMap Liberty uses 'highway-*' layer names, not 'road-*'
@@ -2273,33 +2297,11 @@
         // Load places.json with detailed debug
         dbg('🔍 Starting places.json fetch...');
 
-        fetch('./data/places.json', { method: 'HEAD', cache: 'no-store' })
-          .then(headRes => {
-            dbg(`📥 HEAD request: status=${headRes.status}, ok=${headRes.ok}, url=${headRes.url}`);
-            if (!headRes.ok) throw new Error(`HEAD request failed: ${headRes.status}`);
-            return fetch('./data/places.json', { cache: 'force-cache' });
-          })
-          .then(res => {
-            dbg(`📥 GET request: status=${res.status}, ok=${res.ok}, url=${res.url}, type=${res.type}`);
-            if (!res.ok) return res.text().then(txt => { throw new Error(`HTTP ${res.status}: ${txt.slice(0, 100)}`); });
-            return res;
-          })
-          .then(res => res.json())
-          .then(data => {
-            dbg(`✅ Loaded ${Array.isArray(data) ? data.length : 'unknown'} places`);
-            if (Array.isArray(data) && data.length > 0) {
-              dbg(`📋 Sample: ${JSON.stringify(data[0]).slice(0, 100)}...`);
-            }
-            offlinePlaces = data;
-          })
-          .catch(err => {
-            dbg(`❌ Failed to load places.json: ${err.name} - ${err.message}`);
-            const resultsEl = document.getElementById('search-results');
-            if (resultsEl) {
-              resultsEl.innerHTML = `<div class="search-no-results">⚠ خطأ: ${err.message}</div>`;
-              resultsEl.classList.add('open');
-            }
-          });
+        // Replace the HEAD+GET chain with just:
+        fetch('./data/places.json', { cache: 'force-cache' })
+          .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+          .then(data => { offlinePlaces = data; dbg(`✅ Loaded ${data.length} places`); })
+          .catch(err => dbg(`❌ places.json: ${err.message}`));
 
         const searchInput = document.getElementById('search-input');
         const clearBtn = document.getElementById('search-clear');
