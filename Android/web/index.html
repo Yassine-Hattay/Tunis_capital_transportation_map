@@ -3,14 +3,8 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self' file: data: gap: https://ssl.gstatic.com;
-    style-src 'self' 'unsafe-inline';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval';
-    worker-src blob:;
-    img-src 'self' data: blob: file:;
-    connect-src 'self' http://localhost http://localhost:* https://*;
-    font-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' https: file: data: gap: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; worker-src 'self' blob:; img-src 'self' data: blob: file: https:; connect-src 'self' https://localhost https://localhost:* http://localhost http://localhost:* https://*; font-src 'self' data: https:;">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <meta name="theme-color" content="#0f1117" />
   <title>Atlas — Offline Maps</title>
@@ -18,40 +12,28 @@
   <link rel="stylesheet" href="./lib/maplibre-gl.css" />
   <script src="./lib/maplibre-gl.js"></script>
   <script src="./lib/pmtiles.js"></script>
-  <script src="./lib/mapbox-gl-rtl-text.js"></script>
   <style>
     :root {
-      --c-bg: #0f1117;
-      --c-surface: #1c1f2b;
-      --c-border: rgba(255, 255, 255, 0.09);
+      --c-bg: #f5f3f0;
+      --c-surface: #ffffff;
+      --c-border: rgba(0, 0, 0, 0.09);
       --c-accent: #4ade80;
       --c-accent2: #818cf8;
-      --c-text: #e8eaf0;
+      --c-text: #333333;
       --c-muted: #6b7280;
       --c-warn: #fbbf24;
       --r: 14px;
       font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
     }
 
-    html {
-      height: 100%;
-      overflow: hidden;
-      /* Prevent html from scrolling */
-      touch-action: none;
-      /* Disable browser touch gestures on page */
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0
-    }
-
+    html,
     body {
+      height: 100vh;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
       background: var(--c-bg);
       color: var(--c-text);
-      height: 100dvh;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
@@ -60,18 +42,10 @@
       flex: 1;
       width: 100%;
       position: relative;
-      /* Safe area padding for notches/home indicators */
-      padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
-      /* Prevent page scroll while allowing map pan */
       touch-action: none;
-      /* Critical: disables browser touch scrolling */
-      overscroll-behavior: none;
-      /* Prevents pull-to-refresh bounce */
-      -webkit-overflow-scrolling: touch;
-      /* Smooth scrolling on iOS (for map itself) */
+      background: #c8dff0;
     }
 
-    /* ── Top bar ── */
     #topbar {
       position: absolute;
       top: 14px;
@@ -83,7 +57,6 @@
       align-items: flex-start;
     }
 
-    /* ── Search wrap (holds input + dropdown) ── */
     #search-wrap {
       flex: 1;
       position: relative;
@@ -99,13 +72,7 @@
       height: 48px;
       gap: 10px;
       backdrop-filter: blur(16px);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, .35);
-      transition: border-color .2s, box-shadow .2s;
-    }
-
-    #search-box:focus-within {
-      border-color: rgba(129, 140, 248, .5);
-      box-shadow: 0 4px 32px rgba(129, 140, 248, .15);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
     }
 
     #search-input {
@@ -115,37 +82,27 @@
       outline: none;
       color: var(--c-text);
       font-size: 15px;
-      font-family: inherit;
-      text-align: right;
       direction: rtl;
-    }
-
-    #search-input::placeholder {
-      color: var(--c-muted);
-      font-size: 14px;
+      text-align: right;
     }
 
     #search-input:not(:placeholder-shown) {
-      text-align: left;
       direction: ltr;
+      text-align: left;
     }
 
     #search-clear {
       cursor: pointer;
-      opacity: 0;
-      font-size: 16px;
-      color: var(--c-muted);
-      transition: opacity .15s;
       display: none;
-      padding: 2px 4px;
+      padding: 4px;
+      opacity: 0.6;
+      font-size: 16px;
     }
 
     #search-clear.visible {
       display: block;
-      opacity: 0.6;
     }
 
-    /* ── Results dropdown ── */
     #search-results {
       position: absolute;
       top: calc(100% + 6px);
@@ -155,10 +112,9 @@
       border: 1.5px solid var(--c-border);
       border-radius: var(--r);
       overflow: hidden;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
       display: none;
       z-index: 200;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
     }
 
     #search-results.open {
@@ -173,14 +129,6 @@
       cursor: pointer;
       border-bottom: 1px solid var(--c-border);
       transition: background .12s;
-    }
-
-    .search-result-item:last-child {
-      border-bottom: none;
-    }
-
-    .search-result-item:hover {
-      background: rgba(255, 255, 255, .04);
     }
 
     .sri-icon {
@@ -199,7 +147,6 @@
       font-size: 14px;
       font-weight: 500;
       color: var(--c-text);
-      line-height: 1.3;
     }
 
     .sri-sub {
@@ -208,36 +155,6 @@
       margin-top: 1px;
     }
 
-    .search-no-results {
-      padding: 16px;
-      text-align: center;
-      color: var(--c-muted);
-      font-size: 13px;
-    }
-
-    /* ── Flag button ── */
-    #btn-flag {
-      width: 48px;
-      height: 48px;
-      border-radius: var(--r);
-      background: var(--c-surface);
-      border: 1.5px solid var(--c-border);
-      font-size: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, .35);
-      flex-shrink: 0;
-      transition: border-color .15s;
-    }
-
-    #btn-flag:hover {
-      border-color: rgba(255, 255, 255, .2);
-    }
-
-    /* ── Debug button ── */
     .icon-btn {
       width: 48px;
       height: 48px;
@@ -251,22 +168,14 @@
       cursor: pointer;
       transition: all .15s;
       backdrop-filter: blur(16px);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, .35);
-      flex-shrink: 0;
-    }
-
-    .icon-btn:hover {
-      border-color: var(--c-accent);
-      color: var(--c-accent);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
     }
 
     .icon-btn.active {
       background: var(--c-accent);
       color: #0f1117;
-      border-color: var(--c-accent);
     }
 
-    /* ── Debug panel ── */
     #debug-panel {
       position: absolute;
       top: 76px;
@@ -275,13 +184,12 @@
       background: #0a0f1a;
       border: 1px solid var(--c-accent2);
       border-radius: 8px;
-      padding: 12px 16px;
+      padding: 12px;
       font-size: 11px;
       color: #a0c0ff;
       z-index: 300;
       font-family: monospace;
       display: none;
-      line-height: 1.8;
       max-height: 200px;
       overflow-y: auto;
     }
@@ -290,155 +198,65 @@
       display: block;
     }
 
-    /* ── Boundary highlight ── */
-    .boundary-pulse {
-      animation: bPulse 2s ease-out forwards;
-    }
-
-    @keyframes bPulse {
-      0% {
-        opacity: 0.8;
-      }
-
-      60% {
-        opacity: 0.5;
-      }
-
-      100% {
-        opacity: 0.25;
-      }
-    }
-
-    /* ── MapLibre overrides ── */
-    .maplibregl-ctrl-group {
-      background: var(--c-surface) !important;
-      border: 1px solid var(--c-border) !important;
-      border-radius: var(--r) !important;
-    }
-
-    .maplibregl-ctrl-group button {
-      background: none !important;
-      width: 36px !important;
-      height: 36px !important;
-    }
-
-    .maplibregl-ctrl-group button span {
-      filter: invert(1) !important;
-    }
-
-    .maplibregl-ctrl-attrib {
-      display: none !important;
-    }
-
-    .maplibregl-ctrl-bottom-right {
-      bottom: 24px;
+    #routing-panel {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 12px;
       right: 12px;
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--r);
+      padding: 16px;
+      z-index: 250;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
+      backdrop-filter: blur(16px);
     }
 
-    .maplibregl-popup-content {
-      background: var(--c-surface) !important;
-      border: 1px solid var(--c-border) !important;
-      border-radius: 8px !important;
-      color: var(--c-text) !important;
-      font-family: inherit !important;
-      font-size: 13px !important;
-      padding: 10px 14px !important;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .4) !important;
+    #panel {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--c-surface);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      padding: 20px;
+      z-index: 400;
+      box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
     }
 
-    .maplibregl-popup-tip {
-      display: none !important;
+    #panel.open {
+      display: block;
     }
 
-    @media(max-width:480px) {
-      #topbar {
-        top: 10px;
-        left: 8px;
-        right: 8px;
-      }
+    .route-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--c-bg);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      border: 1px solid var(--c-border);
     }
 
-    .maplibregl-ctrl-group {
-      background: var(--c-surface) !important;
-      border: 1px solid var(--c-border) !important;
-      border-radius: var(--r) !important;
-      backdrop-filter: blur(12px)
-    }
-
-    .maplibregl-ctrl-group button {
-      background: none !important;
-      border-color: var(--c-border) !important;
-      width: 36px !important;
-      height: 36px !important
-    }
-
-    .maplibregl-ctrl-group button span {
-      filter: invert(1) !important
-    }
-
-    .maplibregl-ctrl-attrib {
-      display: none !important
-    }
-
-    .maplibregl-ctrl-bottom-right {
-      bottom: 24px;
-      right: 12px
-    }
-
-    .gps-marker {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--c-accent2);
-      border: 3px solid white;
-      box-shadow: 0 0 0 4px rgba(129, 140, 248, .3);
-      animation: gpsPulse 2s infinite
-    }
-
-    @keyframes gpsPulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(129, 140, 248, .5)
-      }
-
-      70% {
-        box-shadow: 0 0 0 12px rgba(129, 140, 248, 0)
-      }
-
-      100% {
-        box-shadow: 0 0 0 0 rgba(129, 140, 248, 0)
-      }
-    }
-
-    @media(max-width:480px) {
-      :root {
-        --panel-w: calc(100vw - 24px)
-      }
-    }
-
-    /* Pulsing route animation */
-    @keyframes routePulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.7;
-      }
-    }
-
-    .route-pulse {
-      animation: routePulse 2s ease-in-out infinite;
+    .route-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
     }
   </style>
 </head>
 
 <body>
-  <!-- ✅ ONLY THE MAP -->
   <div id="map"></div>
-
-  <!-- ✅ ONLY SEARCH + DEBUG BUTTON -->
   <div id="topbar">
     <div id="search-wrap">
       <div id="search-box">
@@ -447,1211 +265,67 @@
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.35-4.35" />
         </svg>
-        <input id="search-input" type="text" placeholder="وين تحب تمشي؟" autocomplete="off" dir="auto" />
-        <span id="search-clear" onclick="clearSearch()">✕</span>
+        <input id="search-input" type="text" placeholder="وين تحب تمشي؟" autocomplete="off" />
+        <span id="search-clear">✕</span>
       </div>
       <div id="search-results"></div>
     </div>
-
-    <button id="btn-flag" title="English" onclick="/* future */">
-      🇬🇧
-    </button>
-
-    <button class="icon-btn" id="btn-debug" onclick="toggleDebug()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <button class="icon-btn" id="btn-route" title="Route"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg></button>
+    <button class="icon-btn" id="btn-debug" title="Debug"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2">
         <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-      </svg>
-    </button>
+      </svg></button>
   </div>
-
-  <!-- ✅ DEBUG PANEL (kept for development) -->
   <div id="debug-panel">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <span style="font-weight:600">Debug Logs</span>
-      <button onclick="copyDebugLogs()"
-        style="background:var(--c-accent);color:#0f1117;border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer">📋
-        Copy</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span
+        style="font-weight:600">Debug Logs</span><button onclick="copyDebugLogs()"
+        style="background:var(--c-accent);border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer">📋
+        Copy</button></div>
+    <div id="debug-content"></div>
+  </div>
+  <div id="routing-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span
+        style="font-weight:600;font-size:14px">🗺️ Route</span><button onclick="toggleRoutingPanel()"
+        style="background:none;border:none;color:var(--c-muted);font-size:20px;cursor:pointer">×</button></div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:12px">
+      <input id="from-input" type="text" placeholder="From: lat,lng"
+        style="background:var(--c-bg);border:1px solid var(--c-border);border-radius:8px;padding:8px 12px;color:var(--c-text);font-size:13px;text-align:center">
+      <span style="color:var(--c-muted);font-size:12px">→</span>
+      <input id="to-input" type="text" placeholder="To: lat,lng"
+        style="background:var(--c-bg);border:1px solid var(--c-border);border-radius:8px;padding:8px 12px;color:var(--c-text);font-size:13px;text-align:center">
     </div>
-    <div id="debug-content" style="max-height:180px;overflow-y:auto"></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button onclick="planRoute('car')"
+        style="flex:1;padding:10px;background:var(--c-accent2);border:none;border-radius:8px;color:#ffffff;font-weight:600;font-size:13px;cursor:pointer">🚗
+        Car</button>
+      <button onclick="planRoute('walk')"
+        style="flex:1;padding:10px;background:var(--c-warn);border:none;border-radius:8px;color:#ffffff;font-weight:600;font-size:13px;cursor:pointer">🚶
+        Walk</button>
+    </div>
+    <div id="route-result" style="text-align:center;font-size:13px;color:var(--c-muted);min-height:20px"></div>
   </div>
-
-  <!-- ✅ ADD THIS PANEL for offline search results -->
-  <div id="panel" style="display:none">
-    <div class="panel-handle"></div>
-    <div class="panel-title" id="panel-title"></div>
-    <div class="panel-sub" id="panel-sub"></div>
+  <div id="panel">
+    <div id="panel-title" style="font-weight:bold;font-size:16px"></div>
+    <div id="panel-sub" style="font-size:12px;color:var(--c-muted);margin-bottom:12px"></div>
     <div id="panel-content"></div>
+    <button onclick="closePanel()"
+      style="width:100%;padding:10px;margin-top:15px;background:var(--c-border);border:none;border-radius:8px;color:var(--c-text)">Close</button>
   </div>
+
   <script>
-    // ✅ WebGL compatibility check
-    function checkWebGLSupport() {
-      try {
-        const canvas = document.createElement('canvas');
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-
-        if (!gl) {
-          console.error('[Atlas] WebGL not supported');
-          return false;
-        }
-
-        // Check for critical extensions
-        const required = ['OES_texture_float', 'OES_standard_derivatives'];
-        const supported = gl.getSupportedExtensions() || [];
-
-        for (const ext of required) {
-          if (!supported.includes(ext) && !supported.includes(ext.toLowerCase())) {
-            console.warn(`[Atlas] Missing extension: ${ext}`);
-            // Don't fail - just warn, as some devices work without them
-          }
-        }
-
-        return true;
-      } catch (e) {
-        console.error('[Atlas] WebGL check failed:', e);
-        return false;
-      }
-    }
-
-    // Call before initMap:
-    if (!checkWebGLSupport()) {
-      // Show fallback UI
-      document.getElementById('map').innerHTML =
-        '<div style="color:var(--c-text);padding:20px;text-align:center">⚠️ Map not supported on this device</div>';
-      return;
-    }
-
-    // ✅ NEW (safe with feature detection):
-    if (typeof maplibregl?.setRTLTextPlugin === 'function') {
-      maplibregl.setRTLTextPlugin(
-        './lib/mapbox-gl-rtl-text.js',
-        (err) => {
-          if (err) {
-            console.warn('[Atlas] RTL plugin failed to load:', err);
-            // Continue without RTL support rather than crashing
-          }
-        },
-        true // lazy load
-      );
-    } else {
-      console.warn('[Atlas] setRTLTextPlugin not available — skipping RTL support');
-    }
-
-    const PMTILES_PATH = '/data/tunis.pmtiles';
+    // ── GLOBALS ──────────────────────────────────────────────────────────────
+    let map = null;
+    let _protocolAdded = false;
     let _fileCache = null;
-    const _origFetch = window.fetch;
-
-    window.fetch = async function (input, init) {
-      const url = typeof input === 'string' ? input : (input?.url || String(input));
-      const rangeHeader = init?.headers?.Range || init?.headers?.range ||
-        (init?.headers instanceof Headers ? init.headers.get('Range') : null);
-
-      if (rangeHeader && url.includes(PMTILES_PATH)) {
-        const match = rangeHeader.match(/bytes=(\d+)-(\d+)/);
-        if (match) {
-          const start = parseInt(match[1]);
-          const end = parseInt(match[2]);
-          if (!_fileCache) {
-            dbg('caching pmtiles file…');
-            const r = await _origFetch.call(this, url);
-            _fileCache = await r.arrayBuffer();
-            dbg('cached: ' + _fileCache.byteLength + ' bytes');
-          }
-          const slice = _fileCache.slice(start, end + 1);
-          return new Response(slice, {
-            status: 206,
-            statusText: 'Partial Content',
-            headers: {
-              'Content-Type': 'application/octet-stream',
-              'Content-Range': `bytes ${start}-${end}/${_fileCache.byteLength}`,
-              'Content-Length': String(slice.byteLength),
-            }
-          });
-        }
-      }
-      return _origFetch.apply(this, arguments);
-    };
-    dbg('range-fetch polyfill active');
-    // ════════════════════════════════════════════════════════════════════════
-
-    const PMTILES_HTTP_URL = new URL('./data/tunis.pmtiles', window.location.href).href;
-    const PMTILES_STYLE_URL = 'pmtiles://' + PMTILES_HTTP_URL;
-
-    dbg('PMTiles HTTP URL: ' + PMTILES_HTTP_URL);
-    dbg('PMTiles style URL: ' + PMTILES_STYLE_URL);
-
-    // ✅ ADD THIS LINE
-    const protocol = new pmtiles.Protocol();
-    maplibregl.addProtocol("pmtiles", protocol.tile);
-
-    // ✅ register the file correctly
-    const pmtilesFile = new pmtiles.PMTiles(PMTILES_HTTP_URL);
-    protocol.add(pmtilesFile);
-
-    // ── 3. Build full OpenMapTiles v3.11 style ────────────────────────────────
-    //    Layer names confirmed from: pmtiles show data/tunis.pmtiles
-    //    Schema: OpenMapTiles v3.11, id: openmaptiles
-    //    Bounds: 9.978–10.493 lng, 36.659–37.008 lat (Tunis metro area)
-    // ── Style Loader (uses ./style/config.json) ────────────────────────────────
-    let _cachedStyle = null;
-
-    async function buildStyle(theme) {
-      const isDark = theme === 'dark';
-
-      // ── Theme color tokens: Professional, balanced palette ✨ ─────────────────
-      const c = isDark ? {
-        // Base
-        bg: '#0a0e14',
-        land: '#121826',
-        water: '#0d253f',        // Deeper, richer blue
-        waterLine: '#1a4a7a',
-        ocean: '#081a33',        // Even deeper for open ocean
-
-        // Land cover (subtle, natural tones)
-        forest: '#1a3a2e',
-        park: '#1e4a3a',
-        grass: '#2a3a2e',
-        sand: '#3a3a2a',
-        beach: '#4a4a3a',
-        industrial: '#2a2a3a',
-        residential: '#1a1e2a',
-        cemetery: '#2a2a3a',
-        wetland: '#1a2a3a',
-        scrub: '#2a3a2e',
-
-        // Roads: BRIGHT TEST COLORS ✨ (temporary for debugging)
-        roadMotorway: '#f07030',    // Bright orange
-        roadTrunk: '#e86820',    // Deep orange
-        roadPrimary: '#d05818',    // Darker orange
-        roadSecondary: '#b05030',    // Muted dark orange
-        roadMinor: '#8a5040',    // Subtle dark orange-brown
-        roadPath: '#6a4030',    // Very subtle
-        roadRail: '#5a4a6a',    // Keep purple-gray
-
-        // Buildings (subtle depth)
-        building: '#1e2230',
-        buildingTop: '#2a2e3c',
-        buildingOutline: '#3a3a4a',
-
-        // Sites (soft, distinct)
-        siteSchool: '#1e3a3a',
-        siteHospital: '#3a2a3a',
-        siteParking: '#2a2a3a',
-
-        // Labels (excellent contrast, easy to read)
-        placeLabel: '#b8c8e8',
-        roadLabel: '#9aa8c8',
-        poiLabel: '#a8b8d8',
-        waterLabel: '#7a9ab8',
-        addressLabel: '#8a9ab8',
-
-        // Boundaries (subtle)
-        boundary: '#4a4a6a',
-        boundaryDisputed: '#6a4a5a',
-
-        // POI icons (coordinated with labels)
-        poiIcon: '#8a9ab8',
-
-        // Transport lines
-        ferry: '#2a4a7a',
-        aerialway: '#5a5a7a',
-
-        // Halos (for label readability)
-        halo: '#0a0e14',
-        haloLight: 'rgba(10,14,20,0.85)'
-      } : {
-        bg: '#f5f3f0',
-        land: '#f5f3f0',
-        water: '#c8dff0',
-        waterLine: '#88b0d0',
-        ocean: '#b8d0e8',
-
-        forest: '#d4e8c8',
-        park: '#ddeedd',
-        grass: '#e8f0dc',
-        sand: '#f0e8d0',
-        beach: '#f8f0e0',
-        industrial: '#e4e0e8',
-        residential: '#efefef',
-        cemetery: '#e0e0d8',
-        wetland: '#ccddf0',
-        scrub: '#dce8d0',
-
-        roadMotorway: '#e8952a',
-        roadTrunk: '#e8952a',
-        roadPrimary: '#f0b050',
-        roadSecondary: '#f8d090',
-        roadMinor: '#ffffff',
-        roadPath: '#e8e0d8',
-        roadRail: '#aaaaaa',
-
-        building: '#e8e4de',
-        buildingTop: '#f0ece8',
-        buildingOutline: '#d0ccc8',
-
-        siteSchool: '#eaf0e0',
-        siteHospital: '#f0e8e8',
-        siteParking: '#ececec',
-
-        placeLabel: '#333333',
-        roadLabel: '#666666',
-        poiLabel: '#555555',
-        waterLabel: '#4a7a9a',
-        addressLabel: '#888888',
-
-        boundary: '#bbbbbb',
-        boundaryDisputed: '#cc9999',
-
-        poiIcon: '#777777',
-
-        ferry: '#88b0d0',
-        aerialway: '#aaaaaa',
-
-        halo: '#f5f3f0',
-        haloLight: 'rgba(245,243,240,0.9)'
-      };
-
-      // ── Build style from scratch based on style1.json layer structure ──────────
-      const style = {
-        version: 8,
-        name: "Tunis Shortbread — Adapted",
-        sources: {
-          omt: {
-            type: 'vector',
-            url: PMTILES_STYLE_URL
-          }
-        },
-        sprite: './sprites/sprites',
-        glyphs: './font/{fontstack}/{range}.pbf',
-        layers: []
-      };
-
-
-      // 1. Background = ocean color
-      style.layers.push({
-        id: 'background',
-        type: 'background',
-        paint: { 'background-color': isDark ? c.ocean : c.ocean }
-      });
-
-      // Real land polygon from Natural Earth shapefile
-      style.layers.push({
-        id: 'land-polygons',
-        type: 'fill',
-        source: 'omt',
-        'source-layer': 'land_polygons',
-        minzoom: 0,
-        paint: { 'fill-color': isDark ? c.land : c.land }
-      });
-
-      // 3. Land tagged areas (forests, residential, etc.) over ocean
-      style.layers.push({
-        id: 'land-base',
-        type: 'fill',
-        source: 'omt',
-        'source-layer': 'land',
-        minzoom: 0,
-        paint: { 'fill-color': isDark ? c.land : c.land }
-      });
-
-      // Water on top of land
-      style.layers.push({
-        id: 'water',
-        type: 'fill',
-        source: 'omt',
-        'source-layer': 'water_polygons',
-        minzoom: 0,
-        paint: { 'fill-color': isDark ? c.water : c.water, 'fill-opacity': 1.0 }
-      });
-
-      // 5. Water lines
-      style.layers.push({
-        id: 'water-lines',
-        type: 'line',
-        source: 'omt',
-        'source-layer': 'water_lines',
-        minzoom: 4,
-        filter: ['in', 'class', 'river', 'stream', 'canal', 'drain', 'ditch', 'creek'],
-        paint: {
-          'line-color': c.waterLine,
-          'line-width': { base: 1.3, stops: [[10, 0.8], [14, 2], [18, 5]] },
-          'line-opacity': { stops: [[10, 0.7], [14, 1.0]] }
-        }
-      });
-
-      const landCoverTypes = [
-        { kind: 'forest', color: c.forest, minzoom: 11 },  // was 7
-        { kind: 'park', color: c.park, minzoom: 12, filter: ['in', 'class', 'park', 'recreation_ground'] },  // was 11
-        { kind: 'grass', color: c.grass, minzoom: 12, filter: ['in', 'class', 'grass', 'meadow'] },  // was 11
-        { kind: 'sand', color: c.sand, minzoom: 12, filter: ['in', 'class', 'sand', 'beach'] },  // was 10
-        { kind: 'cemetery', color: c.cemetery, minzoom: 14 },  // was 13
-        { kind: 'wetland', color: c.wetland, minzoom: 13, filter: ['in', 'class', 'wetland'] },  // was 11
-        { kind: 'scrub', color: c.scrub, minzoom: 13, filter: ['in', 'class', 'scrub', 'heath', 'grassland'] },  // was 11
-        { kind: 'residential', color: c.residential, minzoom: 13 },  // was 10
-        { kind: 'industrial', color: c.industrial, minzoom: 13, filter: ['in', 'class', 'industrial', 'commercial', 'retail'] }  // was 10
-      ];
-
-      landCoverTypes.forEach(cfg => {
-        // Ensure opacity stops are always in ascending zoom order
-        const opacityStops = cfg.minzoom < 13
-          ? [[cfg.minzoom, 0.4], [13, 0.8]]   // Normal case: minzoom < 13
-          : [[cfg.minzoom, 0.8]];              // Special case: minzoom >= 13
-
-        style.layers.push({
-          id: `land-${cfg.kind}`,
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'land',
-          minzoom: cfg.minzoom,
-          filter: cfg.filter || ['==', 'class', cfg.kind],
-          paint: {
-            'fill-color': cfg.color,
-            'fill-opacity': { stops: opacityStops }
-          }
-        });
-      });
-
-
-      style.layers.push(
-        {
-          id: 'sites-university',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'sites',
-          filter: ['in', 'class', 'university', 'college'],
-          minzoom: 13,
-          // Muted, soft purple
-          paint: { 'fill-color': isDark ? '#6d597a' : '#e0d1ea', 'fill-opacity': 0.7 }
-        },
-        {
-          id: 'sites-school',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'sites',
-          filter: ['==', 'class', 'school'],
-          minzoom: 13,
-          // Soft, sage green
-          paint: { 'fill-color': isDark ? '#52796f' : '#b7d4c8', 'fill-opacity': 0.7 }
-        },
-        {
-          id: 'sites-hospital',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'sites',
-          filter: ['==', 'class', 'hospital'],
-          minzoom: 13,
-          // Muted, warm rose
-          paint: { 'fill-color': isDark ? '#a44a3f' : '#f2c6c2', 'fill-opacity': 0.7 }
-        },
-        {
-          id: 'sites-cemetery',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'sites',
-          filter: ['in', 'class', 'cemetery', 'grave_yard'],
-          minzoom: 13,
-          // Earthy, neutral gray-green
-          paint: { 'fill-color': isDark ? '#5a6157' : '#d6dcd0', 'fill-opacity': 0.7 }
-        },
-        {
-          id: 'sites-park',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'sites',
-          filter: ['in', 'class', 'park', 'garden'],
-          minzoom: 13,
-          // ✅ More vibrant, lush emerald
-          paint: { 'fill-color': isDark ? '#2d6a4f' : '#74c69d', 'fill-opacity': 0.7 }
-        },
-        {
-          id: 'sites-parking',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'sites',
-          filter: ['in', 'class', 'parking', 'bicycle_parking'],
-          minzoom: 13,
-          // Subtle, cool slate
-          paint: { 'fill-color': isDark ? '#525c68' : '#e2e8f0', 'fill-opacity': 0.7 }
-        }
-
-      );
-
-      // ── Aeroways (runways, taxiways) ─────────────────────────────────────────
-      style.layers.push(
-        {
-          id: 'aeroway-apron',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'aeroways', // 👈 Pointing to the new dedicated layer
-          filter: ['in', 'class', 'apron', 'terminal', 'helipad'],
-          minzoom: 10,
-          paint: {
-            'fill-color': isDark ? '#2a2a38' : '#d8d8e4',
-            'fill-opacity': 1.0
-          }
-        },
-        {
-          id: 'aeroway-runway',
-          type: 'line',
-          source: 'omt',
-          'source-layer': 'aeroways', // 👈 Pointing to the new dedicated layer
-          filter: ['==', 'class', 'runway'],
-          minzoom: 10,
-          layout: {
-            'line-cap': 'square',
-            'line-join': 'miter'
-          },
-          paint: {
-            'line-color': isDark ? '#4a4a5a' : '#b8b8c8',
-            // Much thicker scaling so it actually looks like a runway
-            'line-width': { base: 1.5, stops: [[10, 4], [12, 12], [14, 30], [16, 60]] },
-            'line-opacity': 1.0
-          }
-        },
-        {
-          id: 'aeroway-taxiway',
-          type: 'line',
-          source: 'omt',
-          'source-layer': 'aeroways', // 👈 Pointing to the new dedicated layer
-          filter: ['==', 'class', 'taxiway'],
-          minzoom: 11,
-          layout: {
-            'line-cap': 'round',
-            'line-join': 'round'
-          },
-          paint: {
-            'line-color': isDark ? '#3a3a4a' : '#c8c8d4',
-            'line-width': { base: 1.5, stops: [[11, 2], [13, 6], [15, 12]] },
-            'line-opacity': 1.0
-          }
-        }
-      );
-      // ── 5. Streets (CRITICAL FIX: handle zoom-dependent layer structure) ──────
-
-
-      const roadStyles = [
-        {
-          kinds: ['residential', 'unclassified', 'service', 'footway', 'cycleway', 'track', 'pedestrian', 'path'],
-          color: isDark ? c.roadMinor : c.roadMinor,
-          widths: { base: 1.4, stops: [[13, 0.8], [14, 2], [16, 4], [18, 6]] },
-          minzoom: 13   // was 12
-        },
-        {
-          kinds: ['tertiary', 'tertiary_link'],
-          color: isDark ? c.roadSecondary : c.roadSecondary,
-          widths: { base: 1.4, stops: [[12, 0.8], [13, 1.5], [14, 4], [16, 8], [18, 11]] },
-          minzoom: 12   // was 10
-        },
-        {
-          kinds: ['primary', 'primary_link', 'secondary', 'secondary_link'],
-          color: isDark ? c.roadPrimary : c.roadPrimary,
-          widths: { base: 1.4, stops: [[10, 0.8], [12, 2], [14, 5], [16, 10], [18, 14]] },
-          minzoom: 10   // was 8
-        },
-        {
-          kinds: ['motorway', 'motorway_link', 'trunk', 'trunk_link'],
-          color: isDark ? c.roadMotorway : c.roadMotorway,
-          widths: { base: 1.4, stops: [[6, 1], [10, 2.5], [14, 8], [16, 14], [18, 20]] },
-          minzoom: 6    // was 5
-        },
-        {
-          kinds: ['rail'],
-          color: isDark ? c.roadRail : c.roadRail,
-          widths: { base: 1.2, stops: [[10, 0.3], [14, 1], [18, 3]] },
-          minzoom: 10   // was 8
-        }
-      ];
-
-
-      roadStyles.forEach((cfg, idx) => {
-        style.layers.push({
-          id: `streets-${cfg.kinds[0]}`,
-          type: 'line',
-          source: 'omt',
-          'source-layer': 'streets',
-          filter: ['in', 'class', ...cfg.kinds],
-          minzoom: cfg.minzoom,  // ✅ ADD THIS LINE - was missing!
-          layout: {
-            'line-cap': 'round',
-            'line-join': 'round'
-          },
-          paint: {
-            'line-color': cfg.color,
-            'line-width': cfg.widths,
-            ...(cfg.dasharray ? { 'line-dasharray': cfg.dasharray } : {}),
-            'line-opacity': 1.0
-          }
-        });
-      });
-
-      // ── Bridges: Style roads with bridge=yes attribute ✨ ─────────────────────
-      style.layers.push({
-        id: 'bridges-streets',
-        type: 'line',
-        source: 'omt',
-        'source-layer': 'streets',  // Query main streets layer (more reliable)
-        minzoom: 13,
-        filter: [
-          'any',
-          ['==', ['get', 'bridge'], 'yes'],  // String "yes"
-          ['==', ['get', 'bridge'], '1'],    // String "1"
-          ['==', ['get', 'bridge'], true]    // Boolean true
-        ],
-        layout: {
-          'line-cap': 'round',
-          'line-join': 'round'
-        },
-        paint: {
-          'line-color': isDark ? '#e6b800' : '#c49000',  // ✨ Gold/amber that matches your orange palette
-          'line-width': { base: 1.4, stops: [[12, 2.5], [14, 5], [16, 9], [18, 13]] },
-          'line-opacity': 1.0
-        }
-      });
-
-      // Street polygons (pedestrian areas)
-      style.layers.push({
-        id: 'street-polygons',
-        type: 'fill',
-        source: 'omt',
-        'source-layer': 'street_polygons',
-        filter: ['==', 'kind', 'pedestrian'],
-        minzoom: 14,
-        paint: {
-          'fill-color': isDark ? '#1a1e2a' : '#f8f4f0',
-          'fill-opacity': { stops: [[14, 0.3], [16, 0.6]] }
-        }
-      });
-
-      // ── Street polygon labels: Pedestrian area names ─────────────────────────
-      style.layers.push({
-        id: 'street-polygon-labels',
-        type: 'symbol',
-        source: 'omt',
-        'source-layer': 'streets_polygons_labels',
-        minzoom: 14,
-        layout: {
-          'text-field': '{name}',
-          'text-font': ['Noto Sans Regular'],
-          'text-size': 10,
-          'text-anchor': 'center'
-        },
-        paint: {
-          'text-color': isDark ? '#9aa8c8' : '#555555',
-          'text-halo-color': isDark ? c.halo : c.halo,
-          'text-halo-width': 1
-        }
-      });
-      // ── 6. Buildings (with subtle depth and hierarchy) ────────────────────────
-      style.layers.push(
-        // Building footprints
-        {
-          id: 'buildings',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'buildings',
-          minzoom: 13,
-          paint: {
-            'fill-color': c.building,
-            'fill-opacity': { stops: [[13, 0.5], [15, 0.85], [17, 1.0]] },
-            'fill-outline-color': c.buildingOutline
-          }
-        },
-        // Building tops (slightly lighter for 3D effect)
-        {
-          id: 'buildings-top',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'buildings',
-          minzoom: 15,
-          paint: {
-            'fill-color': c.buildingTop,
-            'fill-opacity': { stops: [[15, 0.3], [17, 0.6]] },
-            'fill-translate': [-1, -1],  // Subtle offset for depth
-            'fill-translate-anchor': 'viewport'
-          }
-        },
-        // Building outlines (crisp at high zoom)
-        {
-          id: 'buildings-outline',
-          type: 'line',
-          source: 'omt',
-          'source-layer': 'buildings',
-          minzoom: 16,
-          paint: {
-            'line-color': c.buildingOutline,
-            'line-width': { stops: [[16, 0.3], [18, 0.6]] },
-            'line-opacity': 0.5
-          }
-        }
-      );
-
-
-
-      // ── 7. POIs & Public Transport (FIXED icon mapping) ───────────────────────
-      // Your data uses amenity/shop/tourism as property NAMES, not a unified 'kind'
-      // Your NEW tunis.pmtiles uses 'kind' property for POI types ✨
-      // Your tunis.pmtiles uses 'class' property for POI types ✨
-      // ── SPRITE ALIAS MAP: Map missing icons to existing ones ✨ ───────────────
-      // Format: 'missing-icon-name': 'existing-icon-name'
-      const spriteAlias = {
-        // Transport / Transit
-        'icon-platform': 'icon-bus',
-        'icon-stop_position': 'icon-bus',
-        'icon-light_rail': 'icon-rail',
-        'icon-tram': 'transport-tram',  // Special: uses different prefix
-        'icon-rail_light': 'icon-rail',
-        'icon-rail_metro': 'icon-rail_metro',  // Already exists!
-        'icon-subway_entrance': 'icon-rail_metro',
-
-        // Food & Drink
-        'icon-ice_cream': 'icon-cafe',
-        'icon-deli': 'icon-restaurant',
-        'icon-beverages': 'icon-cafe',
-        'icon-alcohol_shop': 'icon-bar',
-
-        // Shopping
-        'icon-electronics': 'icon-shop',
-        'icon-car_parts': 'icon-shop',
-        'icon-jewelry_store': 'icon-jewelry_store',  // Already exists!
-        'icon-greengrocer': 'icon-shop',
-
-        // Culture / Leisure
-        'icon-museum': 'icon-historic',     // ← was: 'icon-museum': 'icon-museum' (doesn't exist!)
-        'icon-art_gallery': 'icon-art_gallery',  // Already exists!
-        'icon-gallery': 'icon-art_gallery',
-        'icon-attraction': 'icon-viewpoint',
-        'icon-historic': 'icon-historic',  // Already exists!
-
-        // Outdoor / Parks
-        'icon-park': 'icon-pitch',  // Use sports field as generic green icon
-        'icon-garden': 'icon-pitch',
-        'icon-dog_park': 'icon-pitch',
-        'icon-camp_site': 'icon-chalet',
-        'icon-picnic_site': 'icon-pitch',
-
-        // Services / Civic
-        'icon-courthouse': 'icon-town_hall',
-        'icon-community_centre': 'icon-community',
-        'icon-social_facility': 'icon-hospital',
-        'icon-bureau_de_change': 'icon-bank',
-
-        // Education
-        'icon-kindergarten': 'icon-school',
-
-        // Transport (more)
-        'icon-fuel': 'icon-shop',  // Generic shop fallback
-        'icon-parking': 'icon-shop',  // Generic fallback
-        'icon-car_wash': 'icon-shop',
-        'icon-car_rental': 'icon-shop',
-
-        // Fallback for anything else
-        'icon-unknown': 'icon-shop',
-
-        'icon-food_court': 'icon-restaurant',
-        'icon-bicycle_parking': 'icon-bicycle_share',
-        'icon-motorcycle_parking': 'icon-shop',
-        'icon-music': 'icon-nightclub'
-      };
-
-      // Your tunis.pmtiles uses 'class' property for POI types ✨
-      // Wrapped with spriteAlias fallback mapping
-      const poiIconExpr = [
-        'case',
-        // PRIMARY: use 'class' property + alias lookup
-        ['all', ['has', 'class'], ['!=', ['get', 'class'], '']],
-        ['coalesce',
-          ['get', ['concat', 'icon-', ['get', 'class']], ['literal', spriteAlias]],
-          ['concat', 'icon-', ['get', 'class']]
-        ],
-        // Secondary: 'kind' + alias
-        ['all', ['has', 'kind'], ['!=', ['get', 'kind'], '']],
-        ['coalesce',
-          ['get', ['concat', 'icon-', ['get', 'kind']], ['literal', spriteAlias]],
-          ['concat', 'icon-', ['get', 'kind']]
-        ],
-        // Tertiary: amenity/shop/etc. + alias
-        ['all', ['has', 'amenity'], ['!=', ['get', 'amenity'], '']],
-        ['coalesce',
-          ['get', ['concat', 'icon-', ['get', 'amenity']], ['literal', spriteAlias]],
-          ['concat', 'icon-', ['get', 'amenity']]
-        ],
-        ['all', ['has', 'shop'], ['!=', ['get', 'shop'], '']],
-        ['coalesce',
-          ['get', ['concat', 'icon-', ['get', 'shop']], ['literal', spriteAlias]],
-          ['concat', 'icon-', ['get', 'shop']]
-        ],
-        ['all', ['has', 'tourism'], ['!=', ['get', 'tourism'], '']],
-        ['coalesce',
-          ['get', ['concat', 'icon-', ['get', 'tourism']], ['literal', spriteAlias]],
-          ['concat', 'icon-', ['get', 'tourism']]
-        ],
-        // Final fallback: generic shop icon
-        'icon-shop'
-      ];
-
-      style.layers.push(
-        {
-          id: 'public-transport',
-          type: 'symbol',
-          source: 'omt',
-          'source-layer': 'public_transport',
-          minzoom: 13,
-          layout: {
-            'icon-image': poiIconExpr,
-            'icon-optional': true,
-            'text-field': '{name}',
-            'text-font': ['Noto Sans Regular'],
-            'text-size': 10,
-            'text-anchor': 'top',
-            'text-offset': [0, 0.5]
-          },
-          paint: {
-            'text-color': c.poiLabel,
-            'text-halo-color': c.haloLight,
-            'text-halo-width': 1,
-            'icon-color': c.poiIcon
-          }
-        },
-        {
-          id: 'pois',
-          type: 'symbol',
-          source: 'omt',
-          'source-layer': 'pois',
-          minzoom: 14,
-          layout: {
-            'icon-image': poiIconExpr,
-            'icon-optional': true,
-            'text-optional': false,
-            'text-field': '{name}',
-            'text-font': ['Noto Sans Regular'],
-            'text-size': 11,
-            'text-anchor': 'top',
-            'text-offset': [0, 0.6],
-            'icon-size': { stops: [[14, 0.8], [16, 1], [18, 1.2]] }
-          },
-          paint: {
-            'text-color': c.poiLabel,
-            'text-halo-color': c.haloLight,
-            'text-halo-width': 1,
-            'icon-color': c.poiIcon
-          }
-        }
-      );
-
-      // ── 8. Boundaries ─────────────────────────────────────────────────────────
-
-      // ── Dams: Water control structures ───────────────────────────────────────
-      style.layers.push(
-        // Dam polygons
-        {
-          id: 'dam-polygons',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'dam_polygons',
-          minzoom: 12,
-          paint: {
-            'fill-color': isDark ? '#3a4a6a' : '#a0b8d0',
-            'fill-opacity': 0.6
-          }
-        },
-        // Dam lines
-        {
-          id: 'dam-lines',
-          type: 'line',
-          source: 'omt',
-          'source-layer': 'dam_lines',
-          minzoom: 12,
-          paint: {
-            'line-color': isDark ? '#5a6a8a' : '#7090b0',
-            'line-width': { base: 1.2, stops: [[12, 1], [14, 2], [16, 3]] }
-          }
-        }
-      );
-
-      // ── Piers: Coastal/marina infrastructure ─────────────────────────────────
-      style.layers.push(
-        // Pier polygons
-        {
-          id: 'pier-polygons',
-          type: 'fill',
-          source: 'omt',
-          'source-layer': 'pier_polygons',
-          minzoom: 12,
-          paint: {
-            'fill-color': isDark ? '#2a3a4a' : '#d0d8e0',
-            'fill-opacity': 0.7
-          }
-        },
-        // Pier lines
-        {
-          id: 'pier-lines',
-          type: 'line',
-          source: 'omt',
-          'source-layer': 'pier_lines',
-          minzoom: 12,
-          paint: {
-            'line-color': isDark ? '#4a5a6a' : '#90a0b0',
-            'line-width': { base: 1.2, stops: [[12, 1], [14, 2]] }
-          }
-        }
-      );
-
-      // ── Boundary labels: Admin boundary names ────────────────────────────────
-      style.layers.push({
-        id: 'boundary-labels',
-        type: 'symbol',
-        source: 'omt',
-        'source-layer': 'boundary_labels',
-        minzoom: 2,
-        layout: {
-          'text-field': '{name}',
-          'text-font': ['Noto Sans Bold'],
-          'text-size': { base: 1.2, stops: [[2, 10], [5, 14], [8, 18]] },
-          'text-transform': 'uppercase',
-          'text-anchor': 'center',
-          'text-offset': [0, 0.5]
-        },
-        paint: {
-          'text-color': isDark ? '#8a9ab8' : '#5a6a8a',
-          'text-halo-color': isDark ? c.halo : c.halo,
-          'text-halo-width': isDark ? 1.5 : 1.2
-        }
-      });
-
-      style.layers.push(
-        {
-          id: 'boundaries-country',
-          type: 'line',
-          source: 'omt',
-          'source-layer': 'boundaries',
-          filter: ['==', 'admin_level', 2],
-          minzoom: 0,
-          paint: {
-            'line-color': c.boundary,
-            'line-width': { stops: [[4, 0.5], [8, 1], [12, 2]] },
-            'line-dasharray': [2, 2]
-          }
-        },
-        {
-          id: 'boundaries-state',
-          type: 'line',
-          source: 'omt',
-          'source-layer': 'boundaries',
-          filter: ['==', 'admin_level', 4],
-          minzoom: 7,
-          paint: {
-            'line-color': c.boundary,
-            'line-width': 1,
-            'line-dasharray': [3, 2]
-          }
-        }
-      );
-
-      // ── 9. Labels ─────────────────────────────────────────────────────────────
-      style.layers.push(
-        // Place labels
-        {
-          id: 'place-labels',
-          type: 'symbol',
-          source: 'omt',
-          'source-layer': 'place_labels',
-          minzoom: 3,
-          layout: {
-            'text-field': '{name}',
-            'text-font': ['Noto Sans Bold'],
-            'text-size': { base: 1.2, stops: [[7, 12], [10, 16]] },
-            'text-transform': 'uppercase'
-          },
-          paint: {
-            'text-color': c.placeLabel,
-            'text-halo-color': c.halo,
-            'text-halo-width': isDark ? 1.5 : 1.2
-          }
-        },
-        // Street labels
-        {
-          id: 'street-labels',
-          type: 'symbol',
-          source: 'omt',
-          'source-layer': 'street_labels',
-          minzoom: 13,
-          layout: {
-            'symbol-placement': 'line',
-            'text-field': '{name}',
-            'text-font': ['Noto Sans Regular'],
-            'text-size': 11
-          },
-          paint: {
-            'text-color': c.roadLabel,
-            'text-halo-color': c.haloLight,
-            'text-halo-width': 1
-          }
-        },
-
-        // ── Street label points: Road names at intersections ─────────────────────
-        {
-          id: 'street-label-points',
-          type: 'symbol',
-          source: 'omt',
-          'source-layer': 'street_labels_points',
-          minzoom: 14,
-          layout: {
-            'text-field': '{ref}',
-            'text-font': ['Noto Sans Bold'],
-            'text-size': 9,
-            'text-anchor': 'center'
-          },
-          paint: {
-            'text-color': isDark ? '#fff' : '#333',
-            'text-halo-color': isDark ? c.halo : c.halo,
-            'text-halo-width': 1
-          }
-        },
-        // Water labels
-
-        {
-          id: 'water-labels',
-          type: 'symbol',
-          source: 'omt',
-          'source-layer': 'water_polygons_labels',
-          minzoom: 10,
-          layout: {
-            'text-field': '{name}',
-            'text-font': ['Noto Sans Italic'],
-            'text-size': { base: 1.2, stops: [[10, 10], [14, 14]] },
-            'text-transform': 'lowercase'
-          },
-          paint: {
-            'text-color': c.waterLabel,
-            'text-halo-color': c.halo,
-            'text-halo-width': 1
-          }
-        },
-        // Address labels (high zoom)
-        {
-          id: 'address-labels',
-          type: 'symbol',
-          source: 'omt',
-          'source-layer': 'addresses',
-          minzoom: 15,
-          layout: {
-            'text-field': '{housenumber}',
-            'text-font': ['Noto Sans Regular'],
-            'text-size': 9
-          },
-          paint: {
-            'text-color': c.addressLabel,
-            'text-halo-color': c.haloLight,
-            'text-halo-width': 1
-          }
-        }
-      );
-
-      return style;
-    } async function runFetchTests() {
-      const pmtilesUrl = new URL('./data/tunis.pmtiles', window.location.href).href;
-      dbg('Testing PMTiles access: ' + pmtilesUrl);
-
-      try {
-        const r = await fetch(pmtilesUrl, { headers: { Range: 'bytes=0-127' } });
-        dbg('Range test: ' + r.status + ' (' + r.headers.get('Content-Range') + ')');
-        const buf = await r.arrayBuffer();
-        dbg('Range bytes: ' + buf.byteLength + ' (expect 128)');
-      } catch (e) { dbg('Range test FAIL: ' + e.message); }
-
-      await initMap(pmtilesUrl);
-    }
-
-    async function initMap(pmtilesUrl) {
-      dbg('Initializing map…');
-      const PMTILES_STYLE_URL = 'pmtiles://' + pmtilesUrl;
-
-      // ✅ Android: absolute workerUrl
-      maplibregl.workerUrl = new URL('./lib/maplibre-gl.js', window.location.href).href;
-
-      // PMTiles protocol
-      const protocol = new pmtiles.Protocol();
-      maplibregl.addProtocol('pmtiles', protocol.tile);
-      const pmtilesFile = new pmtiles.PMTiles(pmtilesUrl);
-      protocol.add(pmtilesFile);
-      window._pmtilesFile = pmtilesFile;
-
-      // ✅ USE SIMPLE STYLE FIRST (verify map loads, then enhance)
-      const style = await buildStyle('light');
-
-      const map = new maplibregl.Map({
-        container: 'map',
-        style,
-        center: [10.1815, 36.8065],
-        zoom: 14,
-        attributionControl: false,
-        maxBounds: [[9.5, 36.3], [11.0, 37.4]],
-
-        // ✅ Performance boosts:
-        fadeDuration: 0,              // Instant layer switches
-        crossSourceCollisions: false, // Faster label placement
-        preserveDrawingBuffer: false, // Free GPU memory
-        antialias: false,            // Faster rendering
-        maxTileCacheSize: 20   // ← add this, default is 200 which is way too much for mobile
-
-      });
-
-      // ✅ Expose globally for UI handlers
-      window.map = map;
-
-      // ✅ Android: force resize after WebView renders
-      setTimeout(() => map.resize(), 500);
-
-      // ── SPRITE DEBUGGING ───────────────────────────────────────────────────
-      map.on('styleimagemissing', (e) => {
-        const missing = e.id;
-
-        // Comprehensive suppression list: patterns + known missing POI icons
-        const suppress = [
-          // Pattern fixes (handled separately)
-          'icon-', 'cemetery_11', 'orchard_11',
-
-          // Accommodation (use icon-chalet as fallback visually)
-          'icon-hotel', 'icon-motel', 'icon-hostel', 'icon-guest_house',
-
-          // Education
-          'icon-university',
-
-          // Shopping
-          'icon-supermarket', 'icon-convenience', 'icon-mall',
-          'icon-department_store', 'icon-jewelry',
-
-          // Services
-          'icon-toilets', 'icon-post_office', 'icon-townhall',
-          'icon-fire_hydrant', 'icon-doctors', 'icon-clinic',
-          'icon-vending_machine', 'icon-computer',
-
-          // Culture/Leisure
-          'icon-arts_centre', 'icon-memorial', 'icon-travel_agency',
-          'icon-information', 'icon-swimming_pool', 'icon-sports_centre',
-
-          // Transport
-          'icon-bicycle', 'icon-car', 'icon-alcohol', 'icon-pub',
-          'icon-mobile_phone',
-
-          // Other
-          'icon-public_building'
-        ];
-
-        if (suppress.includes(missing)) {
-          return; // Suppress - labels still show via icon-optional
-        }
-
-        // Log truly unexpected missing sprites for debugging
-        dbg(`❌ MISSING SPRITE: "${missing}"`);
-      });
-
-
-      // After style loads, check what icon names are being requested
-      map.on('style.load', () => {
-        setTimeout(() => {
-          const style = map.getStyle();
-          const iconLayers = style.layers.filter(l =>
-            l.type === 'symbol' && l.layout?.['icon-image']
-          );
-
-          dbg(`🔍 Found ${iconLayers.length} layers using icons:`);
-          iconLayers.forEach(layer => {
-            const expr = layer.layout['icon-image'];
-            dbg(`  • ${layer.id}: ${JSON.stringify(expr)} (source: ${layer['source-layer']})`);
-          });
-
-
-        }, 1000);
-      });
-
-
-      // 🔍 Zoom debug: remind when POIs should appear
-      map.on('zoom', () => {
-        const z = Math.round(map.getZoom());
-        if (z >= 13 && !window._spriteDebugNotified) {
-          dbg(`🔍 Zoom ${z}: POI icons should now be visible if sprites are working`);
-          window._spriteDebugNotified = true;
-        }
-      });
-      // ───────────────────────────────────────────────────────────────────────
-      map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
-      map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-right');
-
-      // Events
-      // ── DEBUG: Check if minor roads exist in PMTiles ─────────────────────
-      map.on('load', async () => {
-        dbg('✓ MAP LOAD FIRED');
-
-        // Wait for source to load
-        const waitForSource = () => {
-          return new Promise(resolve => {
-            if (map.isSourceLoaded('omt')) resolve();
-            else map.once('sourcedata', e => {
-              if (e.sourceId === 'omt' && e.isSourceLoaded) resolve();
-            });
-          });
-        };
-
-        await waitForSource();
-      });
-
-      map.on('sourcedata', e => {
-        if (e.sourceId === 'openmaptiles' && e.isSourceLoaded) dbg('✓ SOURCE LOADED');
-      });
-
-
-      map.on('error', e => {
-        const msg = e.error?.message || '';
-        if (msg.includes('canceled') || msg.includes('abort')) return;
-        const url = e.error?.url || e.tile?.tileID?.canonical || '';
-        dbg('ERR: ' + msg + (url ? '\n  url: ' + url : ''));
-      });
-
-      // Add this helper at top of script (outside any function)
-      function throttle(fn, delay) {
-        let last = 0;
-        return (...args) => {
-          const now = Date.now();
-          if (now - last >= delay) {
-            last = now;
-            fn.apply(this, args);
-          }
-        };
-      }
-
-      // Then use it for mousemove:
-      map.on('mousemove', throttle(e => {
-        const coordsDisplay = document.getElementById('coords-display');
-        if (coordsDisplay) {
-          coordsDisplay.textContent =
-            `${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`;
-        }
-      }, 100)); // Update max every 100ms
-
-      // Map click
-      let routingClickActive = false;
-      map.on('click', e => {
-        if (routingClickActive) { handleRoutingClick(e.lngLat); return; }
-        const { lat, lng } = e.lngLat;
-        showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
-          `<div class="route-card" onclick="setRouteDest(${lat},${lng})">
-             <div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div>
-             <div class="route-info"><div class="route-label">Route here</div>
-             <div class="route-meta">Set as destination</div></div></div>
-           <div class="route-card" onclick="copyCoords(${lat},${lng})">
-             <div class="route-icon" style="background:rgba(129,140,248,.15)">📋</div>
-             <div class="route-info"><div class="route-label">Copy coordinates</div>
-             <div class="route-meta">${lat.toFixed(6)}, ${lng.toFixed(6)}</div></div></div>`);
-        new maplibregl.Marker({ color: '#4ade80', scale: .7 }).setLngLat([lng, lat]).addTo(map);
-        const layersMenu = document.getElementById('layers-menu');
-        if (layersMenu) layersMenu.classList.remove('open');
-      });
-    }
-
-    // Kick off
-    runFetchTests();
-
-    // Debug panel (auto-hides after 12s, click to dismiss)
+    let _fetchPromise = null;
+    let _offlinePlaces = [];
+    let routingClickActive = false;
+    const PMTILES_PATH = '/data/tunis.pmtiles';
+
+    // ── DEBUG ────────────────────────────────────────────────────────────────
     function dbg(msg) {
       console.log('[Atlas]', msg);
       const content = document.getElementById('debug-content');
@@ -1663,805 +337,261 @@
       content.scrollTop = content.scrollHeight;
     }
 
-    const debugPanel = document.getElementById('debug-panel');
-    if (debugPanel) {
-      debugPanel.addEventListener('click', () => {
-        const panel = document.getElementById('debug-panel');
-        if (panel) panel.classList.remove('show');
+    // ── PMTILES RANGE FETCH POLYFILL (STABLE) ─────────────────────────────────
+    const _origFetch = window.fetch;
+    window.fetch = async function (input, init) {
+      const url = typeof input === 'string' ? input : (input?.url || String(input));
+      let range = null;
+      if (init?.headers) {
+        if (typeof init.headers.get === 'function') range = init.headers.get('Range');
+        else range = init.headers['Range'] || init.headers['range'];
+      }
+      if (range && url.includes('tunis.pmtiles')) {
+        const match = range.match(/bytes=(\d+)-(\d+)/);
+        if (match) {
+          if (!_fileCache) {
+            if (!_fetchPromise) {
+              _fetchPromise = (async () => {
+                dbg('📥 Caching PMTiles...');
+                try {
+                  const r = await _origFetch.call(window, url);
+                  if (!r.ok) throw new Error('HTTP ' + r.status);
+                  const buf = await r.arrayBuffer();
+                  _fileCache = buf;
+                  dbg('✅ PMTiles Cached');
+                  return _fileCache;
+                } catch (e) {
+                  dbg('❌ Cache Failed: ' + e.message);
+                  _fetchPromise = null;
+                  throw e;
+                }
+              })();
+            }
+            await _fetchPromise;
+          }
+          if (_fileCache) {
+            const start = parseInt(match[1]), end = parseInt(match[2]);
+            const slice = _fileCache.slice(start, end + 1);
+            return new Response(slice, { status: 206, headers: { 'Content-Range': `bytes ${start}-${end}/${_fileCache.byteLength}`, 'Content-Length': String(slice.byteLength), 'Content-Type': 'application/octet-stream' } });
+          }
+        }
+      }
+      return _origFetch.apply(window, arguments);
+    };
+
+    // ── STYLE BUILDER (FULL ORIGINAL THEME RE-INTEGRATED) ─────────────────────
+    async function buildStyle(theme) {
+      const isDark = theme === 'dark';
+      const c = isDark ? {
+        bg: '#0a0e14', land: '#121826', water: '#0d253f', waterLine: '#1a4a7a', ocean: '#081a33',
+        forest: '#1a3a2e', park: '#1e4a3a', grass: '#2a3a2e', sand: '#3a3a2a', beach: '#4a4a3a', industrial: '#2a2a3a', residential: '#1a1e2a', cemetery: '#2a2a3a', wetland: '#1a2a3a', scrub: '#2a3a2e',
+        roadMotorway: '#f07030', roadTrunk: '#e86820', roadPrimary: '#d05818', roadSecondary: '#b05030', roadMinor: '#8a5040', roadPath: '#6a4030', roadRail: '#5a4a6a',
+        building: '#1e2230', buildingTop: '#2a2e3c', buildingOutline: '#3a3a4a',
+        siteSchool: '#1e3a3a', siteHospital: '#3a2a3a', siteParking: '#2a2a3a',
+        placeLabel: '#b8c8e8', roadLabel: '#9aa8c8', poiLabel: '#a8b8d8', waterLabel: '#7a9ab8', addressLabel: '#8a9ab8',
+        boundary: '#4a4a6a', boundaryDisputed: '#6a4a5a', poiIcon: '#8a9ab8', ferry: '#2a4a7a', aerialway: '#5a5a7a', halo: '#0a0e14', haloLight: 'rgba(10,14,20,0.85)'
+      } : {
+        bg: '#f5f3f0', land: '#f5f3f0', water: '#c8dff0', waterLine: '#88b0d0', ocean: '#b8d0e8',
+        forest: '#d4e8c8', park: '#ddeedd', grass: '#e8f0dc', sand: '#f0e8d0', beach: '#f8f0e0', industrial: '#e4e0e8', residential: '#efefef', cemetery: '#e0e0d8', wetland: '#ccddf0', scrub: '#dce8d0',
+        roadMotorway: '#e8952a', roadTrunk: '#e8952a', roadPrimary: '#f0b050', roadSecondary: '#f8d090', roadMinor: '#ffffff', roadPath: '#e8e0d8', roadRail: '#aaaaaa',
+        building: '#e8e4de', buildingTop: '#f0ece8', buildingOutline: '#d0ccc8',
+        siteSchool: '#eaf0e0', siteHospital: '#f0e8e8', siteParking: '#ececec',
+        placeLabel: '#333333', roadLabel: '#666666', poiLabel: '#555555', waterLabel: '#4a7a9a', addressLabel: '#888888',
+        boundary: '#bbbbbb', boundaryDisputed: '#cc9999', poiIcon: '#777777', ferry: '#88b0d0', aerialway: '#aaaaaa', halo: '#f5f3f0', haloLight: 'rgba(245,243,240,0.9)'
+      };
+
+      const PMTILES_URL = 'pmtiles://' + new URL('./data/tunis.pmtiles', window.location.href).href;
+      const spriteUrl = new URL('./sprites/sprites', window.location.href).href;
+      const glyphsUrl = new URL('./font', window.location.href).href + '/{fontstack}/{range}.pbf';
+
+      const style = {
+        version: 8, name: "Tunis Professional", sources: { omt: { type: 'vector', url: PMTILES_URL } },
+        sprite: spriteUrl, glyphs: glyphsUrl, layers: []
+      };
+
+      style.layers.push({ id: 'background', type: 'background', paint: { 'background-color': isDark ? c.ocean : c.ocean } });
+      style.layers.push({ id: 'land-polygons', type: 'fill', source: 'omt', 'source-layer': 'land_polygons', paint: { 'fill-color': c.land } });
+      style.layers.push({ id: 'land-base', type: 'fill', source: 'omt', 'source-layer': 'land', paint: { 'fill-color': c.land } });
+      style.layers.push({ id: 'water', type: 'fill', source: 'omt', 'source-layer': 'water_polygons', paint: { 'fill-color': c.water } });
+      style.layers.push({ id: 'water-lines', type: 'line', source: 'omt', 'source-layer': 'water_lines', minzoom: 4, filter: ['in', 'class', 'river', 'stream', 'canal'], paint: { 'line-color': c.waterLine, 'line-width': { stops: [[10, 0.8], [14, 2]] } } });
+
+      const landCoverTypes = [
+        { kind: 'forest', color: c.forest, minzoom: 11 }, { kind: 'park', color: c.park, minzoom: 12, filter: ['in', 'class', 'park', 'recreation_ground'] },
+        { kind: 'grass', color: c.grass, minzoom: 12, filter: ['in', 'class', 'grass', 'meadow'] }, { kind: 'sand', color: c.sand, minzoom: 12, filter: ['in', 'class', 'sand', 'beach'] },
+        { kind: 'cemetery', color: c.cemetery, minzoom: 14 }, { kind: 'wetland', color: c.wetland, minzoom: 13 }, { kind: 'scrub', color: c.scrub, minzoom: 13 },
+        { kind: 'residential', color: c.residential, minzoom: 13 }, { kind: 'industrial', color: c.industrial, minzoom: 13, filter: ['in', 'class', 'industrial', 'commercial', 'retail'] }
+      ];
+      landCoverTypes.forEach(cfg => {
+        style.layers.push({ id: `land-${cfg.kind}`, type: 'fill', source: 'omt', 'source-layer': 'land', minzoom: cfg.minzoom, filter: cfg.filter || ['==', 'class', cfg.kind], paint: { 'fill-color': cfg.color, 'fill-opacity': 0.6 } });
       });
-    }
 
+      style.layers.push(
+        { id: 'sites-university', type: 'fill', source: 'omt', 'source-layer': 'sites', filter: ['in', 'class', 'university', 'college'], minzoom: 13, paint: { 'fill-color': isDark ? '#6d597a' : '#e0d1ea', 'fill-opacity': 0.7 } },
+        { id: 'sites-school', type: 'fill', source: 'omt', 'source-layer': 'sites', filter: ['==', 'class', 'school'], minzoom: 13, paint: { 'fill-color': isDark ? '#52796f' : '#b7d4c8', 'fill-opacity': 0.7 } },
+        { id: 'sites-hospital', type: 'fill', source: 'omt', 'source-layer': 'sites', filter: ['==', 'class', 'hospital'], minzoom: 13, paint: { 'fill-color': isDark ? '#a44a3f' : '#f2c6c2', 'fill-opacity': 0.7 } },
+        { id: 'sites-park', type: 'fill', source: 'omt', 'source-layer': 'sites', filter: ['in', 'class', 'park', 'garden'], minzoom: 13, paint: { 'fill-color': isDark ? '#2d6a4f' : '#74c69d', 'fill-opacity': 0.7 } }
+      );
 
-    // ── Theme ──────────────────────────────────────────────────────────────────
-    function setTheme(t) {
-      document.querySelectorAll('.layer-option').forEach(el => el.classList.remove('active'));
-      const layerEl = document.getElementById('layer-' + t);
-      const layersMenu = document.getElementById('layers-menu');
-      if (layerEl) layerEl.classList.add('active');
-      if (layersMenu) layersMenu.classList.remove('open');
-      map.setStyle(buildStyle(t));
-      map.once('styledata', () => {
-        // re-add route if exists
-        // re-add markers if needed
+      style.layers.push(
+        { id: 'aeroway-apron', type: 'fill', source: 'omt', 'source-layer': 'aeroways', filter: ['in', 'class', 'apron', 'terminal'], minzoom: 10, paint: { 'fill-color': isDark ? '#2a2a38' : '#d8d8e4' } },
+        { id: 'aeroway-runway', type: 'line', source: 'omt', 'source-layer': 'aeroways', filter: ['==', 'class', 'runway'], minzoom: 10, paint: { 'line-color': isDark ? '#4a4a5a' : '#b8b8c8', 'line-width': { stops: [[10, 4], [14, 30]] } } }
+      );
+
+      const roadStyles = [
+        { kinds: ['motorway', 'trunk'], color: c.roadMotorway, widths: { stops: [[6, 1], [14, 8]] }, minzoom: 6 },
+        { kinds: ['primary', 'secondary'], color: c.roadPrimary, widths: { stops: [[10, 0.8], [14, 5]] }, minzoom: 10 },
+        { kinds: ['tertiary'], color: c.roadSecondary, widths: { stops: [[12, 0.8], [14, 4]] }, minzoom: 12 },
+        { kinds: ['residential', 'service', 'footway', 'path'], color: c.roadMinor, widths: { stops: [[13, 0.5], [18, 6]] }, minzoom: 13 }
+      ];
+      roadStyles.forEach(cfg => {
+        style.layers.push({ id: `streets-${cfg.kinds[0]}`, type: 'line', source: 'omt', 'source-layer': 'streets', filter: ['in', 'class', ...cfg.kinds], minzoom: cfg.minzoom, layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': cfg.color, 'line-width': cfg.widths } });
       });
-    }
-    function toggleLayers() {
-      const layersMenu = document.getElementById('layers-menu');
-      if (layersMenu) layersMenu.classList.toggle('open');
+
+      style.layers.push({ id: 'bridges-streets', type: 'line', source: 'omt', 'source-layer': 'streets', minzoom: 13, filter: ['==', ['get', 'bridge'], 'yes'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': isDark ? '#e6b800' : '#c49000', 'line-width': { stops: [[12, 2.5], [18, 13]] } } });
+      style.layers.push({ id: 'buildings', type: 'fill', source: 'omt', 'source-layer': 'buildings', minzoom: 13, paint: { 'fill-color': c.building, 'fill-outline-color': c.buildingOutline, 'fill-opacity': 0.7 } });
+
+      const spriteAlias = { 'icon-platform': 'icon-bus', 'icon-stop_position': 'icon-bus', 'icon-light_rail': 'icon-rail', 'icon-museum': 'icon-historic', 'icon-park': 'icon-pitch', 'icon-garden': 'icon-pitch' };
+      const poiIconExpr = ['case', ['all', ['has', 'class'], ['!=', ['get', 'class'], '']], ['coalesce', ['get', ['concat', 'icon-', ['get', 'class']], ['literal', spriteAlias]], ['concat', 'icon-', ['get', 'class']]], ['all', ['has', 'kind'], ['!=', ['get', 'kind'], '']], ['coalesce', ['get', ['concat', 'icon-', ['get', 'kind']], ['literal', spriteAlias]], ['concat', 'icon-', ['get', 'kind']]], 'icon-shop'];
+
+      style.layers.push({ id: 'public-transport', type: 'symbol', source: 'omt', 'source-layer': 'public_transport', minzoom: 13, layout: { 'icon-image': poiIconExpr, 'icon-optional': true, 'text-field': '{name}', 'text-font': ['Noto Sans Regular'], 'text-size': 10, 'text-anchor': 'top', 'text-offset': [0, 0.5] }, paint: { 'text-color': c.poiLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
+      style.layers.push({ id: 'pois', type: 'symbol', source: 'omt', 'source-layer': 'pois', minzoom: 14, layout: { 'icon-image': poiIconExpr, 'icon-optional': true, 'text-field': '{name}', 'text-font': ['Noto Sans Regular'], 'text-size': 11, 'text-anchor': 'top', 'text-offset': [0, 0.6] }, paint: { 'text-color': c.poiLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
+      style.layers.push({ id: 'place-labels', type: 'symbol', source: 'omt', 'source-layer': 'place_labels', layout: { 'text-field': '{name}', 'text-font': ['Noto Sans Bold'], 'text-size': { stops: [[7, 12], [10, 16]] } }, paint: { 'text-color': c.placeLabel, 'text-halo-color': c.halo, 'text-halo-width': 1.5 } });
+      style.layers.push({ id: 'street-labels', type: 'symbol', source: 'omt', 'source-layer': 'street_labels', minzoom: 13, layout: { 'symbol-placement': 'line', 'text-field': '{name}', 'text-font': ['Noto Sans Regular'], 'text-size': 11 }, paint: { 'text-color': c.roadLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
+
+      return style;
     }
 
-    // ── GPS / Location ─────────────────────────────────────────────────────────
-    async function locateMe() {
-      const btn = document.getElementById('btn-gps');
-      if (btn) btn.classList.add('active');
-      dbg('📍 Requesting location…');
-
+    // ── INITIALIZATION ───────────────────────────────────────────────────────
+    async function init() {
+      dbg('🚀 Booting Atlas...');
       try {
-        // Request permission first
-        const { Geolocation } = Capacitor.Plugins;
-
-        const permission = await Geolocation.requestPermissions();
-        if (permission.location !== 'granted') {
-          dbg('❌ Location permission denied');
-          const routeResult = document.getElementById('route-result');
-          if (routeResult) routeResult.textContent = 'Location permission denied.';
-          if (btn) btn.classList.remove('active');
-          return;
+        maplibregl.setRTLTextPlugin('./lib/mapbox-gl-rtl-text.js', null, true);
+        const pmtilesUrl = new URL('./data/tunis.pmtiles', window.location.href).href;
+        if (!_protocolAdded) {
+          const protocol = new pmtiles.Protocol();
+          maplibregl.addProtocol('pmtiles', protocol.tile);
+          protocol.add(new pmtiles.PMTiles(pmtilesUrl));
+          _protocolAdded = true;
+          dbg('✅ Protocol Ready');
         }
 
-        // Get current position
-        const pos = await Geolocation.getCurrentPosition({
-          enableHighAccuracy: true,
-          timeout: 10000
+        const style = await buildStyle('light');
+        map = new maplibregl.Map({
+          container: 'map', style, center: [10.1815, 36.8065], zoom: 13,
+          attributionControl: false, antialias: false, maxTileCacheSize: 20,
+          failIfMajorPerformanceCaveat: false
         });
 
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const accuracy = pos.coords.accuracy;
+        map.on('load', () => { dbg('✓ MAP LOADED'); map.resize(); });
+        map.on('error', e => { if (!e.error?.message?.includes('canceled')) dbg('❌ MAP ERR: ' + (e.error?.message || e.message || 'Unknown')); });
 
-        dbg(`✅ Location: ${lat.toFixed(5)}, ${lng.toFixed(5)} (±${Math.round(accuracy)}m)`);
-
-        // Fly map to location
-        map.flyTo({ center: [lng, lat], zoom: 16, duration: 1000 });
-
-        // Add/update location dot on map
-        updateLocationDot(lat, lng, accuracy);
-
-        // Auto-fill the "from" field in routing panel
-        document.getElementById('from-input').value = `${lat.toFixed(6)},${lng.toFixed(6)}`;
-
-      } catch (e) {
-        dbg('❌ Location error: ' + e.message);
-      } finally {
-        btn.classList.remove('active');
-      }
+        window.map = map;
+        setupUI();
+        initOfflineSearch();
+      } catch (e) { dbg('❌ FATAL: ' + e.message); }
     }
 
-    function updateLocationDot(lat, lng, accuracy) {
-      // Remove existing location marker
-      if (window._locationMarker) window._locationMarker.remove();
+    function setupUI() {
+      document.getElementById('btn-debug').onclick = () => document.getElementById('debug-panel').classList.toggle('show');
+      document.getElementById('btn-route').onclick = toggleRoutingPanel;
+      document.getElementById('search-clear').onclick = clearSearch;
 
-      // Accuracy circle
-      if (map.getLayer('location-accuracy')) map.removeLayer('location-accuracy');
-      if (map.getSource('location-accuracy')) map.removeSource('location-accuracy');
-
-      map.addSource('location-accuracy', {
-        type: 'geojson',
-        data: { type: 'Feature', geometry: { type: 'Point', coordinates: [lng, lat] } }
-      });
-      map.addLayer({
-        id: 'location-accuracy',
-        type: 'circle',
-        source: 'location-accuracy',
-        paint: {
-          'circle-radius': Math.max(10, accuracy / 2),
-          'circle-color': '#818cf8',
-          'circle-opacity': 0.15,
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#818cf8',
-          'circle-stroke-opacity': 0.4
+      map.on('click', e => {
+        if (routingClickActive) {
+          const from = document.getElementById('from-input'), to = document.getElementById('to-input');
+          const v = `${e.lngLat.lat.toFixed(5)},${e.lngLat.lng.toFixed(5)}`;
+          if (!from.value) from.value = v; else if (!to.value) { to.value = v; dbg('🏁 Points set'); }
+          return;
         }
+        const { lat, lng } = e.lngLat;
+        showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
+          `<div class="route-card" onclick="setRouteDest(${lat},${lng})"><div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div><div><b>Route here</b><br><small>Set as destination</small></div></div>`);
       });
-
-      // Location dot marker
-      const el = document.createElement('div');
-      el.style.cssText = `
-    width: 16px; height: 16px; border-radius: 50%;
-    background: #818cf8; border: 3px solid white;
-    box-shadow: 0 0 8px rgba(129,140,248,0.8);
-  `;
-      window._locationMarker = new maplibregl.Marker({ element: el })
-        .setLngLat([lng, lat])
-        .addTo(map);
     }
 
-    // Optional: watch position continuously
-    let _watchId = null;
-    function startWatchingLocation() {
-      const { Geolocation } = Capacitor.Plugins;
-      _watchId = Geolocation.watchPosition(
-        { enableHighAccuracy: true },
-        (pos, err) => {
-          if (err) { dbg('Watch error: ' + err.message); return; }
-          updateLocationDot(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
-        }
-      );
-    }
-    function stopWatchingLocation() {
-      if (_watchId) {
-        Capacitor.Plugins.Geolocation.clearWatch({ id: _watchId });
-        _watchId = null;
-      }
-    }
-
-    // ── Routing ────────────────────────────────────────────────────────────────
-    // Capacitor Valhalla Plugin integration with HTTP fallback + full debug logging
-
-    let _valhallaPlugin = null;
-    let _pluginReady = false;
-
-    // Initialize Valhalla plugin (called on DOMContentLoaded)
-    async function initValhallaPlugin() {
+    // ── SEARCH ────────────────────────────────────────────────────────────────
+    async function initOfflineSearch() {
       try {
-        const { Plugins } = Capacitor;
-        _valhallaPlugin = Plugins?.Valhalla;
-        _pluginReady = !!_valhallaPlugin && typeof _valhallaPlugin.route === 'function';
-        dbg('🔌 Valhalla plugin: ' + (_pluginReady ? '✓ ready' : '⚠ not available'));
-      } catch (e) {
-        dbg('⚠ Valhalla plugin init error: ' + e.message);
-        _pluginReady = false;
-      }
+        const r = await fetch('./data/places.json');
+        _offlinePlaces = await r.json();
+        dbg(`🔍 Loaded ${_offlinePlaces.length} places`);
+      } catch (e) { dbg('❌ Search load failed'); }
+
+      const input = document.getElementById('search-input'), resultsEl = document.getElementById('search-results');
+      input.addEventListener('input', e => {
+        const q = e.target.value.trim().toLowerCase();
+        document.getElementById('search-clear').classList.toggle('visible', q.length > 0);
+        if (q.length < 2) { resultsEl.classList.remove('open'); return; }
+        const matches = _offlinePlaces.filter(p => (p.na || '').toLowerCase().includes(q) || (p.nl || '').toLowerCase().includes(q) || (p.n || '').toLowerCase().includes(q)).slice(0, 10);
+        resultsEl.innerHTML = matches.map(p => `<div class="search-result-item" onclick="goToPlace(${p.lo},${p.la},'${(p.na || p.nl || p.n).replace(/'/g, "\\'")}')"><div class="sri-icon">📍</div><div><div class="sri-name">${p.na || p.nl || p.n}</div><div class="sri-sub">${p.c || ''}</div></div></div>`).join('');
+        resultsEl.classList.add('open');
+      });
     }
 
-    // Toggle routing panel visibility
+    window.goToPlace = (lon, lat, name) => {
+      map.flyTo({ center: [lon, lat], zoom: 15 });
+      document.getElementById('search-input').value = name;
+      document.getElementById('search-results').classList.remove('open');
+    };
+
+    function clearSearch() { document.getElementById('search-input').value = ''; document.getElementById('search-results').classList.remove('open'); document.getElementById('search-clear').classList.remove('visible'); }
+
+    // ── ROUTING ──────────────────────────────────────────────────────────────
     function toggleRoutingPanel() {
       const p = document.getElementById('routing-panel');
-      const btn = document.getElementById('btn-route');
-      p.classList.toggle('open');
-      btn.classList.toggle('active', p.classList.contains('open'));
-      routingClickActive = p.classList.contains('open');
-      closePanel();
-      dbg('🗺️ Routing panel: ' + (p.classList.contains('open') ? 'OPEN' : 'CLOSED'));
+      p.style.display = p.style.display === 'block' ? 'none' : 'block';
+      routingClickActive = p.style.display === 'block';
+      document.getElementById('btn-route').classList.toggle('active', routingClickActive);
     }
 
-    // Handle map click when routing mode is active
-    function handleRoutingClick({ lat, lng }) {
-      const from = document.getElementById('from-input');
-      const to = document.getElementById('to-input');
-      const v = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-
-      if (!from.value) {
-        from.value = v;
-        dbg('📍 Set FROM: ' + v);
-      } else if (!to.value) {
-        to.value = v;
-        dbg('📍 Set TO: ' + v);
-      } else {
-        from.value = v;
-        to.value = '';
-        dbg('🔄 Reset: new FROM=' + v + ', TO cleared');
-      }
-    }
-
-    // Set destination from panel card click
     function setRouteDest(lat, lng) {
       document.getElementById('to-input').value = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-      document.getElementById('routing-panel').classList.add('open');
-      document.getElementById('btn-route').classList.add('active');
-      routingClickActive = true;
+      toggleRoutingPanel();
       closePanel();
-      dbg('🎯 Destination set: ' + lat.toFixed(5) + ',' + lng.toFixed(5));
     }
 
-    // Parse "lat,lng" string to object
-    function parseLatLng(s) {
-      if (!s) return null;
-      const p = s.split(',').map(n => parseFloat(n.trim()));
-      if (p.length !== 2 || isNaN(p[0]) || isNaN(p[1])) return null;
-      return { lat: p[0], lng: p[1] };
+    async function planRoute(mode) {
+      const fromS = document.getElementById('from-input').value, toS = document.getElementById('to-input').value;
+      if (!fromS || !toS) { dbg('⚠ Enter both points'); return; }
+      const from = fromS.split(',').map(Number), to = toS.split(',').map(Number);
+      document.getElementById('route-result').innerText = 'Calculating...';
+      try {
+        const { Plugins } = Capacitor;
+        const res = await Plugins.Valhalla.route({ start: { lat: from[0], lon: from[1] }, end: { lat: to[0], lon: to[1] }, profile: mode === 'walk' ? 'pedestrian' : 'auto' });
+        dbg(`✅ Route: ${res.distance.toFixed(2)} km`);
+        document.getElementById('route-result').innerHTML = `<b>${res.distance.toFixed(2)} km</b> · ${Math.round(res.duration / 60)} min`;
+        if (res.geometry) drawRoute(decodeValhallaPolyline(res.geometry));
+      } catch (e) { dbg('❌ Route error: ' + e.message); document.getElementById('route-result').innerText = 'Failed'; }
     }
 
-    // Decode Valhalla's polyline6 (6-digit precision) to [lng, lat] coordinates
     function decodeValhallaPolyline(encoded) {
-      if (!encoded) return [];
-      const coords = [];
-      let index = 0, lat = 0, lng = 0;
-
+      let inv = 1 / 1e6, index = 0, lat = 0, lng = 0, coords = [];
       while (index < encoded.length) {
-        // Decode latitude
-        let b, shift = 0, result = 0;
-        do {
-          b = encoded.charCodeAt(index++) - 63;
-          result |= (b & 0x1f) << shift;
-          shift += 5;
-        } while (b >= 0x20);
-        const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
-        lat += dlat;
-
-        // Decode longitude
-        shift = 0; result = 0;
-        do {
-          b = encoded.charCodeAt(index++) - 63;
-          result |= (b & 0x1f) << shift;
-          shift += 5;
-        } while (b >= 0x20);
-        const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
-        lng += dlng;
-
-        coords.push([lng / 1e6, lat / 1e6]);
+        let b, shift = 0, res = 0;
+        do { b = encoded.charCodeAt(index++) - 63; res |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        lat += (res & 1 ? ~(res >> 1) : (res >> 1));
+        shift = 0; res = 0;
+        do { b = encoded.charCodeAt(index++) - 63; res |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        lng += (res & 1 ? ~(res >> 1) : (res >> 1));
+        coords.push([lng * inv, lat * inv]);
       }
       return coords;
     }
 
-    // Draw route line on map
-    // Draw route line on map — fixed layer/source cleanup order
-    function drawRoute(geom, mode, dashed = false) {
-      const colors = { walk: '#4ade80', bike: '#818cf8', car: '#60a5fa' };
-      const baseColor = colors[mode] || '#4ade80';
-      const id = 'route-line';
-      const glowId = 'route-line-glow';
-
-      // CRITICAL: remove layers BEFORE their source.
-      // MapLibre will refuse to remove a source while any layer still references it.
-      if (map.getLayer(glowId)) map.removeLayer(glowId);
-      if (map.getLayer(id)) map.removeLayer(id);
-      if (map.getSource(id)) map.removeSource(id);
-
-      // Add source (shared by both layers below)
-      map.addSource(id, {
-        type: 'geojson',
-        data: { type: 'Feature', geometry: geom }
-      });
-
-      // Glow layer — wider, semi-transparent, drawn first (underneath)
-      map.addLayer({
-        id: glowId,
-        type: 'line',
-        source: id,
-        layout: { 'line-join': 'round', 'line-cap': 'round' },
-        paint: {
-          'line-color': baseColor,
-          'line-width': 14,
-          'line-opacity': 0.4,
-          'line-blur': 3
-        }
-      });
-
-      // Main line — white core on top of the glow
-      map.addLayer({
-        id,
-        type: 'line',
-        source: id,
-        layout: { 'line-join': 'round', 'line-cap': 'round' },
-        paint: {
-          'line-color': '#ffffff',
-          'line-width': 5,
-          'line-opacity': 1.0,
-          ...(dashed ? { 'line-dasharray': [5, 3] } : {})
-        }
-      });
-
-      dbg('🎨 Route drawn: ' + geom.coordinates.length + ' points, mode=' + mode + (dashed ? ' (fallback)' : ''));
-    }
-    // Main routing function
-    async function planRoute(mode) {
-      // 🔍 DEBUG: Log entry
-      dbg('🚦 planRoute() called: mode=' + mode);
-
-      const from = parseLatLng(document.getElementById('from-input').value.trim());
-      const to = parseLatLng(document.getElementById('to-input').value.trim());
-
-      dbg('📍 From: ' + (from?.lat + ',' + from?.lng || 'INVALID') +
-        ' | To: ' + (to?.lat + ',' + to?.lng || 'INVALID'));
-
-      if (!from || !to) {
-        dbg('❌ Invalid coordinates - aborting');
-        document.getElementById('route-result').textContent = 'Enter valid coordinates.';
-        return;
-      }
-
-      document.getElementById('route-result').textContent = 'Calculating…';
-      const costing = { car: 'auto', bike: 'bicycle', walk: 'pedestrian' }[mode];
-      dbg('🔧 Costing profile: ' + costing);
-
-      try {
-        // ── Use native Valhalla plugin (no IP, fully offline) ───────────────────
-        const { Plugins } = Capacitor;
-        const { Valhalla } = Plugins;
-
-        if (!Valhalla) {
-          throw new Error('Valhalla plugin not available — check MainActivity.java');
-        }
-
-        dbg('🔌 Calling native Valhalla plugin…');
-
-        const response = await Valhalla.route({
-          start: { lat: from.lat, lon: from.lng },
-          end: { lat: to.lat, lon: to.lng },
-          profile: costing  // 'auto', 'bicycle', or 'pedestrian'
-        });
-
-        dbg('✅ Plugin response: distance=' + response.distance + 'km, duration=' + response.duration + 's');
-
-        // Validate response
-        if (!response.geometry) {
-          throw new Error('No route geometry returned from plugin');
-        }
-
-        // Decode the polyline6 geometry to coordinates
-        const coordinates = decodeValhallaPolyline(response.geometry);
-        dbg('🔗 Decoded polyline: ' + coordinates.length + ' coordinates');
-
-        // Draw the route on map
-        drawRoute({ type: 'LineString', coordinates }, mode);
-        // Debug: Confirm route layer was added
-        setTimeout(() => {
-          if (map.getLayer('route-line')) {
-            dbg('✅ Route layer confirmed in map style');
-            console.log('Route layer config:', map.getLayer('route-line'));
-          } else {
-            dbg('❌ Route layer NOT found - check layer ordering');
-          }
-        }, 500);
-        // Update UI with results
-        const distance = Number(response.distance);
-        const duration = Number(response.duration);
-
-        document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-accent);font-weight:600">${distance.toFixed(1)} km</span> · ${Math.round(duration / 60)} min`;
-
-        // Fit map to route bounds
-        map.fitBounds([[from.lng, from.lat], [to.lng, to.lat]], { padding: 80, duration: 1000 });
-
-        dbg('🎉 Route complete: ' + distance.toFixed(1) + ' km in ' + Math.round(duration / 60) + ' min');
-
-      } catch (e) {
-        dbg('❌ Routing FAILED: ' + e.message);
-        console.error('Routing error:', e);
-
-        // 🔍 Show full error in UI for debugging
-        document.getElementById('route-result').innerHTML =
-          `<span style="color:var(--c-warn)">⚠ ${e.message}</span><br/>
-     <small style="color:var(--c-muted)">${e.stack || ''}</small>`;
-
-        // Fallback: draw straight line between points
-        drawRoute({ type: 'LineString', coordinates: [[from.lng, from.lat], [to.lng, to.lat]] }, mode, true);
-        // Debug: Confirm route layer was added
-        setTimeout(() => {
-          if (map.getLayer('route-line')) {
-            dbg('✅ Route layer confirmed in map style');
-            console.log('Route layer config:', map.getLayer('route-line'));
-          } else {
-            dbg('❌ Route layer NOT found - check layer ordering');
-          }
-        }, 500);
-      }
-    }
-    // ── Search ─────────────────────────────────────────────────────────────────
-    // ── Search ────────────────────────────────────────────────────────────────
-    let _searchTimer = null;
-    let _lastQuery = '';
-
-    document.getElementById('search-input').addEventListener('input', function () {
-      clearTimeout(_searchTimer);
-      const q = this.value.trim();
-      const clearBtn = document.getElementById('search-clear');
-      clearBtn.classList.toggle('visible', q.length > 0);
-
-      if (q.length < 2) { closeResults(); return; }
-      if (q === _lastQuery) return;
-      _lastQuery = q;
-
-      _searchTimer = setTimeout(() => searchPlaces(q), 400);
-    });
-
-    document.getElementById('search-input').addEventListener('blur', () => {
-      // Delay so clicks on results register first
-      setTimeout(closeResults, 200);
-    });
-
-    document.getElementById('search-input').addEventListener('focus', () => {
-      const q = document.getElementById('search-input').value.trim();
-      if (q.length >= 2) openResults();
-    });
-
-    function closeResults() {
-      const results = document.getElementById('search-results');
-      if (results) results.classList.remove('open');
-    }
-    function openResults() {
-      const results = document.getElementById('search-results');
-      if (results) results.classList.add('open');
+    function drawRoute(coords) {
+      if (map.getLayer('route')) map.removeLayer('route');
+      if (map.getSource('route')) map.removeSource('route');
+      map.addSource('route', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'LineString', coordinates: coords } } });
+      map.addLayer({ id: 'route', type: 'line', source: 'route', paint: { 'line-color': '#4ade80', 'line-width': 6, 'line-opacity': 0.8 } });
+      map.fitBounds(maplibregl.LngLatBounds.convert([coords[0], coords[coords.length - 1]]), { padding: 50 });
     }
 
+    // ── UI HELPERS ───────────────────────────────────────────────────────────
+    function showPanel(title, sub, content) { document.getElementById('panel-title').innerText = title; document.getElementById('panel-sub').innerText = sub; document.getElementById('panel-content').innerHTML = content; document.getElementById('panel').classList.add('open'); }
+    function closePanel() { document.getElementById('panel').classList.remove('open'); }
+    function copyDebugLogs() { const t = Array.from(document.getElementById('debug-content').children).map(el => el.innerText).join('\n'); navigator.clipboard.writeText(t).then(() => dbg('✓ Copied')); }
 
-    function iconForType(type, cls) {
-      if (cls === 'highway') return '🛣️';
-      if (type === 'residential' || type === 'suburb' || type === 'neighbourhood') return '🏘️';
-      if (type === 'city' || type === 'town' || type === 'village') return '🏙️';
-      if (cls === 'amenity') return '📍';
-      if (cls === 'shop') return '🛒';
-      if (cls === 'tourism') return '🏛️';
-      if (cls === 'leisure') return '🌳';
-      return '📍';
-    }
-
-    function selectResult(index) {
-      const r = window._searchResults?.[index];
-      if (!r) return;
-
-      const lat = parseFloat(r.lat);
-      const lon = parseFloat(r.lon);
-      const name = r.display_name.split(',')[0];
-
-      // Update input
-      const searchInput = document.getElementById('search-input');
-      const clearBtn = document.getElementById('search-clear');
-      if (searchInput) searchInput.value = name;
-      if (clearBtn) clearBtn.classList.add('visible');
-      closeResults();
-
-      // Fly to location
-      const zoom = zoomForType(r.type, r.class);
-      map.flyTo({ center: [lon, lat], zoom, duration: 900 });
-
-      // Try to draw boundary from PMTiles data
-      drawBoundaryHighlight(r);
-
-      // Drop a subtle marker
-      if (window._searchMarker) window._searchMarker.remove();
-      const el = document.createElement('div');
-      el.style.cssText = `
-    width:12px;height:12px;border-radius:50%;
-    background:#818cf8;border:2.5px solid white;
-    box-shadow:0 0 12px rgba(129,140,248,.7);
-  `;
-      window._searchMarker = new maplibregl.Marker({ element: el })
-        .setLngLat([lon, lat])
-        .addTo(map);
-    }
-
-    function zoomForType(type, cls) {
-      if (type === 'city') return 12;
-      if (type === 'town') return 13;
-      if (type === 'suburb' || type === 'neighbourhood' || type === 'village') return 14;
-      if (cls === 'highway') return 16;
-      return 15;
-    }
-
-    function drawBoundaryHighlight(result) {
-      // Remove old highlight
-      ['search-boundary-fill', 'search-boundary-line'].forEach(id => {
-        if (map.getLayer(id)) map.removeLayer(id);
-      });
-      if (map.getSource('search-boundary')) map.removeSource('search-boundary');
-
-      // Build a bbox polygon from Nominatim's boundingbox
-      if (!result.boundingbox) return;
-      const [s, n, w, e] = result.boundingbox.map(Number);
-
-      // Only draw a box for areas (not point POIs)
-      const isArea = (n - s) > 0.001 || (e - w) > 0.001;
-      if (!isArea) return;
-
-      const polygon = {
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: [[
-            [w, s], [e, s], [e, n], [w, n], [w, s]
-          ]]
-        }
-      };
-
-      map.addSource('search-boundary', { type: 'geojson', data: polygon });
-
-      // Fill
-      map.addLayer({
-        id: 'search-boundary-fill',
-        type: 'fill',
-        source: 'search-boundary',
-        paint: {
-          'fill-color': '#818cf8',
-          'fill-opacity': 0.12
-        }
-      });
-
-      // Outline
-      map.addLayer({
-        id: 'search-boundary-line',
-        type: 'line',
-        source: 'search-boundary',
-        paint: {
-          'line-color': '#818cf8',
-          'line-width': 2,
-          'line-opacity': 0.7,
-          'line-dasharray': [4, 3]
-        }
-      });
-
-      // Auto-fade after 4 seconds
-      setTimeout(() => {
-        if (map.getLayer('search-boundary-fill')) {
-          map.setPaintProperty('search-boundary-fill', 'fill-opacity', 0);
-          map.setPaintProperty('search-boundary-line', 'line-opacity', 0);
-        }
-      }, 4000);
-    }
-
-    function clearSearch() {
-      const searchInput = document.getElementById('search-input');
-      const clearBtn = document.getElementById('search-clear');
-      if (searchInput) searchInput.value = '';
-      if (clearBtn) clearBtn.classList.remove('visible');
-      _lastQuery = '';
-      closeResults();
-      if (window._searchMarker) { window._searchMarker.remove(); window._searchMarker = null; }
-      ['search-boundary-fill', 'search-boundary-line'].forEach(id => {
-        if (map.getLayer(id)) map.removeLayer(id);
-      });
-      if (map.getSource('search-boundary')) map.removeSource('search-boundary');
-    }
-
-    // ── Panel ──────────────────────────────────────────────────────────────────
-    function showPanel(title, sub, content) {
-      const panelTitle = document.getElementById('panel-title');
-      const panelSub = document.getElementById('panel-sub');
-      const panelContent = document.getElementById('panel-content');
-      const panel = document.getElementById('panel');
-      
-      if (panelTitle) panelTitle.textContent = title;
-      if (panelSub) panelSub.textContent = sub;
-      if (panelContent) panelContent.innerHTML = content;
-      if (panel) panel.classList.add('open');
-    }
-    function closePanel() {
-      const panel = document.getElementById('panel');
-      if (panel) panel.classList.remove('open');
-    }
-
-    // ── Network status ─────────────────────────────────────────────────────────
-    function updateNetworkStatus() {
-      const online = navigator.onLine;
-
-      const netDot = document.getElementById('net-dot');
-      if (netDot) {
-        netDot.className = 'status-dot ' + (online ? 'online' : 'offline');
-      }
-
-      const netLabel = document.getElementById('net-label');
-      if (netLabel) {
-        netLabel.textContent = online ? 'Online' : 'Offline';
-      }
-
-      const offlineNotice = document.getElementById('offline-notice');
-      if (offlineNotice) {
-        offlineNotice.classList.toggle('show', !online);
-      }
-    }
-    window.addEventListener('online', updateNetworkStatus);
-    window.addEventListener('offline', updateNetworkStatus);
-    updateNetworkStatus();
-
-    // ── Service Worker ─────────────────────────────────────────────────────────
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('[Atlas] SW registered'))
-        .catch(e => console.warn('[Atlas] SW error:', e));
-    }
-
-    function debugRoads() {
-      const features = map.querySourceFeatures('openmaptiles', {
-        sourceLayer: 'transportation'
-      });
-
-      console.log("TOTAL ROAD FEATURES:", features.length);
-      console.log("SAMPLE:", features.slice(0, 10));
-    }
-
-    function countVisibleRoads() {
-      try {
-        // OpenFreeMap Liberty uses 'highway-*' layer names, not 'road-*'
-        const features = map.queryRenderedFeatures({
-          layers: ['highway-primary', 'highway-secondary', 'highway-motorway']
-        });
-        console.log("VISIBLE ROADS:", features.length);
-      } catch (e) {
-        // Silently ignore if layers don't exist
-      }
-    }
-
-    async function copyDebugLogs() {
-      const content = document.getElementById('debug-content');
-      if (!content) {
-        dbg('❌ Debug content element not found');
-        return;
-      }
-      const text = Array.from(content.children).map(el => el.textContent).join('\n');
-
-      try {
-        await navigator.clipboard.writeText(text);
-        dbg('✓ Debug logs copied to clipboard');
-      } catch (e) {
-        // Fallback for older Android WebView
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        dbg('✓ Debug logs copied (fallback)');
-      }
-    }
-
-    function toggleDebug() {
-      const panel = document.getElementById('debug-panel');
-      const btn = document.getElementById('btn-debug');
-
-      if (panel) panel.classList.toggle('show');
-      if (btn && panel) btn.classList.toggle('active', panel.classList.contains('show'));
-    }
-    // Initialize Capacitor plugins when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-      // Capacitor auto-loads registered plugins; no explicit init needed
-      // But we can log plugin availability for debugging
-      const { Plugins } = Capacitor;
-      if (Plugins?.Valhalla) {
-        dbg('🔌 Valhalla plugin detected at startup');
-      } else {
-        dbg('⚠ Valhalla plugin NOT detected — check MainActivity.java');
-      }
-    });
-
-    // Log plugin availability on page load
-    window.addEventListener('load', () => {
-      const { Plugins } = Capacitor;
-      if (Plugins?.Valhalla) {
-        dbg('✅ Capacitor sees Valhalla plugin');
-      } else {
-        dbg('❌ Capacitor does NOT see Valhalla plugin — check MainActivity.java');
-      }
-    });
-
-
-
-  </script>
-  <!-- ✅ OFFLINE SEARCH MODULE (separate script to ensure execution) -->
-  <script>
-    (function () {
-      // Wait for DOM to be ready
-      if (document.readyState !== 'loading') {
-        initOfflineSearch();
-      } else {
-        document.addEventListener('DOMContentLoaded', initOfflineSearch);
-      }
-
-      function initOfflineSearch() {
-        dbg('🔍 Offline search module initializing...');
-
-        let offlinePlaces = [];
-
-        // Load places.json with detailed debug
-        dbg('🔍 Starting places.json fetch...');
-
-        // Replace the HEAD+GET chain with just:
-        fetch('./data/places.json', { cache: 'force-cache' })
-          .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
-          .then(data => { offlinePlaces = data; dbg(`✅ Loaded ${data.length} places`); })
-          .catch(err => dbg(`❌ places.json: ${err.message}`));
-
-        const searchInput = document.getElementById('search-input');
-        const clearBtn = document.getElementById('search-clear');
-        const resultsEl = document.getElementById('search-results');
-
-        dbg(`🔧 Elements found: input=${!!searchInput}, clear=${!!clearBtn}, results=${!!resultsEl}`);
-
-        let _searchTimer = null;
-
-        if (searchInput) {
-          searchInput.addEventListener('input', function (e) {
-            clearTimeout(_searchTimer);
-            const q = e.target.value.trim();
-            if (clearBtn) clearBtn.classList.toggle('visible', q.length > 0);
-
-            if (q.length < 2) {
-              if (resultsEl) {
-                resultsEl.classList.remove('open');
-                resultsEl.innerHTML = '';
-              }
-              return;
-            }
-
-            _searchTimer = setTimeout(() => {
-              dbg(`🔍 Searching for: "${q}" (offlinePlaces.length=${offlinePlaces.length})`);
-              const query = q.toLowerCase();
-
-              const matches = offlinePlaces.filter(p => {
-                const nameAr = (p.na || '').toLowerCase();
-                const nameLatin = (p.nl || '').toLowerCase();
-                const nameDefault = (p.n || '').toLowerCase();
-                return nameAr.includes(query) || nameLatin.includes(query) || nameDefault.includes(query);
-              }).slice(0, 12);
-
-              dbg(`📈 Found ${matches.length} matches`);
-
-              if (resultsEl) {
-                if (matches.length === 0) {
-                  resultsEl.innerHTML = '<div class="search-no-results">لا توجد نتائج</div>';
-                  resultsEl.classList.add('open');
-                } else {
-                  resultsEl.innerHTML = matches.map(p => {
-                    const displayName = p.na || p.nl || p.n;
-                    const type = p.c || '';
-                    const safeName = displayName.replace(/'/g, "\\'");
-
-                    // Add coordinate hint for disambiguation
-                    const coordHint = `(${p.la.toFixed(3)}, ${p.lo.toFixed(3)})`;
-
-                    // Translate common types to Arabic for better UX
-                    const typeLabels = {
-                      'city': 'مدينة', 'town': 'بلدة', 'village': 'قرية',
-                      'suburb': 'ضاحية', 'neighbourhood': 'حي', 'quarter': 'حي',
-                      'shop': 'متجر', 'cafe': 'مقهى', 'restaurant': 'مطعم',
-                      'grocery': 'بقالة', 'bus': 'حافلة', 'police': 'شرطة'
-                    };
-                    const typeLabel = typeLabels[type] || type;
-
-                    return `
-    <div class="search-result-item" onclick="window.goToPlace(${p.lo}, ${p.la}, '${safeName}')">
-      <div class="sri-icon">📍</div>
-      <div>
-        <div class="sri-name">${displayName}</div>
-        <div class="sri-sub">${typeLabel} • ${coordHint}</div>
-      </div>
-    </div>
-  `;
-                  }).join('');
-                  resultsEl.classList.add('open');
-                  dbg('✅ Results displayed');
-                }
-              }
-            }, 300);
-          });
-        }
-
-        if (clearBtn) {
-          clearBtn.addEventListener('click', function () {
-            if (searchInput) searchInput.value = '';
-            clearBtn.classList.remove('visible');
-            if (resultsEl) {
-              resultsEl.classList.remove('open');
-              resultsEl.innerHTML = '';
-            }
-            if (searchInput) searchInput.focus();
-          });
-        }
-
-        window.goToPlace = function (lon, lat, name) {
-          dbg(`✈️ goToPlace: [${lon}, ${lat}], "${name}"`);
-
-          if (window.map?.flyTo) {
-            window.map.flyTo({ center: [lon, lat], zoom: 15, duration: 1000 });
-
-            if (typeof maplibregl !== 'undefined') {
-              if (window._searchMarker) window._searchMarker.remove();
-              const el = document.createElement('div');
-              el.style.cssText = `width:12px;height:12px;border-radius:50%;background:#4ade80;border:2px solid white;box-shadow:0 0 10px rgba(74,222,128,0.8);`;
-              window._searchMarker = new maplibregl.Marker({ element: el }).setLngLat([lon, lat]).addTo(window.map);
-            }
-          }
-
-          if (searchInput) searchInput.value = name;
-          if (clearBtn) clearBtn.classList.add('visible');
-          if (resultsEl) {
-            resultsEl.classList.remove('open');
-            resultsEl.innerHTML = '';
-          }
-        };
-
-        dbg('🎉 Offline search ready');
-      }
-    })();
+    window.onload = init;
   </script>
 </body>
 

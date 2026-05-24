@@ -1,0 +1,19 @@
+{
+  "name": "atlas-maps",
+  "version": "1.0.0",
+  "description": "Offline-first map app for Tunisia",
+  "scripts": {
+    "sync": "npx cap sync android",
+    "open": "npx cap open android",
+    "build-android": "npx cap sync android && npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.2.1",
+    "@capacitor/filesystem": "^6.0.0",
+    "@capacitor/geolocation": "^6.1.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.3.1"
+  }
+}
