@@ -1,4 +1,17 @@
 ```
+# Root-specific files to ignore
+/index.html
+/manifest.json
+/nginx.conf
+/package-lock.json
+/sw.js
+
+# Root-specific folders to ignore
+/data/
+/font/
+/lib/
+/sprites/
+/style/
 # Compiled and build artifacts
 *.pyc
 __pycache__/
