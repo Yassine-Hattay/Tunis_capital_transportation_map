@@ -566,12 +566,31 @@
           failIfMajorPerformanceCaveat: false
         });
 
-        map.on('load', () => { dbg('✓ MAP LOADED'); map.resize(); });
+        map.on('load', () => {
+          dbg('✓ MAP LOADED');
+          map.resize();
+          dbg(`🔍 Initial Zoom: ${map.getZoom().toFixed(2)}`);
+        });
         map.on('error', e => { if (!e.error?.message?.includes('canceled')) dbg('❌ MAP ERR: ' + (e.error?.message || e.message || 'Unknown')); });
+
+        // 🗺️ Map interaction tracking
+        map.on('zoomend', () => dbg(`🔍 Zoom: ${map.getZoom().toFixed(2)}`));
+        map.on('moveend', () => {
+          const c = map.getCenter();
+          dbg(`📍 Map Center: ${c.lat.toFixed(5)}, ${c.lng.toFixed(5)}`);
+        });
+        map.on('idle', () => dbg('🏁 Map idle (tiles finished rendering)'));
+
 
         window.map = map;
         setupUI();
         initOfflineSearch();
+
+        // 🌐 Network status monitoring
+        window.addEventListener('online', () => dbg('🌐 Network: ONLINE'));
+        window.addEventListener('offline', () => dbg('📴 Network: OFFLINE'));
+        dbg(`📶 Initial network state: ${navigator.onLine ? 'ONLINE' : 'OFFLINE'}`);
+
       } catch (e) { dbg('❌ FATAL: ' + e.message); }
     }
 
@@ -672,7 +691,9 @@
         const q = e.target.value.trim().toLowerCase();
         document.getElementById('search-clear').classList.toggle('visible', q.length > 0);
         if (q.length < 2) { resultsEl.classList.remove('open'); return; }
-        const matches = _offlinePlaces.filter(p => (p.na || '').toLowerCase().includes(q) || (p.nl || '').toLowerCase().includes(q) || (p.n || '').toLowerCase().includes(q)).slice(0, 10);
+        const allMatches = _offlinePlaces.filter(p => (p.na || '').toLowerCase().includes(q) || (p.nl || '').toLowerCase().includes(q) || (p.n || '').toLowerCase().includes(q));
+        const matches = allMatches.slice(0, 10);
+        dbg(`🔎 Search "${q}": ${allMatches.length} total matches, showing top ${matches.length}`);
         resultsEl.innerHTML = matches.map(p => `<div class="search-result-item" onclick="goToPlace(${p.lo},${p.la},'${(p.na || p.nl || p.n).replace(/'/g, "\\'")}')"><div class="sri-icon">📍</div><div><div class="sri-name">${p.na || p.nl || p.n}</div><div class="sri-sub">${p.c || ''}</div></div></div>`).join('');
         resultsEl.classList.add('open');
       });
@@ -692,11 +713,13 @@
       activeRouteInput = id;
       dbg(`🎯 Waiting for map tap for ${id}`);
     };
+
     function toggleRoutingPanel() {
       const p = document.getElementById('routing-panel');
       p.style.display = p.style.display === 'block' ? 'none' : 'block';
       routingClickActive = p.style.display === 'block';
       document.getElementById('btn-route').classList.toggle('active', routingClickActive);
+      dbg(`🗺️ Routing panel: ${routingClickActive ? 'OPENED' : 'CLOSED'}`);
     }
 
     function setRouteDest(lat, lng) {
@@ -709,14 +732,38 @@
       const fromS = document.getElementById('from-input').value, toS = document.getElementById('to-input').value;
       if (!fromS || !toS) { dbg('⚠ Enter both points'); return; }
       const from = fromS.split(',').map(Number), to = toS.split(',').map(Number);
+
+      // 🔌 Check if Capacitor and Valhalla plugin are actually available
+      if (typeof Capacitor === 'undefined' || !Capacitor.Plugins?.Valhalla) {
+        dbg('❌ Capacitor Valhalla plugin not found! (Are you running in a native container?)');
+        document.getElementById('route-result').innerText = 'Routing plugin missing';
+        return;
+      }
+
+      dbg(`🚗 Routing (${mode}) from [${from}] to [${to}]`);
       document.getElementById('route-result').innerText = 'Calculating...';
+
       try {
-        const { Plugins } = Capacitor;
-        const res = await Plugins.Valhalla.route({ start: { lat: from[0], lon: from[1] }, end: { lat: to[0], lon: to[1] }, profile: mode === 'walk' ? 'pedestrian' : 'auto' });
-        dbg(`✅ Route: ${res.distance.toFixed(2)} km`);
+        const startTime = performance.now();
+        const res = await Capacitor.Plugins.Valhalla.route({
+          start: { lat: from[0], lon: from[1] },
+          end: { lat: to[0], lon: to[1] },
+          profile: mode === 'walk' ? 'pedestrian' : 'auto'
+        });
+        const endTime = performance.now();
+
+        dbg(`✅ Route calculated in ${(endTime - startTime).toFixed(0)}ms | Dist: ${res.distance.toFixed(2)} km`);
         document.getElementById('route-result').innerHTML = `<b>${res.distance.toFixed(2)} km</b> · ${Math.round(res.duration / 60)} min`;
-        if (res.geometry) drawRoute(decodeValhallaPolyline(res.geometry));
-      } catch (e) { dbg('❌ Route error: ' + e.message); document.getElementById('route-result').innerText = 'Failed'; }
+
+        if (res.geometry) {
+          const coords = decodeValhallaPolyline(res.geometry);
+          dbg(`📏 Route decoded: ${coords.length} coordinate points`);
+          drawRoute(coords);
+        }
+      } catch (e) {
+        dbg('❌ Route error: ' + e.message);
+        document.getElementById('route-result').innerText = 'Failed';
+      }
     }
 
     function decodeValhallaPolyline(encoded) {
@@ -758,7 +805,18 @@
       }, 4000); // Hides after 4 seconds
     }
 
-    function showPanel(title, sub, content) { document.getElementById('panel-title').innerText = title; document.getElementById('panel-sub').innerText = sub; document.getElementById('panel-content').innerHTML = content; document.getElementById('panel').classList.add('open'); } function closePanel() { document.getElementById('panel').classList.remove('open'); }
+    function showPanel(title, sub, content) {
+      document.getElementById('panel-title').innerText = title;
+      document.getElementById('panel-sub').innerText = sub;
+      document.getElementById('panel-content').innerHTML = content;
+      document.getElementById('panel').classList.add('open');
+      dbg('📂 Info panel opened');
+    }
+    function closePanel() {
+      document.getElementById('panel').classList.remove('open');
+      dbg('📂 Info panel closed');
+    }
+
     function copyDebugLogs() { const t = Array.from(document.getElementById('debug-content').children).map(el => el.innerText).join('\n'); navigator.clipboard.writeText(t).then(() => dbg('✓ Copied')); }
 
     window.onload = init;
