@@ -2,4 +2,4 @@
 
 ## *Disclaimer*⚠️This is still a work in progress⚠️
 
-This is a free mobile application that provides information about diffrent transportaion methods in the capital tunis (buses)
+This is a free mobile application that provides information about diffrent transportaion methods in the capital tunis (buses , métro , nakel , etc...)
