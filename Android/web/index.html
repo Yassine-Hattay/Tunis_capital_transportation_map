@@ -356,13 +356,23 @@
         <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
       </svg></button>
   </div>
+
   <div id="debug-panel">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span
-        style="font-weight:600">Debug Logs</span><button onclick="copyDebugLogs()"
-        style="background:var(--c-accent);border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer">📋
-        Copy</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-weight:600">Debug Logs</span>
+      <div style="display:flex;gap:6px">
+        <button onclick="dumpFonts()"
+          style="background:#818cf8;border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;color:white">🔤
+          Fonts</button>
+        <button onclick="copyDebugLogs()"
+          style="background:var(--c-accent);border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer">📋
+          Copy</button>
+      </div>
+    </div>
     <div id="debug-content"></div>
   </div>
+
+
   <div id="routing-panel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span
         style="font-weight:600;font-size:14px">🗺️ Route</span><button onclick="toggleRoutingPanel()"
@@ -421,7 +431,7 @@
       content.scrollTop = content.scrollHeight;
     }
 
-    // ── PMTILES RANGE FETCH POLYFILL (STABLE) ─────────────────────────────────
+    // ── PMTILES & FONT FETCH POLYFILL ────────────────────────────────────────
     const _origFetch = window.fetch;
     window.fetch = async function (input, init) {
       const url = typeof input === 'string' ? input : (input?.url || String(input));
@@ -430,6 +440,8 @@
         if (typeof init.headers.get === 'function') range = init.headers.get('Range');
         else range = init.headers['Range'] || init.headers['range'];
       }
+
+      // 1. Handle PMTiles caching
       if (range && url.includes('tunis.pmtiles')) {
         const match = range.match(/bytes=(\d+)-(\d+)/);
         if (match) {
@@ -460,6 +472,23 @@
           }
         }
       }
+
+      // 2. Track Font Usage (NEW)
+      if (url.includes('/font/') && url.endsWith('.pbf')) {
+        const match = url.match(/\/font\/([^/]+)\/(\d+-\d+)\.pbf/);
+        if (match) {
+          const stack = decodeURIComponent(match[1]);
+          const rangeStr = match[2];
+          const key = `${stack}|${rangeStr}`;
+          if (!window._glyphsUsed) window._glyphsUsed = new Set();
+          if (!window._glyphsUsed.has(key)) {
+            window._glyphsUsed.add(key);
+            dbg(`🔤 FONT: [${stack}] ${rangeStr}.pbf`);
+          }
+        }
+      }
+
+      // 3. Fallback to original fetch
       return _origFetch.apply(window, arguments);
     };
 
@@ -804,7 +833,24 @@
         toast.classList.remove('show', 'error');
       }, 4000); // Hides after 4 seconds
     }
-
+    function dumpFonts() {
+      if (!window._glyphsUsed || window._glyphsUsed.size === 0) {
+        dbg('🔤 No font ranges requested yet — pan/zoom around the map first');
+        return;
+      }
+      const byFont = {};
+      for (const key of window._glyphsUsed) {
+        const [stack, range] = key.split('|');
+        if (!byFont[stack]) byFont[stack] = [];
+        byFont[stack].push(range);
+      }
+      dbg('━━━ FONT RANGES USED ━━━');
+      for (const [stack, ranges] of Object.entries(byFont)) {
+        ranges.sort((a, b) => parseInt(a) - parseInt(b));
+        dbg(`📁 ${stack}: ${ranges.join(', ')}`);
+      }
+      dbg('━━━ END ━━━');
+    }
     function showPanel(title, sub, content) {
       document.getElementById('panel-title').innerText = title;
       document.getElementById('panel-sub').innerText = sub;
@@ -820,6 +866,8 @@
     function copyDebugLogs() { const t = Array.from(document.getElementById('debug-content').children).map(el => el.innerText).join('\n'); navigator.clipboard.writeText(t).then(() => dbg('✓ Copied')); }
 
     window.onload = init;
+
+
   </script>
 </body>
 

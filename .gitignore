@@ -92,4 +92,5 @@ htmlcov/
 *.tar.zst
 
 Print_folder_structure_tree.ipynb
+Calculate_folder_size.py
 ```
