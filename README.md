@@ -1,30 +1,8 @@
 # Mobile Map Application for Public Transport in Tunis <img src="https://emojicdn.elk.sh/🇹🇳" width="40" style="vertical-align: middle;" /> (Beta)
 
-This is a free, open-source mobile application designed to simplify public transportation in Tunis.
+عسلامة , تحب تطبيق مجاني 100% يقلك وقتاش الكار , الميترو و التاكسي جماعي يجيو و وين المحطات متاعهم في ولاية تونس, تطبيق يعطيك الطرق المختلفة اللي تجم تاخذهم بش توصل للمكان إلي تحب عليه , تطبيق يشبه لgoogle maps (ماغير أنترنات , ماتستحقش حتى تشري dinar ticket) 
 
-I discovered the wealth of public transportation data provided by the [Tunisian Ministry of Transport](https://data.transport.tn/fr/) and decided to build a solution to make navigating the city easier for everyone.
-
-This app allows you to input your destination in Tunis and receive optimized routes—including buses, metro, and other transit modes—complete with travel distances and estimated arrival times.
-
-### Key Features
-
-* **Fully Offline:** The app is designed to work without an active internet connection. GPS and routing function entirely on-device.
-* **Core Functionality:** Currently, the app supports reliable geolocation (GPS), routing, and local map tile serving.
-* **Open Source:** You can explore, audit, or contribute to the source code here in this repository.
-
-### Current Status
-
-The project is currently in the **early-beta phase**. I have successfully implemented the core technical architecture, and I am now focusing on stability across different Android device configurations.
-
-> **Disclaimer ⚠️**
-> This is a work in progress and not the final version of the application. Expect bugs and performance variations as I continue to optimize the build.
-
-### Help Me Test
-
-I want this app to be available and accessible to as many people as possible. If you have an Android device, your feedback is invaluable to help me reach a stable release.
-
-**[Click here to view testing instructions and download the latest build]
-[(https://www.google.com/search?q=https://github.com/Yassine-Hattay/Tunis_capital_transportation_map%23beta-testing-help-improve-the-mobile-app)**](https://github.com/Yassine-Hattay/Tunis_capital_transportation_map/releases/tag/v0.1.0-beta)
+بديت نصنع التطبيق هذا و مزال في أول مراحله و نستحق المساعدة متاعكم بش نردو accessible لأكثر عدد من الناس , قبل مانكمل الخدمة في التطبيق هذا نحب نعرف إلي خدمتو حاليا كان يمشي ولا لا في معظم أجهزة android , حاليا التطبيق يخدم فيه Routing و GPS ماغير أنترنات (أي Routing و GPS ينجمو يخدمو ماغير أنترنات شوف الفيديو مع الPOST ) , كان تحب تضمن التطبيق كي يكمل يخدم على تليفونك تبع التعليمات هنا و أبعثلي المعطيات اللازمة https://github.com/Yassine-Hattay/Tunis_capital_transportation_map/releases/tag/v0.1.0-beta  
 
 ## Demo
 
