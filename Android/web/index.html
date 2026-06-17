@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./lib/maplibre-gl.css" />
   <script src="./lib/maplibre-gl.js"></script>
   <script src="./lib/pmtiles.js"></script>
+  <script src="./src/app-logic.js"></script>
   <style>
     :root {
       --c-bg: #f5f3f0;
@@ -720,10 +721,10 @@
         const q = e.target.value.trim().toLowerCase();
         document.getElementById('search-clear').classList.toggle('visible', q.length > 0);
         if (q.length < 2) { resultsEl.classList.remove('open'); return; }
-        const allMatches = _offlinePlaces.filter(p => (p.na || '').toLowerCase().includes(q) || (p.nl || '').toLowerCase().includes(q) || (p.n || '').toLowerCase().includes(q));
+        const allMatches = window.AtlasLogic.filterMatchingPlaces(_offlinePlaces, q);
         const matches = allMatches.slice(0, 10);
         dbg(`🔎 Search "${q}": ${allMatches.length} total matches, showing top ${matches.length}`);
-        resultsEl.innerHTML = matches.map(p => `<div class="search-result-item" onclick="goToPlace(${p.lo},${p.la},'${(p.na || p.nl || p.n).replace(/'/g, "\\'")}')"><div class="sri-icon">📍</div><div><div class="sri-name">${p.na || p.nl || p.n}</div><div class="sri-sub">${p.c || ''}</div></div></div>`).join('');
+        resultsEl.innerHTML = window.AtlasLogic.renderSearchResults(matches);
         resultsEl.classList.add('open');
       });
     }
@@ -796,17 +797,7 @@
     }
 
     function decodeValhallaPolyline(encoded) {
-      let inv = 1 / 1e6, index = 0, lat = 0, lng = 0, coords = [];
-      while (index < encoded.length) {
-        let b, shift = 0, res = 0;
-        do { b = encoded.charCodeAt(index++) - 63; res |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-        lat += (res & 1 ? ~(res >> 1) : (res >> 1));
-        shift = 0; res = 0;
-        do { b = encoded.charCodeAt(index++) - 63; res |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-        lng += (res & 1 ? ~(res >> 1) : (res >> 1));
-        coords.push([lng * inv, lat * inv]);
-      }
-      return coords;
+      return window.AtlasLogic.decodeValhallaPolyline(encoded);
     }
 
     function drawRoute(coords) {

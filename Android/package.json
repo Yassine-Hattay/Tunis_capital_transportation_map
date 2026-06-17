@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Offline-first map app for Tunisia",
   "scripts": {
+    "test": "node --test",
+    "validate:assets": "node scripts/validate-assets.js",
     "sync": "npx cap sync android",
     "open": "npx cap open android",
     "build-android": "npx cap sync android && npx cap open android"
