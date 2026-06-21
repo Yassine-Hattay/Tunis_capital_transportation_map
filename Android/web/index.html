@@ -28,20 +28,21 @@
 
     html,
     body {
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
       margin: 0;
       padding: 0;
       background: var(--c-bg);
       color: var(--c-text);
-      display: flex;
-      flex-direction: column;
     }
 
     #map {
-      flex: 1;
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      position: relative;
+      height: 100%;
       touch-action: none;
       background: #c8dff0;
     }
@@ -59,9 +60,9 @@
 
     #search-wrap {
       flex: 1;
+      min-width: 0;
+      /* Crucial: allows the search bar to shrink on narrow screens */
       position: relative;
-      display: none;
-      /* Hidden for testing */
     }
 
     #search-box {
@@ -160,6 +161,8 @@
     .icon-btn {
       width: 48px;
       height: 48px;
+      flex-shrink: 0;
+      /* Crucial: prevents buttons from shrinking and clipping */
       border-radius: var(--r);
       background: var(--c-surface);
       border: 1.5px solid var(--c-border);
@@ -316,6 +319,47 @@
       color: #92400e;
       /* Dark amber for error text */
     }
+
+    #bus-panel {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 12px;
+      right: 12px;
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--r);
+      padding: 16px;
+      z-index: 250;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
+      backdrop-filter: blur(16px);
+    }
+
+    .bus-route-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .bus-route-item:last-child {
+      border-bottom: none;
+    }
+
+    .bus-route-item label {
+      flex: 1;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .bus-route-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--c-accent2);
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -336,7 +380,7 @@
     </div>
 
     <!-- NEW: Geolocation Button -->
-    <button class="icon-btn" id="btn-geolocate" title="My Location" style="margin-left: auto;">
+    <button class="icon-btn" id="btn-geolocate" title="My Location">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
@@ -346,24 +390,33 @@
         <line x1="18" y1="12" x2="22" y2="12"></line>
       </svg>
     </button>
-
     <button class="icon-btn" id="btn-route" title="Route"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2">
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg></button>
+    <button class="icon-btn" id="btn-bus" title="Bus Routes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 6v6" />
+        <path d="M15 6v6" />
+        <path d="M2 12h19.6" />
+        <path
+          d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3" />
+        <circle cx="7" cy="18" r="2" />
+        <path d="M9 18h5" />
+        <circle cx="16" cy="18" r="2" />
       </svg></button>
     <button class="icon-btn" id="btn-debug" title="Debug"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2">
         <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
       </svg></button>
   </div>
-
   <div id="debug-panel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <span style="font-weight:600">Debug Logs</span>
-      <div style="display:flex;gap:6px">
-        <button onclick="dumpFonts()"
-          style="background:#818cf8;border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;color:white">🔤
-          Fonts</button>
+      <div>
+        <button onclick="inspectMapCenter()"
+          style="background:var(--c-accent2);border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;margin-right:4px;color:#fff">🔍
+          Inspect Center</button>
         <button onclick="copyDebugLogs()"
           style="background:var(--c-accent);border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer">📋
           Copy</button>
@@ -371,8 +424,6 @@
     </div>
     <div id="debug-content"></div>
   </div>
-
-
   <div id="routing-panel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span
         style="font-weight:600;font-size:14px">🗺️ Route</span><button onclick="toggleRoutingPanel()"
@@ -397,6 +448,14 @@
     </div>
     <div id="route-result" style="text-align:center;font-size:13px;color:var(--c-muted);min-height:20px"></div>
   </div>
+  <div id="bus-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span
+        style="font-weight:600;font-size:14px">🚌 Bus Routes</span><button onclick="toggleBusPanel()"
+        style="background:none;border:none;color:var(--c-muted);font-size:20px;cursor:pointer">×</button></div>
+    <div id="bus-route-list" style="max-height: 300px; overflow-y: auto;">
+      <!-- Checkboxes will be injected here -->
+    </div>
+  </div>
   <!-- Toast Message Container -->
   <div id="toast"></div>
 
@@ -419,6 +478,10 @@
     let activeRouteInput = null; // Tracks which input is waiting for a map tap
     const PMTILES_PATH = '/data/tunis.pmtiles';
 
+    // Bus routes state
+    let selectedRoutes = new Set();
+    let availableRoutes = [];
+
     // ── DEBUG ────────────────────────────────────────────────────────────────
     function dbg(msg) {
       console.log('[Atlas]', msg);
@@ -431,7 +494,7 @@
       content.scrollTop = content.scrollHeight;
     }
 
-    // ── PMTILES & FONT FETCH POLYFILL ────────────────────────────────────────
+    // ── PMTILES RANGE FETCH POLYFILL (STABLE) ─────────────────────────────────
     const _origFetch = window.fetch;
     window.fetch = async function (input, init) {
       const url = typeof input === 'string' ? input : (input?.url || String(input));
@@ -440,8 +503,6 @@
         if (typeof init.headers.get === 'function') range = init.headers.get('Range');
         else range = init.headers['Range'] || init.headers['range'];
       }
-
-      // 1. Handle PMTiles caching
       if (range && url.includes('tunis.pmtiles')) {
         const match = range.match(/bytes=(\d+)-(\d+)/);
         if (match) {
@@ -472,23 +533,6 @@
           }
         }
       }
-
-      // 2. Track Font Usage (NEW)
-      if (url.includes('/font/') && url.endsWith('.pbf')) {
-        const match = url.match(/\/font\/([^/]+)\/(\d+-\d+)\.pbf/);
-        if (match) {
-          const stack = decodeURIComponent(match[1]);
-          const rangeStr = match[2];
-          const key = `${stack}|${rangeStr}`;
-          if (!window._glyphsUsed) window._glyphsUsed = new Set();
-          if (!window._glyphsUsed.has(key)) {
-            window._glyphsUsed.add(key);
-            dbg(`🔤 FONT: [${stack}] ${rangeStr}.pbf`);
-          }
-        }
-      }
-
-      // 3. Fallback to original fetch
       return _origFetch.apply(window, arguments);
     };
 
@@ -542,7 +586,38 @@
         { id: 'sites-university', type: 'fill', source: 'omt', 'source-layer': 'sites', filter: ['in', 'class', 'university', 'college'], minzoom: 13, paint: { 'fill-color': isDark ? '#6d597a' : '#e0d1ea', 'fill-opacity': 0.7 } },
         { id: 'sites-school', type: 'fill', source: 'omt', 'source-layer': 'sites', filter: ['==', 'class', 'school'], minzoom: 13, paint: { 'fill-color': isDark ? '#52796f' : '#b7d4c8', 'fill-opacity': 0.7 } },
         { id: 'sites-hospital', type: 'fill', source: 'omt', 'source-layer': 'sites', filter: ['==', 'class', 'hospital'], minzoom: 13, paint: { 'fill-color': isDark ? '#a44a3f' : '#f2c6c2', 'fill-opacity': 0.7 } },
-        { id: 'sites-park', type: 'fill', source: 'omt', 'source-layer': 'sites', filter: ['in', 'class', 'park', 'garden'], minzoom: 13, paint: { 'fill-color': isDark ? '#2d6a4f' : '#74c69d', 'fill-opacity': 0.7 } }
+        { id: 'sites-park', type: 'fill', source: 'omt', 'source-layer': 'sites', filter: ['in', 'class', 'park', 'garden'], minzoom: 13, paint: { 'fill-color': isDark ? '#2d6a4f' : '#74c69d', 'fill-opacity': 0.7 } },
+
+        // NEW: Generic fallback for any other site class (clinics, museums, stadiums, etc.)
+        {
+          id: 'sites-generic-fill',
+          type: 'fill',
+          source: 'omt',
+          'source-layer': 'sites',
+          filter: ['all', ['has', 'class'], ['!', ['in', ['get', 'class'], ['literal', ['university', 'college', 'school', 'hospital', 'park', 'garden']]]]],
+          minzoom: 13,
+          paint: { 'fill-color': isDark ? '#3a404d' : '#d4d8de', 'fill-opacity': 0.5 }
+        },
+        {
+          id: 'sites-generic-label',
+          type: 'symbol',
+          source: 'omt',
+          'source-layer': 'sites',
+          filter: ['all', ['has', 'class'], ['!', ['in', ['get', 'class'], ['literal', ['university', 'college', 'school', 'hospital', 'park', 'garden']]]]],
+          minzoom: 14,
+          layout: {
+            'text-field': ['coalesce', ['get', 'name:ar'], ['get', 'name:en'], ['get', 'name:fr'], ['get', 'name']],
+            'text-font': ['Noto Sans Regular'],
+            'text-size': 11,
+            'text-anchor': 'center',
+            'text-allow-overlap': false
+          },
+          paint: {
+            'text-color': c.poiLabel,
+            'text-halo-color': c.haloLight,
+            'text-halo-width': 1.2
+          }
+        }
       );
 
       style.layers.push(
@@ -554,10 +629,26 @@
         { kinds: ['motorway', 'trunk'], color: c.roadMotorway, widths: { stops: [[6, 1], [14, 8]] }, minzoom: 6 },
         { kinds: ['primary', 'secondary'], color: c.roadPrimary, widths: { stops: [[10, 0.8], [14, 5]] }, minzoom: 10 },
         { kinds: ['tertiary'], color: c.roadSecondary, widths: { stops: [[12, 0.8], [14, 4]] }, minzoom: 12 },
-        { kinds: ['residential', 'service', 'footway', 'path'], color: c.roadMinor, widths: { stops: [[13, 0.5], [18, 6]] }, minzoom: 13 }
+        { kinds: ['residential', 'service', 'footway', 'path'], color: c.roadMinor, widths: { stops: [[13, 0.5], [18, 6]] }, minzoom: 13 },
+        // NEW: Rail, Metro, Tram, and Subway lines (drawn with a dashed pattern)
+        { kinds: ['rail', 'light_rail', 'subway', 'tram', 'monorail'], color: c.roadRail, widths: { stops: [[11, 0.5], [14, 2], [18, 4]] }, minzoom: 11, dasharray: [2, 2] }
       ];
       roadStyles.forEach(cfg => {
-        style.layers.push({ id: `streets-${cfg.kinds[0]}`, type: 'line', source: 'omt', 'source-layer': 'streets', filter: ['in', 'class', ...cfg.kinds], minzoom: cfg.minzoom, layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': cfg.color, 'line-width': cfg.widths } });
+        const layerDef = {
+          id: `streets-${cfg.kinds[0]}`,
+          type: 'line',
+          source: 'omt',
+          'source-layer': 'streets',
+          filter: ['in', 'class', ...cfg.kinds],
+          minzoom: cfg.minzoom,
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+          paint: { 'line-color': cfg.color, 'line-width': cfg.widths }
+        };
+        // Apply dashed line pattern for rails
+        if (cfg.dasharray) {
+          layerDef.paint['line-dasharray'] = cfg.dasharray;
+        }
+        style.layers.push(layerDef);
       });
 
       style.layers.push({ id: 'bridges-streets', type: 'line', source: 'omt', 'source-layer': 'streets', minzoom: 13, filter: ['==', ['get', 'bridge'], 'yes'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': isDark ? '#e6b800' : '#c49000', 'line-width': { stops: [[12, 2.5], [18, 13]] } } });
@@ -599,7 +690,112 @@
           dbg('✓ MAP LOADED');
           map.resize();
           dbg(`🔍 Initial Zoom: ${map.getZoom().toFixed(2)}`);
+
+          // ── BUS ROUTES INTEGRATION ──────────────────────────────────────────
+          fetch('./data/routes.json')
+            .then(res => res.json())
+            .then(data => {
+              dbg(`🚌 Loaded ${data.features.length} bus routes`);
+
+              // Extract unique line IDs
+              const routeIds = new Set();
+              data.features.forEach(f => {
+                if (f.properties && f.properties.line_id) {
+                  routeIds.add(f.properties.line_id);
+                }
+              });
+
+              // Sort them (try numeric sort first)
+              availableRoutes = Array.from(routeIds).sort((a, b) => {
+                const matchA = a.match(/^(\d+)/);
+                const matchB = b.match(/^(\d+)/);
+
+                if (matchA && matchB) {
+                  const numA = parseInt(matchA[1]);
+                  const numB = parseInt(matchB[1]);
+                  if (numA !== numB) return numA - numB;
+                } else if (matchA) {
+                  return -1; // Numbers come before text
+                } else if (matchB) {
+                  return 1;
+                }
+
+                // Fallback to string comparison
+                return a.localeCompare(b);
+              });
+
+              // Populate UI
+              const listEl = document.getElementById('bus-route-list');
+              listEl.innerHTML = availableRoutes.map(id => `
+                <div class="bus-route-item">
+                  <input type="checkbox" id="route-${id}" value="${id}" onchange="toggleRoute('${id}')">
+                  <label for="route-${id}">Line ${id}</label>
+                </div>
+              `).join('');
+
+              // Add the GeoJSON source
+              map.addSource('bus-routes', {
+                type: 'geojson',
+                data: data
+              });
+
+              // 1. Draw the colored lines
+              map.addLayer({
+                id: 'bus-routes-line',
+                type: 'line',
+                source: 'bus-routes',
+                paint: {
+                  'line-color': '#818cf8', // Accent purple
+                  'line-width': 3,
+                  'line-opacity': 0.8
+                }
+              });
+
+              // 2. Add directional arrows along the line
+              map.addLayer({
+                id: 'bus-routes-arrows',
+                type: 'symbol',
+                source: 'bus-routes',
+                layout: {
+                  'symbol-placement': 'line',
+                  'text-field': '→',
+                  'text-size': 16,
+                  'text-allow-overlap': true,
+                  'text-offset': [0, -0.6] // Slightly above the line
+                },
+                paint: {
+                  'text-color': '#818cf8',
+                  'text-halo-color': '#ffffff',
+                  'text-halo-width': 1.5
+                }
+              });
+
+              // 3. Add the line number labels hovering near the route
+              map.addLayer({
+                id: 'bus-routes-labels',
+                type: 'symbol',
+                source: 'bus-routes',
+                layout: {
+                  'symbol-placement': 'line',
+                  'text-field': ['get', 'line_id'],
+                  'text-font': ['Noto Sans Bold'],
+                  'text-size': 12,
+                  'text-allow-overlap': true,
+                  'text-offset': [0, 1.2] // Slightly below the line
+                },
+                paint: {
+                  'text-color': '#ffffff',
+                  'text-halo-color': '#818cf8',
+                  'text-halo-width': 2
+                }
+              });
+
+              // Initially hide all routes until the user selects them
+              updateRouteFilter();
+            })
+            .catch(err => dbg('❌ Failed to load bus routes: ' + err.message));
         });
+
         map.on('error', e => { if (!e.error?.message?.includes('canceled')) dbg('❌ MAP ERR: ' + (e.error?.message || e.message || 'Unknown')); });
 
         // 🗺️ Map interaction tracking
@@ -626,8 +822,8 @@
     function setupUI() {
       document.getElementById('btn-debug').onclick = () => document.getElementById('debug-panel').classList.toggle('show');
       document.getElementById('btn-route').onclick = toggleRoutingPanel;
+      document.getElementById('btn-bus').onclick = toggleBusPanel;
       document.getElementById('search-clear').onclick = clearSearch;
-
       let userMarker = null; // Variable to keep track of the location marker
 
       // Geolocation button logic
@@ -708,14 +904,52 @@
       });
     }
     // ── SEARCH ────────────────────────────────────────────────────────────────
+    // How far to fly in when a search result is selected, based on the
+    // place's class (the 'c' field from places.json). Settlement-level
+    // places get a lower zoom (zoomed OUT, so you see the area), individual
+    // points of interest get a higher zoom (zoomed IN close). Tune freely.
+    const ZOOM_BY_CLASS = {
+      city: 12,
+      town: 13,
+      village: 14,
+      suburb: 14,
+      neighbourhood: 15,
+      quarter: 15,
+      hamlet: 15,
+      locality: 15,
+    };
+    const DEFAULT_POI_ZOOM = 17; // cafes, shops, schools, hospitals, transit stops, etc.
+
+    function zoomForClass(cls) {
+      return ZOOM_BY_CLASS[cls] ?? DEFAULT_POI_ZOOM;
+    }
+
     async function initOfflineSearch() {
       try {
         const r = await fetch('./data/places.json');
         _offlinePlaces = await r.json();
         dbg(`🔍 Loaded ${_offlinePlaces.length} places`);
       } catch (e) { dbg('❌ Search load failed'); }
-
       const input = document.getElementById('search-input'), resultsEl = document.getElementById('search-results');
+
+      // NEW: Handle Enter key to fly to coordinates
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          const val = input.value.trim();
+          // Regex to match "lat, lon" or "lat,lon" (with or without spaces)
+          const match = val.match(/^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/);
+          if (match) {
+            const lat = parseFloat(match[1]);
+            const lon = parseFloat(match[3]);
+            // Basic validation to ensure it's a valid lat/lon
+            if (lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+              e.preventDefault();
+              flyToCoordinates(lat, lon);
+            }
+          }
+        }
+      });
+
       input.addEventListener('input', e => {
         const q = e.target.value.trim().toLowerCase();
         document.getElementById('search-clear').classList.toggle('visible', q.length > 0);
@@ -723,19 +957,60 @@
         const allMatches = _offlinePlaces.filter(p => (p.na || '').toLowerCase().includes(q) || (p.nl || '').toLowerCase().includes(q) || (p.n || '').toLowerCase().includes(q));
         const matches = allMatches.slice(0, 10);
         dbg(`🔎 Search "${q}": ${allMatches.length} total matches, showing top ${matches.length}`);
-        resultsEl.innerHTML = matches.map(p => `<div class="search-result-item" onclick="goToPlace(${p.lo},${p.la},'${(p.na || p.nl || p.n).replace(/'/g, "\\'")}')"><div class="sri-icon">📍</div><div><div class="sri-name">${p.na || p.nl || p.n}</div><div class="sri-sub">${p.c || ''}</div></div></div>`).join('');
+        resultsEl.innerHTML = matches.map(p => `<div class="search-result-item" onclick="goToPlace(${p.lo},${p.la},'${(p.na || p.nl || p.n).replace(/'/g, "\\'")}','${(p.c || '').replace(/'/g, "\\'")}')"><div class="sri-icon">📍</div><div><div class="sri-name">${p.na || p.nl || p.n}</div><div class="sri-sub">${p.c || ''}</div></div></div>`).join('');
         resultsEl.classList.add('open');
       });
     }
 
-    window.goToPlace = (lon, lat, name) => {
-      map.flyTo({ center: [lon, lat], zoom: 15 });
+    window.goToPlace = (lon, lat, name, cls) => {
+      const coords = [lon, lat];
+      dbg(`📍 Flying to: ${name} at [${lat}, ${lon}] (Class: ${cls})`);
+
+      // 1. Remove previous search marker if it exists
+      if (window._searchMarker) {
+        window._searchMarker.remove();
+      }
+
+      // 2. Add a new RED Marker for this search result
+      // This allows you to visually verify the exact location on the map
+      window._searchMarker = new maplibregl.Marker({ color: '#ff0000' })
+        .setLngLat(coords)
+        .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`<b>${name}</b><br><small>${cls}</small>`))
+        .addTo(map);
+
+      // 3. Fly to the location
+      map.flyTo({ center: coords, zoom: zoomForClass(cls) });
+
+      // 4. Update UI
       document.getElementById('search-input').value = name;
       document.getElementById('search-results').classList.remove('open');
     };
 
-    function clearSearch() { document.getElementById('search-input').value = ''; document.getElementById('search-results').classList.remove('open'); document.getElementById('search-clear').classList.remove('visible'); }
+    function flyToCoordinates(lat, lon) {
+      const coords = [lon, lat];
+      const name = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+      dbg(`📍 Flying to coordinates: [${lat}, ${lon}]`);
 
+      // Remove previous search marker if it exists
+      if (window._searchMarker) {
+        window._searchMarker.remove();
+      }
+
+      // Add a new RED Marker for the coordinates
+      window._searchMarker = new maplibregl.Marker({ color: '#ff0000' })
+        .setLngLat(coords)
+        .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`<b>Selected Location</b><br><small>${name}</small>`))
+        .addTo(map);
+
+      // Fly to the location at a detailed zoom level
+      map.flyTo({ center: coords, zoom: 17 });
+
+      // Update the search bar text and close the dropdown
+      document.getElementById('search-input').value = name;
+      document.getElementById('search-results').classList.remove('open');
+    }
+
+    function clearSearch() { document.getElementById('search-input').value = ''; document.getElementById('search-results').classList.remove('open'); document.getElementById('search-clear').classList.remove('visible'); }
     // ── ROUTING ──────────────────────────────────────────────────────────────
     // Called when the user taps the input field
     window.setActiveRouteInput = (id) => {
@@ -749,6 +1024,40 @@
       routingClickActive = p.style.display === 'block';
       document.getElementById('btn-route').classList.toggle('active', routingClickActive);
       dbg(`🗺️ Routing panel: ${routingClickActive ? 'OPENED' : 'CLOSED'}`);
+    }
+
+    function toggleBusPanel() {
+      const p = document.getElementById('bus-panel');
+      p.style.display = p.style.display === 'block' ? 'none' : 'block';
+      document.getElementById('btn-bus').classList.toggle('active', p.style.display === 'block');
+      dbg(`🚌 Bus panel: ${p.style.display === 'block' ? 'OPENED' : 'CLOSED'}`);
+    }
+
+    function toggleRoute(id) {
+      if (selectedRoutes.has(id)) {
+        selectedRoutes.delete(id);
+      } else {
+        selectedRoutes.add(id);
+      }
+      updateRouteFilter();
+    }
+
+    function updateRouteFilter() {
+      if (!map.getLayer('bus-routes-line')) return;
+
+      let filter;
+      if (selectedRoutes.size === 0) {
+        // Match nothing
+        filter = ['==', ['get', 'line_id'], '__NONE__'];
+      } else {
+        // Match selected
+        filter = ['in', ['get', 'line_id'], ['literal', Array.from(selectedRoutes)]];
+      }
+
+      map.setFilter('bus-routes-line', filter);
+      map.setFilter('bus-routes-arrows', filter);
+      map.setFilter('bus-routes-labels', filter);
+      dbg(`🚌 Filter updated: ${selectedRoutes.size} routes selected`);
     }
 
     function setRouteDest(lat, lng) {
@@ -818,7 +1127,6 @@
     }
 
     // ── UI HELPERS ───────────────────────────────────────────────────────────
-    // ── UI HELPERS ───────────────────────────────────────────────────────────
     let toastTimeout;
     function showToast(message, isError = false) {
       const toast = document.getElementById('toast');
@@ -833,24 +1141,7 @@
         toast.classList.remove('show', 'error');
       }, 4000); // Hides after 4 seconds
     }
-    function dumpFonts() {
-      if (!window._glyphsUsed || window._glyphsUsed.size === 0) {
-        dbg('🔤 No font ranges requested yet — pan/zoom around the map first');
-        return;
-      }
-      const byFont = {};
-      for (const key of window._glyphsUsed) {
-        const [stack, range] = key.split('|');
-        if (!byFont[stack]) byFont[stack] = [];
-        byFont[stack].push(range);
-      }
-      dbg('━━━ FONT RANGES USED ━━━');
-      for (const [stack, ranges] of Object.entries(byFont)) {
-        ranges.sort((a, b) => parseInt(a) - parseInt(b));
-        dbg(`📁 ${stack}: ${ranges.join(', ')}`);
-      }
-      dbg('━━━ END ━━━');
-    }
+
     function showPanel(title, sub, content) {
       document.getElementById('panel-title').innerText = title;
       document.getElementById('panel-sub').innerText = sub;
@@ -863,11 +1154,38 @@
       dbg('📂 Info panel closed');
     }
 
+    function inspectMapCenter() {
+      if (!map) return;
+      const center = map.getCenter();
+      const point = map.project(center);
+
+      // Query all rendered features at the center pixel
+      const features = map.queryRenderedFeatures(point);
+
+      dbg(`🔍 Inspecting features at map center (${center.lat.toFixed(5)}, ${center.lng.toFixed(5)}) | Zoom: ${map.getZoom().toFixed(1)}`);
+
+      // Group by source-layer and class
+      const grouped = {};
+      features.forEach(f => {
+        const layer = f.layer['source-layer'] || f.layer.id;
+        const cls = f.properties.class || f.properties.subclass || 'N/A';
+        const key = `${layer} -> ${cls}`;
+        if (!grouped[key]) grouped[key] = 0;
+        grouped[key]++;
+      });
+
+      const keys = Object.keys(grouped).sort();
+      if (keys.length === 0) {
+        dbg("   ⚠️ No features found at this zoom level / location.");
+      } else {
+        keys.forEach(k => {
+          dbg(`   📦 ${k}: ${grouped[k]} features`);
+        });
+      }
+    }
+
     function copyDebugLogs() { const t = Array.from(document.getElementById('debug-content').children).map(el => el.innerText).join('\n'); navigator.clipboard.writeText(t).then(() => dbg('✓ Copied')); }
-
     window.onload = init;
-
-
   </script>
 </body>
 
