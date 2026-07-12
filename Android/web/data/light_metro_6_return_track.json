@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Metro 6",
+        "direction": "Return",
+        "description": "Track alignment route geometry"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [   
+          
+        ]
+      }
+    }
+  ]
+}

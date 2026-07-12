@@ -320,7 +320,8 @@
       /* Dark amber for error text */
     }
 
-    #bus-panel {
+    #bus-panel,
+    #Ligne-panel {
       display: none;
       position: fixed;
       bottom: 20px;
@@ -335,7 +336,8 @@
       backdrop-filter: blur(16px);
     }
 
-    .bus-route-item {
+    .bus-route-item,
+    .Ligne-route-item {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -343,22 +345,78 @@
       border-bottom: 1px solid var(--c-border);
     }
 
-    .bus-route-item:last-child {
+    .bus-route-item:last-child,
+    .Ligne-route-item:last-child {
       border-bottom: none;
     }
 
-    .bus-route-item label {
+    .bus-route-item label,
+    .Ligne-route-item label {
       flex: 1;
       cursor: pointer;
       font-size: 14px;
       font-weight: 500;
     }
 
-    .bus-route-item input[type="checkbox"] {
+    .bus-route-item input[type="checkbox"],
+    .Ligne-route-item input[type="checkbox"] {
       width: 18px;
       height: 18px;
       accent-color: var(--c-accent2);
       cursor: pointer;
+    }
+
+    .Ligne-route-item input[type="checkbox"] {
+      accent-color: #dc2626;
+      /* Red for Ligne */
+    }
+
+    #coord-picker-panel {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 320px;
+      max-height: 400px;
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-accent2);
+      border-radius: var(--r);
+      padding: 12px;
+      z-index: 260;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .2);
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    #coord-picker-panel.open {
+      display: block;
+    }
+
+    #coord-picker-panel h4 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: var(--c-text);
+      font-family: inherit;
+    }
+
+    #coord-list {
+      max-height: 220px;
+      overflow-y: auto;
+      background: var(--c-bg);
+      border-radius: 6px;
+      padding: 6px;
+      margin-bottom: 8px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    #coord-picker-panel button {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-right: 4px;
     }
   </style>
 </head>
@@ -405,15 +463,33 @@
         <path d="M9 18h5" />
         <circle cx="16" cy="18" r="2" />
       </svg></button>
+    <button class="icon-btn" id="btn-Ligne" title="Ligne / Metro"><svg width="18" height="18" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="3" width="16" height="16" rx="2" />
+        <path d="M4 11h16" />
+        <path d="M12 3v8" />
+        <path d="m8 19-2 3" />
+        <path d="m18 22-2-3" />
+        <circle cx="8" cy="15" r="1" />
+        <circle cx="16" cy="15" r="1" />
+      </svg></button>
     <button class="icon-btn" id="btn-debug" title="Debug"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2">
         <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
       </svg></button>
+
+    <button class="icon-btn" id="btn-coord-debug" title="Coordinate Order Debug"
+      onclick="document.getElementById('coord-debug-panel').style.display='block'">🔢</button>
+
+    <button class="icon-btn" id="btn-picker" title="Coordinate Picker">📌</button>
   </div>
   <div id="debug-panel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
       <span style="font-weight:600">Debug Logs</span>
       <div>
+        <button onclick="debugRails()"
+          style="background:#7c3aed;border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;margin-right:4px;color:#fff">🚆
+          Rails</button>
         <button onclick="inspectMapCenter()"
           style="background:var(--c-accent2);border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;margin-right:4px;color:#fff">🔍
           Inspect Center</button>
@@ -456,7 +532,67 @@
       <!-- Checkboxes will be injected here -->
     </div>
   </div>
-  <!-- Toast Message Container -->
+  <div id="Ligne-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span
+        style="font-weight:600;font-size:14px">🚆 Ligne / Metro</span><button onclick="toggleLignePanel()"
+        style="background:none;border:none;color:var(--c-muted);font-size:20px;cursor:pointer">×</button></div>
+    <div id="Ligne-route-list" style="max-height: 300px; overflow-y: auto;">
+      <!-- Checkboxes will be injected here -->
+    </div>
+  </div>
+  <div id="coord-picker-panel">
+    <h4>📌 Coordinate Picker (<span id="coord-count">0</span> points)</h4>
+    <div id="coord-list">Click on the map to add points...</div>
+    <button onclick="copyAllCoords()" style="background:var(--c-accent);color:#0f1117;font-weight:600">📋 Copy
+      All</button>
+    <button onclick="clearAllCoords()" style="background:#ef4444;color:#fff">🗑️ Clear</button>
+    <button onclick="togglePickerMode()" style="background:var(--c-muted);color:#fff">✖ Close</button>
+  </div>
+  <!-- ── ROUTE COORDINATE DEBUG PANEL ─────────────────────────────────────── -->
+  <!-- Pick any route file, tap "Show Numbers", and each coordinate gets a    -->
+  <!-- numbered label on the map so you can verify sequential order visually. -->
+  <!-- Tap "Clear" to remove all labels before loading the next file.         -->
+  <div id="coord-debug-panel" style="
+    display:none; position:fixed; bottom:20px; left:12px; right:12px;
+    background:var(--c-surface); border:1.5px solid var(--c-border);
+    border-radius:var(--r); padding:14px; z-index:300;
+    box-shadow:0 8px 32px rgba(0,0,0,.15); backdrop-filter:blur(16px);
+  ">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span style="font-weight:600;font-size:13px">🔢 Coordinate Order Debug</span>
+      <button onclick="document.getElementById('coord-debug-panel').style.display='none'"
+        style="background:none;border:none;color:var(--c-muted);font-size:20px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <select id="coord-debug-file" style="
+      width:100%;box-sizing:border-box;background:var(--c-bg);border:1px solid var(--c-border);
+      border-radius:8px;padding:8px 10px;color:var(--c-text);font-size:13px;margin-bottom:10px;
+    ">
+      <option value="">— pick a route file —</option>
+      <option value="light_metro_1_departure_track.json">Metro 1 Departure</option>
+      <option value="light_metro_1_return_track.json">Metro 1 Return</option>
+      <option value="light_metro_2_departure_track.json">Metro 2 Departure</option>
+      <option value="light_metro_2_return_track.json">Metro 2 Return</option>
+      <option value="light_metro_3_departure_track.json">Metro 3 Departure</option>
+      <option value="light_metro_3_return_track.json">Metro 3 Return</option>
+      <option value="light_metro_4_departure_track.json">Metro 4 Departure</option>
+      <option value="light_metro_4_return_track.json">Metro 4 Return</option>
+      <option value="light_metro_5_departure_track.json">Metro 5 Departure</option>
+      <option value="light_metro_5_return_track.json">Metro 5 Return</option>
+      <option value="tgm_routes.json">TGM Routes</option>
+    </select>
+    <div style="display:flex;gap:8px">
+      <button onclick="debugRouteCoords()"
+        style="flex:1;padding:9px;background:var(--c-accent2);border:none;border-radius:8px;color:#fff;font-weight:600;font-size:13px;cursor:pointer">
+        🔢 Show Numbers
+      </button>
+      <button onclick="clearCoordDebug()"
+        style="flex:1;padding:9px;background:var(--c-bg);border:1px solid var(--c-border);border-radius:8px;color:var(--c-text);font-weight:600;font-size:13px;cursor:pointer">
+        🗑️ Clear
+      </button>
+    </div>
+    <div id="coord-debug-status"
+      style="margin-top:8px;font-size:11px;color:var(--c-muted);min-height:14px;text-align:center"></div>
+  </div>
   <div id="toast"></div>
 
   <div id="panel">
@@ -476,11 +612,19 @@
     let _offlinePlaces = [];
     let routingClickActive = false;
     let activeRouteInput = null; // Tracks which input is waiting for a map tap
+    let pickerMode = false;
+    let pickedCoords = [];
+    let pickedMarkers = [];
+    let clickMarker = null; // Tracks the click-to-coordinates marker
     const PMTILES_PATH = '/data/tunis.pmtiles';
 
     // Bus routes state
     let selectedRoutes = new Set();
     let availableRoutes = [];
+
+    // Ligne routes state
+    let selectedLigneRoutes = new Set();
+    let availableLigneRoutes = [];
 
     // ── DEBUG ────────────────────────────────────────────────────────────────
     function dbg(msg) {
@@ -630,9 +774,8 @@
         { kinds: ['primary', 'secondary'], color: c.roadPrimary, widths: { stops: [[10, 0.8], [14, 5]] }, minzoom: 10 },
         { kinds: ['tertiary'], color: c.roadSecondary, widths: { stops: [[12, 0.8], [14, 4]] }, minzoom: 12 },
         { kinds: ['residential', 'service', 'footway', 'path'], color: c.roadMinor, widths: { stops: [[13, 0.5], [18, 6]] }, minzoom: 13 },
-        // NEW: Rail, Metro, Tram, and Subway lines (drawn with a dashed pattern)
-        { kinds: ['rail', 'light_rail', 'subway', 'tram', 'monorail'], color: c.roadRail, widths: { stops: [[11, 0.5], [14, 2], [18, 4]] }, minzoom: 11, dasharray: [2, 2] }
       ];
+
       roadStyles.forEach(cfg => {
         const layerDef = {
           id: `streets-${cfg.kinds[0]}`,
@@ -644,15 +787,66 @@
           layout: { 'line-cap': 'round', 'line-join': 'round' },
           paint: { 'line-color': cfg.color, 'line-width': cfg.widths }
         };
-        // Apply dashed line pattern for rails
-        if (cfg.dasharray) {
-          layerDef.paint['line-dasharray'] = cfg.dasharray;
-        }
         style.layers.push(layerDef);
       });
 
       style.layers.push({ id: 'bridges-streets', type: 'line', source: 'omt', 'source-layer': 'streets', minzoom: 13, filter: ['==', ['get', 'bridge'], 'yes'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': isDark ? '#e6b800' : '#c49000', 'line-width': { stops: [[12, 2.5], [18, 13]] } } });
       style.layers.push({ id: 'buildings', type: 'fill', source: 'omt', 'source-layer': 'buildings', minzoom: 13, paint: { 'fill-color': c.building, 'fill-outline-color': c.buildingOutline, 'fill-opacity': 0.7 } });
+
+      // ── RAIL / METRO / TRAM ────────────────────────────────────────────────
+      // Rail geometries live in the 'public_transport' source layer in this
+      // pmtiles file (confirmed by tilemaker's process.lua routing them there
+      // rather than into 'streets'). We cannot filter by class yet because we
+      // don't know the exact class strings the tile generator used — so we use
+      // geometry type as the primary discriminator: platforms are Polygons,
+      // stops are Points; actual track lines are LineStrings. The class filter
+      // excludes the two known non-track classes as an extra safety net.
+      //
+      // IMPORTANT: line-cap must be 'butt' (not 'round') when line-dasharray
+      // is set — MapLibre silently ignores dasharray with round caps.
+      //
+      // The filter uses 'in' for geometry type because the debug output shows
+      // BOTH LineString and MultiLineString rail features in this layer. The
+      // original filter only matched LineString, so the 17 MultiLineString
+      // light_rail/rail features were silently invisible.
+      const railNonTrackClasses = ['literal', ['platform', 'stop_position', 'stop']];
+      const railLineFilter = ['all',
+        ['in', ['geometry-type'], ['literal', ['LineString', 'MultiLineString']]],
+        ['!', ['in', ['get', 'class'], railNonTrackClasses]]
+      ];
+
+      // Wide solid casing underneath so tracks stand out from the road network
+      style.layers.push({
+        id: 'rail-casing',
+        type: 'line',
+        source: 'omt',
+        'source-layer': 'public_transport',
+        filter: railLineFilter,
+        minzoom: 7,
+        layout: { 'line-cap': 'butt', 'line-join': 'miter' },
+        paint: {
+          'line-color': isDark ? '#e2e8f0' : '#94a3b8',
+          'line-width': { stops: [[7, 1.5], [10, 2.5], [13, 4], [16, 7]] },
+          'line-opacity': 0.7
+        }
+      });
+
+      // Dashed line on top — vivid purple so it's obvious during debugging;
+      // tone down to a subtler colour once you confirm it's rendering.
+      style.layers.push({
+        id: 'rail-line',
+        type: 'line',
+        source: 'omt',
+        'source-layer': 'public_transport',
+        filter: railLineFilter,
+        minzoom: 7,
+        layout: { 'line-cap': 'butt', 'line-join': 'miter' },
+        paint: {
+          'line-color': isDark ? '#c084fc' : '#7c3aed',
+          'line-width': { stops: [[7, 0.8], [10, 1.5], [13, 2.5], [16, 4]] },
+          'line-dasharray': [4, 3]
+        }
+      });
 
       const spriteAlias = { 'icon-platform': 'icon-bus', 'icon-stop_position': 'icon-bus', 'icon-light_rail': 'icon-rail', 'icon-museum': 'icon-historic', 'icon-park': 'icon-pitch', 'icon-garden': 'icon-pitch' };
       const poiIconExpr = ['case', ['all', ['has', 'class'], ['!=', ['get', 'class'], '']], ['coalesce', ['get', ['concat', 'icon-', ['get', 'class']], ['literal', spriteAlias]], ['concat', 'icon-', ['get', 'class']]], ['all', ['has', 'kind'], ['!=', ['get', 'kind'], '']], ['coalesce', ['get', ['concat', 'icon-', ['get', 'kind']], ['literal', spriteAlias]], ['concat', 'icon-', ['get', 'kind']]], 'icon-shop'];
@@ -690,6 +884,50 @@
           dbg('✓ MAP LOADED');
           map.resize();
           dbg(`🔍 Initial Zoom: ${map.getZoom().toFixed(2)}`);
+
+          // Auto-run rail debug after tiles settle so we can see what
+          // classes the public_transport layer actually contains here.
+          setTimeout(() => debugRails(), 1800);
+
+          // ── MANUALLY TRACED METRO ROUTES ───────────────────────────────────
+          // These files contain hand-picked coordinates traced directly on the
+          // map. Each is a GeoJSON FeatureCollection with one LineString.
+          //
+          // ⚠️  DEPLOYMENT: copy each .json to:
+          //     android/app/src/main/assets/public/data/
+          // "Unexpected end of JSON input" means the file is missing there.
+          //
+          // Coordinate convention: GeoJSON = [longitude, latitude].
+          // When copying from the map (which shows lat, lon), reverse them.
+          //
+          // Add more lines below — duplicate this block and change the
+          // filename, source id, layer id, and colour.
+          fetch('./data/light_metro_6_departure_track.json')
+            .then(res => {
+              if (!res.ok) throw new Error(`HTTP ${res.status}`);
+              return res.json();
+            })
+            .then(data => {
+              const feat = data.features[0];
+              const nPts = feat.geometry.coordinates.length;
+              dbg(`🚇 Metro 1 Departure — ${nPts} points loaded`);
+
+              map.addSource('metro-1-departure', { type: 'geojson', data });
+              map.addLayer({
+                id: 'metro-1-departure-line',
+                type: 'line',
+                source: 'metro-1-departure',
+                layout: { 'line-cap': 'round', 'line-join': 'round' },
+                paint: {
+                  'line-color': '#ef4444',
+                  'line-width': { stops: [[10, 2], [14, 4], [17, 6]] },
+                  'line-opacity': 0.9
+                }
+              });
+              dbg('✅ Metro 1 Departure rendered (red)');
+            })
+            .catch(err => dbg(`❌ Metro 1 Departure: ${err.message} — check file is in assets/public/data/`));
+
 
           // ── BUS ROUTES INTEGRATION ──────────────────────────────────────────
           fetch('./data/routes.json')
@@ -794,6 +1032,144 @@
               updateRouteFilter();
             })
             .catch(err => dbg('❌ Failed to load bus routes: ' + err.message));
+
+          // ── Ligne / METRO INTEGRATION ─────────────────────────────────────────
+          fetch('./data/Ligne_routes.json')
+            .then(res => res.json())
+            .then(data => {
+              dbg(`🚆 Loaded ${data.features.length} Ligne routes`);
+
+              const routeIds = new Set();
+              data.features.forEach(f => {
+                if (f.properties && f.properties.line_id) {
+                  routeIds.add(f.properties.line_id);
+                }
+              });
+
+              availableLigneRoutes = Array.from(routeIds).sort((a, b) => a.localeCompare(b));
+
+              const listEl = document.getElementById('Ligne-route-list');
+              listEl.innerHTML = availableLigneRoutes.map(id => `
+                <div class="Ligne-route-item">
+                  <input type="checkbox" id="Ligne-${id}" value="${id}" onchange="toggleLigneRoute('${id}')">
+                  <label for="Ligne-${id}">${id}</label>
+                </div>
+              `).join('');
+
+              map.addSource('Ligne-routes', {
+                type: 'geojson',
+                data: data
+              });
+
+              // Draw the Ligne lines (Red color to distinguish from buses)
+              map.addLayer({
+                id: 'Ligne-routes-line',
+                type: 'line',
+                source: 'Ligne-routes',
+                paint: {
+                  'line-color': '#dc2626', // Red
+                  'line-width': 4,
+                  'line-opacity': 0.9
+                }
+              });
+
+              // Add floating line labels
+              map.addLayer({
+                id: 'Ligne-routes-labels',
+                type: 'symbol',
+                source: 'Ligne-routes',
+                layout: {
+                  'symbol-placement': 'line',
+                  'text-field': ['get', 'line_id'],
+                  'text-font': ['Noto Sans Bold'],
+                  'text-size': 14,
+                  'text-allow-overlap': true,
+                  'text-offset': [0, 1.2]
+                },
+                paint: {
+                  'text-color': '#ffffff',
+                  'text-halo-color': '#dc2626',
+                  'text-halo-width': 2
+                }
+              });
+
+              // Initially hide all Ligne routes
+              updateLigneFilter();
+            })
+            .catch(err => dbg('❌ Failed to load Ligne routes: ' + err.message));
+
+          // ── Ligne STATIONS DEBUG MARKERS ─────────────────────────────────────────
+          fetch('./data/Ligne_stations.json')
+            .then(res => res.json())
+            .then(data => {
+              dbg(`🚉 Loaded ${data.features.length} Ligne stations for debugging`);
+
+              map.addSource('Ligne-stations', {
+                type: 'geojson',
+                data: data
+              });
+
+              // Add colored circle markers for each station (color-coded by line)
+              map.addLayer({
+                id: 'Ligne-stations-circles',
+                type: 'circle',
+                source: 'Ligne-stations',
+                paint: {
+                  'circle-radius': 6,
+                  'circle-color': [
+                    'match',
+                    ['get', 'line_id'],
+                    'Ligne 1', '#dc2626',  // Red
+                    'Ligne 2', '#2563eb',  // Blue
+                    'Ligne 3', '#16a34a',  // Green
+                    'Ligne 4', '#ca8a04',  // Yellow
+                    'Ligne 5', '#9333ea',  // Purple
+                    'Ligne 6', '#db2777',  // Pink
+                    '#6b7280'            // Default gray
+                  ],
+                  'circle-stroke-width': 2,
+                  'circle-stroke-color': '#ffffff'
+                }
+              });
+
+              // Add text labels for each station name
+              map.addLayer({
+                id: 'Ligne-stations-labels',
+                type: 'symbol',
+                source: 'Ligne-stations',
+                layout: {
+                  'text-field': ['get', 'name'],
+                  'text-font': ['Noto Sans Regular'],
+                  'text-size': 10,
+                  'text-offset': [0, 1.5],
+                  'text-anchor': 'top',
+                  'text-allow-overlap': true
+                },
+                paint: {
+                  'text-color': '#333333',
+                  'text-halo-color': '#ffffff',
+                  'text-halo-width': 1.5
+                }
+              });
+
+              // Add click handler to show popup with station details
+              map.on('click', 'Ligne-stations-circles', (e) => {
+                const props = e.features[0].properties;
+                new maplibregl.Popup()
+                  .setLngLat(e.features[0].geometry.coordinates)
+                  .setHTML(`<b>${props.name}</b><br><small>${props.line_id} - Station #${props.station_num}</small>`)
+                  .addTo(map);
+              });
+
+              // Change cursor on hover
+              map.on('mouseenter', 'Ligne-stations-circles', () => {
+                map.getCanvas().style.cursor = 'pointer';
+              });
+              map.on('mouseleave', 'Ligne-stations-circles', () => {
+                map.getCanvas().style.cursor = '';
+              });
+            })
+            .catch(err => dbg('❌ Failed to load Ligne stations: ' + err.message));
         });
 
         map.on('error', e => { if (!e.error?.message?.includes('canceled')) dbg('❌ MAP ERR: ' + (e.error?.message || e.message || 'Unknown')); });
@@ -818,12 +1194,75 @@
 
       } catch (e) { dbg('❌ FATAL: ' + e.message); }
     }
+    function togglePickerMode() {
+      pickerMode = !pickerMode;
+      document.getElementById('btn-picker').classList.toggle('active', pickerMode);
+      document.getElementById('coord-picker-panel').classList.toggle('open', pickerMode);
+      document.getElementById('map').style.cursor = pickerMode ? 'crosshair' : '';
+      dbg(`📌 Picker mode: ${pickerMode ? 'ON' : 'OFF'}`);
+    }
 
+    function addPickedCoord(lat, lng) {
+      const num = pickedCoords.length + 1;
+      pickedCoords.push([lng, lat]);
+
+      const el = document.createElement('div');
+      el.style.cssText = `background:#818cf8;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.4);`;
+      el.innerText = num;
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([lng, lat])
+        .addTo(map);
+      pickedMarkers.push(marker);
+
+      updateCoordList();
+      dbg(`📌 Point #${num}: (${lng.toFixed(7)}, ${lat.toFixed(7)})`);
+    }
+
+    function updateCoordList() {
+      const list = document.getElementById('coord-list');
+      const count = document.getElementById('coord-count');
+      count.innerText = pickedCoords.length;
+
+      if (pickedCoords.length === 0) {
+        list.innerText = 'Click on the map to add points...';
+        return;
+      }
+
+      list.innerText = pickedCoords.map((c, i) =>
+        `${String(i).padStart(2, ' ')}. (${c[0].toFixed(7)}, ${c[1].toFixed(7)})`
+      ).join('\n');
+    }
+
+    function copyAllCoords() {
+      if (pickedCoords.length === 0) {
+        showToast('No points to copy', true);
+        return;
+      }
+      const text = pickedCoords.map(c =>
+        `(${c[0].toFixed(7)}, ${c[1].toFixed(7)}),`
+      ).join('\n');
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`✅ Copied ${pickedCoords.length} coordinates`);
+        dbg(`📋 Copied ${pickedCoords.length} coords to clipboard`);
+      });
+    }
+
+    function clearAllCoords() {
+      pickedMarkers.forEach(m => m.remove());
+      pickedMarkers = [];
+      pickedCoords = [];
+      updateCoordList();
+      dbg('🗑️ Cleared all picked coordinates');
+    }
     function setupUI() {
       document.getElementById('btn-debug').onclick = () => document.getElementById('debug-panel').classList.toggle('show');
       document.getElementById('btn-route').onclick = toggleRoutingPanel;
       document.getElementById('btn-bus').onclick = toggleBusPanel;
+      document.getElementById('btn-Ligne').onclick = toggleLignePanel;
       document.getElementById('search-clear').onclick = clearSearch;
+      document.getElementById('btn-picker').onclick = togglePickerMode;
       let userMarker = null; // Variable to keep track of the location marker
 
       // Geolocation button logic
@@ -877,7 +1316,23 @@
       // ── MAP CLICK LOGIC ──────────────────────────────────────────────────
       map.on('click', e => {
         const { lat, lng } = e.lngLat;
-        const v = `${lat.toFixed(5)},${lng.toFixed(5)}`;
+        const v = `${lat.toFixed(7)},${lng.toFixed(7)}`;
+        // ── COORDINATE PICKER MODE ──
+        if (pickerMode) {
+          addPickedCoord(lat, lng);
+          return;
+        }
+        // ── Place/update an orange marker at the clicked point ──
+        if (clickMarker) {
+          clickMarker.remove();
+        }
+        clickMarker = new maplibregl.Marker({ color: '#ff6b35' })
+          .setLngLat([lng, lat])
+          .setPopup(new maplibregl.Popup({ offset: 25 })
+            .setHTML(`<b>Clicked</b><br><small>Lat: ${lat.toFixed(7)}<br>Lng: ${lng.toFixed(7)}</small>`))
+          .addTo(map);
+        clickMarker.togglePopup();
+        dbg(`📍 Click marker placed: ${v}`);
 
         // 1. Check if an input field is actively selected for picking
         if (activeRouteInput) {
@@ -899,8 +1354,7 @@
         }
 
         // 3. Default map click behavior (shows the bottom info panel)
-        showPanel(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'Tapped location',
-          `<div class="route-card" onclick="setRouteDest(${lat},${lng})"><div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div><div><b>Route here</b><br><small>Set as destination</small></div></div>`);
+        showPanel(`${lat.toFixed(7)}, ${lng.toFixed(7)}`, 'Tapped location', `<div class="route-card" onclick="setRouteDest(${lat},${lng})"><div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div><div><b>Route here</b><br><small>Set as destination</small></div></div>`);
       });
     }
     // ── SEARCH ────────────────────────────────────────────────────────────────
@@ -988,7 +1442,7 @@
 
     function flyToCoordinates(lat, lon) {
       const coords = [lon, lat];
-      const name = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+      const name = `${lat.toFixed(7)}, ${lon.toFixed(7)}`;
       dbg(`📍 Flying to coordinates: [${lat}, ${lon}]`);
 
       // Remove previous search marker if it exists
@@ -1033,6 +1487,43 @@
       dbg(`🚌 Bus panel: ${p.style.display === 'block' ? 'OPENED' : 'CLOSED'}`);
     }
 
+    function toggleLignePanel() {
+      const p = document.getElementById('Ligne-panel');
+      p.style.display = p.style.display === 'block' ? 'none' : 'block';
+      document.getElementById('btn-Ligne').classList.toggle('active', p.style.display === 'block');
+      dbg(`🚆 Ligne panel: ${p.style.display === 'block' ? 'OPENED' : 'CLOSED'}`);
+    }
+
+    function toggleLigneRoute(id) {
+      if (selectedLigneRoutes.has(id)) {
+        selectedLigneRoutes.delete(id);
+      } else {
+        selectedLigneRoutes.add(id);
+      }
+      updateLigneFilter();
+    }
+
+    function updateLigneFilter() {
+      if (!map.getLayer('Ligne-routes-line')) return;
+
+      let filter;
+      if (selectedLigneRoutes.size === 0) {
+        filter = ['==', ['get', 'line_id'], '__NONE__'];
+      } else {
+        filter = ['in', ['get', 'line_id'], ['literal', Array.from(selectedLigneRoutes)]];
+      }
+
+      // Filter the route lines and floating labels
+      map.setFilter('Ligne-routes-line', filter);
+      map.setFilter('Ligne-routes-labels', filter);
+
+      // NEW: Also filter the station dots and text labels so they only show when selected
+      if (map.getLayer('Ligne-stations-circles')) map.setFilter('Ligne-stations-circles', filter);
+      if (map.getLayer('Ligne-stations-labels')) map.setFilter('Ligne-stations-labels', filter);
+
+      dbg(`🚆 Ligne Filter updated: ${selectedLigneRoutes.size} routes selected`);
+    }
+
     function toggleRoute(id) {
       if (selectedRoutes.has(id)) {
         selectedRoutes.delete(id);
@@ -1061,8 +1552,7 @@
     }
 
     function setRouteDest(lat, lng) {
-      document.getElementById('to-input').value = `${lat.toFixed(5)},${lng.toFixed(5)}`;
-      toggleRoutingPanel();
+      document.getElementById('to-input').value = `${lat.toFixed(7)},${lng.toFixed(7)}`; toggleRoutingPanel();
       closePanel();
     }
 
@@ -1154,6 +1644,61 @@
       dbg('📂 Info panel closed');
     }
 
+    // ── RAIL DEBUG ────────────────────────────────────────────────────────────
+    // Answers two questions:
+    //   Q1 — What features/classes are actually in the public_transport layer?
+    //        This tells us whether rail lines are there at all, and what class
+    //        strings the tile generator used (could be 'rail', 'light_rail',
+    //        'tram', or something custom). LineString entries are the tracks.
+    //   Q2 — Are the style layers registered and visible?
+    // Run by tapping "🚆 Rails" in the debug panel, or call debugRails() in
+    // the browser console. Re-run after panning to a known rail area.
+    window.debugRails = function () {
+      if (!map) { dbg('⚠️ debugRails: map not ready'); return; }
+      dbg('🚆 ── Rail Debug (public_transport layer) ──');
+
+      let features = [];
+      try {
+        features = map.querySourceFeatures('omt', { sourceLayer: 'public_transport' });
+      } catch (e) {
+        dbg('❌ querySourceFeatures failed: ' + e.message);
+        return;
+      }
+
+      dbg(`📦 public_transport — ${features.length} features in viewport`);
+      if (features.length === 0) {
+        dbg('   ⚠️ 0 features. Pan to a rail/transit area and run again.');
+      } else {
+        // Break down by geometry type AND class so we can see exactly
+        // what the tile generator put in this layer.
+        const summary = {};
+        features.forEach(f => {
+          const geomType = f.geometry?.type || '?';
+          const cls = f.properties?.class || '(no class)';
+          const key = `${geomType} | class="${cls}"`;
+          summary[key] = (summary[key] || 0) + 1;
+        });
+        Object.entries(summary)
+          .sort((a, b) => b[1] - a[1])
+          .forEach(([key, n]) => {
+            const isLine = key.startsWith('LineString');
+            dbg(`   ${isLine ? '🚆' : '  '} ${key}: ${n}${isLine ? ' ← potential rail track' : ''}`);
+          });
+      }
+
+      // Q2: style layer registration
+      ['rail-casing', 'rail-line'].forEach(id => {
+        const layer = map.getLayer(id);
+        if (!layer) {
+          dbg(`❌ Style layer "${id}" NOT found — buildStyle() may have errored`);
+        } else {
+          const vis = map.getLayoutProperty(id, 'visibility') || 'visible';
+          dbg(`✅ Style layer "${id}" | visibility: ${vis}`);
+        }
+      });
+      dbg('🚆 ───────────────────────────────────────');
+    };
+
     function inspectMapCenter() {
       if (!map) return;
       const center = map.getCenter();
@@ -1185,6 +1730,85 @@
     }
 
     function copyDebugLogs() { const t = Array.from(document.getElementById('debug-content').children).map(el => el.innerText).join('\n'); navigator.clipboard.writeText(t).then(() => dbg('✓ Copied')); }
+    // ── COORDINATE ORDER DEBUG ────────────────────────────────────────────────
+    // Loads any route .json and places a numbered label at every coordinate
+    // so you can visually confirm the points are in the right sequential order.
+    //
+    // Uses MapLibre markers with custom HTML so:
+    //   • Numbers are always readable (white text on coloured pill)
+    //   • First point (0) = green, last point = red, rest = blue
+    //   • All markers are tracked in _coordDebugMarkers so clearCoordDebug()
+    //     removes them without affecting any other map layer
+    let _coordDebugMarkers = [];
+
+    window.debugRouteCoords = function () {
+      const select = document.getElementById('coord-debug-file');
+      const status = document.getElementById('coord-debug-status');
+      const file = select.value;
+      if (!file) { status.textContent = 'Pick a file first.'; return; }
+
+      status.textContent = '⏳ Loading…';
+      clearCoordDebug();   // remove any previous set before adding new ones
+
+      fetch(`./data/${file}`)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status} — file not in assets/public/data/`);
+          return res.json();
+        })
+        .then(data => {
+          const feat = data.features[0];
+          const coords = feat.geometry.coordinates;   // each is [lon, lat]
+          const total = coords.length;
+
+          // Only label every Nth point when there are a lot, to avoid
+          // overlapping labels at tight zoom. Adjust STEP to taste.
+          // At step=1 every single point gets a label.
+          const STEP = total > 200 ? 5 : total > 100 ? 3 : total > 50 ? 2 : 1;
+
+          coords.forEach(([lon, lat], i) => {
+            if (i % STEP !== 0 && i !== total - 1) return;   // always show last
+
+            const isFirst = i === 0;
+            const isLast = i === total - 1;
+            const bg = isFirst ? '#16a34a' : isLast ? '#dc2626' : '#2563eb';
+
+            // Custom HTML element — a small pill with the index number
+            const el = document.createElement('div');
+            el.style.cssText = `
+              background:${bg}; color:#fff; font-size:9px; font-weight:700;
+              padding:1px 4px; border-radius:4px; white-space:nowrap;
+              border:1px solid rgba(255,255,255,0.5);
+              pointer-events:none; line-height:14px;
+            `;
+            el.textContent = String(i);
+
+            const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+              .setLngLat([lon, lat])
+              .addTo(map);
+
+            _coordDebugMarkers.push(marker);
+          });
+
+          const shown = _coordDebugMarkers.length;
+          status.textContent = `✅ ${total} coords — showing ${shown} label(s) (step=${STEP}). Green=0, Red=${total - 1}.`;
+          dbg(`🔢 Coord debug: ${file} — ${total} points, ${shown} labels shown`);
+
+          // Fly to the first coordinate so it's immediately visible
+          map.flyTo({ center: coords[0], zoom: Math.max(map.getZoom(), 14) });
+        })
+        .catch(err => {
+          status.textContent = `❌ ${err.message}`;
+          dbg(`❌ Coord debug failed: ${err.message}`);
+        });
+    };
+
+    window.clearCoordDebug = function () {
+      _coordDebugMarkers.forEach(m => m.remove());
+      _coordDebugMarkers = [];
+      const status = document.getElementById('coord-debug-status');
+      if (status) status.textContent = 'Labels cleared.';
+    };
+
     window.onload = init;
   </script>
 </body>
