@@ -98,8 +98,9 @@
         const handlerName = escapePlaceNameForInlineHandler(name);
         const label = escapeHtml(name);
         const category = escapeHtml(place.c || "");
+        const handlerCategory = escapePlaceNameForInlineHandler(place.c || "");
 
-        return `<div class="search-result-item" onclick="goToPlace(${lon},${lat},'${handlerName}')"><div class="sri-icon">📍</div><div><div class="sri-name">${label}</div><div class="sri-sub">${category}</div></div></div>`;
+        return `<div class="search-result-item" onclick="goToPlace(${lon},${lat},'${handlerName}','${handlerCategory}')"><div class="sri-icon">📍</div><div><div class="sri-name">${label}</div><div class="sri-sub">${category}</div></div></div>`;
       })
       .join("");
   }

@@ -61,6 +61,7 @@ test("renderSearchResults escapes place names used in inline handlers and markup
 
   assert.match(html, /Bob\\&#39;s &lt;Station&gt;/);
   assert.match(html, /Bob&#39;s &lt;Station&gt;/);
+  assert.match(html, /,'hub'\)/);
   assert.equal(escapePlaceNameForInlineHandler("Bob's"), "Bob\\&#39;s");
 });
 
