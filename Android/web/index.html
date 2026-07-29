@@ -418,11 +418,380 @@
       cursor: pointer;
       margin-right: 4px;
     }
+
+    /* ── DATA COLLECTION MODE: Hide existing UI ─────────────────────────────── */
+    #topbar,
+    #routing-panel,
+    #bus-panel,
+    #Ligne-panel,
+    #debug-panel,
+    #coord-picker-panel {
+      display: none !important;
+    }
+
+    /* ── Data Collection Panel Styles ───────────────────────────────────────── */
+    #data-collection-panel {
+      position: absolute;
+      top: 14px;
+      left: 12px;
+      right: 12px;
+      z-index: 100;
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-accent);
+      border-radius: var(--r);
+      padding: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .15);
+      backdrop-filter: blur(16px);
+    }
+
+    .dc-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--c-text);
+    }
+
+    .dc-status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ef4444;
+      /* Red = stopped */
+    }
+
+    .dc-status-dot.ready {
+      background: #fbbf24;
+    }
+
+    /* Yellow = GPS ready */
+    .dc-status-dot.recording {
+      background: #ef4444;
+      animation: pulse 1.5s infinite;
+    }
+
+    .dc-status-dot.saved {
+      background: #4ade80;
+    }
+
+    .dc-status-dot.requesting {
+      background: #fbbf24;
+      animation: pulse 1s infinite;
+    }
+
+    /* Green = saved */
+    /* ── Pulsating Location Marker ────────────────────────────────────────── */
+    .location-marker {
+      width: 20px;
+      height: 20px;
+      background: #3b82f6;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 rgba(59, 130, 246, 0.4);
+      animation: pulse-location 2s infinite;
+    }
+
+    @keyframes pulse-location {
+      0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+      }
+
+      70% {
+        box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+      }
+    }
+
+    /* ── Marked Point Markers ─────────────────────────────────────────────── */
+    .marked-point-marker {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: white;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
+
+    .marked-point-marker.in {
+      background: #16a34a;
+      /* Green */
+    }
+
+    .marked-point-marker.out {
+      background: #ef4444;
+      /* Red */
+    }
+
+    .marked-point-marker.point {
+      background: #3b82f6;
+      /* Blue */
+    }
+
+    /* Blue */
+
+    .dc-btn-mark {
+      background: var(--c-accent2);
+      color: white;
+    }
+
+    .dc-btn-mark:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      color: #666;
+    }
+
+    .dc-btn-follow.active {
+      background: #ef4444 !important;
+      /* Turns red when actively following */
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .dc-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      box-sizing: border-box;
+      background: var(--c-bg);
+      color: var(--c-text);
+    }
+
+    .dc-input:focus {
+      outline: none;
+      border-color: var(--c-accent);
+      box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
+    }
+
+    .dc-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dc-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dc-btn-start {
+      background: var(--c-accent);
+      color: #0f1117;
+    }
+
+    .dc-btn-start:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      color: #666;
+    }
+
+    .dc-btn-stop {
+      background: #ef4444;
+      color: white;
+    }
+
+    .dc-btn-stop:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      color: #666;
+    }
+
+    .dc-info {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--c-muted);
+      text-align: center;
+      font-family: monospace;
+    }
+
+    /* ── DATA COLLECTION MODE: Mask existing UI (Do not delete) ────────────────── */
+    #topbar,
+    #routing-panel,
+    #bus-panel,
+    #Ligne-panel,
+    #debug-panel,
+    #coord-picker-panel,
+    #panel {
+      display: none !important;
+    }
+
+
+    /* ── Save Result Modal ──────────────────────────────────────────────────── */
+    #save-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #save-modal.open {
+      display: flex;
+    }
+
+    #save-modal-content {
+      background: var(--c-surface);
+      border-radius: var(--r);
+      padding: 16px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #save-modal-content h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    #save-modal-content textarea {
+      width: 100%;
+      min-height: 200px;
+      font-family: monospace;
+      font-size: 11px;
+      padding: 8px;
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    #save-modal-content button {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #save-modal-content .btn-copy {
+      background: var(--c-accent);
+      color: #0f1117;
+    }
+
+    #save-modal-content .btn-close {
+      background: var(--c-muted);
+      color: white;
+    }
+
+    /* ── Custom Transfer & Home Markers ────────────────────────────────────── */
+    .custom-marker-number {
+      width: 26px;
+      height: 26px;
+      background: #ef4444;
+      color: white;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+    }
+
+    .custom-marker-home {
+      width: 30px;
+      height: 30px;
+      background: #f59e0b;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
   <div id="map"></div>
+  <!-- ── DATA COLLECTION PANEL ─────────────────────────────────────────────── -->
+  <!-- ── SAVE RESULT MODAL ─────────────────────────────────────────────────── -->
+  <div id="save-modal">
+    <div id="save-modal-content">
+      <h3>✅ Route Saved!</h3>
+      <p style="margin:0;font-size:12px;color:var(--c-muted)">Copy the GeoJSON below or share it:</p>
+      <textarea id="save-modal-textarea" readonly></textarea>
+      <button class="btn-copy" onclick="copyModalContent()">📋 Copy to Clipboard</button>
+      <button class="btn-close" onclick="closeSaveModal()">✖ Close</button>
+    </div>
+  </div>
+
+  <div id="data-collection-panel">
+    <div class="dc-status">
+      <div id="dc-status-dot" class="dc-status-dot"></div>
+      <span id="dc-status-text">Initializing GPS...</span>
+    </div>
+
+    <input type="text" id="dc-route-name" class="dc-input" placeholder="Route Name (e.g., 23 Aller)" />
+
+    <div class="dc-buttons">
+      <button id="dc-btn-start" class="dc-btn dc-btn-start" onclick="startRecording()" disabled>▶ Start</button>
+      <button id="dc-btn-stop" class="dc-btn dc-btn-stop" onclick="stopRecording()" disabled>⏹ Stop & Save</button>
+    </div>
+    <select id="dc-point-type" class="dc-input" style="margin-bottom: 8px; padding: 10px;">
+      <option value="point" selected>📍 Point (Default)</option>
+      <option value="in">🟢 In</option>
+      <option value="out">🔴 Out</option>
+    </select>
+    <div class="dc-buttons" style="margin-top: 8px;">
+      <button id="dc-btn-mark" class="dc-btn dc-btn-mark" onclick="markCurrentPoint()" disabled>📍 Mark Point</button>
+      <button id="dc-btn-follow" class="dc-btn" style="background: var(--c-accent2); color: white;"
+        onclick="toggleFollowMode()">🎯 Follow</button>
+    </div>
+    <div class="dc-buttons" style="margin-top: 8px;">
+      <button id="btn-custom-markers" class="dc-btn" style="background: #f59e0b; color: white;"
+        onclick="toggleCustomMarkers()">🏠 Toggle Home/Transfer</button>
+    </div>
+    <div class="dc-info" id="dc-info-text">Waiting for GPS signal...</div>
+  </div>
+
   <div id="topbar">
     <div id="search-wrap">
       <div id="search-box">
@@ -1184,7 +1553,18 @@
 
 
         window.map = map;
-        setupUI();
+
+        // Disable follow mode if user manually interacts with the map
+        map.on('dragstart', () => {
+          if (isFollowingLocation) {
+            isFollowingLocation = false;
+            const btn = document.getElementById('dc-btn-follow');
+            if (btn) {
+              btn.classList.remove('active');
+              btn.innerText = '🎯 Follow';
+            }
+          }
+        }); setupUI();
         initOfflineSearch();
 
         // 🌐 Network status monitoring
@@ -1809,6 +2189,425 @@
       if (status) status.textContent = 'Labels cleared.';
     };
 
+    // ── DATA COLLECTION LOGIC ─────────────────────────────────────────────────
+    let recordedTrack = [];
+    let recordingStartTime = null;
+    let markedPoints = [];
+    let markedPointMarkers = [];
+    let locationMarker = null;
+    let watchId = null;
+    let isRecording = false;
+    let isFollowingLocation = false;
+
+    const dcStatusDot = document.getElementById('dc-status-dot');
+    const dcStatusText = document.getElementById('dc-status-text');
+    const dcBtnStart = document.getElementById('dc-btn-start');
+    const dcBtnStop = document.getElementById('dc-btn-stop');
+    const dcInfoText = document.getElementById('dc-info-text');
+
+    function updateDCStatus(state, message) {
+      dcStatusDot.className = 'dc-status-dot ' + state;
+      dcStatusText.innerText = message;
+    }
+
+    function updateLocationMarker(lat, lon) {
+      if (!locationMarker) {
+        const el = document.createElement('div');
+        el.className = 'location-marker';
+        locationMarker = new maplibregl.Marker({ element: el })
+          .setLngLat([lon, lat])
+          .addTo(map);
+      } else {
+        locationMarker.setLngLat([lon, lat]);
+      }
+
+      // Auto-center map if follow mode is active
+      if (isFollowingLocation) {
+        map.easeTo({ center: [lon, lat], duration: 500 });
+      }
+    }
+
+    function markCurrentPoint() {
+      if (!navigator.geolocation) {
+        showToast('❌ GPS not supported', true);
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+
+          // Get type from the dropdown (defaults to "point")
+          const selectElement = document.getElementById('dc-point-type');
+          const finalType = selectElement ? selectElement.value : 'point';
+
+          markedPoints.push({
+            lon: longitude,
+            lat: latitude,
+            type: finalType,
+            timestamp: new Date().toISOString()
+          });
+
+          // Add visual marker to map
+          const el = document.createElement('div');
+          el.className = `marked-point-marker ${finalType}`;
+
+          // Set icon based on type
+          let icon = '📍';
+          if (finalType === 'in') icon = '🟢';
+          else if (finalType === 'out') icon = '🔴';
+
+          el.innerText = icon;
+
+          const marker = new maplibregl.Marker({ element: el })
+            .setLngLat([longitude, latitude])
+            .setPopup(new maplibregl.Popup().setHTML(`<b>${finalType.toUpperCase()}</b><br>Lat: ${latitude.toFixed(7)}<br>Lng: ${longitude.toFixed(7)}`))
+            .addTo(map);
+
+          markedPointMarkers.push(marker);
+          showToast(`✅ Marked as ${finalType}`);
+          dbg(`📍 Marked ${finalType} at ${latitude}, ${longitude}`);
+        },
+        (error) => {
+          showToast('❌ Could not get current location', true);
+        },
+        { enableHighAccuracy: true, timeout: 5000 }
+      );
+    }
+
+    function requestLocation() {
+      updateDCStatus('requesting', '📡 Getting your location...');
+      dcInfoText.innerText = 'Please wait...';
+
+      if ("geolocation" in navigator) {
+        // Use watchPosition to continuously update location even before pressing Start
+        watchId = navigator.geolocation.watchPosition(
+          (position) => {
+            const { latitude, longitude, accuracy, speed, heading } = position.coords;
+
+            // Enable buttons on first successful fix
+            if (dcBtnStart.disabled && !isRecording) {
+              updateDCStatus('ready', `✅ Location acquired`);
+              dcBtnStart.disabled = false;
+              document.getElementById('dc-btn-mark').disabled = false;
+              map.flyTo({ center: [longitude, latitude], zoom: 16 });
+            }
+
+            // Always update the pulsating marker in real-time
+            updateLocationMarker(latitude, longitude);
+
+            // Update info text and record if active
+            if (isRecording) {
+              recordedTrack.push({
+                lon: longitude,
+                lat: latitude,
+                accuracy: accuracy,
+                speed: speed,
+                heading: heading,
+                timestamp: new Date().toISOString()
+              });
+              dcInfoText.innerText = `Recording: ${recordedTrack.length} pts | Acc: ${Math.round(accuracy)}m | Speed: ${speed ? (speed * 3.6).toFixed(1) + ' km/h' : '0 km/h'}`;
+            } else {
+              dcInfoText.innerText = `Lat: ${latitude.toFixed(7)}, Lng: ${longitude.toFixed(7)} | Accuracy: ${Math.round(accuracy)}m`;
+            }
+          },
+          (error) => {
+            console.error("GPS Error:", error);
+            if (error.code === 3) { // TIMEOUT
+              if (!isRecording) dcInfoText.innerText = '⏳ GPS timed out. Retrying...';
+            } else {
+              updateDCStatus('', '❌ Location failed');
+              dcInfoText.innerText = `Error: ${error.message}. Please enable GPS.`;
+            }
+          },
+          { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+        );
+      } else {
+        updateDCStatus('', '❌ GPS not supported');
+        dcInfoText.innerText = 'Your device does not support geolocation.';
+      }
+    }
+    // 1. Initialize GPS on load so it's ready before you board
+    requestLocation();
+
+    // 2. Start Recording
+    function startRecording() {
+      const routeName = document.getElementById('dc-route-name').value.trim();
+      if (!routeName) {
+        alert('Please enter a Route Name first! (e.g., "23 Aller")');
+        return;
+      }
+
+      recordedTrack = [];
+      recordingStartTime = new Date().toISOString();
+      isRecording = true;
+      dcBtnStart.disabled = true;
+      dcBtnStop.disabled = false;
+      document.getElementById('dc-route-name').disabled = true;
+      updateDCStatus('recording', 'Recording Route...');
+
+      // The watchPosition is already running from requestLocation().
+      // It will automatically start pushing to recordedTrack because isRecording is now true.
+    }
+    // 3. Stop Recording & Auto-Save
+    function stopRecording() {
+      isRecording = false;
+      dcBtnStop.disabled = true;
+      updateDCStatus('saved', 'Recording Stopped. Saving...');
+      dcInfoText.innerText = `Captured ${recordedTrack.length} points.`;
+
+      saveRecording();
+
+      // We intentionally DO NOT clear watchId here. 
+      // This keeps the pulsating marker updating your location in the background 
+      // even after you stop recording, ready for the next route.
+    }
+    function saveRecording() {
+      const routeName = document.getElementById('dc-route-name').value.trim() || 'unnamed_route';
+
+      if (recordedTrack.length < 2 && markedPoints.length === 0) {
+        alert('Not enough points recorded! Try again.');
+        resetDCUI();
+        return;
+      }
+
+      const coordinates = recordedTrack.map(p => [p.lon, p.lat]);
+
+      const features = [];
+
+      // 1. Add the route line if we have enough points
+      if (recordedTrack.length >= 2) {
+        features.push({
+          type: "Feature",
+          properties: {
+            name: routeName,
+            start_time: recordingStartTime,
+            end_time: new Date().toISOString(),
+            total_points: recordedTrack.length,
+            source: "atlas_data_collection",
+            feature_type: "route"
+          },
+          geometry: {
+            type: "LineString",
+            coordinates: recordedTrack.map(p => [p.lon, p.lat])
+          }
+        });
+      }
+
+      // 2. Add all marked points as separate Point features
+      markedPoints.forEach((pt, idx) => {
+        features.push({
+          type: "Feature",
+          properties: {
+            name: `${routeName} - ${pt.type} ${idx + 1}`,
+            point_type: pt.type,
+            timestamp: pt.timestamp,
+            source: "atlas_data_collection",
+            feature_type: "marked_point"
+          },
+          geometry: {
+            type: "Point",
+            coordinates: [pt.lon, pt.lat]
+          }
+        });
+      });
+
+      const geojson = {
+        type: "FeatureCollection",
+        features: features
+      };
+
+      const geojsonStr = JSON.stringify(geojson, null, 2);
+      const filename = `${routeName.replace(/\s+/g, '_').toLowerCase()}.geojson`;
+
+      // ── Show the modal with the content (ALWAYS works) ──
+      const modal = document.getElementById('save-modal');
+      const textarea = document.getElementById('save-modal-textarea');
+      textarea.value = geojsonStr;
+      modal.classList.add('open');
+
+      // Store for sharing
+      window._lastSavedFile = { filename, content: geojsonStr };
+
+      // ── Try to download (works on desktop browsers) ──
+      try {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(geojsonStr);
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", filename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+        dbg(`💾 Download triggered: ${filename}`);
+      } catch (e) {
+        dbg(`⚠️ Download failed: ${e.message}`);
+      }
+
+      // ── Try to save via Capacitor Filesystem (Android/iOS) ──
+      if (typeof Capacitor !== 'undefined' && Capacitor.Plugins && Capacitor.Plugins.Filesystem) {
+        Capacitor.Plugins.Filesystem.writeFile({
+          path: filename,
+          data: geojsonStr,
+          directory: 'DOCUMENTS',
+          encoding: 'utf8', // <-- FORCE UTF-8 TO PREVENT GARBLED TEXT
+          recursive: true
+        }).then(result => {
+          dbg(`✅ Saved to Capacitor: ${result.uri}`);
+          showToast(`✅ Saved to Documents/${filename}`);
+        }).catch(err => {
+          dbg(`⚠️ Capacitor save failed: ${err.message}`);
+        });
+      }
+    }
+
+    function copyModalContent() {
+      const textarea = document.getElementById('save-modal-textarea');
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+
+      navigator.clipboard.writeText(textarea.value).then(() => {
+        showToast('✅ Copied to clipboard!');
+        dbg('📋 GeoJSON copied to clipboard');
+      }).catch(err => {
+        // Fallback for older browsers
+        document.execCommand('copy');
+        showToast('✅ Copied!');
+      });
+    }
+
+    function closeSaveModal() {
+      document.getElementById('save-modal').classList.remove('open');
+      resetDCUI();
+    }
+
+    function toggleFollowMode() {
+      isFollowingLocation = !isFollowingLocation;
+      const btn = document.getElementById('dc-btn-follow');
+      if (!btn) return;
+
+      if (isFollowingLocation) {
+        btn.classList.add('active');
+        btn.innerText = '🔓 Unfollow';
+        // Immediately center on current location if we have it
+        if (locationMarker) {
+          const lngLat = locationMarker.getLngLat();
+          map.flyTo({ center: lngLat, zoom: 17 });
+        }
+      } else {
+        btn.classList.remove('active');
+        btn.innerText = '🎯 Follow';
+      }
+    }
+
+
+    // 5. Reset UI for next route
+    function resetDCUI() {
+      recordedTrack = [];
+      markedPoints = [];
+
+      // Remove all marked point markers from the map
+      markedPointMarkers.forEach(m => m.remove());
+      markedPointMarkers = [];
+
+      document.getElementById('dc-route-name').value = '';
+      document.getElementById('dc-route-name').disabled = false;
+      dcBtnStart.disabled = false;
+      document.getElementById('dc-btn-mark').disabled = false;
+
+      updateDCStatus('ready', 'GPS Ready. Enter route name and press Start.');
+      dcInfoText.innerText = 'Waiting for next recording...';
+    }
+    // ── CUSTOM TRANSFER & HOME MARKERS ──────────────────────────────────────
+    let showCustomMarkers = false;
+    let customMarkers = [];
+
+    const transferPoints = [
+      { lat: 36.8037336, lon: 10.1780922, text: "1. get off 89 get in 20c", order: 1 },
+      { lat: 36.8536368, lon: 10.3274055, text: "2. get off 20c", order: 2 },
+      { lat: 36.8608391, lon: 10.3352268, text: "3. get in 52", order: 3 },
+      { lat: 36.9057988, lon: 10.301458, text: "4. get off 52 get in 20 B", order: 4 },
+      { lat: 36.8037336, lon: 10.1780922, text: "5. get off 20B get in 80", order: 5 },
+      { lat: 36.8953034, lon: 10.1120259, text: "6. get off 80", order: 6 },
+      { lat: 36.9027927, lon: 10.1155492, text: "7. get in 57A", order: 7 },
+      { lat: 36.8396862, lon: 10.1168229, text: "8. get off 57 A get in 14cg", order: 8 },
+      { lat: 36.7963447, lon: 10.1681174, text: "9. get off 14cg", order: 9 },
+      { lat: 36.7905712, lon: 10.1622607, text: "10. get in 69", order: 10 },
+      { lat: 36.7919242, lon: 10.1822642, text: "11. get off 69 get in 25d", order: 11 },
+      { lat: 36.617351, lon: 10.177706, text: "12. get off 25d get in 21", order: 12 },
+      { lat: 36.6799098, lon: 10.2893849, text: "13. get off 21 get in 37", order: 13 },
+      { lat: 36.69593, lon: 10.3886406, text: "14. get off 37 get in 3710", order: 14 },
+      { lat: 36.7243262, lon: 10.228484, text: "15. get off 3710", order: 15 },
+      { lat: 36.7204048, lon: 10.234578, text: "16. get in 10", order: 16 },
+      { lat: 36.7919242, lon: 10.1822642, text: "17. get off 10", order: 17 },
+      { lat: 36.7970414, lon: 10.1801307, text: "18. get in 19E", order: 18 },
+      { lat: 36.7819881, lon: 10.2340646, text: "19. get off 19E get in 19A", order: 19 },
+      { lat: 36.7970414, lon: 10.1801307, text: "20. get off 19A get in 82", order: 20 },
+      { lat: 36.7160428, lon: 10.2750594, text: "21. get off 82", order: 21 },
+      { lat: 36.7251325, lon: 10.3061252, text: "22. get in 85", order: 22 },
+      { lat: 36.722524, lon: 10.1868633, text: "23. get off 85", order: 23 },
+      { lat: 36.7184497, lon: 10.1616443, text: "24. get in 33", order: 24 },
+      { lat: 36.8037336, lon: 10.1780922, text: "25. get off 33 get in 4A", order: 25 },
+      { lat: 36.8155796, lon: 10.1003191, text: "26. get off 4A", order: 26 },
+      { lat: 36.816171, lon: 10.0955231, text: "27. get in 410B", order: 27 },
+      { lat: 36.7243262, lon: 10.228484, text: "28. get off 410b", order: 28 }
+    ];
+
+    const homePoints = [
+      { lat: 36.8037336, lon: 10.1780922, text: "🏠 Home: through 89" },
+      { lat: 36.7976742, lon: 10.162871, text: "🏠 Home: through 89, 33B" },
+      { lat: 36.788588, lon: 10.1803401, text: "🏠 Home: through 32 A" },
+      { lat: 36.7184497, lon: 10.1616443, text: "🏠 Home: through 33" },
+      { lat: 36.7251325, lon: 10.3061252, text: "🏠 Home: 85 first then i take 33" },
+      { lat: 36.7984512, lon: 10.106279, text: "🏠 Home: through 87" }
+    ];
+    function toggleCustomMarkers() {
+      showCustomMarkers = !showCustomMarkers;
+      const btn = document.getElementById('btn-custom-markers');
+      btn.classList.toggle('active', showCustomMarkers);
+
+      // Clear existing markers
+      customMarkers.forEach(m => m.remove());
+      customMarkers = [];
+
+      if (showCustomMarkers) {
+        // Add Transfer Points (Numbered icons)
+        transferPoints.forEach((pt, index) => {
+          // Ultra-tiny offset: ~0.2 meters per step to prevent exact overlap without shifting far
+          const offset = index * 0.000002;
+
+          const el = document.createElement('div');
+          el.className = 'custom-marker-number';
+          el.innerText = pt.order;
+          const marker = new maplibregl.Marker({ element: el })
+            .setLngLat([pt.lon + offset, pt.lat + offset])
+            .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(`<b>Step ${pt.order}</b><br>${pt.text}`))
+            .addTo(map);
+          customMarkers.push(marker);
+        });
+
+        // Add Home Points (Orange Home icon)
+        homePoints.forEach((pt, index) => {
+          // Ultra-tiny offset in the OPPOSITE direction: ~0.2 meters per step
+          const offset = (index + 1) * -0.000002;
+
+          const el = document.createElement('div');
+          el.className = 'custom-marker-home';
+          el.innerText = '🏠';
+          const marker = new maplibregl.Marker({ element: el })
+            .setLngLat([pt.lon + offset, pt.lat + offset])
+            .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(pt.text))
+            .addTo(map);
+          customMarkers.push(marker);
+        });
+
+        showToast('✅ Transfer & Home markers shown');
+      } else {
+        showToast('🗑️ Custom markers hidden');
+      }
+    }
+
+    // Wire up the button
+    document.getElementById('btn-custom-markers').onclick = toggleCustomMarkers;
     window.onload = init;
   </script>
 </body>
