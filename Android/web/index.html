@@ -431,6 +431,8 @@
 
     /* ── Data Collection Panel Styles ───────────────────────────────────────── */
     #data-collection-panel {
+      display: none;
+      /* Hidden by default */
       position: absolute;
       top: 14px;
       left: 12px;
@@ -442,6 +444,10 @@
       padding: 16px;
       box-shadow: 0 4px 24px rgba(0, 0, 0, .15);
       backdrop-filter: blur(16px);
+    }
+
+    #data-collection-panel.visible {
+      display: block !important;
     }
 
     .dc-status {
@@ -535,6 +541,16 @@
     .marked-point-marker.point {
       background: #3b82f6;
       /* Blue */
+    }
+
+    .marked-point-marker.bench {
+      background: #d97706;
+      /* Amber/Brown for Benches */
+    }
+
+    .marked-point-marker.ticket_booth {
+      background: #8b5cf6;
+      /* Violet for Ticket Booths */
     }
 
     /* Blue */
@@ -715,6 +731,100 @@
       color: white;
     }
 
+    /* ── Interactive Decision Tree UI ──────────────────────────────────────── */
+    .tree-container {
+      padding: 10px;
+    }
+
+    .tree-node {
+      margin-left: 16px;
+      border-left: 2px solid var(--c-border);
+      padding-left: 12px;
+      margin-bottom: 8px;
+    }
+
+    .tree-label {
+      background: var(--c-surface);
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--c-border);
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: var(--c-text);
+    }
+
+    .tree-children {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tree-branch {
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .tree-branch::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 14px;
+      width: 12px;
+      height: 2px;
+      background: var(--c-border);
+    }
+
+    .tree-choice-btn {
+      width: 100%;
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--c-bg);
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tree-choice-btn:hover {
+      background: var(--c-accent2);
+      color: white;
+      border-color: var(--c-accent2);
+    }
+
+    .tree-choice-btn.yes {
+      border-left: 3px solid #22c55e;
+    }
+
+    .tree-choice-btn.no {
+      border-left: 3px solid #ef4444;
+    }
+
+    .tree-children-content {
+      margin-top: 8px;
+    }
+
+    .tree-leaf {
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid #22c55e;
+      color: #15803d;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-left: 16px;
+      border-left: 3px solid #22c55e;
+    }
+
+    .tree-leaf.active {
+      background: rgba(129, 140, 248, 0.15);
+      color: var(--c-accent2);
+      border-color: var(--c-accent2);
+      font-weight: 600;
+    }
+
     /* ── Custom Transfer & Home Markers ────────────────────────────────────── */
     .custom-marker-number {
       width: 26px;
@@ -751,6 +861,12 @@
 
 <body>
   <div id="map"></div>
+
+  <!-- UI Toggle Button -->
+  <button id="ui-toggle-btn"
+    style="position: fixed; top: 14px; right: 12px; z-index: 1000; width: 48px; height: 48px; border-radius: 14px; background: #ffffff; border: 1.5px solid rgba(0,0,0,0.09); box-shadow: 0 4px 24px rgba(0,0,0,0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px;"
+    title="Toggle UI">⚙️</button>
+
   <!-- ── DATA COLLECTION PANEL ─────────────────────────────────────────────── -->
   <!-- ── SAVE RESULT MODAL ─────────────────────────────────────────────────── -->
   <div id="save-modal">
@@ -779,15 +895,16 @@
       <option value="point" selected>📍 Point (Default)</option>
       <option value="in">🟢 In</option>
       <option value="out">🔴 Out</option>
+      <option value="bench">🪑 Bench</option>
+      <option value="ticket_booth">🎟️ Ticket Booth</option>
     </select>
     <div class="dc-buttons" style="margin-top: 8px;">
       <button id="dc-btn-mark" class="dc-btn dc-btn-mark" onclick="markCurrentPoint()" disabled>📍 Mark Point</button>
       <button id="dc-btn-follow" class="dc-btn" style="background: var(--c-accent2); color: white;"
         onclick="toggleFollowMode()">🎯 Follow</button>
     </div>
-    <div class="dc-buttons" style="margin-top: 8px;">
-      <button id="btn-custom-markers" class="dc-btn" style="background: #f59e0b; color: white;"
-        onclick="toggleCustomMarkers()">🏠 Toggle Home/Transfer</button>
+    <div id="navigator-ui" style="margin-top: 8px; padding: 12px; background: var(--c-bg); border-radius: 8px;">
+      <div id="nav-info" style="font-size: 12px; margin-bottom: 8px; font-weight: 600;">Loading primary route...</div>
     </div>
     <div class="dc-info" id="dc-info-text">Waiting for GPS signal...</div>
   </div>
@@ -1228,6 +1345,41 @@
       return style;
     }
 
+    // ── CSV PARSER (Handles Comma, Tab, or Semicolon separated files) ─────────
+    function parseCSV(text) {
+      const firstLine = text.split('\n')[0];
+      let delimiter = ',';
+      if (firstLine.split('\t').length > firstLine.split(',').length) delimiter = '\t';
+      else if (firstLine.split(';').length > firstLine.split(',').length) delimiter = ';';
+
+      const rows = [];
+      let cur = '';
+      let inQuotes = false;
+      let row = [];
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') {
+            if (text[i + 1] === '"') { cur += '"'; i++; }
+            else inQuotes = false;
+          } else {
+            cur += c;
+          }
+        } else {
+          if (c === '"') inQuotes = true;
+          else if (c === delimiter) { row.push(cur); cur = ''; }
+          else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+          else if (c === '\r') { }
+          else cur += c;
+        }
+      }
+      if (cur.length > 0 || row.length > 0) {
+        row.push(cur);
+        rows.push(row);
+      }
+      return rows;
+    }
+
     // ── INITIALIZATION ───────────────────────────────────────────────────────
     async function init() {
       dbg('🚀 Booting Atlas...');
@@ -1302,49 +1454,70 @@
           fetch('./data/routes.json')
             .then(res => res.json())
             .then(data => {
-              dbg(`🚌 Loaded ${data.features.length} bus routes`);
-
-              // Extract unique line IDs
-              const routeIds = new Set();
-              data.features.forEach(f => {
-                if (f.properties && f.properties.line_id) {
-                  routeIds.add(f.properties.line_id);
+              // ── NEW FORMAT: data.paths[] instead of GeoJSON FeatureCollection ──
+              // Each path has: id, name, branch, outcome, destination, decisions,
+              // points[]{n, label, boarding_lat, boarding_lng, dropping_lat, dropping_lng}
+              //
+              // We convert to GeoJSON on the fly so every downstream layer, filter,
+              // and toggleRoute() call stays completely unchanged (they all read
+              // line_id from feature properties).
+              //
+              // Coordinate strategy: chain boarding point of each stop in order,
+              // then append the dropping point of the last stop so the line extends
+              // to where the passenger actually alights at the destination.
+              const features = data.paths.map(path => {
+                // Filter out any points with missing boarding coordinates
+                // (e.g. B1 in Branch B was never assigned a location in the
+                // source mermaid diagram — those points have null boarding_lat/lng)
+                const validPoints = path.points.filter(
+                  pt => pt.boarding_lat != null && pt.boarding_lng != null
+                );
+                const coords = validPoints.map(pt => [pt.boarding_lng, pt.boarding_lat]);
+                const last = validPoints[validPoints.length - 1];
+                if (last && last.dropping_lat != null && last.dropping_lng != null) {
+                  coords.push([last.dropping_lng, last.dropping_lat]);
                 }
-              });
+                return {
+                  type: 'Feature',
+                  properties: {
+                    line_id: path.id,          // P001, P002 … — used by filter
+                    name: path.name,
+                    branch: path.branch,
+                    outcome: path.outcome,
+                    destination: path.destination
+                  },
+                  geometry: { type: 'LineString', coordinates: coords }
+                };
+                // Drop any path that ended up with fewer than 2 valid coords
+                // (extremely unlikely but would also crash MapLibre)
+              }).filter(f => f.geometry.coordinates.length >= 2);
+              const geojson = { type: 'FeatureCollection', features };
 
-              // Sort them (try numeric sort first)
-              availableRoutes = Array.from(routeIds).sort((a, b) => {
-                const matchA = a.match(/^(\d+)/);
-                const matchB = b.match(/^(\d+)/);
+              dbg(`🚌 Loaded ${features.length} bus routes (${data.total_paths} paths, from ${data.generated_from})`);
 
-                if (matchA && matchB) {
-                  const numA = parseInt(matchA[1]);
-                  const numB = parseInt(matchB[1]);
-                  if (numA !== numB) return numA - numB;
-                } else if (matchA) {
-                  return -1; // Numbers come before text
-                } else if (matchB) {
-                  return 1;
-                }
+              // Build the sorted list of path IDs for the checkbox UI
+              availableRoutes = features.map(f => f.properties.line_id);
+              // Preserve original order from the file (P001, P002 … already sorted)
 
-                // Fallback to string comparison
-                return a.localeCompare(b);
-              });
-
-              // Populate UI
+              // Populate the checkbox panel — show full path name, not bare "Line X"
               const listEl = document.getElementById('bus-route-list');
-              listEl.innerHTML = availableRoutes.map(id => `
-                <div class="bus-route-item">
-                  <input type="checkbox" id="route-${id}" value="${id}" onchange="toggleRoute('${id}')">
-                  <label for="route-${id}">Line ${id}</label>
-                </div>
-              `).join('');
+              listEl.innerHTML = features.map(f => {
+                const p = f.properties;
+                const id = p.line_id;
+                // Colour-code by branch for quick scanning
+                const branchColors = { A: '#818cf8', B: '#4ade80', C: '#fb923c', D: '#f472b6', E: '#38bdf8' };
+                const dot = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${branchColors[p.branch] || '#aaa'};margin-right:6px;flex-shrink:0"></span>`;
+                return `
+                  <div class="bus-route-item">
+                    <input type="checkbox" id="route-${id}" value="${id}" onchange="toggleRoute('${id}')">
+                    <label for="route-${id}" style="display:flex;align-items:center;gap:2px;font-size:12px">
+                      ${dot}${p.name}
+                    </label>
+                  </div>`;
+              }).join('');
 
-              // Add the GeoJSON source
-              map.addSource('bus-routes', {
-                type: 'geojson',
-                data: data
-              });
+              // Add GeoJSON source — all existing layer/filter code reads from here unchanged
+              map.addSource('bus-routes', { type: 'geojson', data: geojson });
 
               // 1. Draw the colored lines
               map.addLayer({
@@ -1352,7 +1525,7 @@
                 type: 'line',
                 source: 'bus-routes',
                 paint: {
-                  'line-color': '#818cf8', // Accent purple
+                  'line-color': '#818cf8',
                   'line-width': 3,
                   'line-opacity': 0.8
                 }
@@ -1368,7 +1541,7 @@
                   'text-field': '→',
                   'text-size': 16,
                   'text-allow-overlap': true,
-                  'text-offset': [0, -0.6] // Slightly above the line
+                  'text-offset': [0, -0.6]
                 },
                 paint: {
                   'text-color': '#818cf8',
@@ -1377,7 +1550,9 @@
                 }
               });
 
-              // 3. Add the line number labels hovering near the route
+              // 3. Add the path-name labels hovering near the route
+              // (was: line_id short code — now shows path id P001… because that's
+              //  what line_id is in the new format; swap to 'name' for full label)
               map.addLayer({
                 id: 'bus-routes-labels',
                 type: 'symbol',
@@ -1388,7 +1563,7 @@
                   'text-font': ['Noto Sans Bold'],
                   'text-size': 12,
                   'text-allow-overlap': true,
-                  'text-offset': [0, 1.2] // Slightly below the line
+                  'text-offset': [0, 1.2]
                 },
                 paint: {
                   'text-color': '#ffffff',
@@ -1402,6 +1577,96 @@
             })
             .catch(err => dbg('❌ Failed to load bus routes: ' + err.message));
 
+          // ── STOPS.GEOJSON INTEGRATION ─────────────────────────────────────
+          fetch('./data/stops.json')
+            .then(res => {
+              if (!res.ok) throw new Error('stops.json not found in /data/');
+              return res.json();
+            })
+            .then(data => {
+              dbg(`🚏 Loaded ${data.features.length} stops from stops.json`);
+
+              map.addSource('stops-data', {
+                type: 'geojson',
+                data: data
+              });
+
+              // 1. Regular Stops (Small Orange Circles)
+              map.addLayer({
+                id: 'regular-stops',
+                type: 'circle',
+                source: 'stops-data',
+                filter: ['!=', ['get', 'ticket_booth'], true],
+                paint: {
+                  'circle-radius': 4,
+                  'circle-color': '#f59e0b', // Orange
+                  'circle-stroke-width': 1,
+                  'circle-stroke-color': '#ffffff'
+                }
+              });
+
+              // 2. Ticket Booths (Slightly Larger Green Circles)
+              map.addLayer({
+                id: 'ticket-booths',
+                type: 'circle',
+                source: 'stops-data',
+                filter: ['==', ['get', 'ticket_booth'], true],
+                paint: {
+                  'circle-radius': 7,
+                  'circle-color': '#10b981', // Green
+                  'circle-stroke-width': 1.5,
+                  'circle-stroke-color': '#ffffff'
+                }
+              });
+
+              // 3. Stop Labels (Only show when zoomed in closely to prevent clutter)
+              map.addLayer({
+                id: 'stops-labels',
+                type: 'symbol',
+                source: 'stops-data',
+                minzoom: 15, // Hides text until you zoom in close
+                layout: {
+                  'text-field': ['get', 'name'],
+                  'text-font': ['Noto Sans Regular'],
+                  'text-size': 10,
+                  'text-offset': [0, 1.2],
+                  'text-anchor': 'top',
+                  'text-allow-overlap': false
+                },
+                paint: {
+                  'text-color': '#333333',
+                  'text-halo-color': '#ffffff',
+                  'text-halo-width': 1.5
+                }
+              });
+
+              // Click handler for Regular Stops
+              map.on('click', 'regular-stops', (e) => {
+                const props = e.features[0].properties;
+                new maplibregl.Popup({ offset: 15 })
+                  .setLngLat(e.features[0].geometry.coordinates)
+                  .setHTML(`<b>${props.name}</b><br><small>🚏 Regular Stop</small>`)
+                  .addTo(map);
+              });
+
+              // Click handler for Ticket Booths
+              map.on('click', 'ticket-booths', (e) => {
+                const props = e.features[0].properties;
+                new maplibregl.Popup({ offset: 15 })
+                  .setLngLat(e.features[0].geometry.coordinates)
+                  .setHTML(`<b>${props.name}</b><br><small>🎟️ Ticket Booth</small>`)
+                  .addTo(map);
+              });
+
+              // Change cursor to pointer on hover for both layers
+              map.on('mouseenter', ['regular-stops', 'ticket-booths'], () => {
+                map.getCanvas().style.cursor = 'pointer';
+              });
+              map.on('mouseleave', ['regular-stops', 'ticket-booths'], () => {
+                map.getCanvas().style.cursor = '';
+              });
+            })
+            .catch(err => dbg('❌ Failed to load stops.json: ' + err.message));
           // ── Ligne / METRO INTEGRATION ─────────────────────────────────────────
           fetch('./data/Ligne_routes.json')
             .then(res => res.json())
@@ -1539,6 +1804,125 @@
               });
             })
             .catch(err => dbg('❌ Failed to load Ligne stations: ' + err.message));
+
+          // ── STOPS.CSV INTEGRATION ─────────────────────────────────────────
+          // ── STOPS.CSV INTEGRATION ─────────────────────────────────────────
+          fetch('./data/stops.csv')
+            .then(res => res.text())
+            .then(text => {
+              const rows = parseCSV(text);
+              if (rows.length < 2) {
+                dbg('❌ stops.csv is empty or invalid');
+                return;
+              }
+
+              const headers = rows[0];
+              const features = [];
+
+              for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.length < headers.length) continue;
+
+                const obj = {};
+                headers.forEach((h, idx) => {
+                  obj[h.trim()] = row[idx] ? row[idx].trim() : '';
+                });
+
+                // Match the exact lowercase headers from your CSV example ('lon' and 'lat')
+                const lon = parseFloat(obj['lon'] || obj['Longitude']);
+                const lat = parseFloat(obj['lat'] || obj['Latitude']);
+
+                if (isNaN(lon) || isNaN(lat)) continue;
+
+                // NEW: Filter by station type (case-insensitive)
+                const stationType = (obj['Type de la station'] || '').toLowerCase();
+                if (stationType !== 'station_bus' && stationType !== 'station bus' && stationType !== 'dépôt' && stationType !== 'depot') {
+                  continue; // Skip if it's not a bus station or depot
+                }
+
+                features.push({
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [lon, lat]
+                  },
+                  properties: {
+                    name: obj['Nom de la station'] || 'Unknown Stop',
+                    line: obj['N° de la ligne'] || 'Unknown Line',
+                    stationNum: obj['N° de station'] || '',
+                    type: obj['Type de la station'] // Added type to properties for the popup
+                  }
+                });
+              }
+
+              const geojson = {
+                type: 'FeatureCollection',
+                features: features
+              };
+
+              dbg(`🚏 Loaded ${features.length} filtered stops from stops.csv`);
+
+              // Helper debug log to verify headers are being read correctly
+              if (features.length === 0) {
+                dbg(`⚠️ No valid stops found. Check CSV headers. Found: ${headers.join(', ')}`);
+              }
+
+              map.addSource('stops-csv', {
+                type: 'geojson',
+                data: geojson
+              });
+
+              // Add circle markers for stops (Orange)
+              map.addLayer({
+                id: 'stops-csv-circles',
+                type: 'circle',
+                source: 'stops-csv',
+                paint: {
+                  'circle-radius': 5,
+                  'circle-color': '#f59e0b',
+                  'circle-stroke-width': 1,
+                  'circle-stroke-color': '#ffffff'
+                }
+              });
+
+              // Add text labels for stop names
+              map.addLayer({
+                id: 'stops-csv-labels',
+                type: 'symbol',
+                source: 'stops-csv',
+                layout: {
+                  'text-field': ['get', 'name'],
+                  'text-font': ['Noto Sans Regular'],
+                  'text-size': 10,
+                  'text-offset': [0, 1.5],
+                  'text-anchor': 'top',
+                  'text-allow-overlap': false
+                },
+                paint: {
+                  'text-color': '#333333',
+                  'text-halo-color': '#ffffff',
+                  'text-halo-width': 1.5
+                }
+              });
+
+              // Add click handler to show popup with stop details (Now includes Type)
+              map.on('click', 'stops-csv-circles', (e) => {
+                const props = e.features[0].properties;
+                new maplibregl.Popup({ offset: 25 })
+                  .setLngLat(e.features[0].geometry.coordinates)
+                  .setHTML(`<b>${props.name}</b><br><small>Line: ${props.line} | Stop #${props.stationNum}<br>Type: ${props.type}</small>`)
+                  .addTo(map);
+              });
+
+              // Change cursor on hover
+              map.on('mouseenter', 'stops-csv-circles', () => {
+                map.getCanvas().style.cursor = 'pointer';
+              });
+              map.on('mouseleave', 'stops-csv-circles', () => {
+                map.getCanvas().style.cursor = '';
+              });
+            })
+            .catch(err => dbg('❌ Failed to load stops.csv: ' + err.message));
         });
 
         map.on('error', e => { if (!e.error?.message?.includes('canceled')) dbg('❌ MAP ERR: ' + (e.error?.message || e.message || 'Unknown')); });
@@ -2517,40 +2901,9 @@
       updateDCStatus('ready', 'GPS Ready. Enter route name and press Start.');
       dcInfoText.innerText = 'Waiting for next recording...';
     }
-    // ── CUSTOM TRANSFER & HOME MARKERS ──────────────────────────────────────
-    let showCustomMarkers = false;
-    let customMarkers = [];
-
-    const transferPoints = [
-      { lat: 36.8037336, lon: 10.1780922, text: "1. get off 89 get in 20c", order: 1 },
-      { lat: 36.8536368, lon: 10.3274055, text: "2. get off 20c", order: 2 },
-      { lat: 36.8608391, lon: 10.3352268, text: "3. get in 52", order: 3 },
-      { lat: 36.9057988, lon: 10.301458, text: "4. get off 52 get in 20 B", order: 4 },
-      { lat: 36.8037336, lon: 10.1780922, text: "5. get off 20B get in 80", order: 5 },
-      { lat: 36.8953034, lon: 10.1120259, text: "6. get off 80", order: 6 },
-      { lat: 36.9027927, lon: 10.1155492, text: "7. get in 57A", order: 7 },
-      { lat: 36.8396862, lon: 10.1168229, text: "8. get off 57 A get in 14cg", order: 8 },
-      { lat: 36.7963447, lon: 10.1681174, text: "9. get off 14cg", order: 9 },
-      { lat: 36.7905712, lon: 10.1622607, text: "10. get in 69", order: 10 },
-      { lat: 36.7919242, lon: 10.1822642, text: "11. get off 69 get in 25d", order: 11 },
-      { lat: 36.617351, lon: 10.177706, text: "12. get off 25d get in 21", order: 12 },
-      { lat: 36.6799098, lon: 10.2893849, text: "13. get off 21 get in 37", order: 13 },
-      { lat: 36.69593, lon: 10.3886406, text: "14. get off 37 get in 3710", order: 14 },
-      { lat: 36.7243262, lon: 10.228484, text: "15. get off 3710", order: 15 },
-      { lat: 36.7204048, lon: 10.234578, text: "16. get in 10", order: 16 },
-      { lat: 36.7919242, lon: 10.1822642, text: "17. get off 10", order: 17 },
-      { lat: 36.7970414, lon: 10.1801307, text: "18. get in 19E", order: 18 },
-      { lat: 36.7819881, lon: 10.2340646, text: "19. get off 19E get in 19A", order: 19 },
-      { lat: 36.7970414, lon: 10.1801307, text: "20. get off 19A get in 82", order: 20 },
-      { lat: 36.7160428, lon: 10.2750594, text: "21. get off 82", order: 21 },
-      { lat: 36.7251325, lon: 10.3061252, text: "22. get in 85", order: 22 },
-      { lat: 36.722524, lon: 10.1868633, text: "23. get off 85", order: 23 },
-      { lat: 36.7184497, lon: 10.1616443, text: "24. get in 33", order: 24 },
-      { lat: 36.8037336, lon: 10.1780922, text: "25. get off 33 get in 4A", order: 25 },
-      { lat: 36.8155796, lon: 10.1003191, text: "26. get off 4A", order: 26 },
-      { lat: 36.816171, lon: 10.0955231, text: "27. get in 410B", order: 27 },
-      { lat: 36.7243262, lon: 10.228484, text: "28. get off 410b", order: 28 }
-    ];
+    // ── ROUTE NAVIGATOR & HOME MARKERS ──────────────────────────────────────
+    let stepMarkers = [];
+    let homeMarkers = [];
 
     const homePoints = [
       { lat: 36.8037336, lon: 10.1780922, text: "🏠 Home: through 89" },
@@ -2560,55 +2913,160 @@
       { lat: 36.7251325, lon: 10.3061252, text: "🏠 Home: 85 first then i take 33" },
       { lat: 36.7984512, lon: 10.106279, text: "🏠 Home: through 87" }
     ];
-    function toggleCustomMarkers() {
-      showCustomMarkers = !showCustomMarkers;
-      const btn = document.getElementById('btn-custom-markers');
-      btn.classList.toggle('active', showCustomMarkers);
 
-      // Clear existing markers
-      customMarkers.forEach(m => m.remove());
-      customMarkers = [];
-
-      if (showCustomMarkers) {
-        // Add Transfer Points (Numbered icons)
-        transferPoints.forEach((pt, index) => {
-          // Ultra-tiny offset: ~0.2 meters per step to prevent exact overlap without shifting far
-          const offset = index * 0.000002;
-
-          const el = document.createElement('div');
-          el.className = 'custom-marker-number';
-          el.innerText = pt.order;
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([pt.lon + offset, pt.lat + offset])
-            .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(`<b>Step ${pt.order}</b><br>${pt.text}`))
-            .addTo(map);
-          customMarkers.push(marker);
-        });
-
-        // Add Home Points (Orange Home icon)
-        homePoints.forEach((pt, index) => {
-          // Ultra-tiny offset in the OPPOSITE direction: ~0.2 meters per step
-          const offset = (index + 1) * -0.000002;
-
-          const el = document.createElement('div');
-          el.className = 'custom-marker-home';
-          el.innerText = '🏠';
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([pt.lon + offset, pt.lat + offset])
-            .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(pt.text))
-            .addTo(map);
-          customMarkers.push(marker);
-        });
-
-        showToast('✅ Transfer & Home markers shown');
-      } else {
-        showToast('🗑️ Custom markers hidden');
-      }
+    function renderHomeMarkers() {
+      homeMarkers.forEach(m => m.remove());
+      homeMarkers = [];
+      homePoints.forEach(pt => {
+        const el = document.createElement('div');
+        el.className = 'custom-marker-home';
+        el.innerText = '🏠';
+        const marker = new maplibregl.Marker({ element: el })
+          .setLngLat([pt.lon, pt.lat])
+          .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(pt.text))
+          .addTo(map);
+        homeMarkers.push(marker);
+      });
     }
 
-    // Wire up the button
-    document.getElementById('btn-custom-markers').onclick = toggleCustomMarkers;
-    window.onload = init;
+    function drawPrimaryPath() {
+      // Clear previous markers
+      stepMarkers.forEach(m => m.remove());
+      stepMarkers = [];
+
+      // Fetch the routes data
+      fetch('./data/routes.json')
+        .then(res => {
+          if (!res.ok) throw new Error('routes.json not found');
+          return res.json();
+        })
+        .then(data => {
+          // Find the first path (the primary "all YES" path)
+          const primaryPath = data.paths[0];
+
+          if (!primaryPath) {
+            document.getElementById('nav-info').innerHTML = 'No routes found.';
+            return;
+          }
+
+          document.getElementById('nav-info').innerHTML = `<b>Primary Route:</b> ${primaryPath.name}`;
+
+          // Draw all points for the primary path
+          primaryPath.points.forEach((pt, index) => {
+            const stepNum = index + 1;
+            const label = pt.label.replace(/\|/g, '<br>');
+
+            // Generate a small random offset (approx +/- 5 meters) to prevent overlapping
+            const randomOffsetLat1 = (Math.random() - 0.5) * 0.0001;
+            const randomOffsetLng1 = (Math.random() - 0.5) * 0.0001;
+
+            const randomOffsetLat2 = (Math.random() - 0.5) * 0.0001;
+            const randomOffsetLng2 = (Math.random() - 0.5) * 0.0001;
+
+            // 1. Boarding Point Marker (Blue)
+            if (pt.boarding_lat != null && pt.boarding_lng != null) {
+              const elBoard = document.createElement('div');
+              elBoard.className = 'custom-marker-number';
+              elBoard.innerText = pt.marker_text || stepNum; // <-- UPDATED LINE
+              elBoard.style.background = '#3b82f6'; // Blue for Boarding
+
+              const markerBoard = new maplibregl.Marker({ element: elBoard })
+                .setLngLat([pt.boarding_lng + randomOffsetLng1, pt.boarding_lat + randomOffsetLat1])
+                .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(`<b>Step ${stepNum} - Board Here 🚌</b><br>${label}`))
+                .addTo(map);
+              stepMarkers.push(markerBoard);
+            }
+
+            // 2. Dropping Off Point Marker (Red)
+            if (pt.dropping_lat != null && pt.dropping_lng != null) {
+              const elDrop = document.createElement('div');
+              elDrop.className = 'custom-marker-number';
+              elDrop.innerText = pt.marker_text || stepNum; // <-- UPDATED LINE
+              elDrop.style.background = '#ef4444'; // Red for Dropping Off
+
+              const markerDrop = new maplibregl.Marker({ element: elDrop })
+                .setLngLat([pt.dropping_lng + randomOffsetLng2, pt.dropping_lat + randomOffsetLat2])
+                .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(`<b>Step ${stepNum} - Get Off Here 🚶</b><br>${label}`))
+                .addTo(map);
+              stepMarkers.push(markerDrop);
+            }
+          });
+
+          // ── BRANCH MARKERS ─────────────────────────────────────────────────
+          // Scan every path (not just the primary) for points that carry a
+          // non-empty marker_text. These represent branch alternatives (like
+          // "3B") that belong alongside the primary steps but exist in a
+          // secondary path in routes.json. We collect unique boarding/dropping
+          // coords so the same physical stop isn't double-plotted if the point
+          // appears in more than one non-primary path.
+          const branchSeen = new Set();
+
+          data.paths.slice(1).forEach(path => {
+            path.points.forEach(pt => {
+              if (!pt.marker_text) return; // only process explicitly-labelled branch points
+              const label = pt.label.replace(/\|/g, '<br>');
+
+              if (pt.boarding_lat != null && pt.boarding_lng != null) {
+                const boardKey = `${pt.boarding_lat},${pt.boarding_lng}`;
+                if (!branchSeen.has(boardKey)) {
+                  branchSeen.add(boardKey);
+                  const el = document.createElement('div');
+                  el.className = 'custom-marker-number';
+                  el.innerText = pt.marker_text;
+                  el.style.background = '#3b82f6'; // same blue as boarding
+                  el.style.opacity = '0.85';
+                  const m = new maplibregl.Marker({ element: el })
+                    .setLngLat([pt.boarding_lng, pt.boarding_lat])
+                    .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' })
+                      .setHTML(`<b>Branch ${pt.marker_text} - Board Here 🚌</b><br>${label}`))
+                    .addTo(map);
+                  stepMarkers.push(m);
+                }
+              }
+
+              if (pt.dropping_lat != null && pt.dropping_lng != null) {
+                const dropKey = `drop:${pt.dropping_lat},${pt.dropping_lng}`;
+                if (!branchSeen.has(dropKey)) {
+                  branchSeen.add(dropKey);
+                  const el = document.createElement('div');
+                  el.className = 'custom-marker-number';
+                  el.innerText = pt.marker_text;
+                  el.style.background = '#ef4444'; // same red as dropping
+                  el.style.opacity = '0.85';
+                  const m = new maplibregl.Marker({ element: el })
+                    .setLngLat([pt.dropping_lng, pt.dropping_lat])
+                    .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' })
+                      .setHTML(`<b>Branch ${pt.marker_text} - Get Off Here 🚶</b><br>${label}`))
+                    .addTo(map);
+                  stepMarkers.push(m);
+                }
+              }
+            });
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById('nav-info').innerText = "Error loading routes.";
+        });
+    }
+    // ── UI TOGGLE LOGIC ───────────────────────────────────────────────────────
+    document.getElementById('ui-toggle-btn').onclick = function () {
+      const panel = document.getElementById('data-collection-panel');
+      panel.classList.toggle('visible');
+      this.innerText = panel.classList.contains('visible') ? '❌' : '⚙️';
+    };
+
+    // Initialize everything on load, then render markers once the map is ready
+    window.onload = function () {
+      init();
+      // Small timeout ensures the map object is fully initialized before placing markers
+      setTimeout(() => {
+        if (map) {
+          renderHomeMarkers();
+          drawPrimaryPath();
+        }
+      }, 500);
+    };
   </script>
 </body>
 

@@ -1,0 +1,10190 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.121033,
+          36.745652
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.113119,
+          36.769434
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.11393,
+          36.768894
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.114857,
+          36.774594
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.115013,
+          36.759984
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.096616,
+          36.794116
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.902497,
+          36.552788
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1109175,
+          36.7663202
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0736142,
+          36.7335473
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0813907,
+          36.8164865
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0831,
+          36.8152366
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0875859,
+          36.8113877
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1037929,
+          36.7977516
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1002028,
+          36.7957341
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0965335,
+          36.7942328
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0836666,
+          36.787178
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.054335,
+          36.774326
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0789679,
+          36.7849845
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.075698,
+          36.780177
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0755466,
+          36.7806188
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0759823,
+          36.7834525
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0274467,
+          36.7611671
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0278795,
+          36.7613825
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.9799046,
+          36.7517929
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.9496736,
+          36.6863265
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0479168,
+          36.6645073
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.124547,
+          36.73232
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.117005,
+          36.755864
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.192828,
+          36.742714
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.231429,
+          36.779399
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.225373,
+          36.74811
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.222357,
+          36.758486
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.222802,
+          36.753248
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.220672,
+          36.755684
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.211643,
+          36.74706
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.156754,
+          36.678139
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.153972,
+          36.668598
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.160066,
+          36.685293
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17159,
+          36.701678
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.153825,
+          36.668676
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.265222,
+          36.744665
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.301509,
+          36.740907
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.315471,
+          36.735978
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.321329,
+          36.734214
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.37841,
+          36.71031
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.320577,
+          36.734281
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.277116,
+          36.757515
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.276274,
+          36.758631
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.308196,
+          36.738455
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.308743,
+          36.738171
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.314242,
+          36.736262
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.22599,
+          36.75098
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.242278,
+          36.750996
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.244801,
+          36.753628
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.297113,
+          36.7213
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.233014,
+          36.76985
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.203796,
+          36.772075
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.207676,
+          36.769052
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.212416,
+          36.762699
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.210494,
+          36.764982
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.210723,
+          36.694389
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.206506,
+          36.692837
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.210771,
+          36.694502
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16069,
+          36.703766
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.165947,
+          36.700442
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.166389,
+          36.699995
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.160343,
+          36.70375
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.171183,
+          36.697913
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.300755,
+          36.724299
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.206869,
+          36.693303
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.304113,
+          36.726484
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.309716,
+          36.730387
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.289705,
+          36.679831
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.25439,
+          36.749491
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.222027,
+          36.726611
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.270175,
+          36.767151
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.27719,
+          36.767661
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.284281,
+          36.78335
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.282207,
+          36.786962
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.279056,
+          36.79324
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.279284,
+          36.795898
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.226384,
+          36.74299
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.221744,
+          36.726478
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.221704,
+          36.739596
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.249373,
+          36.760368
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.256635,
+          36.765091
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.256983,
+          36.765473
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.260931,
+          36.766643
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.269887,
+          36.767122
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.273177,
+          36.767927
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.277021,
+          36.767994
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.251332,
+          36.748394
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.247652,
+          36.756751
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.265348,
+          36.744408
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.228464,
+          36.749007
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.232466,
+          36.761722
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.29589,
+          36.737752
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.306975,
+          36.735279
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.30557,
+          36.735313
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.313298,
+          36.734229
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.316368,
+          36.732753
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.316489,
+          36.732664
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.233492,
+          36.7453
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.227907,
+          36.749192
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.225859,
+          36.746702
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.226784,
+          36.742437
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.220406,
+          36.739384
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.242484,
+          36.757298
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.277986,
+          36.740024
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.229615,
+          36.762813
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.231923,
+          36.761687
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.238573,
+          36.759091
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.250611,
+          36.752163
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.24772,
+          36.754862
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.252649,
+          36.750663
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.21899,
+          36.757213
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.181959,
+          36.79193
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.219927,
+          36.768396
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.223291,
+          36.765315
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.22037,
+          36.76642
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.218682,
+          36.757248
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.222915,
+          36.753408
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180281,
+          36.797086
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.21107,
+          36.724971
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.210571,
+          36.730095
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.209108,
+          36.735643
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.209352,
+          36.73515
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.207844,
+          36.737712
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.206041,
+          36.74033
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.21305,
+          36.722724
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.212779,
+          36.722929
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.210942,
+          36.72498
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.210542,
+          36.728413
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.210623,
+          36.729907
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.211946,
+          36.763511
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.250497,
+          36.742658
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.183471,
+          36.777263
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.181611,
+          36.780699
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.182598,
+          36.777142
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180717,
+          36.78365
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.095477,
+          36.777867
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.134607,
+          36.8079
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.139248,
+          36.807805
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.139242,
+          36.807693
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.120648,
+          36.790933
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.161307,
+          36.809556
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.09832,
+          36.81347
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.127465,
+          36.791222
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.146653,
+          36.81397
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.13896,
+          36.796115
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.13761,
+          36.795603
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.124517,
+          36.787693
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.153123,
+          36.809748
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.141572,
+          36.818332
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.143647,
+          36.811845
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.117628,
+          36.803112
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.08282,
+          36.807528
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.092535,
+          36.807933
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.095995,
+          36.816327
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.150532,
+          36.8094
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.158352,
+          36.830128
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.146997,
+          36.809038
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.163478,
+          36.804015
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.162617,
+          36.809812
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.157873,
+          36.831007
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.118697,
+          36.81118
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.135512,
+          36.824255
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17425,
+          36.8064
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.114912,
+          36.856371
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.116953,
+          36.855982
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.116338,
+          36.822403
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.119215,
+          36.829742
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.116546,
+          36.845616
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.157731,
+          36.810449
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.155796,
+          36.813365
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.116997,
+          36.856156
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.118961,
+          36.830062
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1156064,
+          36.8725784
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1148967,
+          36.8792762
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1061403,
+          36.8277468
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0959279,
+          36.8161637
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0908014,
+          36.8099225
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.10538,
+          36.815255
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0926128,
+          36.8078861
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.09485,
+          36.811653
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.095199,
+          36.817689
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.097169,
+          36.813283
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.096913,
+          36.812951
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0844908,
+          36.8199875
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.077968,
+          36.821482
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1675875,
+          36.8582631
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.142024,
+          36.8180611
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.008935,
+          36.962268
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.149007,
+          36.812709
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.148479,
+          36.812906
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.116792,
+          36.845478
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.120712,
+          36.81404
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.106263,
+          36.833342
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.131928,
+          36.812753
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.312719,
+          36.854146
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.303293,
+          36.863017
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.333104,
+          36.873593
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.162002,
+          36.860307
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.342778,
+          36.869107
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19521,
+          36.823763
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.194547,
+          36.82377
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.189248,
+          36.821503
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.159552,
+          36.852662
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12468,
+          36.81919
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.274082,
+          36.853223
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.178378,
+          36.85492
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.307493,
+          36.868035
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.296413,
+          36.893437
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.293237,
+          36.900183
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.185472,
+          36.819403
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.29319,
+          36.899737
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.303543,
+          36.882702
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.307557,
+          36.877363
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.30903,
+          36.874553
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.288145,
+          36.859378
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.232682,
+          36.837853
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.2644,
+          36.849055
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.121678,
+          36.823043
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.30037,
+          36.887233
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.302682,
+          36.906362
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.298572,
+          36.9048
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.120963,
+          36.813795
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.301358,
+          36.886442
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.190855,
+          36.821893
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.127143,
+          36.815288
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.122787,
+          36.823045
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.132822,
+          36.810283
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.281782,
+          36.856443
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.285165,
+          36.845057
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.258157,
+          36.851406
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.121633,
+          36.827137
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.120645,
+          36.826328
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.177801,
+          36.880292
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.117075,
+          36.839943
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.312569,
+          36.853891
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17305,
+          36.84228
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12575,
+          36.825992
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12171,
+          36.827277
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.130977,
+          36.81909
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.187118,
+          36.849847
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.198808,
+          36.859193
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.194265,
+          36.85836
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.191415,
+          36.858038
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.188252,
+          36.855817
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.185068,
+          36.8531
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.177398,
+          36.844873
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.172338,
+          36.842192
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.201732,
+          36.835425
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.207967,
+          36.837865
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.207,
+          36.843812
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.204498,
+          36.83933
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.205938,
+          36.833788
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.205148,
+          36.840238
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.130123,
+          36.819068
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.206667,
+          36.834175
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180098,
+          36.904704
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.183677,
+          36.85149
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.137962,
+          36.835345
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.127715,
+          36.83728
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.137483,
+          36.835805
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.165345,
+          36.859283
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.206312,
+          36.828653
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.140076,
+          36.836535
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.148024,
+          36.832872
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.137352,
+          36.834575
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.129125,
+          36.837652
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.144397,
+          36.83666
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.150128,
+          36.8306
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.128207,
+          36.850928
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.128057,
+          36.851592
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.202363,
+          36.854803
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.187788,
+          36.85582
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.132537,
+          36.84127
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.132847,
+          36.841402
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.14298,
+          36.83658
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.284973,
+          36.8451
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.166178,
+          36.843925
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.168922,
+          36.854945
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.160735,
+          36.848098
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.169017,
+          36.855117
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.164618,
+          36.85241
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16573,
+          36.846458
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.165475,
+          36.846338
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.167363,
+          36.856792
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.152902,
+          36.856133
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.137324,
+          36.834521
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15396,
+          36.857908
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.153312,
+          36.860668
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.162005,
+          36.86019
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.165548,
+          36.862857
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.167013,
+          36.859973
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16986,
+          36.862028
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.169365,
+          36.861533
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.167893,
+          36.86426
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.166168,
+          36.858663
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.167272,
+          36.859967
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.31853,
+          36.873316
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.324996,
+          36.881789
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.156667,
+          36.839258
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.160238,
+          36.839543
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.150038,
+          36.849963
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.160598,
+          36.83954
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.151645,
+          36.847932
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.178098,
+          36.847113
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.166817,
+          36.842368
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.182127,
+          36.840482
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.182595,
+          36.843198
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.174872,
+          36.835973
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.182605,
+          36.842705
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.183545,
+          36.846563
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1634,
+          36.842285
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.173892,
+          36.851747
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.161487,
+          36.835948
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17308,
+          36.837625
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.166883,
+          36.842437
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1834,
+          36.84669
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180332,
+          36.82327
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.176887,
+          36.845793
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15332,
+          36.845377
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.122523,
+          36.822723
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.178503,
+          36.82563
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.172122,
+          36.838125
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.179545,
+          36.826378
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.178413,
+          36.824125
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180053,
+          36.831262
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180077,
+          36.828877
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.174603,
+          36.825605
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.171975,
+          36.828078
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.14893,
+          36.85075
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.179957,
+          36.828573
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.179825,
+          36.820935
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.197667,
+          36.839615
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.187687,
+          36.830943
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.196232,
+          36.838057
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.191405,
+          36.839508
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.191015,
+          36.839713
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.190503,
+          36.833282
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.183017,
+          36.826157
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.182547,
+          36.825748
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.185057,
+          36.828292
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180285,
+          36.823072
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19751,
+          36.833537
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.196298,
+          36.83791
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.188052,
+          36.83131
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19766,
+          36.833682
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.198388,
+          36.839722
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.194927,
+          36.838823
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19057,
+          36.833348
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.203647,
+          36.865968
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.201045,
+          36.869225
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.197823,
+          36.860202
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.202805,
+          36.854242
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.213095,
+          36.836085
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.197455,
+          36.843682
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.199018,
+          36.84108
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.214523,
+          36.845875
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.201063,
+          36.86938
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.205293,
+          36.877982
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.205208,
+          36.87803
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.203773,
+          36.87536
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180028,
+          36.831018
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.213015,
+          36.836762
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.179633,
+          36.809865
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.179487,
+          36.87645
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.165782,
+          36.88769
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.178432,
+          36.878172
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.181223,
+          36.835332
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.164715,
+          36.88684
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.181595,
+          36.83737
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17772,
+          36.819672
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.20137,
+          36.835662
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.176694,
+          36.778533
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17621,
+          36.77992
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.174372,
+          36.783233
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.173702,
+          36.783565
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.186285,
+          36.773723
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.147948,
+          36.832945
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.171834,
+          36.813658
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.175202,
+          36.81374
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1519,
+          36.848055
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.153578,
+          36.845475
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.154175,
+          36.843927
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.318547,
+          36.850215
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.230853,
+          36.833837
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.270645,
+          36.841787
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.278293,
+          36.843197
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.262043,
+          36.844662
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.261933,
+          36.844582
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.26024,
+          36.845643
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.245932,
+          36.838125
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.242482,
+          36.83589
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.230343,
+          36.83353
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.225885,
+          36.83473
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.225227,
+          36.83416
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.217663,
+          36.831805
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.217623,
+          36.831347
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.24659,
+          36.838337
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.2706,
+          36.841987
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.278337,
+          36.84337
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.26002,
+          36.845578
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.130993,
+          36.892358
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.131165,
+          36.892587
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.236113,
+          36.83447
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.160163,
+          36.890847
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16969,
+          36.885165
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.170735,
+          36.88496
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.188165,
+          36.857937
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.187125,
+          36.862122
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18676,
+          36.862305
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.181328,
+          36.872918
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180933,
+          36.835148
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.23759,
+          36.834522
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.30389,
+          36.863033
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.289944,
+          36.866068
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.31981,
+          36.873708
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.325116,
+          36.881775
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.323291,
+          36.886168
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.323227,
+          36.885948
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.313958,
+          36.885707
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.178237,
+          36.855075
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.328535,
+          36.87826
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.326652,
+          36.849565
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.342593,
+          36.869106
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.30926,
+          36.823127
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.315928,
+          36.832539
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.319257,
+          36.840607
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.306781,
+          36.819853
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.30411,
+          36.815649
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.302756,
+          36.814574
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.313758,
+          36.82926
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.318986,
+          36.840787
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.179417,
+          36.913384
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.333065,
+          36.873462
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.329225,
+          36.877024
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.209099,
+          36.861067
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.222815,
+          36.866796
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.223377,
+          36.867129
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.231698,
+          36.871015
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.205716,
+          36.866625
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.22542,
+          36.881849
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.174615,
+          36.83603
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.179099,
+          36.91324
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.278655,
+          36.872815
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.271938,
+          36.874839
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.253777,
+          36.881367
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.25329,
+          36.881236
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.245083,
+          36.875153
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.244639,
+          36.874864
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.238935,
+          36.874128
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.237479,
+          36.873361
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.211652,
+          36.891959
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.235876,
+          36.873883
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.235751,
+          36.873889
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.232113,
+          36.87746
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.209108,
+          36.860965
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.213365,
+          36.863016
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.230538,
+          36.870535
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.258165,
+          36.851423
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.282341,
+          36.854636
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.282753,
+          36.850591
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.282147,
+          36.850041
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.246562,
+          36.876148
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.248467,
+          36.870905
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.24836,
+          36.870849
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.252429,
+          36.864786
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.252386,
+          36.864606
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.253714,
+          36.862937
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.253842,
+          36.862725
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.255989,
+          36.859353
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.25637,
+          36.857471
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.257143,
+          36.855329
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.189851,
+          36.90375
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.185566,
+          36.880047
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180157,
+          36.904506
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180469,
+          36.904274
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.182334,
+          36.888438
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16626,
+          36.899362
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.300729,
+          36.837569
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.301638,
+          36.837601
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.306648,
+          36.819384
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.156685,
+          36.839365
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.297459,
+          36.839295
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12339,
+          36.830477
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.280087,
+          36.919218
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.273182,
+          36.924591
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.262153,
+          36.932756
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.25822,
+          36.934204
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.258216,
+          36.934182
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.252721,
+          36.937823
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.22795,
+          36.95681
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.29631,
+          36.918484
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.295956,
+          36.918503
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.28673,
+          36.920919
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.279957,
+          36.919418
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.26184,
+          36.933119
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.317382,
+          36.839217
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.29736,
+          36.839264
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.123415,
+          36.830803
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.154208,
+          36.843882
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.185361,
+          36.880003
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.176905,
+          36.879692
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.167178,
+          36.887408
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.159992,
+          36.890635
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.160837,
+          36.836282
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.201076,
+          36.831695
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.120743,
+          36.825982
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.191163,
+          36.857785
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.171978,
+          36.813575
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.166008,
+          36.811517
+        ]
+      },
+      "properties": {
+        "name": "Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.124667,
+          36.819365
+        ]
+      },
+      "properties": {
+        "name": "Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.13919,
+          36.831878
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.088053,
+          36.807278
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.088893,
+          36.812457
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.134198,
+          36.826322
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.091752,
+          36.814285
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.139143,
+          36.83161
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.130437,
+          36.83744
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.086595,
+          36.806658
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.088029,
+          36.807188
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.091653,
+          36.814305
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.09937,
+          36.815572
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.088833,
+          36.812517
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.068723,
+          36.81009
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.056905201888824,
+          36.81545727192931
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.063287,
+          36.811993
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.063417,
+          36.812092
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.098612,
+          36.812897
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.074458,
+          36.809215
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.14575,
+          36.814288
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.139968,
+          36.819845
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.143377,
+          36.796697
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.166627,
+          36.788457
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.162422,
+          36.798163
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.163222,
+          36.794737
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.166812,
+          36.78849
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.171362,
+          36.785215
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12945,
+          36.81011
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.101437,
+          36.815468
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.154453,
+          36.798238
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.144633,
+          36.796672
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.147733,
+          36.797703
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180553,
+          36.787297
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15841,
+          36.79904
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.138938,
+          36.806655
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.165,
+          36.800688
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.163072,
+          36.803655
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.154365,
+          36.798517
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180075,
+          36.785587
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15894,
+          36.807793
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.14993,
+          36.797742
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.170833,
+          36.785455
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.187158,
+          36.799025
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.162848,
+          36.809887
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.126472,
+          36.792667
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.111973,
+          36.788403
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.130487,
+          36.793852
+        ]
+      },
+      "properties": {
+        "name": "Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.107737,
+          36.792525
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.109695,
+          36.790102
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.161843,
+          36.798688
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.115792,
+          36.789773
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12049,
+          36.790918
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.100053,
+          36.786113
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.126687,
+          36.792575
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.132038,
+          36.794468
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.115583,
+          36.789692
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.130437,
+          36.796342
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.112123,
+          36.78842
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.178238,
+          36.821998
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16501,
+          36.800073
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17539,
+          36.784235
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.173597,
+          36.82578
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12861,
+          36.805762
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.122753,
+          36.80433
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.124457,
+          36.805033
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.117467,
+          36.803205
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.173555,
+          36.826005
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.163062,
+          36.7924
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.161295,
+          36.800582
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.186057,
+          36.80272
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.182217,
+          36.804888
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.089837,
+          36.810427
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18136,
+          36.807653
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.184362,
+          36.81235
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180752,
+          36.81058
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.157713,
+          36.804977
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16837,
+          36.796167
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.095342,
+          36.805883
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.097737,
+          36.804368
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.163355,
+          36.794457
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.124313,
+          36.787662
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.125545,
+          36.805003
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.129165,
+          36.83599
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.131353,
+          36.809557
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180335,
+          36.788777
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.155948,
+          36.799492
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.103017,
+          36.779888
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15651,
+          36.809377
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.095337,
+          36.77815
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.177597,
+          36.791385
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.147023,
+          36.808803
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.186187,
+          36.802482
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18477,
+          36.810643
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.184407,
+          36.813198
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180403,
+          36.82099
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.152837,
+          36.831202
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.169908,
+          36.793165
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1839,
+          36.816262
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15252,
+          36.831512
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.142122,
+          36.82365
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.138032,
+          36.80892
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.142087,
+          36.8112
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.143842,
+          36.825377
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.142037,
+          36.82358
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.141007,
+          36.818692
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.182623,
+          36.818798
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.157063,
+          36.808948
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.147753,
+          36.828012
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.137465,
+          36.808345
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.118073,
+          36.811895
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1853,
+          36.806277
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.185428,
+          36.807287
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.175098,
+          36.814107
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.068933,
+          36.80983
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.163662,
+          36.806925
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.177153,
+          36.818575
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.177807,
+          36.803829
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.135512,
+          36.824255
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.169933,
+          36.793177
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.157873,
+          36.831007
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.157873,
+          36.831007
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.169025,
+          36.82815
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.109945,
+          36.802365
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.159326,
+          36.671912
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.211079,
+          36.762407
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.186225,
+          36.77374
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.224056,
+          36.765185
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.220044,
+          36.768313
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.216935,
+          36.768116
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.242973,
+          36.757323
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.238463,
+          36.758936
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.229889,
+          36.762722
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.278491,
+          36.740107
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.313572,
+          36.733862
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.295861,
+          36.737734
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.251524,
+          36.748485
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.247666,
+          36.756781
+        ]
+      },
+      "properties": {
+        "name": "Stop / Ticket Booth",
+        "ticket_booth": true,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.279203,
+          36.796401
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.282346,
+          36.786994
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.279265,
+          36.795885
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.300728,
+          36.724184
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.2968,
+          36.721201
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.206863,
+          36.693095
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.207498,
+          36.769024
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.283966,
+          36.686078
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.275368,
+          36.698782
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.303729,
+          36.72635
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.301508,
+          36.7413
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.336911,
+          36.726823
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.335077,
+          36.727809
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.367823,
+          36.714155
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.243528,
+          36.744872
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.153975,
+          36.668593
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.156599,
+          36.678433
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.225818,
+          36.750923
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.206029,
+          36.740763
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.121019,
+          36.745609
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0790188,
+          36.7847559
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.054625,
+          36.774337
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.083697,
+          36.78718
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.0930756,
+          36.7915657
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1003963,
+          36.7957279
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.083073,
+          36.8151401
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1109868,
+          36.7662185
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.115232,
+          36.760262
+        ]
+      },
+      "properties": {
+        "name": "Stop",
+        "ticket_booth": false,
+        "is_stop": true
+      }
+    }
+  ]
+}
