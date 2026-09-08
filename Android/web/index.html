@@ -1201,12 +1201,32 @@
       style.layers.push({ id: 'land-base', type: 'fill', source: 'omt', 'source-layer': 'land', paint: { 'fill-color': c.land } });
       style.layers.push({ id: 'water', type: 'fill', source: 'omt', 'source-layer': 'water_polygons', paint: { 'fill-color': c.water } });
       style.layers.push({ id: 'water-lines', type: 'line', source: 'omt', 'source-layer': 'water_lines', minzoom: 4, filter: ['in', 'class', 'river', 'stream', 'canal'], paint: { 'line-color': c.waterLine, 'line-width': { stops: [[10, 0.8], [14, 2]] } } });
-
+      style.layers.push(
+        { id: 'boundary-country', type: 'line', source: 'omt', 'source-layer': 'boundaries', filter: ['==', ['get', 'admin_level'], 2], paint: { 'line-color': c.boundary, 'line-width': 1.5 } },
+        { id: 'boundary-region', type: 'line', source: 'omt', 'source-layer': 'boundaries', filter: ['>', ['get', 'admin_level'], 2], paint: { 'line-color': c.boundary, 'line-width': 1, 'line-dasharray': [2, 2] } }
+      );
       const landCoverTypes = [
-        { kind: 'forest', color: c.forest, minzoom: 11 }, { kind: 'park', color: c.park, minzoom: 12, filter: ['in', 'class', 'park', 'recreation_ground'] },
-        { kind: 'grass', color: c.grass, minzoom: 12, filter: ['in', 'class', 'grass', 'meadow'] }, { kind: 'sand', color: c.sand, minzoom: 12, filter: ['in', 'class', 'sand', 'beach'] },
-        { kind: 'cemetery', color: c.cemetery, minzoom: 14 }, { kind: 'wetland', color: c.wetland, minzoom: 13 }, { kind: 'scrub', color: c.scrub, minzoom: 13 },
-        { kind: 'residential', color: c.residential, minzoom: 13 }, { kind: 'industrial', color: c.industrial, minzoom: 13, filter: ['in', 'class', 'industrial', 'commercial', 'retail'] }
+        { kind: 'forest', color: c.forest, minzoom: 11 },
+        { kind: 'park', color: c.park, minzoom: 12, filter: ['in', 'class', 'park', 'recreation_ground'] },
+        { kind: 'grass', color: c.grass, minzoom: 12, filter: ['in', 'class', 'grass', 'meadow'] },
+        { kind: 'sand', color: c.sand, minzoom: 12, filter: ['in', 'class', 'sand', 'beach'] },
+        { kind: 'cemetery', color: c.cemetery, minzoom: 14 },
+        { kind: 'wetland', color: c.wetland, minzoom: 13, filter: ['in', 'class', 'swamp', 'bog', 'string_bog', 'wet_meadow', 'marsh'] },
+        { kind: 'scrub', color: c.scrub, minzoom: 13 },
+        { kind: 'residential', color: c.residential, minzoom: 13 },
+        { kind: 'industrial', color: c.industrial, minzoom: 13, filter: ['in', 'class', 'industrial', 'commercial', 'retail'] },
+        // Landuse additions
+        { kind: 'farmland', color: '#e8f0dc', minzoom: 12, filter: ['in', 'class', 'farmland', 'farmyard', 'orchard', 'vineyard', 'plant_nursery', 'greenhouse_horticulture'] },
+        { kind: 'allotments', color: '#e8f0dc', minzoom: 13, filter: ['in', 'class', 'allotments', 'village_green'] },
+        { kind: 'brownfield', color: '#e4e0e8', minzoom: 13, filter: ['in', 'class', 'brownfield', 'greenfield', 'railway', 'landfill', 'quarry'] },
+        { kind: 'garages', color: '#e4e0e8', minzoom: 14 },
+        // Natural additions
+        { kind: 'grassland', color: '#dce8d0', minzoom: 12, filter: ['in', 'class', 'grassland', 'heath'] },
+        { kind: 'bare_rock', color: '#e0e0d8', minzoom: 13, filter: ['in', 'class', 'bare_rock', 'scree', 'shingle'] },
+        // Leisure additions
+        { kind: 'leisure_green', color: '#ddeedd', minzoom: 13, filter: ['in', 'class', 'garden', 'playground', 'miniature_golf', 'golf_course'] },
+        // Amenity addition
+        { kind: 'grave_yard', color: c.cemetery, minzoom: 14 }
       ];
       landCoverTypes.forEach(cfg => {
         style.layers.push({ id: `land-${cfg.kind}`, type: 'fill', source: 'omt', 'source-layer': 'land', minzoom: cfg.minzoom, filter: cfg.filter || ['==', 'class', cfg.kind], paint: { 'fill-color': cfg.color, 'fill-opacity': 0.6 } });
@@ -1260,7 +1280,9 @@
         { kinds: ['primary', 'secondary'], color: c.roadPrimary, widths: { stops: [[10, 0.8], [14, 5]] }, minzoom: 10 },
         { kinds: ['tertiary'], color: c.roadSecondary, widths: { stops: [[12, 0.8], [14, 4]] }, minzoom: 12 },
         { kinds: ['residential', 'service', 'footway', 'path'], color: c.roadMinor, widths: { stops: [[13, 0.5], [18, 6]] }, minzoom: 13 },
-      ];
+        { kinds: ['unclassified', 'living_street'], color: c.roadMinor, widths: { stops: [[13, 0.5], [18, 6]] }, minzoom: 13 },
+        { kinds: ['pedestrian', 'track', 'cycleway', 'steps'], color: c.roadPath, widths: { stops: [[14, 0.4], [18, 4]] }, minzoom: 14 },
+        { kinds: ['motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link'], color: c.roadPrimary, widths: { stops: [[10, 0.6], [14, 3]] }, minzoom: 10 },];
 
       roadStyles.forEach(cfg => {
         const layerDef = {
@@ -1316,6 +1338,7 @@
           'line-opacity': 0.7
         }
       });
+
 
       // Dashed line on top — vivid purple so it's obvious during debugging;
       // tone down to a subtler colour once you confirm it's rendering.
