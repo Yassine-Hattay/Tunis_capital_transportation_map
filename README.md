@@ -21,6 +21,13 @@ https://github.com/user-attachments/assets/27d4bf54-a4f3-44e1-a46d-82411be2f1e6
 
 https://github.com/user-attachments/assets/51d66144-6d4d-448f-ac4a-07e25759605a
 
+## Tests
+
+```bash
+cd Android
+npm test
+npm run validate:assets
+```
 
 
 
