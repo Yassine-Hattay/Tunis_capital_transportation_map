@@ -1,0 +1,125 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "تونس المدينة",
+        "name_en": "Tunis Ville",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1803806, 36.7947693]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "سيدي منوبية",
+        "name_en": "Saida Manoubia",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1655399, 36.7870675]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "ملّاسين",
+        "name_en": "Mellassine",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1553505, 36.7964883]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "الروّاحة",
+        "name_en": "Erraoudha",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1478132, 36.8018747]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "باردو",
+        "name_en": "Le Bardo",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1343723, 36.8075477]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "البورتال",
+        "name_en": "El Bortal",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1173367, 36.8115007]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "منوبة",
+        "name_en": "Manouba",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1011079, 36.8161297]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "حي البساتين",
+        "name_en": "Cite des Orangers",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.0860288, 36.8184848]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "القبعة",
+        "name_en": "Gobaa",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.0754979, 36.8200508]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "القبعة المدينة",
+        "name_en": "Gobaa Ville",
+        "line": "Ligne D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.0601549, 36.8222878]
+      }
+    }
+  ]
+}

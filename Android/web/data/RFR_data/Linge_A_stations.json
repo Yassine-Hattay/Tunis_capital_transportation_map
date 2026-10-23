@@ -1,0 +1,233 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "تونس المدينة",
+        "name_en": "Tunis Ville",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1803806, 36.7947693]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "مستودع فرحات حشاد",
+        "name_en": "Depot Farhat Hached",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1919152, 36.7840267]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "جبل جلود",
+        "name_en": "Djebel Jelloud",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.2082258, 36.7727251]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "مقرين رياض",
+        "name_en": "Megrine Riadh",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.2229004, 36.7702743]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "مقرين",
+        "name_en": "Megrine",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.2339183, 36.768327]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "سيدي رزيق",
+        "name_en": "Sidi Rezigue",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.2445454, 36.7673336]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "المعهد الفني رادس",
+        "name_en": "Lycee Technique Rades",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.2608437, 36.7667869]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "رادس",
+        "name_en": "Rades",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.269735, 36.7683604]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "رادس مليان",
+        "name_en": "Rades Meliane",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.2842731, 36.7629769]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "الزهراء",
+        "name_en": "Ezzahra",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.3070495, 36.7468002]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "الزهراء المعهد",
+        "name_en": "Ezzahra Lycee",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.3179647, 36.7390405]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "بو قرنين",
+        "name_en": "Bou Kornine",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.3239341, 36.7347949]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "حمام الأنف",
+        "name_en": "Hammam-Lif",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.3342066, 36.7294393]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "محطة الملعب",
+        "name_en": "Arret du Stade",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.3482081, 36.7234436]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "طاهر صفر",
+        "name_en": "Tahar Sfar",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.3596743, 36.7175239]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "حمام الشط",
+        "name_en": "Hammam-Chott",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.369405, 36.7136003]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "بئر الباي",
+        "name_en": "Bir El Bey",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.3786432, 36.7102497]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "برج السدرية",
+        "name_en": "Borj Cedria",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.3974291, 36.7034822]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "الرياض",
+        "name_en": "Erriadh",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.41484, 36.699504]
+      }
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19795610005066, 36.860117070557905]
+      },
+      "properties": {
+        "title": "محطة الحافلات بأريانة",
+        "title_en": "Ariana Bus Station",
+        "marker-color": "#3b82f6",
+        "marker-size": "medium"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.190561377660295, 36.80022381879202]
+      },
+      "properties": {
+        "title": "Terminus Tunis Marine",
+        "title_en": "Tunis Marine Station",
+        "marker-color": "#3b82f6",
+        "marker-size": "medium"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17791671592396, 36.80373298303416]
+      },
+      "properties": {
+        "title": "محطة حديقة الحبيب ثامر",
+        "title_en": "Jardin Habib Thameur Station",
+        "marker-color": "#3b82f6",
+        "marker-size": "medium"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.180205, 36.797099]
+      },
+      "properties": {
+        "title": "برشلونة",
+        "title_en": "Barcelone",
+        "marker-color": "#3b82f6",
+        "marker-size": "medium"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.117299686074102, 36.83998637227036]
+      },
+      "properties": {
+        "title": "محطة الترابط بالإنطلاقة",
+        "title_en": "El Intilaka Hub Station",
+        "marker-color": "#3b82f6",
+        "marker-size": "medium"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.099237, 36.803706]
+      },
+      "properties": {
+        "title": "محطة النقل العمومي منوبة",
+        "title_en": "La Manouba Public Transport Station",
+        "marker-color": "#3b82f6",
+        "marker-size": "medium"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.184689, 36.844700]
+      },
+      "properties": {
+        "title": "10 ديسمبر",
+        "title_en": "10 Decembre",
+        "marker-color": "#3b82f6",
+        "marker-size": "medium"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.180325, 36.788721]
+      },
+      "properties": {
+        "title": "محطة باب عليوة",
+        "title_en": "Bab Alioua Station",
+        "marker-color": "#3b82f6",
+        "marker-size": "medium"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.193649, 36.742679]
+      },
+      "properties": {
+        "title": "المرج 2",
+        "title_en": "El Mourouj 2",
+        "marker-color": "#3b82f6",
+        "marker-size": "medium"
+      }
+    }
+  ]
+}

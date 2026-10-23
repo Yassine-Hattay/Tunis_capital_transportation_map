@@ -1,0 +1,1188 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 1,
+        "name": "ساحة برشلونة الجنوبية",
+        "name_en": "Place Barcelone Sud"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18055, 36.7961]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 2,
+        "name": "باب عليوة",
+        "name_en": "Bab Alioua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17981, 36.7858]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 3,
+        "name": "محمد منجو",
+        "name_en": "Mohamed Manachou"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17984, 36.7821]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 4,
+        "name": "13 أوت",
+        "name_en": "13 Aout"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1792, 36.77504]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 5,
+        "name": "محمد علي",
+        "name_en": "Mohamed Ali"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18388, 36.76788]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 6,
+        "name": "القبّارية",
+        "name_en": "Kabaria"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19059, 36.75978]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 7,
+        "name": "ابن سينا",
+        "name_en": "Ibn Sina"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19393, 36.75428]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 8,
+        "name": "حي النور",
+        "name_en": "Cite Ennour"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.20473, 36.7515]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 9,
+        "name": "الورّادية 6",
+        "name_en": "Ouerdia 6"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19906, 36.75424]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 10,
+        "name": "أبو القاسم الشابي",
+        "name_en": "Abou El Kacem Echebbi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.21474, 36.75246]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 1",
+        "station_num": 11,
+        "name": "بن عروس",
+        "name_en": "Ben Arous"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.21898, 36.7554]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 1,
+        "name": "ساحة الجمهورية",
+        "name_en": "Place de la Republique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18081, 36.80649]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 2,
+        "name": "نيلسون مانديلا",
+        "name_en": "Nelson Mandela"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18333, 36.81248]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 3,
+        "name": "محمد الخامس",
+        "name_en": "Mohamed V"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18357, 36.81568]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 4,
+        "name": "فلسطين",
+        "name_en": "Palestine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18206, 36.82001]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 5,
+        "name": "الحدائق",
+        "name_en": "Les Jardins"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18556, 36.82346]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 6,
+        "name": "حي الخضراء",
+        "name_en": "Cite El Khadhra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19037, 36.82923]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 7,
+        "name": "الشباب",
+        "name_en": "La Jeunesse"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18277, 36.83329]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 8,
+        "name": "المدينة الرياضية",
+        "name_en": "Cite Sportive"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18196, 36.83852]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 9,
+        "name": "10 ديسمبر 1948",
+        "name_en": "10 Decembre 1948"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18406, 36.84428]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 10,
+        "name": "مدينة العلوم",
+        "name_en": "Cite des Sciences"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19237, 36.84699]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 11,
+        "name": "الاستقلال",
+        "name_en": "L'Independance"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19591, 36.85441]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 2",
+        "station_num": 12,
+        "name": "أريانة",
+        "name_en": "Ariana"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19748, 36.85979]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 1,
+        "name": "تونس البحرية",
+        "name_en": "Tunis Marine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19283, 36.8002]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 2,
+        "name": "فرحات حشاد",
+        "name_en": "Farhat Hached"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1862, 36.7979]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 2,
+        "name": "ساحة برشلونة الشمالية",
+        "name_en": "Place Barcelone Nord"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17982, 36.79652]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 3,
+        "name": "الحبيب ثامر",
+        "name_en": "Habib Thameur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17864, 36.80131]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 4,
+        "name": "ساحة الجمهورية",
+        "name_en": "Place de la Republique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18081, 36.80649]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 5,
+        "name": "باب الخضراء",
+        "name_en": "Bab El Khadhra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17239, 36.8103]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 6,
+        "name": "باب الجزيرة",
+        "name_en": "Bab Laassal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.16817, 36.81331]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 7,
+        "name": "باب سعدون",
+        "name_en": "Bab Saadoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.16219, 36.80986]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 8,
+        "name": "مفتاح سعد الله",
+        "name_en": "Meftah Saadallah"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.15626, 36.8132]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 9,
+        "name": "الرمّانة",
+        "name_en": "Rommana"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.15085, 36.82365]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 10,
+        "name": "المنار الجامعية",
+        "name_en": "Campus Universitaire El Manar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.14385, 36.82605]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 11,
+        "name": "14 جانفي 2011",
+        "name_en": "14 Janvier 2011"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.13986, 36.82289]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 12,
+        "name": "الياسمينات",
+        "name_en": "Les Jasmins"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.13454, 36.82588]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 3",
+        "station_num": 13,
+        "name": "ابن خلدون",
+        "name_en": "Ibn Khaldoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.13411, 36.83083]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 1,
+        "name": "ساحة برشلونة الشمالية",
+        "name_en": "Place Barcelone Nord"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17982, 36.79652]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 2,
+        "name": "الحبيب ثامر",
+        "name_en": "Habib Thameur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17864, 36.80131]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 3,
+        "name": "ساحة الجمهورية",
+        "name_en": "Place de la Republique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18081, 36.80649]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 4,
+        "name": "باب الخضراء",
+        "name_en": "Bab El Khadhra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17239, 36.8103]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 5,
+        "name": "باب الجزيرة",
+        "name_en": "Bab Laassal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.16817, 36.81331]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 6,
+        "name": "باب سعدون",
+        "name_en": "Bab Saadoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.16219, 36.80986]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 7,
+        "name": "بوشوشة",
+        "name_en": "Bouchoucha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.15026, 36.80953]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 8,
+        "name": "20 مارس 1956",
+        "name_en": "20 Mars 1956"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.14238, 36.80835]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 9,
+        "name": "باردو",
+        "name_en": "Bardo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.13523, 36.80724]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 10,
+        "name": "السعيدة",
+        "name_en": "Essaidia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.12664, 36.80541]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 11,
+        "name": "الحنّادير",
+        "name_en": "Khaznadar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.12177, 36.80421]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 12,
+        "name": "الصناعات التقليدية",
+        "name_en": "L'Artisanat"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.11601, 36.80293]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 13,
+        "name": "دندان",
+        "name_en": "Denden"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.11075, 36.80221]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 14,
+        "name": "منوبة",
+        "name_en": "Manouba"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.10269, 36.80211]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 15,
+        "name": "سليمان كاهيا",
+        "name_en": "Slimene Kehia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.09908, 36.80334]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 16,
+        "name": "منصف باي",
+        "name_en": "Moncef Bey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.09065, 36.80528]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 17,
+        "name": "أبو بكر الرازي",
+        "name_en": "Aboubaker Errazi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.08247, 36.80739]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 18,
+        "name": "القطب التكنولوجي",
+        "name_en": "Pole Technologique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.08053, 36.80811]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 19,
+        "name": "قصر الوردة",
+        "name_en": "Ksar El Warda"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.07461, 36.8092]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 20,
+        "name": "منوبة الجامعية",
+        "name_en": "Campus Universitaire Manouba"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.05981, 36.81396]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 4",
+        "station_num": 21,
+        "name": "خير الدين",
+        "name_en": "Khaireddine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.05678, 36.81533]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 1,
+        "name": "ساحة برشلونة الشمالية",
+        "name_en": "Place Barcelone Nord"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17982, 36.79652]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 2,
+        "name": "الحبيب ثامر",
+        "name_en": "Habib Thameur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17864, 36.80131]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 3,
+        "name": "ساحة الجمهورية",
+        "name_en": "Place de la Republique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18081, 36.80649]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 4,
+        "name": "باب الخضراء",
+        "name_en": "Bab El Khadhra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17239, 36.8103]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 5,
+        "name": "باب الجزيرة",
+        "name_en": "Bab Laassal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.16817, 36.81331]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 6,
+        "name": "باب سعدون",
+        "name_en": "Bab Saadoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.16219, 36.80986]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 7,
+        "name": "مفتاح سعد الله",
+        "name_en": "Meftah Saadallah"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.15626, 36.8132]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 8,
+        "name": "الرمّانة",
+        "name_en": "Rommana"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.15085, 36.82365]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 9,
+        "name": "المنار الجامعية",
+        "name_en": "Campus Universitaire El Manar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.14385, 36.82605]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 10,
+        "name": "14 جانفي 2011",
+        "name_en": "14 Janvier 2011"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.13986, 36.82289]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 11,
+        "name": "الياسمينات",
+        "name_en": "Les Jasmins"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.13454, 36.82588]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 12,
+        "name": "التحرير",
+        "name_en": "Ettaahrir"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.12862, 36.82918]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 13,
+        "name": "العمران الأعلى",
+        "name_en": "El Omrane Superieur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.12411, 36.83049]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 14,
+        "name": "التضامن",
+        "name_en": "Ettadhamen"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.11759, 36.83584]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 5",
+        "station_num": 15,
+        "name": "حي الإنطلاقة",
+        "name_en": "Cite El Intilaka"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.11695, 36.83935]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 1,
+        "name": "تونس البحرية",
+        "name_en": "Tunis Marine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19283, 36.8002]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 2,
+        "name": "فرحات حشاد",
+        "name_en": "Farhat Hached"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1862, 36.7979]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 3,
+        "name": "ساحة برشلونة الجنوبية",
+        "name_en": "Place Barcelone Sud"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18055, 36.7961]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 4,
+        "name": "باب عليوة",
+        "name_en": "Bab Alioua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17981, 36.7858]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 5,
+        "name": "محمد منجو",
+        "name_en": "Mohamed Manachou"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.17984, 36.7821]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 6,
+        "name": "13 أوت",
+        "name_en": "13 Aout"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1792, 36.77504]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 7,
+        "name": "محمد علي",
+        "name_en": "Mohamed Ali"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18388, 36.76788]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 8,
+        "name": "الطاهر الحداد",
+        "name_en": "Taher El Haddad"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18701, 36.76065]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 9,
+        "name": "الغزالي",
+        "name_en": "El Ghazeli"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18765, 36.75466]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 10,
+        "name": "البلدية",
+        "name_en": "Cite Municipale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.18873, 36.74844]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 11,
+        "name": "النسري",
+        "name_en": "Ennesri"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19049, 36.74517]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 12,
+        "name": "المنتزه",
+        "name_en": "El Montazah"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19319, 36.7429]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 13,
+        "name": "المرج 2",
+        "name_en": "El Mourouj 2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.19774, 36.74218]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 14,
+        "name": "المرج 1",
+        "name_en": "El Mourouj 1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.20657, 36.73854]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 15,
+        "name": "المحيط",
+        "name_en": "L'Environnement"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.21038, 36.7331]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 16,
+        "name": "المرج 3",
+        "name_en": "El Mourouj 3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.21073, 36.7287]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 17,
+        "name": "الشهداء",
+        "name_en": "Les Martyrs"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.2121, 36.72364]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line_id": "TGM 6",
+        "station_num": 18,
+        "name": "المرج 4",
+        "name_en": "El Mourouj 4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.21639, 36.71965]
+      }
+    }
+  ]
+}

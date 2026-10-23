@@ -54,14 +54,15 @@
       right: 12px;
       z-index: 100;
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       align-items: flex-start;
     }
 
     #search-wrap {
       flex: 1;
-      min-width: 0;
-      /* Crucial: allows the search bar to shrink on narrow screens */
+      min-width: 140px;
+      /* Crucial: allows the search bar to shrink on narrow screens, but not below a usable width */
       position: relative;
     }
 
@@ -420,12 +421,12 @@
     }
 
     /* ── DATA COLLECTION MODE: Hide existing UI ─────────────────────────────── */
-    #topbar,
-    #routing-panel,
-    #bus-panel,
-    #Ligne-panel,
-    #debug-panel,
-    #coord-picker-panel {
+    body.data-collecting #topbar,
+    body.data-collecting #routing-panel,
+    body.data-collecting #bus-panel,
+    body.data-collecting #Ligne-panel,
+    body.data-collecting #debug-panel,
+    body.data-collecting #coord-picker-panel {
       display: none !important;
     }
 
@@ -653,13 +654,13 @@
     }
 
     /* ── DATA COLLECTION MODE: Mask existing UI (Do not delete) ────────────────── */
-    #topbar,
-    #routing-panel,
-    #bus-panel,
-    #Ligne-panel,
-    #debug-panel,
-    #coord-picker-panel,
-    #panel {
+    body.data-collecting #topbar,
+    body.data-collecting #routing-panel,
+    body.data-collecting #bus-panel,
+    body.data-collecting #Ligne-panel,
+    body.data-collecting #debug-panel,
+    body.data-collecting #coord-picker-panel,
+    body.data-collecting #panel {
       display: none !important;
     }
 
@@ -856,6 +857,337 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
       cursor: pointer;
     }
+
+    .custom-marker-bus {
+      width: 30px;
+      height: 30px;
+      background: #2563eb;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+    }
+
+    /* (removed) old rule that hid the whole #topbar incl. the search bar.
+       Search-only mode is handled by the TRIP PLANNER MODE rules below. */
+
+    /* ═══ TRIP PLANNER MODE ═══════════════════════════════════════════════════
+       Only the search bar is visible. All data-collection / debug UI is hidden
+       unless DEV_UI is on (add ?dev to the URL, or run
+       localStorage.setItem('atlas_dev','1') in the webview inspector).        */
+    body:not(.dev-ui) #ui-toggle-btn,
+    body:not(.dev-ui) #data-collection-panel,
+    body:not(.dev-ui) #save-modal,
+    body:not(.dev-ui) #topbar>.icon-btn,
+    body:not(.dev-ui) #routing-panel,
+    body:not(.dev-ui) #bus-panel,
+    body:not(.dev-ui) #Ligne-panel,
+    body:not(.dev-ui) #debug-panel,
+    body:not(.dev-ui) #coord-picker-panel,
+    body:not(.dev-ui) #coord-debug-panel,
+    body:not(.dev-ui) #panel {
+      display: none !important;
+    }
+
+    #trip-sheet {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 150;
+      display: none;
+      flex-direction: column;
+      max-height: 56vh;
+      background: var(--c-surface);
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, .18);
+      padding: 8px 14px calc(12px + env(safe-area-inset-bottom));
+    }
+
+    #trip-sheet.open {
+      display: flex;
+    }
+
+    #trip-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--c-border);
+      margin: 2px auto 8px;
+      flex: none;
+    }
+
+    #trip-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      flex: none;
+    }
+
+    #trip-title {
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    #trip-sub {
+      font-size: 12px;
+      color: var(--c-muted);
+      margin: 2px 0 8px;
+    }
+
+    #trip-close {
+      background: none;
+      border: none;
+      color: var(--c-muted);
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+
+    #trip-list {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      flex: 1;
+    }
+
+    .trip-msg {
+      padding: 18px 4px;
+      text-align: center;
+      color: var(--c-muted);
+      font-size: 13px;
+    }
+
+    .trip-card {
+      border: 1.5px solid var(--c-border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      background: var(--c-bg);
+    }
+
+    .trip-card.sel {
+      border-color: var(--c-accent2);
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(129, 140, 248, .25);
+    }
+
+    .trip-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .trip-time {
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .trip-eta {
+      font-size: 12px;
+      color: var(--c-muted);
+    }
+
+    .trip-chips {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      margin: 6px 0 4px;
+    }
+
+    .chip {
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .chip-walk {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .chip-or {
+      font-size: 11px;
+      font-style: italic;
+      color: var(--c-muted);
+      padding: 0 2px;
+    }
+
+    /* ── Language Toggle Button ─────────────────────────────────────────── */
+    #lang-toggle {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: var(--r);
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
+      color: var(--c-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
+      order: 1;
+      /* Pushes it to the far right in LTR (English) */
+    }
+
+    /* In RTL (Arabic), the start of the flex container is the right side. 
+   Setting order to -1 makes it the first visual item, keeping it on the right. */
+    html[dir="rtl"] #lang-toggle {
+      order: -1;
+    }
+
+    /* ── RTL Support (Arabic) ───────────────────────────────────────────── */
+    html[dir="rtl"] body {
+      font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+    }
+
+    html[dir="rtl"] .trip-card,
+    html[dir="rtl"] .trip-title,
+    html[dir="rtl"] .trip-sub,
+    html[dir="rtl"] .trip-mini,
+    html[dir="rtl"] .trip-subline,
+    html[dir="rtl"] .trip-steps,
+    html[dir="rtl"] .trip-foot {
+      text-align: right;
+    }
+
+    html[dir="rtl"] .step {
+      flex-direction: row-reverse !important;
+      text-align: right;
+    }
+
+    html[dir="rtl"] .step>div {
+      flex: 1;
+      text-align: right;
+    }
+
+    html[dir="rtl"] .step .ico {
+      width: 22px !important;
+      text-align: center !important;
+      margin-left: 10px !important;
+      margin-right: 0 !important;
+      order: 2 !important;
+    }
+
+    html[dir="rtl"] .step small {
+      text-align: right;
+      display: block;
+    }
+
+    .chip-sep {
+      color: var(--c-muted);
+      font-size: 12px;
+    }
+
+    .trip-subline {
+      font-size: 12px;
+      color: var(--c-muted);
+    }
+
+    .tag {
+      background: #dcfce7;
+      color: #166534;
+      border-radius: 6px;
+      padding: 1px 6px;
+      font-size: 11px;
+    }
+
+    .trip-steps {
+      margin-top: 10px;
+      border-top: 1px solid var(--c-border);
+      padding-top: 8px;
+    }
+
+    .step {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+      padding: 5px 0;
+    }
+
+    .step .ico {
+      width: 22px;
+      text-align: center;
+      flex: none;
+    }
+
+    .step small {
+      color: var(--c-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    #trip-handle {
+      cursor: pointer;
+      padding: 6px 0;
+      background-clip: content-box;
+      width: 60px;
+      height: 16px;
+      box-sizing: border-box;
+      margin: 0 auto 2px;
+      background: linear-gradient(var(--c-border), var(--c-border)) center / 40px 4px no-repeat;
+      border-radius: 0;
+    }
+
+    #trip-actions {
+      display: flex;
+      align-items: center;
+      flex: none;
+    }
+
+    #trip-toggle {
+      background: none;
+      border: none;
+      color: var(--c-muted);
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 8px;
+      transition: transform .2s;
+    }
+
+    #trip-sheet.collapsed #trip-toggle {
+      transform: rotate(180deg);
+    }
+
+    #trip-mini {
+      display: none;
+      font-size: 12px;
+      color: var(--c-muted);
+      margin: 2px 0 4px;
+    }
+
+    #trip-sheet.collapsed #trip-list,
+    #trip-sheet.collapsed #trip-sub {
+      display: none;
+    }
+
+    #trip-sheet.collapsed #trip-mini {
+      display: block;
+    }
+
+    .trip-foot {
+      text-align: center;
+      font-size: 11px;
+      color: var(--c-muted);
+      padding: 4px 0 2px;
+    }
   </style>
 </head>
 
@@ -910,6 +1242,7 @@
   </div>
 
   <div id="topbar">
+    <button id="lang-toggle" title="English / العربية">EN</button>
     <div id="search-wrap">
       <div id="search-box">
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
@@ -968,6 +1301,8 @@
       onclick="document.getElementById('coord-debug-panel').style.display='block'">🔢</button>
 
     <button class="icon-btn" id="btn-picker" title="Coordinate Picker">📌</button>
+
+    <button class="icon-btn" id="btn-satellite" title="Satellite View">🛰️</button>
   </div>
   <div id="debug-panel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -1079,6 +1414,31 @@
     <div id="coord-debug-status"
       style="margin-top:8px;font-size:11px;color:var(--c-muted);min-height:14px;text-align:center"></div>
   </div>
+  <!-- ── TRIP PLANNER SHEET ─────────────────────────────────────────────────── -->
+  <div id="trip-sheet">
+    <div id="trip-handle"></div>
+    <div id="trip-head">
+      <div>
+        <div id="trip-title"></div>
+        <div id="trip-sub"></div>
+        <div id="trip-mini"></div>
+      </div>
+      <div id="trip-actions">
+        <button id="trip-toggle" aria-label="Hide / show routes">⌄</button>
+        <button id="trip-close" aria-label="Clear route">×</button>
+      </div>
+    </div>
+    <select id="trip-sort"
+      style="width:100%; padding:8px 10px; border:1px solid var(--c-border); border-radius:8px; background:var(--c-bg); color:var(--c-text); font-size:13px; margin-bottom:8px; outline:none;">
+      <option value="fastest">⚡ Fastest overall (Default)</option>
+      <option value="least_walking">🚶 Least walking</option>
+      <option value="least_transfers">🔄 Fewest transfers</option>
+      <option value="prefer_metro">🚊 Prefer Métro</option>
+      <option value="prefer_bus">🚌 Prefer Bus</option>
+      <option value="prefer_rfr">🚆 Prefer RFR</option>
+    </select>
+    <div id="trip-list"></div>
+  </div>
   <div id="toast"></div>
 
   <div id="panel">
@@ -1102,7 +1462,157 @@
     let pickedCoords = [];
     let pickedMarkers = [];
     let clickMarker = null; // Tracks the click-to-coordinates marker
-    const PMTILES_PATH = '/data/tunis.pmtiles';
+    const PMTILES_PATH = '/data/pmtiles/tunis.pmtiles';
+    const SAT_PMTILES_PATH = '/data/pmtiles/satellite_tunis.pmtiles';
+    let satelliteVisible = false;
+
+    // Dev UI (data collection, debug, layer toggles). Off by default.
+    const DEV_UI = new URLSearchParams(location.search).has('dev') || localStorage.getItem('atlas_dev') === '1';
+
+    // ── LANGUAGE SYSTEM ──────────────────────────────────────────────────
+    let LANG = localStorage.getItem('atlas_lang') || 'ar';
+    const T = {
+      ar: {
+        search_placeholder: 'وين تحب تمشي؟',
+        meters: 'م',
+        km: 'كم',
+        min: 'دق',
+        h: 'س',
+        or: 'أو',
+        last_recorded_stop: 'آخر محطة',
+        bench: 'مقعد',
+        stop: 'محطة',
+        finding: 'جاري البحث عن أفضل طريق…',
+        to: 'إلى',
+        from_location: 'من موقعك',
+        from_test: 'من 📍 موقع تجريبي',
+        tap_show: 'اضغط ⌄ لإظهار المسارات',
+        best: 'الأفضل',
+        walk: 'مشي',
+        transfer_one: 'تحويل واحد',
+        transfer_many: '{n} تحويلات',
+        no_transfer: 'بدون تحويل',
+        walking_only: 'مشي فقط',
+        arrive: 'الوصول',
+        at: 'في',
+        board: 'اصعد',
+        major_station: '(محطة رئيسية)',
+        wait: 'انتظار ≈',
+        stops_one: 'محطة واحدة',
+        stops_many: '{n} محطات',
+        on_board: 'على متن',
+        get_off: 'انزل في',
+        estimates: 'تقديرات فقط — لا توجد جداول مباشرة. أوقات الانتظار متوسطة.',
+        no_connection: 'لا يوجد اتصال بالحافلة أو المترو أو RFR بالقرب من الطرفين ({km} كم بينهما).',
+        no_data: 'لا توجد بيانات نقل. تحقق من مجلد البيانات.',
+        data_failed: 'فشل تحميل بيانات النقل.',
+        gps_failed: 'تعذر الحصول على موقعك. شغّل GPS وحاول مرة أخرى.',
+        start_moved: '📍 تم تغيير نقطة الانطلاق',
+        location_finding: '📍 جاري البحث عن موقعك...',
+        location_found: '✅ تم العثور على الموقع!',
+        location_denied: '🚫 تم رفض الوصول إلى الموقع. يرجى تفعيله من إعدادات الهاتف.',
+        location_unavailable: '📡 الموقع غير متاح. GPS يعمل أفضل في الخارج.',
+        location_timeout: '⏳ انتهت مهلة الموقع. حاول مرة أخرى.',
+        device_no_gps: '❌ جهازك لا يدعم تحديد الموقع.',
+        sort_fastest: '⚡ الأسرع (افتراضي)',
+        sort_least_walk: '🚶 أقل مشي',
+        sort_least_transfers: '🔄 أقل تحويلات',
+        sort_prefer_metro: '🚊 تفضيل المترو',
+        sort_prefer_bus: '🚌 تفضيل الحافلة',
+        sort_prefer_rfr: '🚆 تفضيل RFR',
+        your_location: 'موقعك',
+        bus: 'حافلة',
+        metro: 'مترو',
+        rfr: 'قطار'
+      },
+      en: {
+        search_placeholder: 'Where do you want to go?',
+        meters: 'm',
+        km: 'km',
+        min: 'min',
+        h: 'h',
+        or: 'or',
+        last_recorded_stop: 'last recorded stop',
+        bench: 'bench',
+        stop: 'stop',
+        finding: 'Finding the best way…',
+        to: 'To',
+        from_location: 'From your location',
+        from_test: 'From 📍 test location',
+        tap_show: 'tap ⌄ to show routes',
+        best: 'Best',
+        walk: 'Walk',
+        transfer_one: '1 transfer',
+        transfer_many: '{n} transfers',
+        no_transfer: 'no transfer',
+        walking_only: 'Walking only',
+        arrive: 'arrive',
+        at: 'at',
+        or: 'or',
+        board: 'Board',
+        major_station: '(major station)',
+        wait: 'wait ≈',
+        stops_one: '1 stop',
+        stops_many: '{n} stops',
+        on_board: 'on board',
+        get_off: 'get off at',
+        estimates: 'Estimates only — no live schedules. Waits are averages.',
+        no_connection: 'No bus, métro or RFR connection found near both ends ({km} km apart).',
+        no_data: 'No transit data found. Check the data folder paths.',
+        data_failed: 'Transit data failed to load.',
+        gps_failed: 'Couldn\'t get your location. Turn on GPS and try again.',
+        start_moved: '📍 Start point moved',
+        location_finding: '📍 Finding your location...',
+        location_found: '✅ Location found!',
+        location_denied: '🚫 Location access denied. Please enable it in your phone settings.',
+        location_unavailable: '📡 Location unavailable. GPS works best outdoors.',
+        location_timeout: '⏳ Location request timed out. Try again.',
+        device_no_gps: '❌ Geolocation is not supported by this device.',
+        sort_fastest: '⚡ Fastest overall (Default)',
+        sort_least_walk: '🚶 Least walking',
+        sort_least_transfers: '🔄 Fewest transfers',
+        sort_prefer_metro: '🚊 Prefer Métro',
+        sort_prefer_bus: '🚌 Prefer Bus',
+        sort_prefer_rfr: '🚆 Prefer RFR',
+        your_location: 'your location',
+        bus: 'Bus',
+        metro: 'Métro',
+        rfr: 'RFR'
+      }
+    };
+    function t(key, params) {
+      let s = (T[LANG] && T[LANG][key]) || T.en[key] || key;
+      if (params) Object.keys(params).forEach(k => { s = s.replace(`{${k}}`, params[k]); });
+      return s;
+    }
+    function setLang(lang) {
+      LANG = lang;
+      localStorage.setItem('atlas_lang', lang);
+      document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', lang);
+      const btn = document.getElementById('lang-toggle');
+      if (btn) btn.textContent = lang === 'ar' ? 'EN' : 'ع';
+      const input = document.getElementById('search-input');
+      if (input) input.placeholder = t('search_placeholder');
+      // Re-render trip sheet if open (safely calls global refresh if available)
+      if (typeof window.refreshTripUI === 'function') window.refreshTripUI();
+      // Update sort dropdown if exists
+      const sort = document.getElementById('trip-sort');
+      if (sort) {
+        const prev = sort.value;
+        sort.innerHTML = `
+      <option value="fastest">${t('sort_fastest')}</option>
+      <option value="least_walking">${t('sort_least_walk')}</option>
+      <option value="least_transfers">${t('sort_least_transfers')}</option>
+      <option value="prefer_metro">${t('sort_prefer_metro')}</option>
+      <option value="prefer_bus">${t('sort_prefer_bus')}</option>
+      <option value="prefer_rfr">${t('sort_prefer_rfr')}</option>`;
+        sort.value = prev;
+      }
+    }
+    // Apply saved language on load
+    document.documentElement.setAttribute('dir', LANG === 'ar' ? 'rtl' : 'ltr');
+    document.documentElement.setAttribute('lang', LANG); document.body.classList.toggle('dev-ui', DEV_UI);
 
     // Bus routes state
     let selectedRoutes = new Set();
@@ -1124,7 +1634,13 @@
       content.scrollTop = content.scrollHeight;
     }
 
-    // ── PMTILES RANGE FETCH POLYFILL (STABLE) ─────────────────────────────────
+    // ── PMTILES RANGE FETCH POLYFILL (STABLE, MULTI-FILE) ──────────────────────
+    // Caches each .pmtiles file separately, keyed by its own URL, so the
+    // vector basemap (tunis.pmtiles) and the satellite raster
+    // (satellite_tunis.pmtiles) can both be cached side by side without
+    // overwriting each other.
+    const _fileCaches = {};
+    const _fetchPromises = {};
     const _origFetch = window.fetch;
     window.fetch = async function (input, init) {
       const url = typeof input === 'string' ? input : (input?.url || String(input));
@@ -1133,33 +1649,34 @@
         if (typeof init.headers.get === 'function') range = init.headers.get('Range');
         else range = init.headers['Range'] || init.headers['range'];
       }
-      if (range && url.includes('tunis.pmtiles')) {
+      if (range && url.endsWith('.pmtiles')) {
         const match = range.match(/bytes=(\d+)-(\d+)/);
         if (match) {
-          if (!_fileCache) {
-            if (!_fetchPromise) {
-              _fetchPromise = (async () => {
-                dbg('📥 Caching PMTiles...');
+          if (!_fileCaches[url]) {
+            if (!_fetchPromises[url]) {
+              _fetchPromises[url] = (async () => {
+                dbg('📥 Caching PMTiles: ' + url.split('/').pop());
                 try {
                   const r = await _origFetch.call(window, url);
                   if (!r.ok) throw new Error('HTTP ' + r.status);
                   const buf = await r.arrayBuffer();
-                  _fileCache = buf;
-                  dbg('✅ PMTiles Cached');
-                  return _fileCache;
+                  _fileCaches[url] = buf;
+                  dbg('✅ PMTiles Cached: ' + url.split('/').pop());
+                  return buf;
                 } catch (e) {
                   dbg('❌ Cache Failed: ' + e.message);
-                  _fetchPromise = null;
+                  delete _fetchPromises[url];
                   throw e;
                 }
               })();
             }
-            await _fetchPromise;
+            await _fetchPromises[url];
           }
-          if (_fileCache) {
+          const cached = _fileCaches[url];
+          if (cached) {
             const start = parseInt(match[1]), end = parseInt(match[2]);
-            const slice = _fileCache.slice(start, end + 1);
-            return new Response(slice, { status: 206, headers: { 'Content-Range': `bytes ${start}-${end}/${_fileCache.byteLength}`, 'Content-Length': String(slice.byteLength), 'Content-Type': 'application/octet-stream' } });
+            const slice = cached.slice(start, end + 1);
+            return new Response(slice, { status: 206, headers: { 'Content-Range': `bytes ${start}-${end}/${cached.byteLength}`, 'Content-Length': String(slice.byteLength), 'Content-Type': 'application/octet-stream' } });
           }
         }
       }
@@ -1187,12 +1704,17 @@
         boundary: '#bbbbbb', boundaryDisputed: '#cc9999', poiIcon: '#777777', ferry: '#88b0d0', aerialway: '#aaaaaa', halo: '#f5f3f0', haloLight: 'rgba(245,243,240,0.9)'
       };
 
-      const PMTILES_URL = 'pmtiles://' + new URL('./data/tunis.pmtiles', window.location.href).href;
+      const PMTILES_URL = 'pmtiles://' + new URL('./data/pmtiles/tunis.pmtiles', window.location.href).href;
+      const SAT_PMTILES_URL = 'pmtiles://' + new URL('./data/pmtiles/satellite_tunis.pmtiles', window.location.href).href;
       const spriteUrl = new URL('./sprites/sprites', window.location.href).href;
       const glyphsUrl = new URL('./font', window.location.href).href + '/{fontstack}/{range}.pbf';
 
       const style = {
-        version: 8, name: "Tunis Professional", sources: { omt: { type: 'vector', url: PMTILES_URL } },
+        version: 8, name: "Tunis Professional",
+        sources: {
+          omt: { type: 'vector', url: PMTILES_URL },
+          sat: { type: 'raster', url: SAT_PMTILES_URL, tileSize: 256 }
+        },
         sprite: spriteUrl, glyphs: glyphsUrl, layers: []
       };
 
@@ -1365,6 +1887,15 @@
       style.layers.push({ id: 'place-labels', type: 'symbol', source: 'omt', 'source-layer': 'place_labels', layout: { 'text-field': '{name}', 'text-font': ['Noto Sans Bold'], 'text-size': { stops: [[7, 12], [10, 16]] } }, paint: { 'text-color': c.placeLabel, 'text-halo-color': c.halo, 'text-halo-width': 1.5 } });
       style.layers.push({ id: 'street-labels', type: 'symbol', source: 'omt', 'source-layer': 'street_labels', minzoom: 13, layout: { 'symbol-placement': 'line', 'text-field': '{name}', 'text-font': ['Noto Sans Regular'], 'text-size': 11 }, paint: { 'text-color': c.roadLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
 
+      // Satellite overlay: sits above the entire cartoon basemap so it fully
+      // covers it when shown, but stays under anything added later via
+      // map.addLayer() (routes, metro lines, markers), so those keep showing
+      // on top of the imagery. Hidden by default; toggled via btn-satellite.
+      style.layers.push({
+        id: 'satellite-layer', type: 'raster', source: 'sat',
+        layout: { visibility: 'none' }, paint: { 'raster-fade-duration': 0 }
+      });
+
       return style;
     }
 
@@ -1408,11 +1939,13 @@
       dbg('🚀 Booting Atlas...');
       try {
         maplibregl.setRTLTextPlugin('./lib/mapbox-gl-rtl-text.js', null, true);
-        const pmtilesUrl = new URL('./data/tunis.pmtiles', window.location.href).href;
+        const pmtilesUrl = new URL('./data/pmtiles/tunis.pmtiles', window.location.href).href;
+        const satPmtilesUrl = new URL('./data/pmtiles/satellite_tunis.pmtiles', window.location.href).href;
         if (!_protocolAdded) {
           const protocol = new pmtiles.Protocol();
           maplibregl.addProtocol('pmtiles', protocol.tile);
           protocol.add(new pmtiles.PMTiles(pmtilesUrl));
+          protocol.add(new pmtiles.PMTiles(satPmtilesUrl));
           _protocolAdded = true;
           dbg('✅ Protocol Ready');
         }
@@ -1427,525 +1960,528 @@
         map.on('load', () => {
           dbg('✓ MAP LOADED');
           map.resize();
+          initTransitPlanner();
           dbg(`🔍 Initial Zoom: ${map.getZoom().toFixed(2)}`);
 
           // Auto-run rail debug after tiles settle so we can see what
           // classes the public_transport layer actually contains here.
           setTimeout(() => debugRails(), 1800);
 
-          // ── MANUALLY TRACED METRO ROUTES ───────────────────────────────────
-          // These files contain hand-picked coordinates traced directly on the
-          // map. Each is a GeoJSON FeatureCollection with one LineString.
-          //
-          // ⚠️  DEPLOYMENT: copy each .json to:
-          //     android/app/src/main/assets/public/data/
-          // "Unexpected end of JSON input" means the file is missing there.
-          //
-          // Coordinate convention: GeoJSON = [longitude, latitude].
-          // When copying from the map (which shows lat, lon), reverse them.
-          //
-          // Add more lines below — duplicate this block and change the
-          // filename, source id, layer id, and colour.
-          fetch('./data/RFR_Tunis_Ville_Bougatfa_Sidi Hassine.json')
-            .then(res => {
-              if (!res.ok) throw new Error(`HTTP ${res.status}`);
-              return res.json();
-            })
-            .then(data => {
-              const feat = data.features[0];
-              const nPts = feat.geometry.coordinates.length;
-              dbg(`🚇 Metro 1 Departure — ${nPts} points loaded`);
+          if (DEV_UI) { // ← legacy full-network layers: dev only (paths below may be stale after the data/ reorganisation)
+            // ── MANUALLY TRACED METRO ROUTES ───────────────────────────────────
+            // These files contain hand-picked coordinates traced directly on the
+            // map. Each is a GeoJSON FeatureCollection with one LineString.
+            //
+            // ⚠️  DEPLOYMENT: copy each .json to:
+            //     android/app/src/main/assets/public/data/
+            // "Unexpected end of JSON input" means the file is missing there.
+            //
+            // Coordinate convention: GeoJSON = [longitude, latitude].
+            // When copying from the map (which shows lat, lon), reverse them.
+            //
+            // Add more lines below — duplicate this block and change the
+            // filename, source id, layer id, and colour.
+            fetch('./data/RFR_data/RFR_Tunis_Ville_Bougatfa_Sidi Hassine.json')
+              .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+              })
+              .then(data => {
+                const feat = data.features[0];
+                const nPts = feat.geometry.coordinates.length;
+                dbg(`🚇 Metro 1 Departure — ${nPts} points loaded`);
 
-              map.addSource('metro-1-departure', { type: 'geojson', data });
-              map.addLayer({
-                id: 'metro-1-departure-line',
-                type: 'line',
-                source: 'metro-1-departure',
-                layout: { 'line-cap': 'round', 'line-join': 'round' },
-                paint: {
-                  'line-color': '#ef4444',
-                  'line-width': { stops: [[10, 2], [14, 4], [17, 6]] },
-                  'line-opacity': 0.9
-                }
-              });
-              dbg('✅ Metro 1 Departure rendered (red)');
-            })
-            .catch(err => dbg(`❌ Metro 1 Departure: ${err.message} — check file is in assets/public/data/`));
+                map.addSource('metro-1-departure', { type: 'geojson', data });
+                map.addLayer({
+                  id: 'metro-1-departure-line',
+                  type: 'line',
+                  source: 'metro-1-departure',
+                  layout: { 'line-cap': 'round', 'line-join': 'round' },
+                  paint: {
+                    'line-color': '#ef4444',
+                    'line-width': { stops: [[10, 2], [14, 4], [17, 6]] },
+                    'line-opacity': 0.9
+                  }
+                });
+                dbg('✅ Metro 1 Departure rendered (red)');
+              })
+              .catch(err => dbg(`❌ Metro 1 Departure: ${err.message} — check file is in assets/public/data/`));
 
 
-          // ── BUS ROUTES INTEGRATION ──────────────────────────────────────────
-          fetch('./data/routes.json')
-            .then(res => res.json())
-            .then(data => {
-              // ── NEW FORMAT: data.paths[] instead of GeoJSON FeatureCollection ──
-              // Each path has: id, name, branch, outcome, destination, decisions,
-              // points[]{n, label, boarding_lat, boarding_lng, dropping_lat, dropping_lng}
-              //
-              // We convert to GeoJSON on the fly so every downstream layer, filter,
-              // and toggleRoute() call stays completely unchanged (they all read
-              // line_id from feature properties).
-              //
-              // Coordinate strategy: chain boarding point of each stop in order,
-              // then append the dropping point of the last stop so the line extends
-              // to where the passenger actually alights at the destination.
-              const features = data.paths.map(path => {
-                // Filter out any points with missing boarding coordinates
-                // (e.g. B1 in Branch B was never assigned a location in the
-                // source mermaid diagram — those points have null boarding_lat/lng)
-                const validPoints = path.points.filter(
-                  pt => pt.boarding_lat != null && pt.boarding_lng != null
-                );
-                const coords = validPoints.map(pt => [pt.boarding_lng, pt.boarding_lat]);
-                const last = validPoints[validPoints.length - 1];
-                if (last && last.dropping_lat != null && last.dropping_lng != null) {
-                  coords.push([last.dropping_lng, last.dropping_lat]);
-                }
-                return {
-                  type: 'Feature',
-                  properties: {
-                    line_id: path.id,          // P001, P002 … — used by filter
-                    name: path.name,
-                    branch: path.branch,
-                    outcome: path.outcome,
-                    destination: path.destination
-                  },
-                  geometry: { type: 'LineString', coordinates: coords }
-                };
-                // Drop any path that ended up with fewer than 2 valid coords
-                // (extremely unlikely but would also crash MapLibre)
-              }).filter(f => f.geometry.coordinates.length >= 2);
-              const geojson = { type: 'FeatureCollection', features };
+            // ── BUS ROUTES INTEGRATION ──────────────────────────────────────────
+            fetch('./data/routes.json')
+              .then(res => res.json())
+              .then(data => {
+                // ── NEW FORMAT: data.paths[] instead of GeoJSON FeatureCollection ──
+                // Each path has: id, name, branch, outcome, destination, decisions,
+                // points[]{n, label, boarding_lat, boarding_lng, dropping_lat, dropping_lng}
+                //
+                // We convert to GeoJSON on the fly so every downstream layer, filter,
+                // and toggleRoute() call stays completely unchanged (they all read
+                // line_id from feature properties).
+                //
+                // Coordinate strategy: chain boarding point of each stop in order,
+                // then append the dropping point of the last stop so the line extends
+                // to where the passenger actually alights at the destination.
+                const features = data.paths.map(path => {
+                  // Filter out any points with missing boarding coordinates
+                  // (e.g. B1 in Branch B was never assigned a location in the
+                  // source mermaid diagram — those points have null boarding_lat/lng)
+                  const validPoints = path.points.filter(
+                    pt => pt.boarding_lat != null && pt.boarding_lng != null
+                  );
+                  const coords = validPoints.map(pt => [pt.boarding_lng, pt.boarding_lat]);
+                  const last = validPoints[validPoints.length - 1];
+                  if (last && last.dropping_lat != null && last.dropping_lng != null) {
+                    coords.push([last.dropping_lng, last.dropping_lat]);
+                  }
+                  return {
+                    type: 'Feature',
+                    properties: {
+                      line_id: path.id,          // P001, P002 … — used by filter
+                      name: path.name,
+                      branch: path.branch,
+                      outcome: path.outcome,
+                      destination: path.destination
+                    },
+                    geometry: { type: 'LineString', coordinates: coords }
+                  };
+                  // Drop any path that ended up with fewer than 2 valid coords
+                  // (extremely unlikely but would also crash MapLibre)
+                }).filter(f => f.geometry.coordinates.length >= 2);
+                const geojson = { type: 'FeatureCollection', features };
 
-              dbg(`🚌 Loaded ${features.length} bus routes (${data.total_paths} paths, from ${data.generated_from})`);
+                dbg(`🚌 Loaded ${features.length} bus routes (${data.total_paths} paths, from ${data.generated_from})`);
 
-              // Build the sorted list of path IDs for the checkbox UI
-              availableRoutes = features.map(f => f.properties.line_id);
-              // Preserve original order from the file (P001, P002 … already sorted)
+                // Build the sorted list of path IDs for the checkbox UI
+                availableRoutes = features.map(f => f.properties.line_id);
+                // Preserve original order from the file (P001, P002 … already sorted)
 
-              // Populate the checkbox panel — show full path name, not bare "Line X"
-              const listEl = document.getElementById('bus-route-list');
-              listEl.innerHTML = features.map(f => {
-                const p = f.properties;
-                const id = p.line_id;
-                // Colour-code by branch for quick scanning
-                const branchColors = { A: '#818cf8', B: '#4ade80', C: '#fb923c', D: '#f472b6', E: '#38bdf8' };
-                const dot = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${branchColors[p.branch] || '#aaa'};margin-right:6px;flex-shrink:0"></span>`;
-                return `
+                // Populate the checkbox panel — show full path name, not bare "Line X"
+                const listEl = document.getElementById('bus-route-list');
+                listEl.innerHTML = features.map(f => {
+                  const p = f.properties;
+                  const id = p.line_id;
+                  // Colour-code by branch for quick scanning
+                  const branchColors = { A: '#818cf8', B: '#4ade80', C: '#fb923c', D: '#f472b6', E: '#38bdf8' };
+                  const dot = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${branchColors[p.branch] || '#aaa'};margin-right:6px;flex-shrink:0"></span>`;
+                  return `
                   <div class="bus-route-item">
                     <input type="checkbox" id="route-${id}" value="${id}" onchange="toggleRoute('${id}')">
                     <label for="route-${id}" style="display:flex;align-items:center;gap:2px;font-size:12px">
                       ${dot}${p.name}
                     </label>
                   </div>`;
-              }).join('');
+                }).join('');
 
-              // Add GeoJSON source — all existing layer/filter code reads from here unchanged
-              map.addSource('bus-routes', { type: 'geojson', data: geojson });
+                // Add GeoJSON source — all existing layer/filter code reads from here unchanged
+                map.addSource('bus-routes', { type: 'geojson', data: geojson });
 
-              // 1. Draw the colored lines
-              map.addLayer({
-                id: 'bus-routes-line',
-                type: 'line',
-                source: 'bus-routes',
-                paint: {
-                  'line-color': '#818cf8',
-                  'line-width': 3,
-                  'line-opacity': 0.8
-                }
-              });
+                // 1. Draw the colored lines
+                map.addLayer({
+                  id: 'bus-routes-line',
+                  type: 'line',
+                  source: 'bus-routes',
+                  paint: {
+                    'line-color': '#818cf8',
+                    'line-width': 3,
+                    'line-opacity': 0.8
+                  }
+                });
 
-              // 2. Add directional arrows along the line
-              map.addLayer({
-                id: 'bus-routes-arrows',
-                type: 'symbol',
-                source: 'bus-routes',
-                layout: {
-                  'symbol-placement': 'line',
-                  'text-field': '→',
-                  'text-size': 16,
-                  'text-allow-overlap': true,
-                  'text-offset': [0, -0.6]
-                },
-                paint: {
-                  'text-color': '#818cf8',
-                  'text-halo-color': '#ffffff',
-                  'text-halo-width': 1.5
-                }
-              });
+                // 2. Add directional arrows along the line
+                map.addLayer({
+                  id: 'bus-routes-arrows',
+                  type: 'symbol',
+                  source: 'bus-routes',
+                  layout: {
+                    'symbol-placement': 'line',
+                    'text-field': '→',
+                    'text-size': 16,
+                    'text-allow-overlap': true,
+                    'text-offset': [0, -0.6]
+                  },
+                  paint: {
+                    'text-color': '#818cf8',
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 1.5
+                  }
+                });
 
-              // 3. Add the path-name labels hovering near the route
-              // (was: line_id short code — now shows path id P001… because that's
-              //  what line_id is in the new format; swap to 'name' for full label)
-              map.addLayer({
-                id: 'bus-routes-labels',
-                type: 'symbol',
-                source: 'bus-routes',
-                layout: {
-                  'symbol-placement': 'line',
-                  'text-field': ['get', 'line_id'],
-                  'text-font': ['Noto Sans Bold'],
-                  'text-size': 12,
-                  'text-allow-overlap': true,
-                  'text-offset': [0, 1.2]
-                },
-                paint: {
-                  'text-color': '#ffffff',
-                  'text-halo-color': '#818cf8',
-                  'text-halo-width': 2
-                }
-              });
+                // 3. Add the path-name labels hovering near the route
+                // (was: line_id short code — now shows path id P001… because that's
+                //  what line_id is in the new format; swap to 'name' for full label)
+                map.addLayer({
+                  id: 'bus-routes-labels',
+                  type: 'symbol',
+                  source: 'bus-routes',
+                  layout: {
+                    'symbol-placement': 'line',
+                    'text-field': ['get', 'line_id'],
+                    'text-font': ['Noto Sans Bold'],
+                    'text-size': 12,
+                    'text-allow-overlap': true,
+                    'text-offset': [0, 1.2]
+                  },
+                  paint: {
+                    'text-color': '#ffffff',
+                    'text-halo-color': '#818cf8',
+                    'text-halo-width': 2
+                  }
+                });
 
-              // Initially hide all routes until the user selects them
-              updateRouteFilter();
-            })
-            .catch(err => dbg('❌ Failed to load bus routes: ' + err.message));
+                // Initially hide all routes until the user selects them
+                updateRouteFilter();
+              })
+              .catch(err => dbg('❌ Failed to load bus routes: ' + err.message));
 
-          // ── STOPS.GEOJSON INTEGRATION ─────────────────────────────────────
-          fetch('./data/stops.json')
-            .then(res => {
-              if (!res.ok) throw new Error('stops.json not found in /data/');
-              return res.json();
-            })
-            .then(data => {
-              dbg(`🚏 Loaded ${data.features.length} stops from stops.json`);
+            // ── STOPS.GEOJSON INTEGRATION ─────────────────────────────────────
+            fetch('./data/stops.json')
+              .then(res => {
+                if (!res.ok) throw new Error('stops.json not found in /data/');
+                return res.json();
+              })
+              .then(data => {
+                dbg(`🚏 Loaded ${data.features.length} stops from stops.json`);
 
-              map.addSource('stops-data', {
-                type: 'geojson',
-                data: data
-              });
+                map.addSource('stops-data', {
+                  type: 'geojson',
+                  data: data
+                });
 
-              // 1. Regular Stops (Small Orange Circles)
-              map.addLayer({
-                id: 'regular-stops',
-                type: 'circle',
-                source: 'stops-data',
-                filter: ['!=', ['get', 'ticket_booth'], true],
-                paint: {
-                  'circle-radius': 4,
-                  'circle-color': '#f59e0b', // Orange
-                  'circle-stroke-width': 1,
-                  'circle-stroke-color': '#ffffff'
-                }
-              });
+                // 1. Regular Stops (Small Orange Circles)
+                map.addLayer({
+                  id: 'regular-stops',
+                  type: 'circle',
+                  source: 'stops-data',
+                  filter: ['!=', ['get', 'ticket_booth'], true],
+                  paint: {
+                    'circle-radius': 4,
+                    'circle-color': '#f59e0b', // Orange
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#ffffff'
+                  }
+                });
 
-              // 2. Ticket Booths (Slightly Larger Green Circles)
-              map.addLayer({
-                id: 'ticket-booths',
-                type: 'circle',
-                source: 'stops-data',
-                filter: ['==', ['get', 'ticket_booth'], true],
-                paint: {
-                  'circle-radius': 7,
-                  'circle-color': '#10b981', // Green
-                  'circle-stroke-width': 1.5,
-                  'circle-stroke-color': '#ffffff'
-                }
-              });
+                // 2. Ticket Booths (Slightly Larger Green Circles)
+                map.addLayer({
+                  id: 'ticket-booths',
+                  type: 'circle',
+                  source: 'stops-data',
+                  filter: ['==', ['get', 'ticket_booth'], true],
+                  paint: {
+                    'circle-radius': 7,
+                    'circle-color': '#10b981', // Green
+                    'circle-stroke-width': 1.5,
+                    'circle-stroke-color': '#ffffff'
+                  }
+                });
 
-              // 3. Stop Labels (Only show when zoomed in closely to prevent clutter)
-              map.addLayer({
-                id: 'stops-labels',
-                type: 'symbol',
-                source: 'stops-data',
-                minzoom: 15, // Hides text until you zoom in close
-                layout: {
-                  'text-field': ['get', 'name'],
-                  'text-font': ['Noto Sans Regular'],
-                  'text-size': 10,
-                  'text-offset': [0, 1.2],
-                  'text-anchor': 'top',
-                  'text-allow-overlap': false
-                },
-                paint: {
-                  'text-color': '#333333',
-                  'text-halo-color': '#ffffff',
-                  'text-halo-width': 1.5
-                }
-              });
+                // 3. Stop Labels (Only show when zoomed in closely to prevent clutter)
+                map.addLayer({
+                  id: 'stops-labels',
+                  type: 'symbol',
+                  source: 'stops-data',
+                  minzoom: 15, // Hides text until you zoom in close
+                  layout: {
+                    'text-field': ['get', 'name'],
+                    'text-font': ['Noto Sans Regular'],
+                    'text-size': 10,
+                    'text-offset': [0, 1.2],
+                    'text-anchor': 'top',
+                    'text-allow-overlap': false
+                  },
+                  paint: {
+                    'text-color': '#333333',
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 1.5
+                  }
+                });
 
-              // Click handler for Regular Stops
-              map.on('click', 'regular-stops', (e) => {
-                const props = e.features[0].properties;
-                new maplibregl.Popup({ offset: 15 })
-                  .setLngLat(e.features[0].geometry.coordinates)
-                  .setHTML(`<b>${props.name}</b><br><small>🚏 Regular Stop</small>`)
-                  .addTo(map);
-              });
+                // Click handler for Regular Stops
+                map.on('click', 'regular-stops', (e) => {
+                  const props = e.features[0].properties;
+                  new maplibregl.Popup({ offset: 15 })
+                    .setLngLat(e.features[0].geometry.coordinates)
+                    .setHTML(`<b>${props.name}</b><br><small>🚏 Regular Stop</small>`)
+                    .addTo(map);
+                });
 
-              // Click handler for Ticket Booths
-              map.on('click', 'ticket-booths', (e) => {
-                const props = e.features[0].properties;
-                new maplibregl.Popup({ offset: 15 })
-                  .setLngLat(e.features[0].geometry.coordinates)
-                  .setHTML(`<b>${props.name}</b><br><small>🎟️ Ticket Booth</small>`)
-                  .addTo(map);
-              });
+                // Click handler for Ticket Booths
+                map.on('click', 'ticket-booths', (e) => {
+                  const props = e.features[0].properties;
+                  new maplibregl.Popup({ offset: 15 })
+                    .setLngLat(e.features[0].geometry.coordinates)
+                    .setHTML(`<b>${props.name}</b><br><small>🎟️ Ticket Booth</small>`)
+                    .addTo(map);
+                });
 
-              // Change cursor to pointer on hover for both layers
-              map.on('mouseenter', ['regular-stops', 'ticket-booths'], () => {
-                map.getCanvas().style.cursor = 'pointer';
-              });
-              map.on('mouseleave', ['regular-stops', 'ticket-booths'], () => {
-                map.getCanvas().style.cursor = '';
-              });
-            })
-            .catch(err => dbg('❌ Failed to load stops.json: ' + err.message));
-          // ── Ligne / METRO INTEGRATION ─────────────────────────────────────────
-          fetch('./data/Ligne_routes.json')
-            .then(res => res.json())
-            .then(data => {
-              dbg(`🚆 Loaded ${data.features.length} Ligne routes`);
+                // Change cursor to pointer on hover for both layers
+                map.on('mouseenter', ['regular-stops', 'ticket-booths'], () => {
+                  map.getCanvas().style.cursor = 'pointer';
+                });
+                map.on('mouseleave', ['regular-stops', 'ticket-booths'], () => {
+                  map.getCanvas().style.cursor = '';
+                });
+              })
+              .catch(err => dbg('❌ Failed to load stops.json: ' + err.message));
+            // ── Ligne / METRO INTEGRATION ─────────────────────────────────────────
+            fetch('./data/Ligne_routes.json')
+              .then(res => res.json())
+              .then(data => {
+                dbg(`🚆 Loaded ${data.features.length} Ligne routes`);
 
-              const routeIds = new Set();
-              data.features.forEach(f => {
-                if (f.properties && f.properties.line_id) {
-                  routeIds.add(f.properties.line_id);
-                }
-              });
+                const routeIds = new Set();
+                data.features.forEach(f => {
+                  if (f.properties && f.properties.line_id) {
+                    routeIds.add(f.properties.line_id);
+                  }
+                });
 
-              availableLigneRoutes = Array.from(routeIds).sort((a, b) => a.localeCompare(b));
+                availableLigneRoutes = Array.from(routeIds).sort((a, b) => a.localeCompare(b));
 
-              const listEl = document.getElementById('Ligne-route-list');
-              listEl.innerHTML = availableLigneRoutes.map(id => `
+                const listEl = document.getElementById('Ligne-route-list');
+                listEl.innerHTML = availableLigneRoutes.map(id => `
                 <div class="Ligne-route-item">
                   <input type="checkbox" id="Ligne-${id}" value="${id}" onchange="toggleLigneRoute('${id}')">
                   <label for="Ligne-${id}">${id}</label>
                 </div>
               `).join('');
 
-              map.addSource('Ligne-routes', {
-                type: 'geojson',
-                data: data
-              });
-
-              // Draw the Ligne lines (Red color to distinguish from buses)
-              map.addLayer({
-                id: 'Ligne-routes-line',
-                type: 'line',
-                source: 'Ligne-routes',
-                paint: {
-                  'line-color': '#dc2626', // Red
-                  'line-width': 4,
-                  'line-opacity': 0.9
-                }
-              });
-
-              // Add floating line labels
-              map.addLayer({
-                id: 'Ligne-routes-labels',
-                type: 'symbol',
-                source: 'Ligne-routes',
-                layout: {
-                  'symbol-placement': 'line',
-                  'text-field': ['get', 'line_id'],
-                  'text-font': ['Noto Sans Bold'],
-                  'text-size': 14,
-                  'text-allow-overlap': true,
-                  'text-offset': [0, 1.2]
-                },
-                paint: {
-                  'text-color': '#ffffff',
-                  'text-halo-color': '#dc2626',
-                  'text-halo-width': 2
-                }
-              });
-
-              // Initially hide all Ligne routes
-              updateLigneFilter();
-            })
-            .catch(err => dbg('❌ Failed to load Ligne routes: ' + err.message));
-
-          // ── Ligne STATIONS DEBUG MARKERS ─────────────────────────────────────────
-          fetch('./data/Ligne_stations.json')
-            .then(res => res.json())
-            .then(data => {
-              dbg(`🚉 Loaded ${data.features.length} Ligne stations for debugging`);
-
-              map.addSource('Ligne-stations', {
-                type: 'geojson',
-                data: data
-              });
-
-              // Add colored circle markers for each station (color-coded by line)
-              map.addLayer({
-                id: 'Ligne-stations-circles',
-                type: 'circle',
-                source: 'Ligne-stations',
-                paint: {
-                  'circle-radius': 6,
-                  'circle-color': [
-                    'match',
-                    ['get', 'line_id'],
-                    'Ligne 1', '#dc2626',  // Red
-                    'Ligne 2', '#2563eb',  // Blue
-                    'Ligne 3', '#16a34a',  // Green
-                    'Ligne 4', '#ca8a04',  // Yellow
-                    'Ligne 5', '#9333ea',  // Purple
-                    'Ligne 6', '#db2777',  // Pink
-                    '#6b7280'            // Default gray
-                  ],
-                  'circle-stroke-width': 2,
-                  'circle-stroke-color': '#ffffff'
-                }
-              });
-
-              // Add text labels for each station name
-              map.addLayer({
-                id: 'Ligne-stations-labels',
-                type: 'symbol',
-                source: 'Ligne-stations',
-                layout: {
-                  'text-field': ['get', 'name'],
-                  'text-font': ['Noto Sans Regular'],
-                  'text-size': 10,
-                  'text-offset': [0, 1.5],
-                  'text-anchor': 'top',
-                  'text-allow-overlap': true
-                },
-                paint: {
-                  'text-color': '#333333',
-                  'text-halo-color': '#ffffff',
-                  'text-halo-width': 1.5
-                }
-              });
-
-              // Add click handler to show popup with station details
-              map.on('click', 'Ligne-stations-circles', (e) => {
-                const props = e.features[0].properties;
-                new maplibregl.Popup()
-                  .setLngLat(e.features[0].geometry.coordinates)
-                  .setHTML(`<b>${props.name}</b><br><small>${props.line_id} - Station #${props.station_num}</small>`)
-                  .addTo(map);
-              });
-
-              // Change cursor on hover
-              map.on('mouseenter', 'Ligne-stations-circles', () => {
-                map.getCanvas().style.cursor = 'pointer';
-              });
-              map.on('mouseleave', 'Ligne-stations-circles', () => {
-                map.getCanvas().style.cursor = '';
-              });
-            })
-            .catch(err => dbg('❌ Failed to load Ligne stations: ' + err.message));
-
-          // ── STOPS.CSV INTEGRATION ─────────────────────────────────────────
-          // ── STOPS.CSV INTEGRATION ─────────────────────────────────────────
-          fetch('./data/stops.csv')
-            .then(res => res.text())
-            .then(text => {
-              const rows = parseCSV(text);
-              if (rows.length < 2) {
-                dbg('❌ stops.csv is empty or invalid');
-                return;
-              }
-
-              const headers = rows[0];
-              const features = [];
-
-              for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                if (row.length < headers.length) continue;
-
-                const obj = {};
-                headers.forEach((h, idx) => {
-                  obj[h.trim()] = row[idx] ? row[idx].trim() : '';
+                map.addSource('Ligne-routes', {
+                  type: 'geojson',
+                  data: data
                 });
 
-                // Match the exact lowercase headers from your CSV example ('lon' and 'lat')
-                const lon = parseFloat(obj['lon'] || obj['Longitude']);
-                const lat = parseFloat(obj['lat'] || obj['Latitude']);
-
-                if (isNaN(lon) || isNaN(lat)) continue;
-
-                // NEW: Filter by station type (case-insensitive)
-                const stationType = (obj['Type de la station'] || '').toLowerCase();
-                if (stationType !== 'station_bus' && stationType !== 'station bus' && stationType !== 'dépôt' && stationType !== 'depot') {
-                  continue; // Skip if it's not a bus station or depot
-                }
-
-                features.push({
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [lon, lat]
-                  },
-                  properties: {
-                    name: obj['Nom de la station'] || 'Unknown Stop',
-                    line: obj['N° de la ligne'] || 'Unknown Line',
-                    stationNum: obj['N° de station'] || '',
-                    type: obj['Type de la station'] // Added type to properties for the popup
+                // Draw the Ligne lines (Red color to distinguish from buses)
+                map.addLayer({
+                  id: 'Ligne-routes-line',
+                  type: 'line',
+                  source: 'Ligne-routes',
+                  paint: {
+                    'line-color': '#dc2626', // Red
+                    'line-width': 4,
+                    'line-opacity': 0.9
                   }
                 });
-              }
 
-              const geojson = {
-                type: 'FeatureCollection',
-                features: features
-              };
+                // Add floating line labels
+                map.addLayer({
+                  id: 'Ligne-routes-labels',
+                  type: 'symbol',
+                  source: 'Ligne-routes',
+                  layout: {
+                    'symbol-placement': 'line',
+                    'text-field': ['get', 'line_id'],
+                    'text-font': ['Noto Sans Bold'],
+                    'text-size': 14,
+                    'text-allow-overlap': true,
+                    'text-offset': [0, 1.2]
+                  },
+                  paint: {
+                    'text-color': '#ffffff',
+                    'text-halo-color': '#dc2626',
+                    'text-halo-width': 2
+                  }
+                });
 
-              dbg(`🚏 Loaded ${features.length} filtered stops from stops.csv`);
+                // Initially hide all Ligne routes
+                updateLigneFilter();
+              })
+              .catch(err => dbg('❌ Failed to load Ligne routes: ' + err.message));
 
-              // Helper debug log to verify headers are being read correctly
-              if (features.length === 0) {
-                dbg(`⚠️ No valid stops found. Check CSV headers. Found: ${headers.join(', ')}`);
-              }
+            // ── Ligne STATIONS DEBUG MARKERS ─────────────────────────────────────────
+            fetch('./data/Ligne_stations.json')
+              .then(res => res.json())
+              .then(data => {
+                dbg(`🚉 Loaded ${data.features.length} Ligne stations for debugging`);
 
-              map.addSource('stops-csv', {
-                type: 'geojson',
-                data: geojson
-              });
+                map.addSource('Ligne-stations', {
+                  type: 'geojson',
+                  data: data
+                });
 
-              // Add circle markers for stops (Orange)
-              map.addLayer({
-                id: 'stops-csv-circles',
-                type: 'circle',
-                source: 'stops-csv',
-                paint: {
-                  'circle-radius': 5,
-                  'circle-color': '#f59e0b',
-                  'circle-stroke-width': 1,
-                  'circle-stroke-color': '#ffffff'
+                // Add colored circle markers for each station (color-coded by line)
+                map.addLayer({
+                  id: 'Ligne-stations-circles',
+                  type: 'circle',
+                  source: 'Ligne-stations',
+                  paint: {
+                    'circle-radius': 6,
+                    'circle-color': [
+                      'match',
+                      ['get', 'line_id'],
+                      'Ligne 1', '#dc2626',  // Red
+                      'Ligne 2', '#2563eb',  // Blue
+                      'Ligne 3', '#16a34a',  // Green
+                      'Ligne 4', '#ca8a04',  // Yellow
+                      'Ligne 5', '#9333ea',  // Purple
+                      'Ligne 6', '#db2777',  // Pink
+                      '#6b7280'            // Default gray
+                    ],
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#ffffff'
+                  }
+                });
+
+                // Add text labels for each station name
+                map.addLayer({
+                  id: 'Ligne-stations-labels',
+                  type: 'symbol',
+                  source: 'Ligne-stations',
+                  layout: {
+                    'text-field': ['get', 'name'],
+                    'text-font': ['Noto Sans Regular'],
+                    'text-size': 10,
+                    'text-offset': [0, 1.5],
+                    'text-anchor': 'top',
+                    'text-allow-overlap': true
+                  },
+                  paint: {
+                    'text-color': '#333333',
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 1.5
+                  }
+                });
+
+                // Add click handler to show popup with station details
+                map.on('click', 'Ligne-stations-circles', (e) => {
+                  const props = e.features[0].properties;
+                  new maplibregl.Popup()
+                    .setLngLat(e.features[0].geometry.coordinates)
+                    .setHTML(`<b>${props.name}</b><br><small>${props.line_id} - Station #${props.station_num}</small>`)
+                    .addTo(map);
+                });
+
+                // Change cursor on hover
+                map.on('mouseenter', 'Ligne-stations-circles', () => {
+                  map.getCanvas().style.cursor = 'pointer';
+                });
+                map.on('mouseleave', 'Ligne-stations-circles', () => {
+                  map.getCanvas().style.cursor = '';
+                });
+              })
+              .catch(err => dbg('❌ Failed to load Ligne stations: ' + err.message));
+
+            // ── STOPS.CSV INTEGRATION ─────────────────────────────────────────
+            // ── STOPS.CSV INTEGRATION ─────────────────────────────────────────
+            fetch('./data/stops.csv')
+              .then(res => res.text())
+              .then(text => {
+                const rows = parseCSV(text);
+                if (rows.length < 2) {
+                  dbg('❌ stops.csv is empty or invalid');
+                  return;
                 }
-              });
 
-              // Add text labels for stop names
-              map.addLayer({
-                id: 'stops-csv-labels',
-                type: 'symbol',
-                source: 'stops-csv',
-                layout: {
-                  'text-field': ['get', 'name'],
-                  'text-font': ['Noto Sans Regular'],
-                  'text-size': 10,
-                  'text-offset': [0, 1.5],
-                  'text-anchor': 'top',
-                  'text-allow-overlap': false
-                },
-                paint: {
-                  'text-color': '#333333',
-                  'text-halo-color': '#ffffff',
-                  'text-halo-width': 1.5
+                const headers = rows[0];
+                const features = [];
+
+                for (let i = 1; i < rows.length; i++) {
+                  const row = rows[i];
+                  if (row.length < headers.length) continue;
+
+                  const obj = {};
+                  headers.forEach((h, idx) => {
+                    obj[h.trim()] = row[idx] ? row[idx].trim() : '';
+                  });
+
+                  // Match the exact lowercase headers from your CSV example ('lon' and 'lat')
+                  const lon = parseFloat(obj['lon'] || obj['Longitude']);
+                  const lat = parseFloat(obj['lat'] || obj['Latitude']);
+
+                  if (isNaN(lon) || isNaN(lat)) continue;
+
+                  // NEW: Filter by station type (case-insensitive)
+                  const stationType = (obj['Type de la station'] || '').toLowerCase();
+                  if (stationType !== 'station_bus' && stationType !== 'station bus' && stationType !== 'dépôt' && stationType !== 'depot') {
+                    continue; // Skip if it's not a bus station or depot
+                  }
+
+                  features.push({
+                    type: 'Feature',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: [lon, lat]
+                    },
+                    properties: {
+                      name: obj['Nom de la station'] || 'Unknown Stop',
+                      line: obj['N° de la ligne'] || 'Unknown Line',
+                      stationNum: obj['N° de station'] || '',
+                      type: obj['Type de la station'] // Added type to properties for the popup
+                    }
+                  });
                 }
-              });
 
-              // Add click handler to show popup with stop details (Now includes Type)
-              map.on('click', 'stops-csv-circles', (e) => {
-                const props = e.features[0].properties;
-                new maplibregl.Popup({ offset: 25 })
-                  .setLngLat(e.features[0].geometry.coordinates)
-                  .setHTML(`<b>${props.name}</b><br><small>Line: ${props.line} | Stop #${props.stationNum}<br>Type: ${props.type}</small>`)
-                  .addTo(map);
-              });
+                const geojson = {
+                  type: 'FeatureCollection',
+                  features: features
+                };
 
-              // Change cursor on hover
-              map.on('mouseenter', 'stops-csv-circles', () => {
-                map.getCanvas().style.cursor = 'pointer';
-              });
-              map.on('mouseleave', 'stops-csv-circles', () => {
-                map.getCanvas().style.cursor = '';
-              });
-            })
-            .catch(err => dbg('❌ Failed to load stops.csv: ' + err.message));
+                dbg(`🚏 Loaded ${features.length} filtered stops from stops.csv`);
+
+                // Helper debug log to verify headers are being read correctly
+                if (features.length === 0) {
+                  dbg(`⚠️ No valid stops found. Check CSV headers. Found: ${headers.join(', ')}`);
+                }
+
+                map.addSource('stops-csv', {
+                  type: 'geojson',
+                  data: geojson
+                });
+
+                // Add circle markers for stops (Orange)
+                map.addLayer({
+                  id: 'stops-csv-circles',
+                  type: 'circle',
+                  source: 'stops-csv',
+                  paint: {
+                    'circle-radius': 5,
+                    'circle-color': '#f59e0b',
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#ffffff'
+                  }
+                });
+
+                // Add text labels for stop names
+                map.addLayer({
+                  id: 'stops-csv-labels',
+                  type: 'symbol',
+                  source: 'stops-csv',
+                  layout: {
+                    'text-field': ['get', 'name'],
+                    'text-font': ['Noto Sans Regular'],
+                    'text-size': 10,
+                    'text-offset': [0, 1.5],
+                    'text-anchor': 'top',
+                    'text-allow-overlap': false
+                  },
+                  paint: {
+                    'text-color': '#333333',
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 1.5
+                  }
+                });
+
+                // Add click handler to show popup with stop details (Now includes Type)
+                map.on('click', 'stops-csv-circles', (e) => {
+                  const props = e.features[0].properties;
+                  new maplibregl.Popup({ offset: 25 })
+                    .setLngLat(e.features[0].geometry.coordinates)
+                    .setHTML(`<b>${props.name}</b><br><small>Line: ${props.line} | Stop #${props.stationNum}<br>Type: ${props.type}</small>`)
+                    .addTo(map);
+                });
+
+                // Change cursor on hover
+                map.on('mouseenter', 'stops-csv-circles', () => {
+                  map.getCanvas().style.cursor = 'pointer';
+                });
+                map.on('mouseleave', 'stops-csv-circles', () => {
+                  map.getCanvas().style.cursor = '';
+                });
+              })
+              .catch(err => dbg('❌ Failed to load stops.csv: ' + err.message));
+          } // end DEV_UI legacy layers
         });
 
         map.on('error', e => { if (!e.error?.message?.includes('canceled')) dbg('❌ MAP ERR: ' + (e.error?.message || e.message || 'Unknown')); });
@@ -1972,6 +2508,27 @@
             }
           }
         }); setupUI();
+
+        // ── TEMP DEBUG: check btn-satellite exists and where it's rendered ──
+        (() => {
+          dbg(`📐 viewport: ${window.innerWidth}x${window.innerHeight}`);
+          const topbar = document.getElementById('topbar');
+          if (topbar) {
+            const tr = topbar.getBoundingClientRect();
+            dbg(`📐 topbar rect: top=${tr.top.toFixed(0)} left=${tr.left.toFixed(0)} w=${tr.width.toFixed(0)} h=${tr.height.toFixed(0)}`);
+          }
+          ['btn-picker', 'btn-satellite'].forEach(id => {
+            const el = document.getElementById(id);
+            dbg(`🔎 ${id} exists: ` + !!el);
+            if (el) {
+              const r = el.getBoundingClientRect();
+              const cs = getComputedStyle(el);
+              dbg(`🔎 ${id} rect: top=${r.top.toFixed(0)} left=${r.left.toFixed(0)} w=${r.width.toFixed(0)} h=${r.height.toFixed(0)}`);
+              dbg(`🔎 ${id} display=${cs.display} visibility=${cs.visibility} opacity=${cs.opacity}`);
+            }
+          });
+        })();
+
         initOfflineSearch();
 
         // 🌐 Network status monitoring
@@ -2049,15 +2606,22 @@
       document.getElementById('btn-bus').onclick = toggleBusPanel;
       document.getElementById('btn-Ligne').onclick = toggleLignePanel;
       document.getElementById('search-clear').onclick = clearSearch;
-      document.getElementById('btn-picker').onclick = togglePickerMode;
+      document.getElementById('lang-toggle').onclick = () => setLang(LANG === 'ar' ? 'en' : 'ar'); document.getElementById('btn-picker').onclick = togglePickerMode;
+
+      document.getElementById('btn-satellite').onclick = () => {
+        satelliteVisible = !satelliteVisible;
+        map.setLayoutProperty('satellite-layer', 'visibility', satelliteVisible ? 'visible' : 'none');
+        document.getElementById('btn-satellite').classList.toggle('active', satelliteVisible);
+        dbg(satelliteVisible ? '🛰️ Satellite ON' : '🗺️ Satellite OFF');
+      };
+
       let userMarker = null; // Variable to keep track of the location marker
 
       // Geolocation button logic
       document.getElementById('btn-geolocate').onclick = () => {
         if (navigator.geolocation) {
           dbg('📍 Requesting location...');
-          showToast('📍 Finding your location...');
-
+          showToast(t('location_finding'));
           navigator.geolocation.getCurrentPosition(
             (position) => {
               const { latitude, longitude } = position.coords;
@@ -2076,7 +2640,7 @@
               }
 
               dbg(`✅ Location found: ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
-              showToast('✅ Location found!');
+              showToast(t('location_found'));
             },
             (error) => {
               dbg('❌ Geolocation error: ' + error.message);
@@ -2084,11 +2648,11 @@
 
               // Check specific error codes for better user feedback
               if (error.code === 1) { // PERMISSION_DENIED
-                msg = '🚫 Location access denied. Please enable it in your phone settings.';
+                msg = t('location_denied');
               } else if (error.code === 2) { // POSITION_UNAVAILABLE
-                msg = '📡 Location unavailable. GPS works best outdoors with a clear view of the sky.';
+                msg = t('location_unavailable');
               } else if (error.code === 3) { // TIMEOUT
-                msg = '⏳ Location request timed out. Try again, preferably outdoors.';
+                msg = t('location_timeout');
               }
 
               showToast(msg, true); // 'true' makes it show the error styling
@@ -2097,11 +2661,12 @@
           );
         } else {
           dbg('❌ Geolocation not supported');
-          showToast('❌ Geolocation is not supported by this device.', true);
+          showToast(t('device_no_gps'), true);
         }
       };
       // ── MAP CLICK LOGIC ──────────────────────────────────────────────────
       map.on('click', e => {
+        if (!DEV_UI) { document.getElementById('search-results').classList.remove('open'); return; }
         const { lat, lng } = e.lngLat;
         const v = `${lat.toFixed(7)},${lng.toFixed(7)}`;
         // ── COORDINATE PICKER MODE ──
@@ -2220,7 +2785,8 @@
         .addTo(map);
 
       // 3. Fly to the location
-      map.flyTo({ center: coords, zoom: zoomForClass(cls) });
+      if (DEV_UI) map.flyTo({ center: coords, zoom: zoomForClass(cls) });
+      else planTripTo(lat, lon, name);
 
       // 4. Update UI
       document.getElementById('search-input').value = name;
@@ -2244,7 +2810,8 @@
         .addTo(map);
 
       // Fly to the location at a detailed zoom level
-      map.flyTo({ center: coords, zoom: 17 });
+      if (DEV_UI) map.flyTo({ center: coords, zoom: 17 });
+      else planTripTo(lat, lon, name);
 
       // Update the search bar text and close the dropdown
       document.getElementById('search-input').value = name;
@@ -2735,7 +3302,7 @@
       }
     }
     // 1. Initialize GPS on load so it's ready before you board
-    requestLocation();
+    if (DEV_UI) requestLocation();
 
     // 2. Start Recording
     function startRecording() {
@@ -2951,142 +3518,641 @@
         homeMarkers.push(marker);
       });
     }
+    let busMarkers = [];
 
+    const busStations = [
+      { lat: 36.860117070557905, lon: 10.19795610005066, text: "🚌 محطة الحافلات بأريانة \n to ride : 460 " },
+      { lat: 36.80022381879202, lon: 10.190561377660295, text: "🚌 Terminus Tunis Marine \n to ride : 635A , 635 , 35 , 74 , 5D , 5C , 5 , 51A , 43B , 38C , 38B , 36 , 104 " },
+      { lat: 36.80373298303416, lon: 10.17791671592396, text: "🚌 Jardin Habib Thameur Bus Station \n to ride : 15A , 15 , 15B , 33 , 32 , 32D , 33B , 33C , 89 , 63 , 6P , 20C , 20A " },
+      { lat: 36.797099, lon: 10.180205, text: "🚌 Barcelone \n to ride : 22 , 22A, 29 , 60 , 59A , 29 , 17B , 10C , 10B" },
+      { lat: 36.83998637227036, lon: 10.117299686074102, text: "🚌 محطة الترابط بالإنطلاقة \n to ride : 48 , 14CG , 14C " },
+      { lat: 36.803706, lon: 10.099237, text: "🚌 Station Transport en Commun La Manouba \n to ride: 95 , 48 , 92" },
+      { lat: 36.844700, lon: 10.184689, text: "🚌 10 Décembre \n to ride : 47 , 6 , 35 , 18C , 6B " },
+      { lat: 36.788721, lon: 10.180325, text: "🚌 Station Bab Alioua \n to ride : 72 , 78" },
+      { lat: 36.74273961108813, lon: 10.193485641344768, text: "🚌 El Montazah (morouj 2)" }
+    ];
+
+    function renderBusMarkers() {
+      busMarkers.forEach(m => m.remove());
+      busMarkers = [];
+      busStations.forEach(pt => {
+        const el = document.createElement('div');
+        el.className = 'custom-marker-bus';
+        el.innerText = '🚌';
+        const marker = new maplibregl.Marker({ element: el })
+          .setLngLat([pt.lon, pt.lat])
+          .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(pt.text))
+          .addTo(map);
+        busMarkers.push(marker);
+      });
+    }
     function drawPrimaryPath() {
       // Clear previous markers
       stepMarkers.forEach(m => m.remove());
       stepMarkers = [];
-
-      // Fetch the routes data
-      fetch('./data/routes.json')
-        .then(res => {
-          if (!res.ok) throw new Error('routes.json not found');
-          return res.json();
-        })
-        .then(data => {
-          // Find the first path (the primary "all YES" path)
-          const primaryPath = data.paths[0];
-
-          if (!primaryPath) {
-            document.getElementById('nav-info').innerHTML = 'No routes found.';
-            return;
-          }
-
-          document.getElementById('nav-info').innerHTML = `<b>Primary Route:</b> ${primaryPath.name}`;
-
-          // Draw all points for the primary path
-          primaryPath.points.forEach((pt, index) => {
-            const stepNum = index + 1;
-            const label = pt.label.replace(/\|/g, '<br>');
-
-            // Generate a small random offset (approx +/- 5 meters) to prevent overlapping
-            const randomOffsetLat1 = (Math.random() - 0.5) * 0.0001;
-            const randomOffsetLng1 = (Math.random() - 0.5) * 0.0001;
-
-            const randomOffsetLat2 = (Math.random() - 0.5) * 0.0001;
-            const randomOffsetLng2 = (Math.random() - 0.5) * 0.0001;
-
-            // 1. Boarding Point Marker (Blue)
-            if (pt.boarding_lat != null && pt.boarding_lng != null) {
-              const elBoard = document.createElement('div');
-              elBoard.className = 'custom-marker-number';
-              elBoard.innerText = pt.marker_text || stepNum; // <-- UPDATED LINE
-              elBoard.style.background = '#3b82f6'; // Blue for Boarding
-
-              const markerBoard = new maplibregl.Marker({ element: elBoard })
-                .setLngLat([pt.boarding_lng + randomOffsetLng1, pt.boarding_lat + randomOffsetLat1])
-                .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(`<b>Step ${stepNum} - Board Here 🚌</b><br>${label}`))
-                .addTo(map);
-              stepMarkers.push(markerBoard);
-            }
-
-            // 2. Dropping Off Point Marker (Red)
-            if (pt.dropping_lat != null && pt.dropping_lng != null) {
-              const elDrop = document.createElement('div');
-              elDrop.className = 'custom-marker-number';
-              elDrop.innerText = pt.marker_text || stepNum; // <-- UPDATED LINE
-              elDrop.style.background = '#ef4444'; // Red for Dropping Off
-
-              const markerDrop = new maplibregl.Marker({ element: elDrop })
-                .setLngLat([pt.dropping_lng + randomOffsetLng2, pt.dropping_lat + randomOffsetLat2])
-                .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' }).setHTML(`<b>Step ${stepNum} - Get Off Here 🚶</b><br>${label}`))
-                .addTo(map);
-              stepMarkers.push(markerDrop);
-            }
-          });
-
-          // ── BRANCH MARKERS ─────────────────────────────────────────────────
-          // Scan every path (not just the primary) for points that carry a
-          // non-empty marker_text. These represent branch alternatives (like
-          // "3B") that belong alongside the primary steps but exist in a
-          // secondary path in routes.json. We collect unique boarding/dropping
-          // coords so the same physical stop isn't double-plotted if the point
-          // appears in more than one non-primary path.
-          const branchSeen = new Set();
-
-          data.paths.slice(1).forEach(path => {
-            path.points.forEach(pt => {
-              if (!pt.marker_text) return; // only process explicitly-labelled branch points
-              const label = pt.label.replace(/\|/g, '<br>');
-
-              if (pt.boarding_lat != null && pt.boarding_lng != null) {
-                const boardKey = `${pt.boarding_lat},${pt.boarding_lng}`;
-                if (!branchSeen.has(boardKey)) {
-                  branchSeen.add(boardKey);
-                  const el = document.createElement('div');
-                  el.className = 'custom-marker-number';
-                  el.innerText = pt.marker_text;
-                  el.style.background = '#3b82f6'; // same blue as boarding
-                  el.style.opacity = '0.85';
-                  const m = new maplibregl.Marker({ element: el })
-                    .setLngLat([pt.boarding_lng, pt.boarding_lat])
-                    .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' })
-                      .setHTML(`<b>Branch ${pt.marker_text} - Board Here 🚌</b><br>${label}`))
-                    .addTo(map);
-                  stepMarkers.push(m);
-                }
-              }
-
-              if (pt.dropping_lat != null && pt.dropping_lng != null) {
-                const dropKey = `drop:${pt.dropping_lat},${pt.dropping_lng}`;
-                if (!branchSeen.has(dropKey)) {
-                  branchSeen.add(dropKey);
-                  const el = document.createElement('div');
-                  el.className = 'custom-marker-number';
-                  el.innerText = pt.marker_text;
-                  el.style.background = '#ef4444'; // same red as dropping
-                  el.style.opacity = '0.85';
-                  const m = new maplibregl.Marker({ element: el })
-                    .setLngLat([pt.dropping_lng, pt.dropping_lat])
-                    .setPopup(new maplibregl.Popup({ offset: 25, maxWidth: '250px' })
-                      .setHTML(`<b>Branch ${pt.marker_text} - Get Off Here 🚶</b><br>${label}`))
-                    .addTo(map);
-                  stepMarkers.push(m);
-                }
-              }
-            });
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          document.getElementById('nav-info').innerText = "Error loading routes.";
-        });
     }
+    // ══════════════════════════════════════════════════════════════════════
+    // TRANSIT PLANNER  (search → "how do I get there" with bus / métro / RFR)
+    //
+    // How it works (short version):
+    //  1. Every line is loaded once and turned into a small graph:
+    //       platform node  = a physical stop (bench / station)
+    //       vehicle node   = "sitting on line X at stop k"
+    //       edges          = board (wait), ride (time to next stop), alight,
+    //                        walk-transfer (stops < 400 m apart)
+    //  2. At query time we add the user's origin and the destination as two
+    //     extra nodes, linked only to the few nearest stops of each line
+    //     (this is the pruning — we never compare every route).
+    //  3. Dijkstra finds the fastest itinerary. To get genuinely different
+    //     alternatives we re-run it with the winning line (or whole mode)
+    //     banned, and keep distinct results.
+    //  4. Walking legs are first estimated from straight-line distance, then
+    //     refined in the background with the Valhalla pedestrian router.
+    // ══════════════════════════════════════════════════════════════════════
+    (function () {
+      'use strict';
+      // ── CONFIG (everything you'll want to tune lives here) ──────────────
+      const CFG = {
+        USE_TEST_ORIGIN: true,
+        FALLBACK_TO_TEST_ON_GPS_FAIL: true,
+        TEST_ORIGIN: { lat: 36.7845, lon: 10.1815 },
+        GPS_TIMEOUT_MS: 5000,
+        WALK_MPS: 1.33, WALK_DETOUR: 1.3, ACCESS_MAX_M: 1800, ACCESS_PER_LINE: 3,
+        TRANSFER_MAX_M: 400, TRANSFER_MIN_S: 60, WALK_ONLY_MAX_M: 2500, MAX_OPTIONS: 4,
+        SIMILAR_M: 60, OFF_TRACK_MAX_M: 250, DWELL_S: 25, ALIGHT_S: 15,
+        BUS_BOARD_NON_BENCH: true, BUS_BENCH_PENALTY_S: 480, BUS_NON_BENCH_PENALTY_S: 180,
+        BUS_STATION_SNAP_M: 120, BUS_STATION_MERGE_M: 60, BUS_MERGE_M: 20,
+        MODES: {
+          bus: { label: 'Bus', icon: '🚌', color: '#f59e0b', speed: 4.5, wait: 600 },
+          metro: { label: 'Métro', icon: '🚊', color: '#dc2626', speed: 5.3, wait: 240 },
+          rfr: { label: 'RFR', icon: '🚆', color: '#7c3aed', speed: 9.7, wait: 720 }
+        }
+      };
+
+      const SRC = {
+        bus: ['19c', '20', '38b'].map(id => ({ id, url: `data/bus_data/${id}.geojson` })),
+        busStations: 'data/bus_data/major_bus_stations.json',
+        metroStations: 'data/TGM_data/tgm_stations.json',
+        metro: [1, 2, 3, 4, 5, 6].map(n => ({
+          base: `Métro ${n}`, short: `M${n}`, stationLine: `TGM ${n}`,
+          dep: `data/light_metro_data/light_metro_${n}_departure_track.json`,
+          ret: `data/light_metro_data/light_metro_${n}_return_track.json`
+        })),
+        rfr: [
+          { base: 'RFR A', short: 'A', track: 'data/RFR_data/RFR_Tunis_Ville_Erriadh_Track.json', stations: 'data/RFR_data/Linge_A_stations.json' },
+          { base: 'RFR D', short: 'D', track: 'data/RFR_data/RFR_Tunis_Ville_Gobaa.json', stations: 'data/RFR_data/Linge_D_stations.json' },
+          { base: 'RFR E', short: 'E', track: 'data/RFR_data/RFR_Tunis_Ville_Bougatfa_Sidi Hassine.json', stations: 'data/RFR_data/Linge_E_stations.json' }
+        ]
+      };
+
+      const R_EARTH = 6371000, RAD = Math.PI / 180;
+      function hav(a, b) {
+        const dLat = (b[1] - a[1]) * RAD, dLon = (b[0] - a[0]) * RAD;
+        const s = Math.sin(dLat / 2) ** 2 + Math.cos(a[1] * RAD) * Math.cos(b[1] * RAD) * Math.sin(dLon / 2) ** 2;
+        return 2 * R_EARTH * Math.asin(Math.sqrt(s));
+      }
+      function buildLine(coords) {
+        const cum = [0];
+        for (let i = 1; i < coords.length; i++) cum.push(cum[i - 1] + hav(coords[i - 1], coords[i]));
+        return { coords, cum, len: cum[cum.length - 1] };
+      }
+      function projectOnLine(line, p, segFrom, segTo) {
+        const n = line.coords.length - 2;
+        segFrom = Math.max(0, segFrom ?? 0); segTo = Math.min(n, segTo ?? n);
+        const kx = Math.cos(p[1] * RAD) * 111320, ky = 110574;
+        let best = null;
+        for (let i = segFrom; i <= segTo; i++) {
+          const a = line.coords[i], b = line.coords[i + 1];
+          const ax = (a[0] - p[0]) * kx, ay = (a[1] - p[1]) * ky, bx = (b[0] - p[0]) * kx, by = (b[1] - p[1]) * ky;
+          const dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
+          const t = l2 > 0 ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / l2)) : 0;
+          const dist = Math.hypot(ax + t * dx, ay + t * dy);
+          if (!best || dist < best.dist) best = { dist, seg: i, t };
+        }
+        const a = line.coords[best.seg], b = line.coords[best.seg + 1];
+        best.pt = [a[0] + (b[0] - a[0]) * best.t, a[1] + (b[1] - a[1]) * best.t];
+        best.d = line.cum[best.seg] + (line.cum[best.seg + 1] - line.cum[best.seg]) * best.t;
+        return best;
+      }
+      function sliceLine(line, pa, pb) {
+        const out = [pa.pt];
+        for (let i = pa.seg + 1; i <= pb.seg; i++) out.push(line.coords[i]);
+        out.push(pb.pt);
+        return out;
+      }
+      const walkSec = m => (m * CFG.WALK_DETOUR) / CFG.WALK_MPS;
+
+      let G = null, readyPromise = null;
+      async function jget(url) {
+        const r = await fetch(encodeURI(url));
+        if (!r.ok) throw new Error(`HTTP ${r.status} ${url}`);
+        return r.json();
+      }
+      function lineCoords(fc) {
+        const out = [];
+        for (const f of fc.features || []) {
+          const g = f.geometry; if (!g) continue;
+          if (g.type === 'LineString') g.coordinates.forEach(c => out.push(c));
+          else if (g.type === 'MultiLineString') g.coordinates.forEach(l => l.forEach(c => out.push(c)));
+        }
+        return out;
+      }
+
+      function loadTransitData() {
+        if (!readyPromise) readyPromise = (async () => {
+          const stopsAll = [], dls = [], warn = [];
+          let busStations = [];
+          async function addRail(mode, base, short, depUrl, retUrl, stationList) {
+            let dep;
+            try { dep = lineCoords(await jget(depUrl)); } catch (e) { warn.push(`${base}: ${e.message}`); return; }
+            if (dep.length < 2) return;
+            let ret = null;
+            if (retUrl) { try { ret = lineCoords(await jget(retUrl)); } catch (e) { } }
+            if (!ret || ret.length < 2) ret = dep.slice().reverse();
+            else if (hav(ret[0], dep[0]) < hav(ret[0], dep[dep.length - 1])) ret = ret.slice().reverse();
+            const stops = stationList.map((s, i) => ({ id: `${base}|${i}`, name: s.name, lon: s.lon, lat: s.lat, mode, base, short, kind: 'station' }));
+            let used = false;
+            for (const [dir, coords] of [['dep', dep], ['ret', ret]]) {
+              const line = buildLine(coords), entries = [];
+              for (const s of stops) {
+                const pr = projectOnLine(line, [s.lon, s.lat]);
+                if (pr.dist > CFG.OFF_TRACK_MAX_M) continue;
+                entries.push({ stop: s, proj: pr, d: pr.d });
+              }
+              entries.sort((a, b) => a.d - b.d);
+              if (entries.length < 2) continue;
+              dls.push({ id: `${base}:${dir}`, base, short, mode, dir, line, entries, towards: entries[entries.length - 1].stop.name });
+              used = true;
+            }
+            if (used) stops.forEach(s => stopsAll.push(s));
+          }
+          async function addBus(src) {
+            let fc; try { fc = await jget(src.url); } catch (e) { return; }
+            const coords = lineCoords({ features: fc.features.filter(f => /LineString/.test(f.geometry?.type)) });
+            if (coords.length < 2) return;
+            const label = src.id.toUpperCase(), base = `Bus ${label}`;
+            const pts = fc.features.filter(f => f.geometry?.type === 'Point' && f.properties?.point_type && f.properties.point_type !== 'ticket_booth')
+              .map(f => ({ lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1], type: f.properties.point_type, t: Date.parse(f.properties.timestamp) / 1000, num: (/(\d+)\s*$/.exec(f.properties.name || '') || [])[1] }))
+              .filter(p => isFinite(p.t)).sort((a, b) => a.t - b.t);
+            const merged = [];
+            for (const p of pts) {
+              const prev = merged[merged.length - 1];
+              if (prev && hav([prev.lon, prev.lat], [p.lon, p.lat]) < CFG.BUS_MERGE_M) { prev.types.add(p.type); if (p.type === 'bench') prev.num = p.num; }
+              else merged.push({ ...p, types: new Set([p.type]) });
+            }
+            const line = buildLine(coords), entries = [], stops = [];
+            const benchPen = kind => (kind === 'bench' || kind === 'in') ? CFG.BUS_BENCH_PENALTY_S : (CFG.BUS_BOARD_NON_BENCH ? CFG.BUS_BENCH_PENALTY_S + CFG.BUS_NON_BENCH_PENALTY_S : null);
+            let seg = 0;
+            merged.forEach((p, i) => {
+              const kind = p.types.has('bench') ? 'bench' : p.types.has('in') ? 'in' : 'stop';
+              const stop = { id: `${base}|${i}`, lon: p.lon, lat: p.lat, mode: 'bus', base, short: label, kind, name: `${label} · ${kind} ${p.num ?? i + 1}`, boardPen: benchPen(kind) };
+              const pr = projectOnLine(line, [p.lon, p.lat], seg, seg + 1500);
+              seg = pr.seg;
+              stops.push(stop); entries.push({ stop, proj: pr, d: pr.d, t: p.t });
+            });
+            const speed = CFG.MODES.bus.speed;
+            const timeAt = d => {
+              const T = entries.filter(en => isFinite(en.t));
+              if (!T.length) return undefined;
+              if (d <= T[0].d) return T[0].t - (T[0].d - d) / speed;
+              const L = T[T.length - 1]; if (d >= L.d) return L.t + (d - L.d) / speed;
+              for (let i = 0; i < T.length - 1; i++) if (d >= T[i].d && d <= T[i + 1].d) return T[i].t + (T[i + 1].t - T[i].t) * (d - T[i].d) / Math.max(1, T[i + 1].d - T[i].d);
+            };
+            busStations.forEach((st, j) => {
+              const pr = projectOnLine(line, [st.lon, st.lat]);
+              if (pr.dist > CFG.BUS_STATION_SNAP_M) return;
+              const near = entries.find(en => hav([en.stop.lon, en.stop.lat], [st.lon, st.lat]) <= CFG.BUS_STATION_MERGE_M);
+              if (near) { Object.assign(near.stop, { kind: 'station', name: st.name, lon: st.lon, lat: st.lat, boardPen: 0 }); return; }
+              const stop = { id: `${base}|st${j}`, lon: st.lon, lat: st.lat, mode: 'bus', base, short: label, kind: 'station', name: st.name, boardPen: 0 };
+              const entry = { stop, proj: pr, d: pr.d, t: timeAt(pr.d) };
+              let idx = entries.findIndex(en => en.d > pr.d); if (idx < 0) idx = entries.length;
+              entries.splice(idx, 0, entry); stops.push(stop);
+            });
+            if (entries.length < 2) return;
+            dls.push({ id: `${base}:dep`, base, short: label, mode: 'bus', dir: 'dep', line, entries, oneWay: true, towards: 'last recorded stop' });
+            stops.forEach(s => stopsAll.push(s));
+          }
+          try {
+            busStations = (await jget(SRC.busStations)).features.filter(f => f.geometry?.type === 'Point').map(f => ({
+              name: (LANG === 'en' && f.properties?.title_en) ? f.properties.title_en : (f.properties?.title || 'Bus station'),
+              lon: f.geometry.coordinates[0],
+              lat: f.geometry.coordinates[1]
+            }));
+          } catch (e) { }
+          let metroFC = null;
+          try { metroFC = await jget(SRC.metroStations); } catch (e) { }
+          const jobs = [];
+          for (const m of SRC.metro) {
+            const list = (metroFC?.features || []).filter(f => f.properties?.line_id === m.stationLine).map(f => ({
+              name: (LANG === 'en' && f.properties.name_en) ? f.properties.name_en : f.properties.name,
+              lon: f.geometry.coordinates[0],
+              lat: f.geometry.coordinates[1]
+            }));
+            if (list.length) jobs.push(addRail('metro', m.base, m.short, m.dep, m.ret, list));
+          }
+          for (const r of SRC.rfr) {
+            jobs.push((async () => {
+              try {
+                const fc = await jget(r.stations);
+                const list = fc.features.filter(f => f.geometry?.type === 'Point').map(f => ({
+                  name: (LANG === 'en' && f.properties.name_en) ? f.properties.name_en : f.properties.name,
+                  lon: f.geometry.coordinates[0],
+                  lat: f.geometry.coordinates[1]
+                }));
+                await addRail('rfr', r.base, r.short, r.track, null, list);
+              } catch (e) { }
+            })());
+          }
+          SRC.bus.forEach(b => jobs.push(addBus(b)));
+          await Promise.all(jobs);
+          const nodes = [], adj = [];
+          const addNode = n => { nodes.push(n); adj.push([]); return nodes.length - 1; };
+          const addEdge = (a, b, cost, extra) => adj[a].push(Object.assign({ from: a, to: b, cost }, extra));
+          const stops = [...new Map(stopsAll.map(s => [s.id, s])).values()];
+          stops.forEach(s => { s.node = addNode({ type: 'P', stop: s }); });
+          for (const dl of dls) {
+            const M = CFG.MODES[dl.mode];
+            dl.entries.forEach((en, k) => { en.v = addNode({ type: 'V', dl, k }); });
+            dl.entries.forEach((en, k) => {
+              const s = en.stop;
+              if (k < dl.entries.length - 1) {
+                const pen = dl.mode === 'bus' ? s.boardPen : 0;
+                if (pen != null) addEdge(s.node, en.v, M.wait + pen, { kind: 'board', dl, k, base: dl.base, mode: dl.mode, pen });
+                const nx = dl.entries[k + 1];
+                const ride = dl.mode === 'bus' && isFinite(nx.t - en.t) ? Math.max(20, nx.t - en.t) : (nx.d - en.d) / M.speed + CFG.DWELL_S;
+                addEdge(en.v, nx.v, ride, { kind: 'ride', dl, k });
+              }
+              if (k > 0) addEdge(en.v, s.node, CFG.ALIGHT_S, { kind: 'alight', dl, k });
+            });
+          }
+          for (let i = 0; i < stops.length; i++) for (let j = 0; j < stops.length; j++) {
+            if (i === j || stops[i].base === stops[j].base) continue;
+            const d = hav([stops[i].lon, stops[i].lat], [stops[j].lon, stops[j].lat]);
+            if (d <= CFG.TRANSFER_MAX_M) addEdge(stops[i].node, stops[j].node, Math.max(CFG.TRANSFER_MIN_S, walkSec(d)), { kind: 'walk' });
+          }
+          G = { nodes, adj, stops, dls };
+          return G;
+        })();
+        return readyPromise;
+      }
+
+      function nearbyStops(pt) {
+        const byBase = {};
+        for (const s of G.stops) {
+          const d = hav(pt, [s.lon, s.lat]);
+          if (d <= CFG.ACCESS_MAX_M) (byBase[s.base] = byBase[s.base] || []).push({ stop: s, d });
+        }
+        return Object.values(byBase).flatMap(a => {
+          a.sort((x, y) => x.d - y.d);
+          const pick = a.slice(0, CFG.ACCESS_PER_LINE);
+          const st = a.find(x => x.stop.kind === 'station');
+          if (st && !pick.includes(st)) pick.push(st);
+          return pick;
+        });
+      }
+      function hpush(h, x) { h.push(x); let i = h.length - 1; while (i > 0) { const p = (i - 1) >> 1; if (h[p][0] <= h[i][0]) break;[h[p], h[i]] = [h[i], h[p]]; i = p; } }
+      function hpop(h) {
+        const top = h[0], last = h.pop();
+        if (h.length) { h[0] = last; let i = 0; for (; ;) { const l = 2 * i + 1, r = l + 1; let m = i; if (l < h.length && h[l][0] < h[m][0]) m = l; if (r < h.length && h[r][0] < h[m][0]) m = r; if (m === i) break;[h[m], h[i]] = [h[i], h[m]]; i = m; } }
+        return top;
+      }
+      function dijkstra(src, dst, ban, extra) {
+        const N = G.nodes.length + 2, dist = new Array(N).fill(Infinity), prevE = new Array(N).fill(null);
+        dist[src] = 0; const heap = [[0, src]];
+        const relax = (u, du, e) => {
+          if (e.kind === 'board' && (ban.bases.has(e.base) || ban.modes.has(e.mode))) return;
+          const nd = du + e.cost;
+          if (nd < dist[e.to]) { dist[e.to] = nd; prevE[e.to] = e; hpush(heap, [nd, e.to]); }
+        };
+        while (heap.length) {
+          const [du, u] = hpop(heap);
+          if (du > dist[u]) continue;
+          if (u === dst) break;
+          (G.adj[u] || []).forEach(e => relax(u, du, e));
+          (extra[u] || []).forEach(e => relax(u, du, e));
+        }
+        if (!isFinite(dist[dst])) return null;
+        const path = []; for (let n = dst; prevE[n]; n = prevE[n].from) path.push(prevE[n]);
+        return path.reverse();
+      }
+      function makeOption(path, ctx) {
+        const nodePt = n => n === ctx.O ? ctx.op : n === ctx.D ? ctx.dp : (nd => nd.type === 'P' ? [nd.stop.lon, nd.stop.lat] : [nd.dl.entries[nd.k].stop.lon, nd.dl.entries[nd.k].stop.lat])(G.nodes[n]);
+        const nodeName = n => n === ctx.O ? 'your location' : n === ctx.D ? ctx.dest.name : G.nodes[n].stop.name;
+        const legs = []; let cur = null;
+        for (const e of path) {
+          if (e.kind === 'walk') {
+            const from = nodePt(e.from), to = nodePt(e.to), m = hav(from, to) * CFG.WALK_DETOUR;
+            legs.push({ type: 'walk', from, to, fromName: nodeName(e.from), toName: nodeName(e.to), meters: m, sec: e.cost, coords: [from, to], refined: false });
+            cur = null;
+          } else if (e.kind === 'board') {
+            cur = { type: 'transit', dl: e.dl, k0: e.k, k1: e.k, wait: e.cost - (e.pen || 0), pen: e.pen || 0, ride: 0 };
+            legs.push(cur);
+          } else if (e.kind === 'ride') { cur.ride += e.cost; cur.k1 = e.k + 1; }
+          else if (e.kind === 'alight') { cur.ride += e.cost; }
+        }
+        for (let i = legs.length - 1; i > 0; i--) if (legs[i].type === 'walk' && legs[i - 1].type === 'walk') {
+          const a = legs[i - 1], b = legs[i];
+          a.to = b.to; a.toName = b.toName; a.meters += b.meters; a.sec += b.sec; a.coords = a.coords.concat(b.coords.slice(1)); legs.splice(i, 1);
+        }
+        while (legs.length && legs[0].type === 'walk' && legs[0].meters < 25 && legs.length > 1) legs.shift();
+        while (legs.length && legs[legs.length - 1].type === 'walk' && legs[legs.length - 1].meters < 25 && legs.length > 1) legs.pop();
+        if (!legs.some(l => l.type === 'transit')) return null;
+        for (const l of legs) if (l.type === 'transit') {
+          l.a = l.dl.entries[l.k0]; l.b = l.dl.entries[l.k1];
+          l.coords = sliceLine(l.dl.line, l.a.proj, l.b.proj);
+        }
+        const opt = { legs, ctx };
+        finalizeOption(opt);
+        return opt;
+      }
+      function finalizeOption(o) {
+        o.total = o.legs.reduce((s, l) => s + (l.type === 'walk' ? l.sec : l.wait + l.ride), 0);
+        o.score = o.total + o.legs.reduce((s, l) => s + (l.pen || 0), 0);
+        o.walkSec = o.legs.filter(l => l.type === 'walk').reduce((s, l) => s + l.sec, 0);
+        const tl = o.legs.filter(l => l.type === 'transit');
+        o.bases = new Set(tl.map(l => l.dl.base));
+        o.transfers = Math.max(0, tl.length - 1);
+        o.sig = o.legs.map(l => l.type === 'walk' ? 'w' : `${l.dl.id}:${l.a.stop.id}>${l.b.stop.id}`).join('|');
+      }
+
+      function sortOptions(opts, pref) {
+        return [...opts].sort((a, b) => {
+          if (pref === 'least_walking') {
+            if (a.walkSec !== b.walkSec) return a.walkSec - b.walkSec;
+          } else if (pref === 'least_transfers') {
+            if (a.transfers !== b.transfers) return a.transfers - b.transfers;
+          } else if (pref === 'prefer_metro') {
+            const aM = a.legs.filter(l => l.type === 'transit' && l.dl.mode === 'metro').length;
+            const bM = b.legs.filter(l => l.type === 'transit' && l.dl.mode === 'metro').length;
+            if (aM !== bM) return bM - aM;
+          } else if (pref === 'prefer_bus') {
+            const aB = a.legs.filter(l => l.type === 'transit' && l.dl.mode === 'bus').length;
+            const bB = b.legs.filter(l => l.type === 'transit' && l.dl.mode === 'bus').length;
+            if (aB !== bB) return bB - aB;
+          } else if (pref === 'prefer_rfr') {
+            const aR = a.legs.filter(l => l.type === 'transit' && l.dl.mode === 'rfr').length;
+            const bR = b.legs.filter(l => l.type === 'transit' && l.dl.mode === 'rfr').length;
+            const aOther = a.legs.filter(l => l.type === 'transit' && l.dl.mode !== 'rfr').length;
+            const bOther = b.legs.filter(l => l.type === 'transit' && l.dl.mode !== 'rfr').length;
+            if (aOther === 0 && bOther > 0) return -1;
+            if (bOther === 0 && aOther > 0) return 1;
+            if (aR !== bR) return bR - aR;
+          }
+          return a.score - b.score;
+        });
+      }
+
+      function computeOptions(origin, dest) {
+        const O = G.nodes.length, D = O + 1, op = [origin.lon, origin.lat], dp = [dest.lon, dest.lat];
+        const extra = {}; const push = (n, e) => (extra[n] = extra[n] || []).push(e);
+        for (const { stop, d } of nearbyStops(op)) push(O, { from: O, to: stop.node, cost: walkSec(d), kind: 'walk' });
+        for (const { stop, d } of nearbyStops(dp)) push(stop.node, { from: stop.node, to: D, cost: walkSec(d), kind: 'walk' });
+        const ctx = { O, D, op, dp, origin, dest };
+        const found = new Map();
+        const run = ban => {
+          const p = dijkstra(O, D, ban, extra); if (!p) return null;
+          const opt = makeOption(p, ctx); if (!opt) return null; if (!found.has(opt.sig)) found.set(opt.sig, opt); return opt;
+        };
+        const none = () => ({ bases: new Set(), modes: new Set() });
+        const best = run(none());
+        if (best) {
+          best.bases.forEach(b => run({ bases: new Set([b]), modes: new Set() }));
+          best.legs.forEach((leg, i) => {
+            if (leg.type !== 'transit') return;
+            const banned = new Set([leg.dl.base]);
+            for (let n = 0; n < 5; n++) {
+              const alt = run({ bases: banned, modes: new Set() });
+              if (!alt || !sameShape(best, alt) || banned.has(alt.legs[i].dl.base)) break;
+              banned.add(alt.legs[i].dl.base);
+            }
+          });
+        }
+        ['bus', 'metro', 'rfr'].forEach(m => run({ bases: new Set(), modes: new Set([m]) }));
+        const out = [...found.values()];
+        const directM = hav(op, dp) * CFG.WALK_DETOUR;
+        if (directM <= CFG.WALK_ONLY_MAX_M) {
+          const o = { legs: [{ type: 'walk', from: op, to: dp, fromName: 'your location', toName: dest.name, meters: directM, sec: directM / CFG.WALK_MPS, coords: [op, dp], refined: false }], ctx };
+          finalizeOption(o); out.push(o);
+        }
+        out.sort((a, b) => a.score - b.score);
+        if (!out.length) return out;
+        return mergeSimilar(out.filter(o => o.score <= out[0].score * 2 + 900)).slice(0, CFG.MAX_OPTIONS);
+      }
+
+      const stopPt = en => [en.stop.lon, en.stop.lat];
+      function sameShape(a, b) {
+        if (a.legs.length !== b.legs.length) return false;
+        const near = (p, q) => hav(p, q) <= CFG.SIMILAR_M;
+        return a.legs.every((la, i) => {
+          const lb = b.legs[i];
+          if (la.type !== lb.type) return false;
+          if (la.type === 'walk') return near(la.from, lb.from) && near(la.to, lb.to);
+          return la.dl.mode === lb.dl.mode && near(stopPt(la.a), stopPt(lb.a)) && near(stopPt(la.b), stopPt(lb.b));
+        });
+      }
+      function mergeSimilar(list) {
+        const groups = [];
+        for (const o of list) {
+          const g = groups.find(g => sameShape(g.p, o));
+          if (g) g.rest.push(o); else groups.push({ p: o, rest: [] });
+        }
+        return groups.map(({ p, rest }) => {
+          p.legs.forEach((leg, i) => {
+            if (leg.type !== 'transit') return;
+            leg.alts = [];
+            for (const o of rest) {
+              const lb = o.legs[i];
+              if (lb.dl.base === leg.dl.base || leg.alts.some(a => a.dl.base === lb.dl.base)) continue;
+              leg.alts.push({ dl: lb.dl, wait: lb.wait, ride: lb.ride });
+            }
+          });
+          return p;
+        });
+      }
+
+      let testOrigin = { ...CFG.TEST_ORIGIN }, originMarker = null;
+      function setOriginMarker(o) {
+        if (!originMarker) {
+          const el = document.createElement('div'); el.className = 'location-marker';
+          originMarker = new maplibregl.Marker({ element: el }).setLngLat([o.lon, o.lat]).addTo(map);
+        } else originMarker.setLngLat([o.lon, o.lat]);
+      }
+      async function resolveOrigin() {
+        if (CFG.USE_TEST_ORIGIN) return { ...testOrigin, source: 'test' };
+        return { ...testOrigin, source: 'test (GPS failed)' };
+      }
+
+      const $ = id => document.getElementById(id);
+      const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const fmtMin = s => {
+        const m = Math.max(1, Math.round(s / 60));
+        return m < 60 ? `${m} ${t('min')}` : `${Math.floor(m / 60)} ${t('h')} ${String(m % 60).padStart(2, '0')}`;
+      };
+      const fmtDist = m => m < 950 ? `${Math.round(m / 10) * 10} ${t('meters')}` : `${(m / 1000).toFixed(1)} ${t('km')}`;
+      const clock = s => new Date(Date.now() + s * 1000).toLocaleTimeString(LANG === 'ar' ? 'ar-TN' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: true }); const stopIcon = s => s.kind === 'station' ? ' 🚉' : s.kind === 'bench' ? ' 🪑' : '';
+      const lineChip = dl => `<span class="chip" style="background:${CFG.MODES[dl.mode].color}">${CFG.MODES[dl.mode].icon} ${esc(lineLabel(dl))}</span>`;
+      const OR = '<span class="chip-or">or</span>';
+      const allLines = l => [l.dl, ...(l.alts || []).map(a => a.dl)];
+      const getTowards = (dl) => dl.towards === 'last recorded stop' ? t('last_recorded_stop') : dl.towards;
+      const linesList = l => allLines(l).map(dl => `<b style="color:${CFG.MODES[dl.mode].color}">${esc(lineLabel(dl))}</b>`).join('<br><span style="font-size: 11px; font-style: italic; color: var(--c-muted); display: inline-block; margin: 2px 0 2px 18px;">' + t('or') + '</span><br>'); const lineLabel = dl => {
+        // Extract just the number from short codes like "M1", "M2", "A", "D", "E"
+        const num = dl.short.replace(/^[A-Z]+/, '');
+        if (dl.mode === 'bus') return `${t('bus')} ${num || dl.short}`;
+        if (dl.mode === 'metro') return `${t('metro')} ${num || dl.short}`;
+        if (dl.mode === 'rfr') return `${t('rfr')} ${num || dl.short}`;
+        return dl.base;
+      };
+      let runId = 0, lastDest = null, options = [], selectedSig = null;
+      let sortPreference = 'fastest';
+
+      // Expose a safe global refresh function for language switching
+      window.refreshTripUI = function () {
+        if (options && options.length) renderOptions();
+      };
+
+      function openSheet() { $('trip-sheet').classList.add('open', 'expanded'); $('trip-sheet').classList.remove('collapsed'); }
+      function toggleSheet(force) { const sh = $('trip-sheet'); sh.classList.toggle('collapsed', force ?? !sh.classList.contains('collapsed')); }
+      function closeTrip() {
+        runId++; lastDest = null; options = [];
+        $('trip-sheet').classList.remove('open');
+      }
+      function setBody(html) { $('trip-list').innerHTML = html; }
+      function renderOptions(note) {
+        const fmtStopName = (name) => esc(name.replace('· bench', ` · ${t('bench')}`).replace('· stop', ` · ${t('stop')}`));
+        const o0 = options[0];
+        $('trip-title').textContent = `${t('to')} ${o0.ctx.dest.name}`;
+        const sel0 = options.find(x => x.sig === selectedSig) || o0;
+        const orWord = ' ' + t('or') + ' ';
+        $('trip-mini').innerHTML = `<b>${fmtMin(sel0.total)}</b> · ` + (sel0.legs.filter(l => l.type === 'transit').map(l => allLines(l).map(lineLabel).join(orWord)).join(' + ') || t('walking_only')) + ' · ' + t('tap_show');
+        $('trip-sub').innerHTML = `${o0.ctx.origin.source === 'gps' ? t('from_location') : t('from_test')}${note ? ' · ' + note : ''}`;
+
+        $('trip-list').innerHTML = options.map((o, i) => {
+          const sel = o.sig === selectedSig;
+          const chips = o.legs.map(l => l.type === 'walk'
+            ? `<span class="chip chip-walk">🚶 ${fmtMin(l.sec)}</span>`
+            : `<div style="display:inline-flex; flex-direction:column; align-items:flex-start; vertical-align:middle; margin: 0 4px;">${allLines(l).map(lineChip).join('<span class="chip-or" style="display:block; text-align:center; width:100%; margin: 1px 0;">' + t('or') + '</span>')}</div>`
+          ).join('<span class="chip-sep">›</span>');
+
+          const tl = o.legs.filter(l => l.type === 'transit');
+          const sub = tl.length
+            ? `${i === 0 ? `<b class="tag">${t('best')}</b> ` : ''}${t('walk')} ${fmtMin(o.walkSec)} · ${o.transfers ? (o.transfers > 1 ? t('transfer_many', { n: o.transfers }) : t('transfer_one')) : t('no_transfer')}`
+            : `${i === 0 ? `<b class="tag">${t('best')}</b> ` : ''}${t('walking_only')} · ${fmtDist(o.legs[0].meters)}`;
+
+          const steps = sel ? `<div class="trip-steps">${o.legs.map(l => l.type === 'walk'
+            ? `<div class="step"><span class="ico">🚶</span><div>${fmtMin(l.sec)} ${t('walk')}<br><small>${t('to')} <b>${esc(l.toName)}</b></small></div></div>`
+            : `<div class="step"><span class="ico">${CFG.MODES[l.dl.mode].icon}</span><div><small>${t('board')} <b><bdi>${fmtStopName(l.a.stop.name)}</bdi></b>${stopIcon(l.a.stop)}<br>
+${linesList(l)}<br>
+${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${stopIcon(l.b.stop)}</small></div></div>`
+          ).join('')}</div>` : '';
+
+          return `<div class="trip-card${sel ? ' sel' : ''}" data-sig="${esc(o.sig)}">
+<div class="trip-top"><span class="trip-time">${fmtMin(o.total)}</span><span class="trip-eta">${t('arrive')} ${clock(o.total)}</span></div>
+<div class="trip-chips">${chips}</div><div class="trip-subline">${sub}</div>${steps}</div>`;
+        }).join('') + `<div class="trip-foot">${t('estimates')}</div>`;
+      }
+      const EMPTY = { type: 'FeatureCollection', features: [] };
+      function ensureLayers() {
+        if (map.getSource('trip')) return;
+        map.addSource('trip', { type: 'geojson', data: EMPTY });
+        map.addSource('trip-pts', { type: 'geojson', data: EMPTY });
+        map.addLayer({ id: 'trip-walk', type: 'line', source: 'trip', filter: ['==', ['get', 'kind'], 'walk'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#374151', 'line-width': 4, 'line-dasharray': [0.1, 2] } });
+        map.addLayer({ id: 'trip-transit-casing', type: 'line', source: 'trip', filter: ['==', ['get', 'kind'], 'transit'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#ffffff', 'line-width': 9 } });
+        map.addLayer({ id: 'trip-transit', type: 'line', source: 'trip', filter: ['==', ['get', 'kind'], 'transit'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 5.5 } });
+        map.addLayer({ id: 'trip-pts-circle', type: 'circle', source: 'trip-pts', paint: { 'circle-radius': 6.5, 'circle-color': '#ffffff', 'circle-stroke-width': 3, 'circle-stroke-color': ['get', 'color'] } });
+        map.addLayer({ id: 'trip-pts-label', type: 'symbol', source: 'trip-pts', layout: { 'text-field': ['get', 'label'], 'text-font': ['Noto Sans Regular'], 'text-size': 11, 'text-offset': [0, 1.2], 'text-anchor': 'top', 'text-allow-overlap': false }, paint: { 'text-color': '#111827', 'text-halo-color': '#ffffff', 'text-halo-width': 1.6 } });
+      }
+      function drawOption(o, fit) {
+        ensureLayers();
+        const feats = [], pts = [], all = [];
+        o.legs.forEach(l => {
+          const color = l.type === 'walk' ? '#374151' : CFG.MODES[l.dl.mode].color;
+          feats.push({ type: 'Feature', properties: { kind: l.type === 'walk' ? 'walk' : 'transit', color }, geometry: { type: 'LineString', coordinates: l.coords } });
+          l.coords.forEach(c => all.push(c));
+          if (l.type === 'transit') {
+            pts.push({ type: 'Feature', properties: { color, label: l.a.stop.name }, geometry: { type: 'Point', coordinates: [l.a.stop.lon, l.a.stop.lat] } });
+            pts.push({ type: 'Feature', properties: { color, label: l.b.stop.name }, geometry: { type: 'Point', coordinates: [l.b.stop.lon, l.b.stop.lat] } });
+          }
+        });
+        map.getSource('trip').setData({ type: 'FeatureCollection', features: feats });
+        map.getSource('trip-pts').setData({ type: 'FeatureCollection', features: pts });
+        if (fit && all.length) {
+          const b = all.reduce((bb, c) => bb.extend(c), new maplibregl.LngLatBounds(all[0], all[0]));
+          map.fitBounds(b, { padding: { top: 90, bottom: Math.min(window.innerHeight * 0.55, 420), left: 40, right: 40 }, maxZoom: 16, duration: 600 });
+        }
+      }
+      function selectOption(sig, fit = true) {
+        selectedSig = sig;
+        const o = options.find(x => x.sig === sig); if (!o) return;
+        renderOptions(); drawOption(o, fit);
+      }
+
+      async function planTripTo(lat, lon, name) {
+        const my = ++runId; lastDest = { lat, lon, name };
+        openSheet();
+        $('trip-title').textContent = `To ${name} `; $('trip-sub').textContent = '';
+        setBody('<div class="trip-msg">Finding the best way…</div>');
+        let origin;
+        try { origin = await resolveOrigin(); } catch (e) { return; }
+        try { await loadTransitData(); } catch (e) { return; }
+        if (my !== runId) return;
+        if (!G.stops.length) { setBody('<div class="trip-msg">No transit data found.</div>'); return; }
+        options = computeOptions(origin, { lat, lon, name });
+        if (!options.length) {
+          setBody(`< div class="trip-msg" > No connection found.</div >`);
+          return;
+        }
+        options = sortOptions(options, sortPreference);
+        selectedSig = options[0].sig;
+        selectOption(selectedSig, true);
+      }
+
+      function initTransitPlanner() {
+        $('trip-close').onclick = closeTrip;
+        $('trip-toggle').onclick = () => toggleSheet();
+        $('trip-handle').onclick = () => toggleSheet();
+        $('trip-list').addEventListener('click', e => { const c = e.target.closest('.trip-card'); if (c && c.dataset.sig !== selectedSig) selectOption(c.dataset.sig); });
+
+        const sortEl = $('trip-sort');
+        if (sortEl) {
+          sortEl.onchange = (e) => {
+            sortPreference = e.target.value;
+            if (options.length) {
+              options = sortOptions(options, sortPreference);
+              const keep = options.find(o => o.sig === selectedSig) ? selectedSig : options[0].sig;
+              selectOption(keep, false);
+            }
+          };
+        }
+
+        if (CFG.USE_TEST_ORIGIN) setOriginMarker(testOrigin);
+        loadTransitData().catch(e => dbg('❌ Transit data: ' + e.message));
+      }
+      window.initTransitPlanner = initTransitPlanner;
+      window.planTripTo = planTripTo;
+      window.closeTrip = closeTrip;
+    })();
+
     // ── UI TOGGLE LOGIC ───────────────────────────────────────────────────────
     document.getElementById('ui-toggle-btn').onclick = function () {
       const panel = document.getElementById('data-collection-panel');
       panel.classList.toggle('visible');
-      this.innerText = panel.classList.contains('visible') ? '❌' : '⚙️';
+      const isCollecting = panel.classList.contains('visible');
+      document.body.classList.toggle('data-collecting', isCollecting);
+      this.innerText = isCollecting ? '❌' : '⚙️';
     };
 
     // Initialize everything on load, then render markers once the map is ready
     window.onload = function () {
+      setLang(LANG);   // Apply saved language + translate the search placeholder
       init();
       // Small timeout ensures the map object is fully initialized before placing markers
       setTimeout(() => {
         if (map) {
-          renderHomeMarkers();
-          drawPrimaryPath();
+          if (DEV_UI) {
+            renderHomeMarkers();
+            renderBusMarkers();
+            drawPrimaryPath();
+          }
         }
       }, 500);
     };

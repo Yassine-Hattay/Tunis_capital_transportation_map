@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "تونس المدينة",
+        "name_en": "Tunis Ville",
+        "line": "Ligne E"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1803806, 36.7947693]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "سيدي منوبية",
+        "name_en": "Saida Manoubia",
+        "line": "Ligne E"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1655399, 36.7870675]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "النجاة",
+        "name_en": "Ennajah",
+        "line": "Ligne E"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1548445, 36.7933228]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "التيران-الزهور 1",
+        "name_en": "Ettayaran-Ezzouhour 1",
+        "line": "Ligne E"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1383966, 36.7921247]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "الزهور 2",
+        "name_en": "Ezzouhour 2",
+        "line": "Ligne E"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1275725, 36.7878362]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "الهرارية",
+        "name_en": "El Hrairia",
+        "line": "Ligne E"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1169321, 36.7840847]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "بوقطفة-سيدي حسين",
+        "name_en": "Bougatfa-Sidi Hassine",
+        "line": "Ligne E"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [10.1020439, 36.7802399]
+      }
+    }
+  ]
+}
