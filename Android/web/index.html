@@ -95,6 +95,12 @@
       text-align: left;
     }
 
+    /* English UI: the placeholder must read left-to-right too, otherwise the "?" jumps to the wrong end */
+    html[dir="ltr"] #search-input:placeholder-shown {
+      direction: ltr;
+      text-align: left;
+    }
+
     #search-clear {
       cursor: pointer;
       display: none;
@@ -115,7 +121,13 @@
       background: var(--c-surface);
       border: 1.5px solid var(--c-border);
       border-radius: var(--r);
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
+      /* the list scrolls */
+      max-height: min(62vh, calc(100vh - 150px));
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
       display: none;
       z-index: 200;
       box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
@@ -151,6 +163,59 @@
       font-size: 14px;
       font-weight: 500;
       color: var(--c-text);
+    }
+
+    .sr-chips {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      gap: 6px;
+      padding: 8px 10px;
+      overflow-x: auto;
+      background: var(--c-surface);
+      border-bottom: 1px solid var(--c-border);
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x;
+      scrollbar-width: none;
+    }
+
+    .sr-chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sr-chip {
+      flex: none;
+      font-size: 12px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1.5px solid var(--c-border);
+      color: var(--c-text);
+      background: var(--c-bg);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .sr-chip small {
+      color: var(--c-muted);
+      font-size: 10px;
+    }
+
+    .sr-chip.active {
+      background: var(--c-accent2);
+      border-color: var(--c-accent2);
+      color: #fff;
+    }
+
+    .sr-chip.active small {
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .sr-empty {
+      padding: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--c-muted);
     }
 
     .sri-sub {
@@ -986,6 +1051,12 @@
       align-items: baseline;
     }
 
+    .trip-dist {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--c-muted);
+    }
+
     .trip-time {
       font-size: 19px;
       font-weight: 700;
@@ -1250,7 +1321,7 @@
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.35-4.35" />
         </svg>
-        <input id="search-input" type="text" placeholder="وين تحب تمشي؟" autocomplete="off" />
+        <input id="search-input" type="text" placeholder="إلى أين تريد الذهاب؟" autocomplete="off" />
         <span id="search-clear">✕</span>
       </div>
       <div id="search-results"></div>
@@ -1456,6 +1527,27 @@
     let _fileCache = null;
     let _fetchPromise = null;
     let _offlinePlaces = [];
+    // Name to show for a search result in the current language.
+    //  Arabic UI : an Arabic name if the place has one, otherwise the Latin name converted to Arabic letters
+    //  English UI: a Latin name if the place has one, otherwise whatever it has
+    function placeLabel(p) {
+      const hasLetter = s => /[A-Za-z\u00C0-\u024F\u0600-\u06FF]/.test(s);
+      let names = [p.na, p.nl, p.n].filter(x => x && hasLetter(x));       // skip names like "(1017)"
+      if (!names.length) names = [p.na, p.nl, p.n].filter(Boolean);
+      if (!names.length) return '';
+      const isAr = s => /[\u0600-\u06FF]/.test(s);
+      if (LANG === 'ar') {
+        const ar = names.find(isAr);
+        if (ar) {                                                        // "Carthagene قرطاجنة" → "قرطاجنة"
+          if (!/[A-Za-z\u00C0-\u024F]/.test(ar)) return ar;
+          const only = ar.replace(/[A-Za-z\u00C0-\u024F][A-Za-z\u00C0-\u024F0-9'’.&]*/g, ' ').replace(/\s+/g, ' ')
+            .replace(/^[\s\-–\/()\[\]|:,.]+|[\s\-–\/()\[\]|:,.]+$/g, '');
+          return only || ar;
+        }
+        return window.dispName ? window.dispName(names[0]) : names[0];
+      }
+      return names.find(s => !isAr(s)) || names[0];
+    }
     let routingClickActive = false;
     let activeRouteInput = null; // Tracks which input is waiting for a map tap
     let pickerMode = false;
@@ -1473,7 +1565,7 @@
     let LANG = localStorage.getItem('atlas_lang') || 'ar';
     const T = {
       ar: {
-        search_placeholder: 'وين تحب تمشي؟',
+        search_placeholder: 'إلى أين تريد الذهاب؟',
         meters: 'م',
         km: 'كم',
         min: 'دق',
@@ -1496,6 +1588,7 @@
         arrive: 'الوصول',
         at: 'في',
         board: 'اصعد',
+        at_station: 'في',
         major_station: '(محطة رئيسية)',
         wait: 'انتظار ≈',
         stops_one: 'محطة واحدة',
@@ -1549,7 +1642,8 @@
         arrive: 'arrive',
         at: 'at',
         or: 'or',
-        board: 'Board',
+        board: 'board',
+        at_station: 'At',
         major_station: '(major station)',
         wait: 'wait ≈',
         stops_one: '1 stop',
@@ -1594,6 +1688,8 @@
       if (btn) btn.textContent = lang === 'ar' ? 'EN' : 'ع';
       const input = document.getElementById('search-input');
       if (input) input.placeholder = t('search_placeholder');
+      const rs = document.getElementById('search-results');
+      if (rs && rs.classList.contains('open') && input) input.dispatchEvent(new Event('input'));   // refresh open suggestions
       // Re-render trip sheet if open (safely calls global refresh if available)
       if (typeof window.refreshTripUI === 'function') window.refreshTripUI();
       // Update sort dropdown if exists
@@ -2730,6 +2826,143 @@
       return ZOOM_BY_CLASS[cls] ?? DEFAULT_POI_ZOOM;
     }
 
+    // ── SEARCH: RANKING, CATEGORY LABELS & FILTER ─────────────────────────────
+    // Ranking = how well the name matches the query  +  what kind of place it is.
+    //   tier 0 exact ("marsa" = "La Marsa" once the article is ignored) · 1 starts with · 2 a word starts with · 3 contains
+    //   score = tier*10 + category penalty (towns/suburbs 0 · transport & landmarks 5 · everything else 10) → lowest first
+    // so a town called "La Marsa" beats a supermarket whose name merely ends in "La Marsa".
+    const PLACE_CATS = new Set(['city', 'town', 'village', 'suburb', 'neighbourhood', 'neighborhood', 'quarter', 'hamlet', 'locality', 'district', 'municipality', 'borough', 'island', 'county', 'state', 'region', 'administrative']);
+    const MAJOR_CATS = new Set(['station', 'bus_station', 'railway_station', 'subway_entrance', 'halt', 'tram_stop', 'airport', 'aerodrome', 'ferry_terminal', 'stadium', 'attraction', 'museum', 'beach', 'square', 'mall', 'townhall']);
+    const MAX_RESULTS = 40;   // rows in the list (the list scrolls)
+    const MAX_CHIPS = 8;      // category filter chips shown
+    // Arabic names for common map categories. Anything not listed shows its English name (without "_").
+    const CAT_AR = {
+      city: 'مدينة', town: 'بلدة', village: 'قرية', suburb: 'ضاحية', neighbourhood: 'حي', neighborhood: 'حي', quarter: 'حي', hamlet: 'قرية صغيرة',
+      locality: 'منطقة', district: 'منطقة', municipality: 'بلدية', island: 'جزيرة', supermarket: 'سوبرماركت', convenience: 'بقالة', mall: 'مركز تجاري',
+      marketplace: 'سوق', department_store: 'متجر كبير', bakery: 'مخبزة', butcher: 'جزار', greengrocer: 'خضار وغلال', kiosk: 'كشك', clothes: 'ملابس',
+      shoes: 'أحذية', electronics: 'إلكترونيات', mobile_phone: 'هواتف', furniture: 'أثاث', hardware: 'أدوات بناء', hairdresser: 'صالون حلاقة',
+      beauty: 'مركز تجميل', laundry: 'مصبنة', car_repair: 'ورشة سيارات', car_wash: 'غسيل سيارات', car: 'سيارات', pharmacy: 'صيدلية', hospital: 'مستشفى',
+      clinic: 'عيادة', doctors: 'طبيب', dentist: 'طبيب أسنان', school: 'مدرسة', kindergarten: 'روضة أطفال', college: 'كلية', university: 'جامعة',
+      library: 'مكتبة', bank: 'بنك', atm: 'صراف آلي', bureau_de_change: 'صرافة', restaurant: 'مطعم', fast_food: 'وجبات سريعة', cafe: 'مقهى',
+      bar: 'بار', pub: 'بار', fuel: 'محطة وقود', parking: 'موقف سيارات', bus_stop: 'موقف حافلة', bus_station: 'محطة حافلات', station: 'محطة',
+      railway_station: 'محطة قطار', subway_entrance: 'مدخل مترو', tram_stop: 'محطة ترامواي', halt: 'محطة', taxi: 'سيارات أجرة', place_of_worship: 'مكان عبادة',
+      mosque: 'جامع', church: 'كنيسة', post_office: 'مكتب بريد', police: 'شرطة', townhall: 'بلدية', courthouse: 'محكمة', hotel: 'فندق',
+      guest_house: 'نزل', hostel: 'نزل شباب', museum: 'متحف', attraction: 'معلم سياحي', monument: 'نصب تذكاري', memorial: 'نصب تذكاري', park: 'حديقة',
+      playground: 'ملعب أطفال', pitch: 'ملعب', stadium: 'ملعب رياضي', sports_centre: 'مركز رياضي', fitness_centre: 'قاعة رياضة', gym: 'قاعة رياضة',
+      cinema: 'سينما', theatre: 'مسرح', beach: 'شاطئ', square: 'ساحة', airport: 'مطار', aerodrome: 'مطار', ferry_terminal: 'ميناء عبّارات', port: 'ميناء',
+      books: 'كتب', pastry: 'حلويات', community_centre: 'مركز اجتماعي', optician: 'نظارات', garden: 'حديقة', computer: 'حواسيب', travel_agency: 'وكالة أسفار',
+      tobacco: 'تبغ', public_building: 'مبنى عمومي', arts_centre: 'مركز فنون', childcare: 'حضانة أطفال', perfumery: 'عطور', driving_school: 'مدرسة سياقة',
+      apartment: 'شقق', jewelry: 'مجوهرات', confectionery: 'حلويات', chemist: 'مستحضرات', spices: 'توابل', trade: 'تجارة', car_rental: 'كراء سيارات',
+      deli: 'مأكولات جاهزة', public_bath: 'حمّام', appliance: 'أجهزة منزلية', coffee: 'قهوة', interior_decoration: 'ديكور', cosmetics: 'مستحضرات تجميل',
+      sports: 'رياضة', wholesale: 'بيع بالجملة', copyshop: 'نسخ وطباعة', car_parts: 'قطع غيار سيارات', veterinary: 'بيطري', sauna: 'ساونا',
+      seafood: 'مأكولات بحرية', social_facility: 'مرفق اجتماعي', dry_cleaning: 'تنظيف جاف', research_institute: 'معهد بحوث', party: 'مستلزمات حفلات',
+      ticket: 'تذاكر', general: 'متجر عام', houseware: 'أدوات منزلية', doityourself: 'أدوات بناء', common: 'مساحة عامة', ice_cream: 'مثلجات',
+      repair: 'إصلاح', cheese: 'أجبان', tailor: 'خياط', musical_instrument: 'آلات موسيقية', music_school: 'مدرسة موسيقى', studio: 'استوديو',
+      nightclub: 'ملهى ليلي', artwork: 'عمل فني', stationery: 'أدوات مكتبية', toys: 'ألعاب', nuts: 'مكسرات', bicycle: 'دراجات',
+      telecommunication: 'اتصالات', prep_school: 'مدرسة تحضيرية', photo: 'تصوير', tyres: 'عجلات', pet: 'حيوانات أليفة', art: 'فنون', resort: 'منتجع',
+      florist: 'بائع زهور', theme_park: 'مدينة ألعاب', recycling: 'إعادة تدوير', kitchen: 'مطابخ', motel: 'نزل طريق', internet_cafe: 'قاعة إنترنت',
+      watches: 'ساعات', information: 'معلومات', telephone: 'هاتف عمومي', food_court: 'مجمع مطاعم', farm: 'مزرعة', coworking_space: 'مساحة عمل مشتركة',
+      events_venue: 'قاعة مناسبات', video_games: 'ألعاب فيديو', gallery: 'رواق فني', garden_centre: 'مشتل', amusement_arcade: 'قاعة ألعاب',
+      fire_station: 'حماية مدنية', fabric: 'أقمشة', water: 'ماء', tool_hire: 'كراء معدات', hairdresser_supply: 'مستلزمات حلاقة', swimming_pool: 'مسبح',
+      boutique: 'بوتيك', antiques: 'تحف', nutrition_supplements: 'مكملات غذائية', gift: 'هدايا', lighting: 'إنارة', medical_supply: 'مستلزمات طبية',
+      dairy: 'ألبان', fishing: 'صيد', prison: 'سجن', agrarian: 'مستلزمات فلاحية', sports_hall: 'قاعة رياضة', bookmaker: 'مراهنات',
+      variety_store: 'متجر متنوع', vacuum_cleaner: 'مكانس كهربائية', camp_site: 'مخيم', tea: 'شاي', golf_course: 'ملعب غولف', alcohol: 'مشروبات كحولية',
+      motorcycle: 'دراجات نارية', radiotechnics: 'إلكترونيات', casino: 'كازينو', chocolate: 'شوكولا', horse_riding: 'ركوب الخيل',
+      fashion_accessories: 'إكسسوارات', marina: 'مرفأ', motorcycle_repair: 'إصلاح دراجات نارية', bed: 'أسرّة', window_blind: 'ستائر',
+      toilets: 'مراحيض', language_school: 'مدرسة لغات', country_store: 'متجر ريفي', shoe_repair: 'إصلاح أحذية', hunting_stand: 'موقع صيد',
+      social_centre: 'مركز اجتماعي', herbalist: 'عطّار', 'e-cigarette': 'سجائر إلكترونية', construction: 'بناء', grocery: 'بقالة',
+      hackerspace: 'مساحة ابتكار', escape_game: 'غرفة هروب', anime: 'أنمي', chalet: 'شاليه', trampoline_park: 'قاعة ترامبولين', fountain: 'نافورة',
+      lounger: 'كراسي استلقاء', nursing_home: 'دار رعاية مسنين', tiles: 'بلاط', water_park: 'مدينة مائية', photo_studio: 'استوديو تصوير',
+      planetarium: 'قبة فلكية', religion: 'ديني', music: 'موسيقى', dojo: 'قاعة فنون قتالية', smoking_area: 'منطقة تدخين', estate_agent: 'وكالة عقارية',
+      pottery: 'فخار', newsagent: 'صحف ومجلات', carpet: 'زرابي', boat: 'قوارب', promosport: 'مراهنات رياضية', hifi: 'أجهزة صوت', shop: 'متجر',
+      paint: 'دهن', firepit: 'موقد', concept_store: 'متجر', charging_station: 'محطة شحن', outdoor: 'معدات تخييم', health_food: 'أغذية صحية',
+      music_venue: 'قاعة موسيقى', tapissier: 'منجّد', beverages: 'مشروبات', bathroom_furnishing: 'تجهيزات حمّام', grave_yard: 'مقبرة', zoo: 'حديقة حيوانات',
+      dog_park: 'حديقة كلاب', fruit_sec: 'غلال جافة', second_hand: 'مستعمل', conference_centre: 'مركز مؤتمرات', sewing: 'خياطة',
+      waste_transfer_station: 'محطة نفايات', storage_rental: 'كراء مخازن', vehicle_inspection: 'فحص فني للسيارات', exhibition_centre: 'مركز معارض',
+      viewpoint: 'نقطة مشاهدة', parking_space: 'موقف سيارة', video: 'فيديو'
+    };
+    const _cat = p => { const c = String(p.c || '').split(';')[0].trim(); return c === 'yes' ? '' : c; };   // 'yes' means "no real category"
+    // "fast_food" → "Fast food"; Arabic UI uses CAT_AR when available
+    function catLabel(c) {
+      if (!c) return '';
+      if (LANG === 'ar' && CAT_AR[c]) return CAT_AR[c];
+      const s = String(c).replace(/_/g, ' ').trim();
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+    const _escS = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    // lower-case, strip accents + Arabic diacritics, unify alef / ya / ta-marbuta forms
+    const _norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f\u064B-\u065F\u0670\u0640]/g, '').toLowerCase()
+      .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, ' ');
+    function _keys(p) {
+      if (p._k) return p._k;
+      const set = new Set([p.na, p.nl, p.n].filter(Boolean).map(_norm));
+      p._k = [...set].map(full => ({
+        full,
+        bare: full.replace(/^(la |le |les |el |al |l'|ال)/, '').trim() || full,   // "La Marsa" → "marsa"
+        words: full.split(/[\s\-'’]+/)
+      }));
+      return p._k;
+    }
+    function _tier(p, q, toks) {
+      let best = 9;
+      for (const k of _keys(p)) {
+        let t;
+        if (k.bare === q || k.full === q) t = 0;
+        else if (k.bare.startsWith(q) || k.full.startsWith(q)) t = 1;
+        else if (k.words.some(w => w.startsWith(q) || w.replace(/^ال/, '').startsWith(q))) t = 2;
+        else if (k.full.includes(q)) t = 3;
+        else if (toks.length > 1 && toks.every(x => k.words.some(w => w.startsWith(x) || w.replace(/^ال/, '').startsWith(x)))) t = 3;   // all words present, any order
+        else continue;
+        if (t < best) best = t;
+      }
+      return best;
+    }
+    function rankPlaces(raw) {
+      const q = _norm(raw).trim();
+      if (q.length < 2) return [];
+      const toks = q.split(' ').filter(x => !['la', 'le', 'les', 'el', 'al', 'de', 'du', 'des'].includes(x)), out = [];
+      for (const p of _offlinePlaces) {
+        const t = _tier(p, q, toks);
+        if (t === 9) continue;
+        const pen = PLACE_CATS.has(_cat(p)) ? 0 : MAJOR_CATS.has(_cat(p)) ? 5 : 10;
+        out.push({ p, s: t * 10 + pen + Math.min(30, (p.n || p.nl || p.na || '').length) / 100 });   // shorter names first on ties
+      }
+      out.sort((a, b) => a.s - b.s);
+      return out.map(x => x.p);
+    }
+
+    let _ranked = [], _shown = [], _placeFilter = null, _lastQ = '';
+    function renderSearchResults() {
+      const el = document.getElementById('search-results');
+      if (!_ranked.length) {
+        el.innerHTML = `<div class="sr-empty">${LANG === 'ar' ? 'لا توجد نتائج' : 'No results'}</div>`;
+        el.classList.add('open'); _shown = []; return;
+      }
+      // category chips are built from what the current query actually matched
+      const counts = new Map();
+      _ranked.forEach(p => { const c = _cat(p); if (c) counts.set(c, (counts.get(c) || 0) + 1); });
+      if (_placeFilter && !counts.has(_placeFilter)) _placeFilter = null;
+      const cats = [...counts.entries()].sort((a, b) => (PLACE_CATS.has(b[0]) - PLACE_CATS.has(a[0])) || b[1] - a[1]).slice(0, MAX_CHIPS);
+      if (_placeFilter && !cats.some(c => c[0] === _placeFilter)) cats.unshift([_placeFilter, counts.get(_placeFilter)]);
+      const chips = cats.length > 1 || _placeFilter
+        ? `<div class="sr-chips"><span class="sr-chip${_placeFilter ? '' : ' active'}" data-c="" onclick="setPlaceFilter(this.dataset.c)">${LANG === 'ar' ? 'الكل' : 'All'}</span>`
+        + cats.map(([c, n]) => `<span class="sr-chip${c === _placeFilter ? ' active' : ''}" data-c="${_escS(c)}" onclick="setPlaceFilter(this.dataset.c)">${_escS(catLabel(c))} <small>${n}</small></span>`).join('') + '</div>'
+        : '';
+      _shown = (_placeFilter ? _ranked.filter(p => _cat(p) === _placeFilter) : _ranked).slice(0, MAX_RESULTS);
+      el.innerHTML = chips + _shown.map((p, i) =>
+        `<div class="search-result-item" onclick="pickPlace(${i})"><div class="sri-icon">📍</div><div><div class="sri-name">${_escS(placeLabel(p))}</div><div class="sri-sub">${_escS(catLabel(_cat(p)))}</div></div></div>`).join('');
+      el.classList.add('open');
+    }
+    function setPlaceFilter(c) {
+      _placeFilter = (c && c !== _placeFilter) ? c : null;
+      renderSearchResults();
+      document.getElementById('search-results').scrollTop = 0;
+    }
+    function pickPlace(i) {
+      const p = _shown[i]; if (!p) return;
+      goToPlace(p.lo, p.la, placeLabel(p), _cat(p));
+    }
+
     async function initOfflineSearch() {
       try {
         const r = await fetch('./data/places.json');
@@ -2757,14 +2990,14 @@
       });
 
       input.addEventListener('input', e => {
-        const q = e.target.value.trim().toLowerCase();
-        document.getElementById('search-clear').classList.toggle('visible', q.length > 0);
-        if (q.length < 2) { resultsEl.classList.remove('open'); return; }
-        const allMatches = _offlinePlaces.filter(p => (p.na || '').toLowerCase().includes(q) || (p.nl || '').toLowerCase().includes(q) || (p.n || '').toLowerCase().includes(q));
-        const matches = allMatches.slice(0, 10);
-        dbg(`🔎 Search "${q}": ${allMatches.length} total matches, showing top ${matches.length}`);
-        resultsEl.innerHTML = matches.map(p => `<div class="search-result-item" onclick="goToPlace(${p.lo},${p.la},'${(p.na || p.nl || p.n).replace(/'/g, "\\'")}','${(p.c || '').replace(/'/g, "\\'")}')"><div class="sri-icon">📍</div><div><div class="sri-name">${p.na || p.nl || p.n}</div><div class="sri-sub">${p.c || ''}</div></div></div>`).join('');
-        resultsEl.classList.add('open');
+        const raw = e.target.value.trim();
+        document.getElementById('search-clear').classList.toggle('visible', raw.length > 0);
+        if (raw.length < 2) { resultsEl.classList.remove('open'); _lastQ = raw; _placeFilter = null; return; }
+        if (_lastQ.length < 2) _placeFilter = null;          // a new search starts without a leftover filter
+        _lastQ = raw;
+        _ranked = rankPlaces(raw);
+        dbg(`🔎 Search "${raw}": ${_ranked.length} matches`);
+        renderSearchResults();
       });
     }
 
@@ -3589,6 +3822,168 @@
         }
       };
 
+      // ── ARABIC NAMES ────────────────────────────────────────────────────
+      // 1) exact dictionary for every known station / terminus (keys are normalised, so case/accents don't matter)
+      // 2) otherwise: translate known words (PLACE, LYCEE, LA MARSA …) and transliterate the rest letter-by-letter.
+      //    The transliteration is only a best guess for places that aren't in the dictionary — add them to AR_PAIRS to fix them.
+      const AR_PAIRS = [
+        ['10 DECEMBRE 1948', '10 ديسمبر 1948'], ['10 Décembre', '10 ديسمبر'], ['13 AOUT', '13 أوت'],
+        ['20 Mars 1956', '20 مارس 1956'], ['14 Janvier 2011', '14 جانفي 2011'],
+        ['ABOU EL KACEM ECHEBBI', 'أبو القاسم الشابي'], ['ABOUBAKER ERRAZI', 'أبو بكر الرازي'], ['ARIANA', 'أريانة'],
+        ['Arrêt du Stade', 'محطة الملعب'], ['BAB ALIOUA', 'باب عليوة'], ['BAB EL KHADHRA', 'باب الخضراء'],
+        ['BAB LAASSAL', 'باب العسل'], ['BAB SAADOUN', 'باب سعدون'], ['BARDO', 'باردو'], ['Le Bardo', 'باردو'],
+        ['BEN AROUS', 'بن عروس'], ['BOUCHOUCHA', 'بوشوشة'], ['Barcelone', 'برشلونة'], ['Bir El Bey', 'بئر الباي'],
+        ['Borj Cédria', 'برج السدرية'], ['Bou Kornine', 'بوقرنين'], ['Bougatfa-Sidi Hassine', 'بوقطفة - سيدي حسين'],
+        ['CAMPUS UNIVERSITAIRE EL MANAR', 'الحرم الجامعي المنار'], ['CAMPUS UNIVERSITAIRE MANOUBA', 'الحرم الجامعي منوبة'],
+        ['CITE DES SCIENCES', 'مدينة العلوم'], ['CITE EL INTILAKA', 'حي الانطلاقة'], ['CITE EL KHADHRA', 'حي الخضراء'],
+        ['CITE ENNOUR', 'حي النور'], ['CITE SPORTIVE', 'المدينة الرياضية'], ['CITÉ MUNICIPALE', 'الحي البلدي'],
+        ['Cité des Orangers', 'حي البرتقال'], ['DENDEN', 'دندن'], ['Djebel Jelloud', 'جبل جلود'],
+        ['Dépôt Farhat Hached', 'مستودع فرحات حشاد'], ['EL GHAZELI', 'الغزالي'], ['EL MONTAZAH', 'المنتزه'],
+        ['EL MOUROUJ 1', 'المروج 1'], ['EL MOUROUJ 2', 'المروج 2'], ['EL MOUROUJ 3', 'المروج 3'], ['EL MOUROUJ 4', 'المروج 4'],
+        ['EL OMRANE SUPERIEUR', 'العمران الأعلى'], ['ENNESRI', 'النسري'], ['ESSAIDIA', 'السعيدية'],
+        ['ETTADHAMEN', 'التضامن'], ['ETTAHRIR', 'التحرير'], ['El Bortal', 'البرطال'], ['El Hraïria', 'الحرايرية'],
+        ['Ennajah', 'النجاح'], ['Erraoudha', 'الروضة'], ['Erriadh', 'الرياض'], ['Ettayaran-Ezzouhour 1', 'الطيران - الزهور 1'],
+        ['Ezzahra', 'الزهراء'], ['Ezzahra Lycée', 'معهد الزهراء'], ['Ezzouhour 2', 'الزهور 2'], ['FARHAT HACHED', 'فرحات حشاد'],
+        ['Gobaa', 'القبعة'], ['Gobaa Ville', 'القبعة المدينة'], ['HABIB THAMEUR', 'الحبيب ثامر'], ['Hammam-Chott', 'حمام الشط'],
+        ['Hammam-Lif', 'حمام الأنف'], ['IBN KHALDOUN', 'ابن خلدون'], ['IBN SINA', 'ابن سينا'],
+        ['Jardin Habib Thameur Bus Station', 'محطة حافلات حديقة الحبيب ثامر'], ['KABARIA', 'الكبارية'],
+        ['KHAIREDDINE', 'خير الدين'], ['KHAZNADAR', 'الخزندار'], ['KSAR EL WARDA', 'قصر الورد'], ["L'ARTISANAT", 'الصناعات التقليدية'],
+        ["L'ENVIRONNEMENT", 'البيئة'], ["L'INDEPENDANCE", 'الاستقلال'], ['LA JEUNESSE', 'الشباب'], ['LES JARDINS', 'الحدائق'],
+        ['LES JASMINS', 'الياسمين'], ['LES MARTYRS', 'الشهداء'], ['Lycée Technique Radès', 'المعهد الفني برادس'],
+        ['MANOUBA', 'منوبة'], ['MEFTAH SAADALLAH', 'مفتاح سعد الله'], ['MOHAMED ALI', 'محمد علي'],
+        ['MOHAMED MANACHOU', 'محمد المناشو'], ['MOHAMED V', 'محمد الخامس'], ['MONCEF BEY', 'المنصف باي'],
+        ['Mellassine', 'الملاسين'], ['Mégrine', 'مقرين'], ['Mégrine Riadh', 'مقرين الرياض'], ['NELSON MANDELA', 'نيلسون مانديلا'],
+        ['OUERDIA 6', 'الوردية 6'], ['PALESTINE', 'فلسطين'], ['PLACE BARCELONE NORD', 'ساحة برشلونة شمال'],
+        ['PLACE BARCELONE SUD', 'ساحة برشلونة جنوب'], ['PLACE DE LA REPUBLIQUE', 'ساحة الجمهورية'],
+        ['POLE TECHNOLOGIQUE', 'القطب التكنولوجي'], ['ROMMANA', 'الرمانة'], ['Radès', 'رادس'], ['Radès Méliane', 'رادس مليان'],
+        ['SLIMENE KEHIA', 'سليمان كاهية'], ['Saïda Manoubia', 'السيدة المنوبية'], ['Sidi Rézig', 'سيدي رزيق'],
+        ['Station Bab Alioua', 'محطة باب عليوة'], ['Station Transport en Commun La Manouba', 'محطة النقل العمومي بمنوبة'],
+        ['TAHER EL HADDAD', 'الطاهر الحداد'], ['TUNIS MARINE', 'تونس البحرية'], ['Tahar Sfar', 'الطاهر صفر'],
+        ['Terminus Tunis Marine', 'محطة تونس البحرية'], ['Tunis Ville', 'تونس المدينة'],
+        ['ROMMANA', 'الرمانة'], ['El Mourouj 2', 'المروج 2'],
+        ['Tunis Marine Station', 'محطة تونس البحرية'], ['Jardin Habib Thameur Station', 'محطة حديقة الحبيب ثامر'],
+        ['La Manouba Public Transport Station', 'محطة النقل العمومي منوبة'], ['Ariana Bus Station', 'محطة الحافلات بأريانة'],
+        ['El Intilaka Hub Station', 'محطة الترابط بالإنطلاقة'], ['Bab Alioua Station', 'محطة باب عليوة']
+      ];
+      // common words / phrases for the fallback (keys already normalised: upper-case, no accents)
+      const AR_WORDS = {
+        'LA MARSA': 'المرسى', 'LA GOULETTE': 'حلق الوادي', 'SIDI BOU SAID': 'سيدي بوسعيد', 'LE KRAM': 'الكرم', 'CARTHAGE': 'قرطاج',
+        'LES BERGES DU LAC': 'ضفاف البحيرة', 'TUNIS': 'تونس', 'ARIANA': 'أريانة', 'MANOUBA': 'منوبة', 'BEN AROUS': 'بن عروس',
+        'PLACE': 'ساحة', 'RUE': 'نهج', 'AVENUE': 'شارع', 'LYCEE': 'معهد', 'COLLEGE': 'إعدادية', 'ECOLE': 'مدرسة', 'HOPITAL': 'مستشفى',
+        'MOSQUEE': 'جامع', 'CAFE': 'مقهى', 'PHARMACIE': 'صيدلية', 'GARE': 'محطة', 'STATION': 'محطة', 'MARCHE': 'سوق', 'JARDIN': 'حديقة',
+        'CITE': 'حي', 'LAC': 'البحيرة', 'PORT': 'ميناء', 'PLAGE': 'شاطئ', 'CENTRE': 'مركز', 'VILLE': 'المدينة', 'NORD': 'شمال',
+        'SUD': 'جنوب', 'EST': 'شرق', 'OUEST': 'غرب', 'SIDI': 'سيدي', 'BEN': 'بن', 'ABOU': 'أبو', 'IBN': 'ابن', 'BAB': 'باب',
+        'MOHAMED': 'محمد', 'AHMED': 'أحمد', 'ALI': 'علي', 'HABIB': 'الحبيب', 'BOURGUIBA': 'بورقيبة', 'YAGHLANE': 'يغلان',
+        'BUREAU DE POSTE': 'مكتب البريد', 'SALON DE THE': 'صالون شاي', 'CENTRE CULTUREL': 'مركز ثقافي', 'ET': 'و', 'MME': 'السيدة', 'MR': 'السيد',
+        'GOUVERNORAT': 'ولاية', 'GOUVERNERAT': 'ولاية', 'MUSIQUE': 'موسيقى', 'DANSE': 'رقص', 'CONSERVATOIRE': 'معهد موسيقى', 'ATHLETISME': 'ألعاب قوى', 'ECOLE PRIMAIRE': 'مدرسة ابتدائية', 'SALLE DE SPORT': 'قاعة رياضة', 'SALLE DES FETES': 'قاعة أفراح',
+        'HOTEL DE VILLE': 'بلدية', 'FAST FOOD': 'وجبات سريعة', 'ICE CREAM': 'مثلجات',
+        'CAFE': 'مقهى', 'ECOLE': 'مدرسة', 'PHARMACIE': 'صيدلية', 'RESTAURANT': 'مطعم', 'PRIMAIRE': 'ابتدائية', 'HOTEL': 'فندق', 'VENTE': 'بيع',
+        'PATISSERIE': 'حلويات', 'CHEZ': 'عند', 'MOSQUE': 'جامع', 'MOSQUEE': 'جامع', 'POSTE': 'بريد', 'PIZZA': 'بيتزا', 'SALLE': 'قاعة', 'FOOD': 'طعام',
+        'DAR': 'دار', 'COFFEE': 'قهوة', 'AUTO': 'سيارات', 'SALON': 'صالون', 'DR': 'د.', 'MAISON': 'دار', 'CLUB': 'نادي', 'TUNISIE': 'تونس',
+        'SPORT': 'رياضة', 'BOULANGERIE': 'مخبزة', 'TERRAIN': 'ملعب', 'COIFFURE': 'حلاقة', 'ESPACE': 'فضاء', 'BANK': 'بنك', 'BANQUE': 'بنك',
+        'MENZAH': 'المنزه', 'SHOP': 'متجر', 'GYM': 'قاعة رياضة', 'GAMMARTH': 'قمرت', 'POLICE': 'شرطة', 'LAC': 'البحيرة', 'MARSA': 'المرسى',
+        'PARC': 'حديقة', 'EPICERIE': 'بقالة', 'LIBRAIRIE': 'مكتبة', 'OPTIC': 'نظارات', 'OPTIQUE': 'نظارات', 'ENFANTS': 'الأطفال', 'PARFUMERIE': 'عطور',
+        'SCHOOL': 'مدرسة', 'PETIT': 'صغير', 'SAID': 'سعيد', 'FETES': 'أفراح', 'AZIZA': 'عزيزة', 'HOUSE': 'بيت', 'CLINIQUE': 'مصحة', 'FRUITS': 'غلال',
+        'REPARATION': 'إصلاح', 'ART': 'فن', 'ARTS': 'فنون', 'BOUTIQUE': 'بوتيك', 'MAGASIN': 'محل', 'LOUNGE': 'لاونج', 'FRIPPE': 'ملابس مستعملة',
+        'FRIPE': 'ملابس مستعملة', 'NOUR': 'نور', 'BOU': 'بو', 'TABAC': 'تبغ', 'CABINET': 'عيادة', 'MOUROUJ': 'المروج', 'MEGRINE': 'مقرين', 'FAST': 'سريع',
+        'SUPERETTE': 'سوبريت', 'INFORMATIQUE': 'إعلامية', 'AROUS': 'عروس', 'BIBLIOTHEQUE': 'مكتبة', 'BOUCHERIE': 'جزارة', 'RADES': 'رادس', 'COIN': 'ركن',
+        'RESTO': 'مطعم', 'NUIT': 'ليل', 'QUINCAILLERIE': 'أدوات منزلية', 'STADE': 'ملعب', 'STADIUM': 'ملعب', 'CAR': 'سيارات', 'MARKET': 'ماركت',
+        'BAR': 'بار', 'EXPRESS': 'إكسبرس', 'PRESSING': 'مصبنة', 'MUNICIPAL': 'البلدية', 'MUNICIPALE': 'البلدية', 'ALI': 'علي', 'ACADEMY': 'أكاديمية',
+        'SUPERIEUR': 'العالي', 'CAFETERIA': 'كافيتيريا', 'ROYAL': 'رويال', 'PALACE': 'قصر', 'PRODUIT': 'منتجات', 'STORE': 'متجر', 'GOURMANDISE': 'حلويات',
+        'GENERAL': 'عام', 'GENERALE': 'العامة', 'INTERNATIONAL': 'الدولي', 'TUNISIA': 'تونس', 'ORANGE': 'أورنج', 'OOREDOO': 'أوريدو',
+        'ELECTROMENAGER': 'أجهزة منزلية', 'CARREFOUR': 'كارفور', 'CULTUREL': 'ثقافي', 'NATIONAL': 'الوطني', 'FOOT': 'كرة قدم', 'DOUAR': 'دوار',
+        'COMPLEXE': 'مركب', 'MAZRAA': 'مزرعة', 'EZZAHRA': 'الزهراء', 'TUNISIENNE': 'التونسية', 'AGENCE': 'وكالة', 'ATELIER': 'ورشة', 'RENT': 'كراء',
+        'BURGER': 'برغر', 'BARDO': 'باردو', 'BORJ': 'برج', 'HANNIBAL': 'حنبعل', 'BERGES': 'ضفاف', 'THEATRE': 'مسرح', 'JEUNES': 'الشباب',
+        'MEDICAL': 'طبي', 'MEDICALE': 'طبية', 'VETERINAIRE': 'بيطري', 'PILOTE': 'نموذجية', 'ZITOUNA': 'الزيتونة', 'LEGUMES': 'خضر', 'SECS': 'جافة',
+        'ZONE': 'منطقة', 'CENTER': 'مركز', 'GARDERIE': 'حضانة', 'PIZZERIA': 'بيتزيريا', 'LAVAGE': 'غسيل', 'SERVICE': 'خدمة', 'SOUK': 'سوق',
+        'OMRANE': 'العمران', 'BIJOUTERIE': 'مجوهرات', 'LABORATOIRES': 'مخابر', 'BEAUTY': 'تجميل', 'MARINA': 'المارينا', 'KRAM': 'الكرم',
+        'UNIVERSITAIRE': 'الجامعي', 'COIFFEUR': 'حلاق', 'PRIVE': 'خاصة', 'PRIVEE': 'خاصة', 'BIOLOGIE': 'بيولوجيا', 'GALERIE': 'رواق', 'DENTAIRE': 'أسنان',
+        'PARKING': 'موقف سيارات', 'MAZRAA': 'مزرعة', 'EL KHADHRA': 'الخضراء', 'EZZOUHOUR': 'الزهور', 'MANAR': 'المنار', 'LAFAYETTE': 'لافاييت',
+        'UNIVERSITE': 'جامعة', 'UNIVERSITAIRE': 'جامعي', 'CAMPUS': 'حرم', 'BUS': 'حافلات', 'TERMINUS': 'محطة', 'DEPOT': 'مستودع'
+      };
+      const AR_ARTICLES = new Set(['LA', 'LE', 'LES', 'L', 'DE', 'DU', 'DES', 'D']);
+      const AR_PREFIX = new Set(['EL', 'AL', 'ER', 'ES', 'ESS', 'ECH', 'ETT', 'EN', 'ENN', 'ED', 'EZ']);   // ("ET" is French "and" here, not the article)
+      const normKey = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase()
+        .replace(/[’‘`]/g, "'").replace(/\s+/g, ' ').trim();
+      const AR_DICT = new Map(AR_PAIRS.map(([k, v]) => [normKey(k), v]));
+
+      function translitWord(w) {
+        if (!/[a-z]/i.test(w)) return w;                                     // numbers, "(1017)" … stay as they are
+        const s = w.toLowerCase(), V = 'aeiouy', isV = c => !!c && V.includes(c);
+        const M = { b: 'ب', d: 'د', f: 'ف', h: 'ه', j: 'ج', k: 'ك', l: 'ل', m: 'م', n: 'ن', p: 'ب', q: 'ق', r: 'ر', s: 'س', t: 'ت', v: 'ف', w: 'و', z: 'ز', g: 'ق', x: 'كس' };
+        const DI = { ch: 'ش', sh: 'ش', kh: 'خ', gh: 'غ', th: 'ث', dh: 'ذ', ou: 'و', ai: 'ي', ei: 'ي', ay: 'ي', ey: 'ي' };
+        let out = '', i = 0;
+        while (i < s.length) {
+          const c = s[i], n = s[i + 1], two = c + (n || '');
+          if (DI[two]) { out += (i === 0 && isV(c) ? 'ا' : '') + DI[two]; i += 2; continue; }
+          if (two === 'qu') { out += 'ك'; i += 2; continue; }
+          if (/[0-9()]/.test(c)) { out += c; i++; continue; }                // keep digits and brackets
+          if (n === c && !isV(c)) { i++; continue; }                         // double consonant → one
+          if (c === 'c') { out += 'eiy'.includes(n || '-') ? 'س' : 'ك'; i++; continue; }
+          if (M[c]) { out += M[c]; i++; continue; }
+          if (c === 'a') {                                                   // keep 'a' only where an Arabic long vowel is likely
+            const open = !n || (!isV(n) && (!s[i + 2] || isV(s[i + 2])));
+            if (i === 0 || open) out += 'ا';
+          } else if (c === 'e') { if (i === 0) out += 'ا'; }
+          else if (c === 'i') out += i === 0 ? 'إ' : 'ي';
+          else if (c === 'o') out += i === 0 ? 'أ' : 'و';
+          else if (c === 'u') out += 'و';
+          else if (c === 'y') out += 'ي';
+          i++;
+        }
+        return out;
+      }
+      function translitPhrase(k) {
+        const toks = k.replace(/'/g, ' ').split(/[\s\-]+/).filter(Boolean), out = [];
+        let prefix = '';
+        for (let i = 0; i < toks.length;) {
+          let word = null, used = 1;
+          for (let len = Math.min(4, toks.length - i); len >= 1; len--) {     // longest known phrase first
+            const cand = toks.slice(i, i + len).join(' ');
+            if (AR_WORDS[cand]) { word = AR_WORDS[cand]; used = len; break; }
+          }
+          const tk = toks[i];
+          if (word == null) {
+            if (AR_ARTICLES.has(tk)) { i++; continue; }
+            if (AR_PREFIX.has(tk) && i < toks.length - 1) { prefix = 'ال'; i++; continue; }
+            word = translitWord(tk);
+          }
+          out.push(prefix && !word.startsWith('ال') ? prefix + word : word); prefix = ''; i += used;
+        }
+        return out.join(' ');
+      }
+      // Arabic UI → Arabic name; English UI → name unchanged. Names that are already Arabic are never touched.
+      function toArabicName(s) {
+        if (!s || !/[A-Za-z\u00C0-\u017F]/.test(s)) return s;
+        const k = normKey(s);
+        return AR_DICT.get(k) || translitPhrase(k);
+      }
+      const dispName = s => (typeof LANG !== 'undefined' && LANG === 'ar') ? toArabicName(s) : s;
+      window.dispName = dispName;
+
+      // ── BILINGUAL STATION NAMES ─────────────────────────────────────────
+      // A stop keeps BOTH names; `stop.name` is a getter that picks one when it is read (i.e. at render time),
+      // so switching the language re-labels everything without reloading data.
+      const hasAr = s => /[\u0600-\u06FF]/.test(s || '');
+      // Reads {name|title, name_en|title_en, name_ar|title_ar} from a GeoJSON feature's properties.
+      function srcNames(p, key) {
+        const raw = p[key] ?? p.name ?? p.title ?? '';
+        return {
+          nameAr: p[key + '_ar'] || p.name_ar || p.title_ar || (hasAr(raw) ? raw : null),
+          nameEn: p[key + '_en'] || (raw && !hasAr(raw) ? raw : null),
+          latin: raw && !hasAr(raw) ? raw : null            // original Latin spelling → used for the dictionary fallback
+        };
+      }
+      function bname(o) {
+        if (typeof LANG !== 'undefined' && LANG === 'en') return o.nameEn || o.nameAr || o.latin || '?';
+        return o.nameAr || toArabicName(o.latin || o.nameEn) || '?';
+      }
+      function withName(obj, n) {
+        obj.nameAr = n.nameAr; obj.nameEn = n.nameEn; obj.latin = n.latin;
+        Object.defineProperty(obj, 'name', { get() { return bname(this); }, set(v) { if (hasAr(v)) this.nameAr = v; else this.nameEn = v; }, enumerable: true, configurable: true });
+        return obj;
+      }
+
       const SRC = {
         bus: ['19c', '20', '38b'].map(id => ({ id, url: `data/bus_data/${id}.geojson` })),
         busStations: 'data/bus_data/major_bus_stations.json',
@@ -3670,7 +4065,7 @@
             if (retUrl) { try { ret = lineCoords(await jget(retUrl)); } catch (e) { } }
             if (!ret || ret.length < 2) ret = dep.slice().reverse();
             else if (hav(ret[0], dep[0]) < hav(ret[0], dep[dep.length - 1])) ret = ret.slice().reverse();
-            const stops = stationList.map((s, i) => ({ id: `${base}|${i}`, name: s.name, lon: s.lon, lat: s.lat, mode, base, short, kind: 'station' }));
+            const stops = stationList.map((s, i) => withName({ id: `${base}|${i}`, lon: s.lon, lat: s.lat, mode, base, short, kind: 'station' }, s));
             let used = false;
             for (const [dir, coords] of [['dep', dep], ['ret', ret]]) {
               const line = buildLine(coords), entries = [];
@@ -3681,7 +4076,7 @@
               }
               entries.sort((a, b) => a.d - b.d);
               if (entries.length < 2) continue;
-              dls.push({ id: `${base}:${dir}`, base, short, mode, dir, line, entries, towards: entries[entries.length - 1].stop.name });
+              dls.push({ id: `${base}:${dir}`, base, short, mode, dir, line, entries, get towards() { return this.entries[this.entries.length - 1].stop.name; } });
               used = true;
             }
             if (used) stops.forEach(s => stopsAll.push(s));
@@ -3722,8 +4117,8 @@
               const pr = projectOnLine(line, [st.lon, st.lat]);
               if (pr.dist > CFG.BUS_STATION_SNAP_M) return;
               const near = entries.find(en => hav([en.stop.lon, en.stop.lat], [st.lon, st.lat]) <= CFG.BUS_STATION_MERGE_M);
-              if (near) { Object.assign(near.stop, { kind: 'station', name: st.name, lon: st.lon, lat: st.lat, boardPen: 0 }); return; }
-              const stop = { id: `${base}|st${j}`, lon: st.lon, lat: st.lat, mode: 'bus', base, short: label, kind: 'station', name: st.name, boardPen: 0 };
+              if (near) { Object.assign(near.stop, { kind: 'station', lon: st.lon, lat: st.lat, boardPen: 0 }); withName(near.stop, st); return; }
+              const stop = withName({ id: `${base}|st${j}`, lon: st.lon, lat: st.lat, mode: 'bus', base, short: label, kind: 'station', boardPen: 0 }, st);
               const entry = { stop, proj: pr, d: pr.d, t: timeAt(pr.d) };
               let idx = entries.findIndex(en => en.d > pr.d); if (idx < 0) idx = entries.length;
               entries.splice(idx, 0, entry); stops.push(stop);
@@ -3734,7 +4129,7 @@
           }
           try {
             busStations = (await jget(SRC.busStations)).features.filter(f => f.geometry?.type === 'Point').map(f => ({
-              name: (LANG === 'en' && f.properties?.title_en) ? f.properties.title_en : (f.properties?.title || 'Bus station'),
+              ...srcNames(f.properties || {}, 'title'),
               lon: f.geometry.coordinates[0],
               lat: f.geometry.coordinates[1]
             }));
@@ -3744,7 +4139,7 @@
           const jobs = [];
           for (const m of SRC.metro) {
             const list = (metroFC?.features || []).filter(f => f.properties?.line_id === m.stationLine).map(f => ({
-              name: (LANG === 'en' && f.properties.name_en) ? f.properties.name_en : f.properties.name,
+              ...srcNames(f.properties, 'name'),
               lon: f.geometry.coordinates[0],
               lat: f.geometry.coordinates[1]
             }));
@@ -3755,7 +4150,7 @@
               try {
                 const fc = await jget(r.stations);
                 const list = fc.features.filter(f => f.geometry?.type === 'Point').map(f => ({
-                  name: (LANG === 'en' && f.properties.name_en) ? f.properties.name_en : f.properties.name,
+                  ...srcNames(f.properties, 'name'),
                   lon: f.geometry.coordinates[0],
                   lat: f.geometry.coordinates[1]
                 }));
@@ -3838,11 +4233,12 @@
       function makeOption(path, ctx) {
         const nodePt = n => n === ctx.O ? ctx.op : n === ctx.D ? ctx.dp : (nd => nd.type === 'P' ? [nd.stop.lon, nd.stop.lat] : [nd.dl.entries[nd.k].stop.lon, nd.dl.entries[nd.k].stop.lat])(G.nodes[n]);
         const nodeName = n => n === ctx.O ? 'your location' : n === ctx.D ? ctx.dest.name : G.nodes[n].stop.name;
+        const nodeStop = n => (n === ctx.O || n === ctx.D) ? null : G.nodes[n].stop;
         const legs = []; let cur = null;
         for (const e of path) {
           if (e.kind === 'walk') {
             const from = nodePt(e.from), to = nodePt(e.to), m = hav(from, to) * CFG.WALK_DETOUR;
-            legs.push({ type: 'walk', from, to, fromName: nodeName(e.from), toName: nodeName(e.to), meters: m, sec: e.cost, coords: [from, to], refined: false });
+            legs.push({ type: 'walk', from, to, fromName: nodeName(e.from), toName: nodeName(e.to), fromStop: nodeStop(e.from), toStop: nodeStop(e.to), meters: m, sec: e.cost, coords: [from, to], refined: false });
             cur = null;
           } else if (e.kind === 'board') {
             cur = { type: 'transit', dl: e.dl, k0: e.k, k1: e.k, wait: e.cost - (e.pen || 0), pen: e.pen || 0, ride: 0 };
@@ -3852,7 +4248,7 @@
         }
         for (let i = legs.length - 1; i > 0; i--) if (legs[i].type === 'walk' && legs[i - 1].type === 'walk') {
           const a = legs[i - 1], b = legs[i];
-          a.to = b.to; a.toName = b.toName; a.meters += b.meters; a.sec += b.sec; a.coords = a.coords.concat(b.coords.slice(1)); legs.splice(i, 1);
+          a.to = b.to; a.toName = b.toName; a.toStop = b.toStop; a.meters += b.meters; a.sec += b.sec; a.coords = a.coords.concat(b.coords.slice(1)); legs.splice(i, 1);
         }
         while (legs.length && legs[0].type === 'walk' && legs[0].meters < 25 && legs.length > 1) legs.shift();
         while (legs.length && legs[legs.length - 1].type === 'walk' && legs[legs.length - 1].meters < 25 && legs.length > 1) legs.pop();
@@ -3986,7 +4382,7 @@
       const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
       const fmtMin = s => {
         const m = Math.max(1, Math.round(s / 60));
-        return m < 60 ? `${m} ${t('min')}` : `${Math.floor(m / 60)} ${t('h')} ${String(m % 60).padStart(2, '0')}`;
+        return m < 60 ? `${m} ${t('min')}` : (m % 60 === 0 ? `${m / 60} ${t('h')}` : `${Math.floor(m / 60)} ${t('h')} ${String(m % 60).padStart(2, '0')} ${t('min')}`);
       };
       const fmtDist = m => m < 950 ? `${Math.round(m / 10) * 10} ${t('meters')}` : `${(m / 1000).toFixed(1)} ${t('km')}`;
       const clock = s => new Date(Date.now() + s * 1000).toLocaleTimeString(LANG === 'ar' ? 'ar-TN' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: true }); const stopIcon = s => s.kind === 'station' ? ' 🚉' : s.kind === 'bench' ? ' 🪑' : '';
@@ -4002,12 +4398,18 @@
         if (dl.mode === 'rfr') return `${t('rfr')} ${num || dl.short}`;
         return dl.base;
       };
+      // total trip distance: walking legs + distance along the track/route for each transit leg
+      const optDist = o => o.legs.reduce((s, l) => s + (l.type === 'walk' ? l.meters : Math.abs(l.b.d - l.a.d)), 0);
       let runId = 0, lastDest = null, options = [], selectedSig = null;
       let sortPreference = 'fastest';
 
       // Expose a safe global refresh function for language switching
       window.refreshTripUI = function () {
-        if (options && options.length) renderOptions();
+        if (options && options.length) {
+          renderOptions();
+          const o = options.find(x => x.sig === selectedSig);
+          if (o && map.getSource('trip-pts')) drawOption(o, false);   // relabel stops on the map
+        }
       };
 
       function openSheet() { $('trip-sheet').classList.add('open', 'expanded'); $('trip-sheet').classList.remove('collapsed'); }
@@ -4020,7 +4422,7 @@
       function renderOptions(note) {
         const fmtStopName = (name) => esc(name.replace('· bench', ` · ${t('bench')}`).replace('· stop', ` · ${t('stop')}`));
         const o0 = options[0];
-        $('trip-title').textContent = `${t('to')} ${o0.ctx.dest.name}`;
+        $('trip-title').textContent = `${t('to')} ${dispName(o0.ctx.dest.name)}`;
         const sel0 = options.find(x => x.sig === selectedSig) || o0;
         const orWord = ' ' + t('or') + ' ';
         $('trip-mini').innerHTML = `<b>${fmtMin(sel0.total)}</b> · ` + (sel0.legs.filter(l => l.type === 'transit').map(l => allLines(l).map(lineLabel).join(orWord)).join(' + ') || t('walking_only')) + ' · ' + t('tap_show');
@@ -4039,14 +4441,14 @@
             : `${i === 0 ? `<b class="tag">${t('best')}</b> ` : ''}${t('walking_only')} · ${fmtDist(o.legs[0].meters)}`;
 
           const steps = sel ? `<div class="trip-steps">${o.legs.map(l => l.type === 'walk'
-            ? `<div class="step"><span class="ico">🚶</span><div>${fmtMin(l.sec)} ${t('walk')}<br><small>${t('to')} <b>${esc(l.toName)}</b></small></div></div>`
-            : `<div class="step"><span class="ico">${CFG.MODES[l.dl.mode].icon}</span><div><small>${t('board')} <b><bdi>${fmtStopName(l.a.stop.name)}</bdi></b>${stopIcon(l.a.stop)}<br>
+            ? `<div class="step"><span class="ico">🚶</span><div>${fmtMin(l.sec)} ${t('walk')}<br><small>${t('to')} <b><bdi>${l.toStop ? fmtStopName(l.toStop.name) : esc(dispName(l.toName))}</bdi></b></small></div></div>`
+            : `<div class="step"><span class="ico">${CFG.MODES[l.dl.mode].icon}</span><div><small>${t('at_station')} <b><bdi>${fmtStopName(l.a.stop.name)}</bdi></b>${l.a.stop.kind === 'bench' ? ' 🪑' : ''} ${t('board')}<br>
 ${linesList(l)}<br>
-${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${stopIcon(l.b.stop)}</small></div></div>`
+${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind === 'bench' ? ' 🪑' : ''}</small></div></div>`
           ).join('')}</div>` : '';
 
           return `<div class="trip-card${sel ? ' sel' : ''}" data-sig="${esc(o.sig)}">
-<div class="trip-top"><span class="trip-time">${fmtMin(o.total)}</span><span class="trip-eta">${t('arrive')} ${clock(o.total)}</span></div>
+<div class="trip-top"><span class="trip-time">${fmtMin(o.total)} <span class="trip-dist">· ${fmtDist(optDist(o))}</span></span></div>
 <div class="trip-chips">${chips}</div><div class="trip-subline">${sub}</div>${steps}</div>`;
         }).join('') + `<div class="trip-foot">${t('estimates')}</div>`;
       }
@@ -4089,7 +4491,7 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${stopIcon(l.b.st
       async function planTripTo(lat, lon, name) {
         const my = ++runId; lastDest = { lat, lon, name };
         openSheet();
-        $('trip-title').textContent = `To ${name} `; $('trip-sub').textContent = '';
+        $('trip-title').textContent = `${t('to')} ${dispName(name)}`; $('trip-sub').textContent = '';
         setBody('<div class="trip-msg">Finding the best way…</div>');
         let origin;
         try { origin = await resolveOrigin(); } catch (e) { return; }
