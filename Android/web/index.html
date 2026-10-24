@@ -211,6 +211,15 @@
       color: rgba(255, 255, 255, .8);
     }
 
+    .sr-head {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-accent2);
+      background: rgba(129, 140, 248, .08);
+      border-bottom: 1px solid var(--c-border);
+    }
+
     .sr-empty {
       padding: 16px;
       text-align: center;
@@ -2833,7 +2842,7 @@
     // so a town called "La Marsa" beats a supermarket whose name merely ends in "La Marsa".
     const PLACE_CATS = new Set(['city', 'town', 'village', 'suburb', 'neighbourhood', 'neighborhood', 'quarter', 'hamlet', 'locality', 'district', 'municipality', 'borough', 'island', 'county', 'state', 'region', 'administrative']);
     const MAJOR_CATS = new Set(['station', 'bus_station', 'railway_station', 'subway_entrance', 'halt', 'tram_stop', 'airport', 'aerodrome', 'ferry_terminal', 'stadium', 'attraction', 'museum', 'beach', 'square', 'mall', 'townhall']);
-    const MAX_RESULTS = 40;   // rows in the list (the list scrolls)
+    const MAX_RESULTS = 60;   // rows in the list (the list scrolls)
     const MAX_CHIPS = 8;      // category filter chips shown
     // Arabic names for common map categories. Anything not listed shows its English name (without "_").
     const CAT_AR = {
@@ -2931,7 +2940,7 @@
       return out.map(x => x.p);
     }
 
-    let _ranked = [], _shown = [], _placeFilter = null, _lastQ = '';
+    let _ranked = [], _shown = [], _placeFilter = null, _lastQ = '', _distInfo = null;
     function renderSearchResults() {
       const el = document.getElementById('search-results');
       if (!_ranked.length) {
@@ -2949,7 +2958,8 @@
         + cats.map(([c, n]) => `<span class="sr-chip${c === _placeFilter ? ' active' : ''}" data-c="${_escS(c)}" onclick="setPlaceFilter(this.dataset.c)">${_escS(catLabel(c))} <small>${n}</small></span>`).join('') + '</div>'
         : '';
       _shown = (_placeFilter ? _ranked.filter(p => _cat(p) === _placeFilter) : _ranked).slice(0, MAX_RESULTS);
-      el.innerHTML = chips + _shown.map((p, i) =>
+      const head = _distInfo ? `<div class="sr-head">${districtHeader(_distInfo)}</div>` : '';
+      el.innerHTML = chips + head + _shown.map((p, i) =>
         `<div class="search-result-item" onclick="pickPlace(${i})"><div class="sri-icon">📍</div><div><div class="sri-name">${_escS(placeLabel(p))}</div><div class="sri-sub">${_escS(catLabel(_cat(p)))}</div></div></div>`).join('');
       el.classList.add('open');
     }
@@ -2963,11 +2973,193 @@
       goToPlace(p.lo, p.la, placeLabel(p), _cat(p));
     }
 
+    // ── DISTRICT SEARCH ("hotel marsa", "pharmacie ezzahra", "فنادق المرسى") ──────────────────────────
+    // places.json has no district field, so we look places up in data/district_boundaries.json instead:
+    //   1. find a district (or governorate) name inside the query, in French / English / Arabic
+    //   2. turn the remaining words into a category ("hotel" → hotel) or, failing that, a name filter ("pizza")
+    //   3. keep every place whose coordinates fall INSIDE that district's polygon (point-in-polygon)
+    // The normal name-based results are still appended underneath, so nothing that used to match disappears.
+    let _distAliases = null;                       // alias → district / governorate entry
+    const _stripAp = s => s.replace(/['’\-]/g, '');
+    const DIST_STOP = new Set(['in', 'at', 'near', 'around', 'a', 'à', 'au', 'aux', 'de', 'du', 'des', 'dans', 'en', 'la', 'le', 'les', 'el', 'al', 'l', 'd', 'et', 'and', 'في', 'ب', 'قرب', 'حول', 'و']);
+    // words people type → categories in places.json (French / English / Arabic). Every category name and its Arabic label also works automatically.
+    const CAT_SYNONYMS = [
+      [['hotel', 'hotels', 'hôtel', 'hôtels', 'فندق', 'فنادق'], ['hotel']],
+      [['guest house', 'maison d hote', 'maisons d hotes', 'gite', 'دار ضيافة', 'نزل'], ['guest_house']],
+      [['restaurant', 'restaurants', 'resto', 'restos', 'مطعم', 'مطاعم'], ['restaurant']],
+      [['fast food', 'fastfood', 'snack', 'snacks', 'وجبات سريعة'], ['fast_food']],
+      [['cafe', 'cafes', 'café', 'cafés', 'coffee shop', 'مقهى', 'مقاهي', 'قهوة'], ['cafe', 'coffee']],
+      [['pharmacie', 'pharmacies', 'pharmacy', 'صيدلية', 'صيدليات'], ['pharmacy']],
+      [['supermarche', 'supermarches', 'supermarché', 'supermarket', 'supermarkets', 'hypermarche', 'سوبرماركت', 'سوبرماركات'], ['supermarket']],
+      [['bank', 'banks', 'banque', 'banques', 'بنك', 'بنوك', 'مصرف'], ['bank']],
+      [['atm', 'distributeur', 'صراف', 'صراف آلي'], ['atm']],
+      [['ecole', 'école', 'ecoles', 'écoles', 'school', 'schools', 'مدرسة', 'مدارس'], ['school']],
+      [['lycee', 'lycée', 'lycees', 'college', 'collège', 'معهد', 'معاهد', 'إعدادية'], ['college']],
+      [['universite', 'université', 'university', 'faculte', 'faculté', 'جامعة', 'جامعات', 'كلية'], ['university']],
+      [['hopital', 'hôpital', 'hospital', 'مستشفى', 'مستشفيات'], ['hospital']],
+      [['clinique', 'cliniques', 'clinic', 'clinics', 'مصحة', 'مصحات', 'عيادة', 'عيادات'], ['clinic']],
+      [['medecin', 'médecin', 'docteur', 'doctor', 'doctors', 'طبيب', 'أطباء'], ['doctors']],
+      [['dentiste', 'dentist', 'طبيب أسنان'], ['dentist']],
+      [['mosquee', 'mosquée', 'mosquees', 'mosque', 'mosques', 'جامع', 'مسجد', 'مساجد', 'جوامع'], ['place_of_worship']],
+      [['station service', 'station-service', 'essence', 'fuel', 'petrol', 'gas station', 'محطة وقود', 'بنزين'], ['fuel']],
+      [['parking', 'parkings', 'موقف سيارات', 'مواقف'], ['parking']],
+      [['police', 'commissariat', 'شرطة'], ['police']],
+      [['poste', 'bureau de poste', 'post office', 'مكتب بريد', 'بريد'], ['post_office']],
+      [['boulangerie', 'boulangeries', 'bakery', 'مخبزة', 'مخابز'], ['bakery']],
+      [['patisserie', 'pâtisserie', 'patisseries', 'pastry', 'حلويات'], ['pastry', 'confectionery']],
+      [['boucherie', 'boucheries', 'butcher', 'جزار', 'جزارة'], ['butcher']],
+      [['vetement', 'vêtements', 'vetements', 'clothes', 'clothing', 'ملابس'], ['clothes']],
+      [['gym', 'salle de sport', 'fitness', 'قاعة رياضة'], ['fitness_centre', 'sports_centre']],
+      [['parc', 'parcs', 'park', 'parks', 'jardin', 'jardins', 'garden', 'حديقة', 'حدائق'], ['park', 'garden']],
+      [['marche', 'marché', 'marches', 'souk', 'marketplace', 'سوق', 'أسواق'], ['marketplace']],
+      [['mall', 'malls', 'centre commercial', 'مركز تجاري'], ['mall']],
+      [['coiffeur', 'coiffure', 'hairdresser', 'salon de coiffure', 'حلاق', 'حلاقة'], ['hairdresser']],
+      [['garage', 'mecanicien', 'mécanicien', 'car repair', 'ورشة سيارات'], ['car_repair']],
+      [['creche', 'crèche', 'garderie', 'kindergarten', 'روضة', 'روضة أطفال'], ['kindergarten', 'childcare']],
+      [['librairie', 'bookstore', 'books', 'مكتبة كتب', 'كتب'], ['books']],
+      [['bibliotheque', 'bibliothèque', 'library', 'مكتبة'], ['library']],
+      [['optique', 'opticien', 'optician', 'نظارات'], ['optician']]
+    ];
+    let _catKeyMap = null;
+    function _catKeys() {
+      if (_catKeyMap) return _catKeyMap;
+      const m = new Map(), add = (k, cats) => {
+        const key = _stripAp(_norm(k)).replace(/_/g, ' ').trim(); if (!key) return;
+        if (!m.has(key)) m.set(key, new Set()); cats.forEach(c => m.get(key).add(c));
+      };
+      const all = new Set(_offlinePlaces.map(_cat).filter(Boolean)); Object.keys(CAT_AR).forEach(c => all.add(c));
+      all.forEach(c => { add(c, [c]); add(c + 's', [c]); add(c.replace(/_/g, ' '), [c]); if (CAT_AR[c]) add(CAT_AR[c], [c]); });
+      CAT_SYNONYMS.forEach(([keys, cats]) => keys.forEach(k => add(k, cats)));
+      return (_catKeyMap = m);
+    }
+
+    function _bbox(ring) { let a = 1e9, b = 1e9, c = -1e9, d = -1e9; for (const [x, y] of ring) { if (x < a) a = x; if (x > c) c = x; if (y < b) b = y; if (y > d) d = y; } return [a, b, c, d]; }
+    function _inRing(x, y, ring) {
+      let inside = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+        if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+      }
+      return inside;
+    }
+    function _inPoly(d, lo, la) {                                   // d.rings[0] = outer ring, the rest are holes
+      if (lo < d.bbox[0] || lo > d.bbox[2] || la < d.bbox[1] || la > d.bbox[3]) return false;
+      if (!_inRing(lo, la, d.rings[0])) return false;
+      for (let k = 1; k < d.rings.length; k++) if (_inRing(lo, la, d.rings[k])) return false;
+      return true;
+    }
+    function _membersOf(e) {                                        // all places inside a district / governorate (cached)
+      if (e._members) return e._members;
+      const polys = e.parts || [e];
+      return (e._members = _offlinePlaces.filter(p => polys.some(d => _inPoly(d, p.lo, p.la))));
+    }
+    async function loadDistricts() {
+      try {
+        const r = await fetch('./data/district_boundaries.json');
+        const fc = await r.json();
+        const aliases = new Map(), govs = new Map(), districts = [];
+        const keyOf = s => _stripAp(_norm(s)).trim();
+        const addAlias = (names, entry) => names.filter(Boolean).forEach(n => {
+          const k = keyOf(n); if (!k) return;
+          [k, k.replace(/^(la |le |les |el |al |ال)/, ''), k.replace(/^cite /, '').replace(/^(la |le |les |el |al )/, '')]
+            .filter(x => x && x.length > 1).forEach(x => { if (!aliases.has(x) || entry.gov) aliases.set(x, entry); });   // a governorate beats a district of the same name
+        });
+        for (const f of fc.features) {
+          const g = f.geometry; if (!g || (g.type !== 'Polygon' && g.type !== 'MultiPolygon')) continue;
+          const pr = f.properties, polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+          const parts = polys.map(rings => ({ rings, bbox: _bbox(rings[0]) }));
+          const e = { en: pr.adm3_name, ar: pr.adm3_name1 || pr.adm3_name, parts, center: [pr.center_lon, pr.center_lat], gov: false };
+          // a MultiPolygon is just several polygons that share one name
+          if (parts.length === 1) { e.rings = parts[0].rings; e.bbox = parts[0].bbox; delete e.parts; }
+          districts.push({ e, pr });
+          addAlias([pr.adm3_name, pr.adm3_name1, pr.adm3_ref_name], e);
+          const gk = pr.adm2_pcode;
+          if (!govs.has(gk)) govs.set(gk, { en: pr.adm2_name, ar: pr.adm2_name1 || pr.adm2_name, parts: [], gov: true, names: [pr.adm2_name, pr.adm2_name1, pr.adm2_name2, 'Manouba'].filter(Boolean), centers: [] });
+          const gv = govs.get(gk); (e.parts || [e]).forEach(p => gv.parts.push(p)); gv.centers.push(e.center);
+        }
+        for (const gv of govs.values()) {
+          gv.center = [gv.centers.reduce((s, c) => s + c[0], 0) / gv.centers.length, gv.centers.reduce((s, c) => s + c[1], 0) / gv.centers.length];
+          if (gv.en === 'Manubah') gv.names.push('Manouba');
+          addAlias(gv.names, gv);
+        }
+        _distAliases = aliases;
+        dbg(`🗺️ Loaded ${districts.length} districts, ${govs.size} governorates`);
+      } catch (e) { dbg('⚠️ district boundaries not loaded: ' + e.message); }
+    }
+
+    // "hotels in la marsa" → { dist: <La Marsa>, rest: ['hotels'] }
+    function parseDistrictQuery(raw) {
+      if (!_distAliases) return null;
+      const toks = _norm(raw).trim().split(' ').map(_stripAp).filter(Boolean);
+      if (toks.length < 2) return null;
+      const fixAr = k => k.startsWith('بال') ? 'ال' + k.slice(3) : k;           // "بالمرسى" → "المرسى"
+      for (let len = Math.min(3, toks.length - 1); len >= 1; len--) {
+        for (let i = 0; i + len <= toks.length; i++) {
+          const key = toks.slice(i, i + len).join(' ');
+          const dist = _distAliases.get(key) || _distAliases.get(fixAr(key));
+          if (!dist) continue;
+          const rest = [...toks.slice(0, i), ...toks.slice(i + len)].filter(t => !DIST_STOP.has(t));
+          if (rest.length) return { dist, rest };
+        }
+      }
+      return null;
+    }
+    // remaining words → a category (longest phrase first) + leftover words that must appear in the place's name
+    function resolveTerm(rest) {
+      const map = _catKeys(), left = rest.slice();
+      let cats = null;
+      for (let len = Math.min(3, left.length); len >= 1 && !cats; len--) {
+        for (let i = 0; i + len <= left.length && !cats; i++) {
+          const c = map.get(left.slice(i, i + len).join(' '));
+          if (c) { cats = c; left.splice(i, len); }
+        }
+      }
+      return { cats, name: left };
+    }
+    // sort anchor = the actual town / suburb inside the district (its real centre), falling back to the polygon's centroid
+    function _anchorOf(dist) {
+      if (dist._anchor) return dist._anchor;
+      let c = dist.center;
+      if (!dist.gov) {
+        const key = _stripAp(_norm(dist.en)).trim();
+        const town = _membersOf(dist).find(p => PLACE_CATS.has(_cat(p)) && _keys(p).some(k => k.full === key || k.bare === key));
+        if (town) c = [town.lo, town.la];
+      }
+      return (dist._anchor = c);
+    }
+    function districtSearch(dist, term) {
+      const q = term.name.join(' '), out = [], [cx, cy] = _anchorOf(dist);
+      for (const p of _membersOf(dist)) {
+        if (term.cats && !term.cats.has(_cat(p))) continue;
+        let s = 0;
+        if (term.name.length) { s = _tier(p, q, term.name); if (s === 9) continue; }
+        out.push({ p, s, d: ((p.lo - cx) * 0.8) ** 2 + (p.la - cy) ** 2 });          // name match first, then nearest the centre
+      }
+      out.sort((a, b) => a.s - b.s || a.d - b.d);
+      return out.map(x => x.p);
+    }
+    // the full list: district results first, then the normal name matches that aren't already in it
+    function searchAll(raw) {
+      const normal = rankPlaces(raw);
+      const dq = parseDistrictQuery(raw);
+      if (!dq) return { list: normal, info: null };
+      const term = resolveTerm(dq.rest), hits = districtSearch(dq.dist, term);
+      if (!hits.length) return { list: normal, info: null };
+      const seen = new Set(hits);
+      return { list: hits.concat(normal.filter(p => !seen.has(p))), info: { dist: dq.dist, term, n: hits.length } };
+    }
+    function districtHeader(info) {
+      const dn = LANG === 'ar' ? info.dist.ar : info.dist.en, inw = LANG === 'ar' ? 'في' : 'in';
+      const what = info.term.cats ? catLabel([...info.term.cats][0]) : '“' + info.term.name.join(' ') + '”';
+      return `${_escS(what)} ${inw} ${_escS(dn)} · ${info.n}`;
+    }
+
     async function initOfflineSearch() {
       try {
         const r = await fetch('./data/places.json');
         _offlinePlaces = await r.json();
         dbg(`🔍 Loaded ${_offlinePlaces.length} places`);
+        loadDistricts();            // district polygons for "hotel marsa" style searches (loads in the background)
       } catch (e) { dbg('❌ Search load failed'); }
       const input = document.getElementById('search-input'), resultsEl = document.getElementById('search-results');
 
@@ -2992,11 +3184,12 @@
       input.addEventListener('input', e => {
         const raw = e.target.value.trim();
         document.getElementById('search-clear').classList.toggle('visible', raw.length > 0);
-        if (raw.length < 2) { resultsEl.classList.remove('open'); _lastQ = raw; _placeFilter = null; return; }
+        if (raw.length < 2) { resultsEl.classList.remove('open'); _lastQ = raw; _placeFilter = null; _distInfo = null; return; }
         if (_lastQ.length < 2) _placeFilter = null;          // a new search starts without a leftover filter
         _lastQ = raw;
-        _ranked = rankPlaces(raw);
-        dbg(`🔎 Search "${raw}": ${_ranked.length} matches`);
+        const found = searchAll(raw);              // name matches + (if the query names a district) everything inside that district
+        _ranked = found.list; _distInfo = found.info;
+        dbg(`🔎 Search "${raw}": ${_ranked.length} matches${_distInfo ? ' (' + _distInfo.n + ' in district)' : ''}`);
         renderSearchResults();
       });
     }
