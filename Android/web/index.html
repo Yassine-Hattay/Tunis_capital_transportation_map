@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./lib/maplibre-gl.css" />
   <script src="./lib/maplibre-gl.js"></script>
   <script src="./lib/pmtiles.js"></script>
+  <script src="./lib/eo-translatorjs.min.js"></script>
   <style>
     :root {
       --c-bg: #f5f3f0;
@@ -113,7 +114,8 @@
       display: block;
     }
 
-    #search-results {
+    #search-results,
+    #origin-results {
       position: absolute;
       top: calc(100% + 6px);
       left: 0;
@@ -133,7 +135,8 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
     }
 
-    #search-results.open {
+    #search-results.open,
+    #origin-results.open {
       display: block;
     }
 
@@ -220,6 +223,105 @@
       border-bottom: 1px solid var(--c-border);
     }
 
+    /* The "𖦏" symbol (U+1698F) lives in a rare Unicode block that most phones have no font for.
+       This embeds just that one glyph (≈1 KB, from Noto Sans Bamum, SIL OFL) so it always renders. */
+    @font-face {
+      font-family: 'AtlasSym';
+      src: url(data:font/woff;base64,d09GRgABAAAAAAPUAA4AAAAABCAAAQABAAAAAAAAAAAAAAAAAAAAAAAAAABHUE9TAAADeAAAABAAAAAQABkADEdTVUIAAAOIAAAAIAAAACDXBtoCT1MvMgAAAbQAAABSAAAAYGjIYA1TVEFUAAADqAAAACoAAAAueJFs3WNtYXAAAAIQAAAAJwAAADAAEdN0Z2FzcAAAA3AAAAAIAAAACAAAABBnbHlmAAACQAAAAKoAAAC6PfOUa2hlYWQAAAFEAAAANgAAADYj0k7iaGhlYQAAAXwAAAAgAAAAJAcZAfpobXR4AAACCAAAAAgAAAAIBUIAkGxvY2EAAAI4AAAABgAAAAYAXQAUbWF4cAAAAZwAAAAYAAAAIAAIADFuYW1lAAAC7AAAAG4AAADSEA4iX3Bvc3QAAANcAAAAEwAAACD/nwAyAAEAAAACAIPuvigiXw889QADA+gAAAAA2swswwAAAADnBN3vADIAAAK4AsoAAAAGAAIAAAAAAAB4nGNgZGBg0f13m4GB6RWDEYMR0w4GoAgKYAIAalYEGXicY2BkYGBgYjBgYGUAAUYGNAAABakAOnicY2Bh6mWcwMDKwMDUxRTBwMDgDaEZ4xiMGJ2AotysTCysLExMLEA5BiYGBHD393dnOPAfCFh0/91mYGDRZVQFCjOC1UkwnQJSCgzMAFUnDZMAAAJYAF4C6gAyeJxjYGBgYmBgYAFiEQZmBi4wzcMAAjIMEMDIwJjZD8ZANgAaGwJYAAAAABQAXQAAeJw9yrEKglAYhuHPPzyeKXBQhyASUaGhwJ9zdOoWRJxzavDcSKuOUTcSjY12RQ1JCtH2wPuC0ADWmwYs4ADshm4cumFj3caLpcYXDR/NdIKNDKA7nbHCBjG22AOh2lEaKT5QrthbU8BetCTHS1Xk+4HWeZSyEiLgJEmtI9daGCN0zdlEu23tmb2sTFHK7tnn1aOTZdH+D2PsH0V7nbKUVZ7Ny/TjC0+WJxMAAHichco7CoNQFEXR/dQIgjgEsQ7RQTgACy0EOwtJAn7AzwwceA5oEASxuLDOZQMPUmyM42EIYbdFoLXZIeG12+VJtdmAz0rGwKyLKKjpmaRU6lh0OQ1vqdVnvGmji/rfHmV8Kkutr/aH+QcOth2DAAB4nGNgZgCD/3MYjBiwAAAqgwHRAAABAAH//wAPAAEAAAAKAAwADgAAAAAAAAABAAAACgAcAB4AAmJhbXUADmxhdG4ADgAAAAAAAAAAeJxjYGRgZOAAYgYGETApw8BUnp5RAmIyMDEwg0kmxglAag8DAwA5RgNSAAA=) format('woff');
+      unicode-range: U+1698F;
+    }
+
+    #origin-here,
+    #origin-input,
+    #trip-sub,
+    #toast {
+      font-family: 'AtlasSym', 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    #origin-here {
+      font-size: 13px;
+    }
+
+    /* ── starting-point bar (appears under the search bar after you pick a destination) ── */
+    #origin-bar {
+      display: none;
+      flex: 0 0 100%;
+      position: relative;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #origin-bar.open {
+      display: flex;
+    }
+
+    #origin-box {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 44px;
+      padding: 0 12px;
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--r);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
+    }
+
+    #origin-box .ob-dot {
+      color: #16a34a;
+      font-size: 12px;
+    }
+
+    #origin-input {
+      flex: 1;
+      min-width: 0;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--c-text);
+      font-size: 14px;
+      direction: rtl;
+      text-align: right;
+    }
+
+    #origin-input:not(:placeholder-shown) {
+      direction: ltr;
+      text-align: left;
+    }
+
+    html[dir="ltr"] #origin-input:placeholder-shown {
+      direction: ltr;
+      text-align: left;
+    }
+
+    #origin-clear {
+      cursor: pointer;
+      opacity: .6;
+      padding: 4px;
+    }
+
+    #origin-here {
+      flex: none;
+      height: 44px;
+      padding: 0 12px;
+      border-radius: var(--r);
+      border: 1.5px solid var(--c-border);
+      background: var(--c-surface);
+      color: var(--c-text);
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
+    }
+
+    #origin-here.active {
+      border-color: var(--c-accent2);
+      background: rgba(129, 140, 248, .14);
+      font-weight: 600;
+    }
+
     .sr-empty {
       padding: 16px;
       text-align: center;
@@ -254,6 +356,34 @@
     .icon-btn.active {
       background: var(--c-accent);
       color: #0f1117;
+    }
+
+    #map-controls {
+      position: fixed;
+      right: 12px;
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    #map-controls .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+    }
+
+    #map-controls .map-control-btn {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1;
+      touch-action: manipulation;
+    }
+
+    #map-controls #btn-geolocate svg {
+      width: 16px;
+      height: 16px;
     }
 
     #debug-panel {
@@ -496,6 +626,7 @@
 
     /* ── DATA COLLECTION MODE: Hide existing UI ─────────────────────────────── */
     body.data-collecting #topbar,
+    body.data-collecting #map-controls,
     body.data-collecting #routing-panel,
     body.data-collecting #bus-panel,
     body.data-collecting #Ligne-panel,
@@ -729,6 +860,7 @@
 
     /* ── DATA COLLECTION MODE: Mask existing UI (Do not delete) ────────────────── */
     body.data-collecting #topbar,
+    body.data-collecting #map-controls,
     body.data-collecting #routing-panel,
     body.data-collecting #bus-panel,
     body.data-collecting #Ligne-panel,
@@ -1017,13 +1149,20 @@
     }
 
     #trip-close {
-      background: none;
-      border: none;
-      color: var(--c-muted);
-      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(239, 68, 68, .08);
+      border: 1px solid rgba(239, 68, 68, .2);
+      border-radius: 10px;
+      color: #dc2626;
+      font-size: 30px;
       line-height: 1;
       cursor: pointer;
-      padding: 0 4px;
+      padding: 0;
+      flex: none;
     }
 
     #trip-list {
@@ -1103,6 +1242,190 @@
       font-style: italic;
       color: var(--c-muted);
       padding: 0 2px;
+    }
+
+    /* ── Favourites ─────────────────────────────────────────────────── */
+    .fav-star {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 4px 8px;
+      opacity: 0.5;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .fav-star:hover {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    .fav-star.active {
+      opacity: 1;
+      color: #f59e0b;
+    }
+
+    #fav-btn {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: var(--r);
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
+      color: var(--c-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
+      position: relative;
+    }
+
+    .fav-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #ef4444;
+      color: white;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    #fav-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(360px, 85vw);
+      background: var(--c-surface);
+      box-shadow: -4px 0 32px rgba(0, 0, 0, .2);
+      z-index: 600;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #fav-panel.open {
+      transform: translateX(0);
+    }
+
+    .fav-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid var(--c-border);
+      background: var(--c-bg);
+    }
+
+    .fav-panel-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .fav-panel-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--c-muted);
+      padding: 0 4px;
+    }
+
+    .fav-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+    }
+
+    .fav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-bottom: 4px;
+    }
+
+    .fav-item:hover {
+      background: var(--c-bg);
+    }
+
+    .fav-item-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(245, 158, 11, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .fav-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .fav-item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--c-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .fav-item-cat {
+      font-size: 11px;
+      color: var(--c-muted);
+      margin-top: 2px;
+    }
+
+    .fav-item-delete {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--c-muted);
+      padding: 6px;
+      border-radius: 6px;
+      opacity: 0.6;
+      transition: all 0.15s;
+    }
+
+    .fav-item-delete:hover {
+      opacity: 1;
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    .fav-empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--c-muted);
+      font-size: 13px;
+    }
+
+    .fav-empty-icon {
+      font-size: 48px;
+      opacity: 0.3;
+      margin-bottom: 12px;
     }
 
     /* ── Language Toggle Button ─────────────────────────────────────────── */
@@ -1228,21 +1551,32 @@
     #trip-actions {
       display: flex;
       align-items: center;
+      gap: 6px;
       flex: none;
     }
 
     #trip-toggle {
-      background: none;
-      border: none;
-      color: var(--c-muted);
-      font-size: 20px;
-      line-height: 1;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(129, 140, 248, .14);
+      border: 1px solid rgba(129, 140, 248, .3);
+      border-radius: 10px;
+      color: var(--c-accent2);
       cursor: pointer;
-      padding: 0 8px;
+      padding: 0;
+      flex: none;
+    }
+
+    #trip-toggle svg {
+      width: 24px;
+      height: 24px;
       transition: transform .2s;
     }
 
-    #trip-sheet.collapsed #trip-toggle {
+    #trip-sheet.collapsed #trip-toggle svg {
       transform: rotate(180deg);
     }
 
@@ -1273,6 +1607,23 @@
 
 <body>
   <div id="map"></div>
+
+  <div id="map-controls" aria-label="Map controls">
+    <button type="button" class="icon-btn map-control-btn" id="btn-zoom-in" title="Zoom in"
+      aria-label="Zoom in">+</button>
+    <button type="button" class="icon-btn map-control-btn" id="btn-zoom-out" title="Zoom out"
+      aria-label="Zoom out">−</button>
+    <button type="button" class="icon-btn" id="btn-geolocate" title="My Location" aria-label="My Location">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="2" x2="12" y2="6"></line>
+        <line x1="12" y1="18" x2="12" y2="22"></line>
+        <line x1="2" y1="12" x2="6" y2="12"></line>
+        <line x1="18" y1="12" x2="22" y2="12"></line>
+      </svg>
+    </button>
+  </div>
 
   <!-- UI Toggle Button -->
   <button id="ui-toggle-btn"
@@ -1322,6 +1673,11 @@
   </div>
 
   <div id="topbar">
+    <button id="fav-btn" title="Favourites">
+      ★
+      <span class="fav-badge" id="fav-badge" style="display:none;">0</span>
+    </button>
+
     <button id="lang-toggle" title="English / العربية">EN</button>
     <div id="search-wrap">
       <div id="search-box">
@@ -1336,17 +1692,16 @@
       <div id="search-results"></div>
     </div>
 
-    <!-- NEW: Geolocation Button -->
-    <button class="icon-btn" id="btn-geolocate" title="My Location">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="2" x2="12" y2="6"></line>
-        <line x1="12" y1="18" x2="12" y2="22"></line>
-        <line x1="2" y1="12" x2="6" y2="12"></line>
-        <line x1="18" y1="12" x2="22" y2="12"></line>
-      </svg>
-    </button>
+    <!-- Starting point (shown after a destination is picked) -->
+    <div id="origin-bar">
+      <div id="origin-box">
+        <span class="ob-dot">●</span>
+        <input id="origin-input" type="text" placeholder="نقطة الانطلاق" autocomplete="off" />
+        <span id="origin-clear">✕</span>
+      </div>
+      <button id="origin-here" type="button">𖦏 <span id="origin-here-label">الموقع الحالي</span></button>
+      <div id="origin-results"></div>
+    </div>
     <button class="icon-btn" id="btn-route" title="Route"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2">
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
@@ -1494,6 +1849,13 @@
     <div id="coord-debug-status"
       style="margin-top:8px;font-size:11px;color:var(--c-muted);min-height:14px;text-align:center"></div>
   </div>
+  <div id="fav-panel">
+    <div class="fav-panel-header">
+      <h3 id="fav-panel-title">★ Favourites</h3>
+      <button class="fav-panel-close" id="fav-panel-close">✕</button>
+    </div>
+    <div class="fav-list" id="fav-list"></div>
+  </div>
   <!-- ── TRIP PLANNER SHEET ─────────────────────────────────────────────────── -->
   <div id="trip-sheet">
     <div id="trip-handle"></div>
@@ -1504,7 +1866,11 @@
         <div id="trip-mini"></div>
       </div>
       <div id="trip-actions">
-        <button id="trip-toggle" aria-label="Hide / show routes">⌄</button>
+        <button id="trip-toggle" aria-label="Collapse or expand routes" title="Collapse or expand routes"><svg
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg></button>
         <button id="trip-close" aria-label="Clear route">×</button>
       </div>
     </div>
@@ -1570,7 +1936,7 @@
     // Dev UI (data collection, debug, layer toggles). Off by default.
     const DEV_UI = new URLSearchParams(location.search).has('dev') || localStorage.getItem('atlas_dev') === '1';
 
-    // ── LANGUAGE SYSTEM ──────────────────────────────────────────────────
+    // ── LANGUAGE SYSTEM (Powered by EOTranslator) ─────────────────────────
     let LANG = localStorage.getItem('atlas_lang') || 'ar';
     const T = {
       ar: {
@@ -1586,7 +1952,10 @@
         finding: 'جاري البحث عن أفضل طريق…',
         to: 'إلى',
         from_location: 'من موقعك',
-        from_test: 'من 📍 موقع تجريبي',
+        from_test: 'من 𖦏 موقع تجريبي',
+        from_word: 'من',
+        origin_placeholder: 'نقطة الانطلاق',
+        current_location: 'موقعك الحالي',
         tap_show: 'اضغط ⌄ لإظهار المسارات',
         best: 'الأفضل',
         walk: 'مشي',
@@ -1609,8 +1978,8 @@
         no_data: 'لا توجد بيانات نقل. تحقق من مجلد البيانات.',
         data_failed: 'فشل تحميل بيانات النقل.',
         gps_failed: 'تعذر الحصول على موقعك. شغّل GPS وحاول مرة أخرى.',
-        start_moved: '📍 تم تغيير نقطة الانطلاق',
-        location_finding: '📍 جاري البحث عن موقعك...',
+        start_moved: '𖦏 تم تغيير نقطة الانطلاق',
+        location_finding: '𖦏 جاري البحث عن موقعك...',
         location_found: '✅ تم العثور على الموقع!',
         location_denied: '🚫 تم رفض الوصول إلى الموقع. يرجى تفعيله من إعدادات الهاتف.',
         location_unavailable: '📡 الموقع غير متاح. GPS يعمل أفضل في الخارج.',
@@ -1623,6 +1992,10 @@
         sort_prefer_bus: '🚌 تفضيل الحافلة',
         sort_prefer_rfr: '🚆 تفضيل RFR',
         your_location: 'موقعك',
+        favourites: '★ المفضّلة',
+        no_favourites: 'لا توجد عناصر مفضّلة بعد',
+        no_favourites_hint: 'اضغط على ★ بجانب أي مكان لإضافته إلى المفضّلة',
+        remove: 'إزالة',
         bus: 'حافلة',
         metro: 'مترو',
         rfr: 'قطار'
@@ -1640,7 +2013,10 @@
         finding: 'Finding the best way…',
         to: 'To',
         from_location: 'From your location',
-        from_test: 'From 📍 test location',
+        from_test: 'From 𖦏 test location',
+        from_word: 'From',
+        origin_placeholder: 'Starting point',
+        current_location: 'Your location',
         tap_show: 'tap ⌄ to show routes',
         best: 'Best',
         walk: 'Walk',
@@ -1650,7 +2026,6 @@
         walking_only: 'Walking only',
         arrive: 'arrive',
         at: 'at',
-        or: 'or',
         board: 'board',
         at_station: 'At',
         major_station: '(major station)',
@@ -1664,8 +2039,8 @@
         no_data: 'No transit data found. Check the data folder paths.',
         data_failed: 'Transit data failed to load.',
         gps_failed: 'Couldn\'t get your location. Turn on GPS and try again.',
-        start_moved: '📍 Start point moved',
-        location_finding: '📍 Finding your location...',
+        start_moved: '𖦏 Start point moved',
+        location_finding: '𖦏 Finding your location...',
         location_found: '✅ Location found!',
         location_denied: '🚫 Location access denied. Please enable it in your phone settings.',
         location_unavailable: '📡 Location unavailable. GPS works best outdoors.',
@@ -1678,30 +2053,47 @@
         sort_prefer_bus: '🚌 Prefer Bus',
         sort_prefer_rfr: '🚆 Prefer RFR',
         your_location: 'your location',
+        favourites: '★ Favourites',
+        no_favourites: 'No favourites yet',
+        no_favourites_hint: 'Tap the ★ on any place to save it here',
+        remove: 'Remove',
         bus: 'Bus',
         metro: 'Métro',
         rfr: 'RFR'
       }
     };
+
+    // Instantiate EOTranslator with our dictionary and current language
+    const translator = new EOTranslator(T, LANG);
+
+    // Translation helper function using EOTranslator instance
     function t(key, params) {
-      let s = (T[LANG] && T[LANG][key]) || T.en[key] || key;
-      if (params) Object.keys(params).forEach(k => { s = s.replace(`{${k}}`, params[k]); });
-      return s;
+      return translator.translate(key, { lang: LANG, params: params });
     }
+
     function setLang(lang) {
       LANG = lang;
+      translator.language = lang; // update translator instance state
       localStorage.setItem('atlas_lang', lang);
       document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
       document.documentElement.setAttribute('lang', lang);
+
+      // Automatically translate any static DOM elements using eo-translator attributes if present
+      translator.translateDOM(document, lang);
+
       const btn = document.getElementById('lang-toggle');
       if (btn) btn.textContent = lang === 'ar' ? 'EN' : 'ع';
       const input = document.getElementById('search-input');
       if (input) input.placeholder = t('search_placeholder');
+      const oi = document.getElementById('origin-input'), oh = document.getElementById('origin-here-label');
+      if (oi) oi.placeholder = t('origin_placeholder');
+      if (oh) oh.textContent = t('current_location');
+      if (oi && document.getElementById('origin-here')?.classList.contains('active')) oi.value = '𖦏 ' + t('current_location');
       const rs = document.getElementById('search-results');
-      if (rs && rs.classList.contains('open') && input) input.dispatchEvent(new Event('input'));   // refresh open suggestions
-      // Re-render trip sheet if open (safely calls global refresh if available)
+      if (rs && rs.classList.contains('open') && input) input.dispatchEvent(new Event('input'));
+
       if (typeof window.refreshTripUI === 'function') window.refreshTripUI();
-      // Update sort dropdown if exists
+
       const sort = document.getElementById('trip-sort');
       if (sort) {
         const prev = sort.value;
@@ -2058,7 +2450,7 @@
         const style = await buildStyle('light');
         map = new maplibregl.Map({
           container: 'map', style, center: [10.1815, 36.8065], zoom: 13,
-          attributionControl: false, antialias: false, maxTileCacheSize: 20,
+          maxBounds: [[10.0000472, 36.6001144], [10.402331, 36.900269]], attributionControl: false, antialias: false, maxTileCacheSize: 20,
           failIfMajorPerformanceCaveat: false
         });
 
@@ -2712,6 +3104,11 @@
       document.getElementById('btn-Ligne').onclick = toggleLignePanel;
       document.getElementById('search-clear').onclick = clearSearch;
       document.getElementById('lang-toggle').onclick = () => setLang(LANG === 'ar' ? 'en' : 'ar'); document.getElementById('btn-picker').onclick = togglePickerMode;
+      document.getElementById('fav-btn').onclick = window.openFavPanel;
+      document.getElementById('fav-panel-close').onclick = window.closeFavPanel;
+      window.updateFavBadge();
+      document.getElementById("btn-zoom-in").onclick = () => { if (map) map.zoomIn({ duration: 250 }); };
+      document.getElementById("btn-zoom-out").onclick = () => { if (map) map.zoomOut({ duration: 250 }); };
 
       document.getElementById('btn-satellite').onclick = () => {
         satelliteVisible = !satelliteVisible;
@@ -2959,8 +3356,18 @@
         : '';
       _shown = (_placeFilter ? _ranked.filter(p => _cat(p) === _placeFilter) : _ranked).slice(0, MAX_RESULTS);
       const head = _distInfo ? `<div class="sr-head">${districtHeader(_distInfo)}</div>` : '';
-      el.innerHTML = chips + head + _shown.map((p, i) =>
-        `<div class="search-result-item" onclick="pickPlace(${i})"><div class="sri-icon">📍</div><div><div class="sri-name">${_escS(placeLabel(p))}</div><div class="sri-sub">${_escS(catLabel(_cat(p)))}</div></div></div>`).join('');
+      el.innerHTML = chips + head + _shown.map((p, i) => {
+        const label = placeLabel(p);
+        const fav = window.isFavourite(p.la, p.lo);
+        return `<div class="search-result-item" onclick="pickPlace(${i})">
+          <div class="sri-icon">📍</div>
+          <div style="flex:1;min-width:0;">
+            <div class="sri-name">${_escS(label)}</div>
+            <div class="sri-sub">${_escS(catLabel(_cat(p)))}</div>
+          </div>
+          <button class="fav-star ${fav ? 'active' : ''}" data-lat="${p.la}" data-lon="${p.lo}" data-name="${_escS(label)}" data-cat="${_escS(_cat(p))}" onclick="event.stopPropagation(); window.toggleSearchFav(this)">${fav ? '★' : '☆'}</button>
+        </div>`;
+      }).join('');
       el.classList.add('open');
     }
     function setPlaceFilter(c) {
@@ -3212,7 +3619,7 @@
 
       // 3. Fly to the location
       if (DEV_UI) map.flyTo({ center: coords, zoom: zoomForClass(cls) });
-      else planTripTo(lat, lon, name);
+      else { askOrigin(lat, lon, name); document.getElementById('search-input').blur(); }
 
       // 4. Update UI
       document.getElementById('search-input').value = name;
@@ -3237,7 +3644,7 @@
 
       // Fly to the location at a detailed zoom level
       if (DEV_UI) map.flyTo({ center: coords, zoom: 17 });
-      else planTripTo(lat, lon, name);
+      else askOrigin(lat, lon, name);
 
       // Update the search bar text and close the dropdown
       document.getElementById('search-input').value = name;
@@ -4572,6 +4979,161 @@
       }
 
       const $ = id => document.getElementById(id);
+      // ── FAVOURITES SYSTEM ──────────────────────────────────────────────
+      const FAV_KEY = 'atlas_favourites';
+
+      function getFavourites() {
+        try {
+          return JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+        } catch (e) { return []; }
+      }
+
+      function saveFavourites(favs) {
+        localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+        updateFavBadge();
+      }
+
+      function isFavourite(lat, lon) {
+        return getFavourites().some(f =>
+          Math.abs(f.lat - lat) < 0.00001 && Math.abs(f.lon - lon) < 0.00001
+        );
+      }      // The main search renderer lives outside this wrapper, and result buttons use inline handlers.
+      // Expose these two functions so both paths can call the favourites system.
+      window.isFavourite = isFavourite;
+
+      function addFavourite(place) {
+        const favs = getFavourites();
+        if (favs.some(f => Math.abs(f.lat - place.lat) < 0.00001 && Math.abs(f.lon - place.lon) < 0.00001)) {
+          return; // already saved
+        }
+        favs.unshift({
+          id: Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+          name: place.name || place.n || place.na || place.nl || 'Unknown',
+          name_ar: place.name_ar || place.na || '',
+          name_en: place.name_en || place.nl || place.n || '',
+          lat: place.lat,
+          lon: place.lon,
+          category: place.category || place.c || '',
+          addedAt: Date.now()
+        });
+        saveFavourites(favs);
+        showToast(LANG === 'ar' ? '✓ تمت الإضافة إلى المفضّلة' : '✓ Added to favourites');
+      }
+
+      function removeFavourite(id) {
+        const favs = getFavourites().filter(f => f.id !== id);
+        saveFavourites(favs);
+        renderFavourites();
+        refreshSearchStars();
+      }
+
+      function updateFavBadge() {
+        const count = getFavourites().length;
+        const badge = document.getElementById('fav-badge');
+        if (badge) {
+          badge.textContent = count;
+          badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+      }
+
+      window.updateFavBadge = updateFavBadge;
+      function renderFavourites() {
+        const list = document.getElementById('fav-list');
+        const title = document.getElementById('fav-panel-title');
+        if (title) title.textContent = t('favourites');
+
+        const favs = getFavourites();
+        if (!list) return;
+
+        if (favs.length === 0) {
+          list.innerHTML = `
+      <div class="fav-empty">
+        <div class="fav-empty-icon">★</div>
+        <div><b>${t('no_favourites')}</b></div>
+        <div style="margin-top:6px;">${t('no_favourites_hint')}</div>
+      </div>`;
+          return;
+        }
+
+        list.innerHTML = favs.map(f => {
+          const displayName = LANG === 'ar' && f.name_ar ? f.name_ar : (f.name_en || f.name);
+          const safeName = _escS(displayName);
+          const safeCategoryLabel = _escS(catLabel(f.category));
+          return `
+      <div class="fav-item" data-id="${f.id}" data-lat="${f.lat}" data-lon="${f.lon}" data-name="${safeName}" data-category="${_escS(f.category || '')}">
+        <div class="fav-item-icon">★</div>
+        <div class="fav-item-info">
+          <div class="fav-item-name">${safeName}</div>
+          ${safeCategoryLabel ? `<div class="fav-item-cat">${safeCategoryLabel}</div>` : ''}
+        </div>
+        <button class="fav-item-delete" data-delete-id="${f.id}" title="${t('remove')}">✕</button>
+      </div>`;
+        }).join('');
+
+        // Wire up clicks
+        list.querySelectorAll('.fav-item').forEach(item => {
+          item.onclick = (e) => {
+            if (e.target.closest('.fav-item-delete')) return;
+            const lat = parseFloat(item.dataset.lat);
+            const lon = parseFloat(item.dataset.lon);
+            const name = item.dataset.name;
+            const category = item.dataset.category || '';
+            closeFavPanel();
+            if (typeof window.goToPlace === 'function') window.goToPlace(lon, lat, name, category);
+            else if (typeof flyToCoordinates === 'function') flyToCoordinates(lat, lon);
+          };
+        });
+
+        list.querySelectorAll('.fav-item-delete').forEach(btn => {
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            removeFavourite(btn.dataset.deleteId);
+          };
+        });
+      }
+
+      function openFavPanel() {
+        renderFavourites();
+        document.getElementById('fav-panel').classList.add('open');
+      }
+
+      function closeFavPanel() {
+        document.getElementById('fav-panel').classList.remove('open');
+      }      // setupUI() is outside this wrapper, so expose the panel callbacks it uses.
+      window.openFavPanel = openFavPanel;
+      window.closeFavPanel = closeFavPanel;
+      function toggleSearchFav(btn) {
+        const lat = parseFloat(btn.dataset.lat);
+        const lon = parseFloat(btn.dataset.lon);
+        if (isFavourite(lat, lon)) {
+          const favs = getFavourites().filter(f =>
+            !(Math.abs(f.lat - lat) < 0.00001 && Math.abs(f.lon - lon) < 0.00001)
+          );
+          saveFavourites(favs);
+          btn.classList.remove('active');
+          btn.textContent = '☆';
+          showToast(LANG === 'ar' ? '✓ تمت الإزالة من المفضّلة' : '✓ Removed from favourites');
+        } else {
+          addFavourite({
+            lat, lon,
+            name: btn.dataset.name,
+            category: btn.dataset.cat,
+            name_ar: btn.dataset.name,
+            name_en: btn.dataset.name
+          });
+          btn.classList.add('active');
+          btn.textContent = '★';
+        }
+      }
+      window.toggleSearchFav = toggleSearchFav;
+      function refreshSearchStars() {
+        document.querySelectorAll('.fav-star[data-lat]').forEach(star => {
+          const lat = parseFloat(star.dataset.lat);
+          const lon = parseFloat(star.dataset.lon);
+          star.classList.toggle('active', isFavourite(lat, lon));
+          star.textContent = isFavourite(lat, lon) ? '★' : '☆';
+        });
+      }
       const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
       const fmtMin = s => {
         const m = Math.max(1, Math.round(s / 60));
@@ -4593,7 +5155,7 @@
       };
       // total trip distance: walking legs + distance along the track/route for each transit leg
       const optDist = o => o.legs.reduce((s, l) => s + (l.type === 'walk' ? l.meters : Math.abs(l.b.d - l.a.d)), 0);
-      let runId = 0, lastDest = null, options = [], selectedSig = null;
+      let runId = 0, lastDest = null, options = [], selectedSig = null, lastOriginOv = null;
       let sortPreference = 'fastest';
 
       // Expose a safe global refresh function for language switching
@@ -4605,11 +5167,97 @@
         }
       };
 
-      function openSheet() { $('trip-sheet').classList.add('open', 'expanded'); $('trip-sheet').classList.remove('collapsed'); }
-      function toggleSheet(force) { const sh = $('trip-sheet'); sh.classList.toggle('collapsed', force ?? !sh.classList.contains('collapsed')); }
+      function updateMapControlsPosition() {
+        const sheet = $('trip-sheet'), controls = $('map-controls');
+        if (!sheet || !controls) return;
+        if (!sheet.classList.contains('open')) { controls.style.bottom = ''; return; }
+        const panelHeight = Math.max(0, window.innerHeight - sheet.getBoundingClientRect().top);
+        controls.style.bottom = `${Math.ceil(panelHeight + 12)}px`;
+      }
+      function watchTripSheet() {
+        const sheet = $('trip-sheet');
+        if (typeof ResizeObserver !== 'undefined') new ResizeObserver(updateMapControlsPosition).observe(sheet);
+        if (typeof MutationObserver !== 'undefined') new MutationObserver(updateMapControlsPosition).observe(sheet, { attributes: true, attributeFilter: ['class'] });
+        window.addEventListener('resize', updateMapControlsPosition);
+      }
+      function openSheet() {
+        const sheet = $('trip-sheet');
+        sheet.classList.add('open', 'expanded');
+        sheet.classList.remove('collapsed');
+        updateMapControlsPosition();
+      }
+      function toggleSheet(force) {
+        const sheet = $('trip-sheet');
+        sheet.classList.toggle('collapsed', force ?? !sheet.classList.contains('collapsed'));
+        updateMapControlsPosition();
+      }
+      // ── STARTING POINT PICKER ───────────────────────────────────────────────
+      // Picking a destination opens a bar under the search box: type a starting place (same search + district logic as the
+      // main box) or tap "Current location" (the fake test coordinates while testing). The route is planned once one is chosen.
+      let pendingDest = null, customOriginMarker = null, _originShown = [];
+      const showTestMarker = on => { if (originMarker) originMarker.getElement().style.display = on ? '' : 'none'; };
+      function clearCustomMarker() { if (customOriginMarker) { customOriginMarker.remove(); customOriginMarker = null; } showTestMarker(true); }
+      function hideOriginBar() {
+        $('origin-bar').classList.remove('open'); $('origin-results').classList.remove('open');
+        pendingDest = null; clearCustomMarker();
+      }
+      function clearTripVisuals() {                                   // wipe a previous route before asking for a new start
+        runId++; lastDest = null; lastOriginOv = null; options = [];
+        $('trip-sheet').classList.remove('open');
+        updateMapControlsPosition();
+        if (map.getSource('trip')) { map.getSource('trip').setData(EMPTY); map.getSource('trip-pts').setData(EMPTY); }
+        clearCustomMarker();
+      }
+      function askOrigin(lat, lon, name) {
+        clearTripVisuals();
+        pendingDest = { lat, lon, name };
+        $('origin-input').value = ''; $('origin-here').classList.remove('active'); $('origin-results').classList.remove('open');
+        $('origin-bar').classList.add('open');
+        map.flyTo({ center: [lon, lat], zoom: 15 });
+      }
+      function chooseCurrent() {
+        if (!pendingDest) return;
+        clearCustomMarker();
+        $('origin-input').value = '𖦏 ' + t('current_location'); $('origin-here').classList.add('active');
+        $('origin-results').classList.remove('open'); $('origin-input').blur();
+        planTripTo(pendingDest.lat, pendingDest.lon, pendingDest.name, null);
+      }
+      function renderOriginResults() {
+        const el = $('origin-results'), raw = $('origin-input').value.trim();
+        if (raw.length < 2) { el.classList.remove('open'); _originShown = []; return; }
+        const found = searchAll(raw);
+        _originShown = found.list.slice(0, 40);
+        if (!_originShown.length) { el.innerHTML = `<div class="sr-empty">${LANG === 'ar' ? 'لا توجد نتائج' : 'No results'}</div>`; el.classList.add('open'); return; }
+        const head = found.info ? `<div class="sr-head">${districtHeader(found.info)}</div>` : '';
+        el.innerHTML = head + _originShown.map((p, i) => {
+          const label = placeLabel(p);
+          const fav = window.isFavourite(p.la, p.lo);
+          return `<div class="search-result-item" onclick="pickOrigin(${i})">
+            <div class="sri-icon">📍</div>
+            <div style="flex:1;min-width:0;">
+              <div class="sri-name">${esc(label)}</div>
+              <div class="sri-sub">${esc(catLabel(_cat(p)))}</div>
+            </div>
+            <button class="fav-star ${fav ? 'active' : ''}" data-lat="${p.la}" data-lon="${p.lo}" data-name="${esc(label)}" data-cat="${esc(_cat(p))}" onclick="event.stopPropagation(); window.toggleSearchFav(this)">${fav ? '★' : '☆'}</button>
+          </div>`;
+        }).join('');
+        el.classList.add('open');
+      }
+      window.pickOrigin = i => {
+        const p = _originShown[i]; if (!p || !pendingDest) return;
+        clearCustomMarker();
+        customOriginMarker = new maplibregl.Marker({ color: '#16a34a' }).setLngLat([p.lo, p.la]).addTo(map);
+        showTestMarker(false);                                           // hide the fake "you are here" dot while a typed start is used
+        $('origin-input').value = placeLabel(p); $('origin-here').classList.remove('active');
+        $('origin-results').classList.remove('open'); $('origin-input').blur();
+        planTripTo(pendingDest.lat, pendingDest.lon, pendingDest.name, { lat: p.la, lon: p.lo, source: 'custom', place: p });
+      };
+
       function closeTrip() {
         runId++; lastDest = null; options = [];
         $('trip-sheet').classList.remove('open');
+        updateMapControlsPosition();
+        hideOriginBar();
       }
       function setBody(html) { $('trip-list').innerHTML = html; }
       function renderOptions(note) {
@@ -4619,7 +5267,7 @@
         const sel0 = options.find(x => x.sig === selectedSig) || o0;
         const orWord = ' ' + t('or') + ' ';
         $('trip-mini').innerHTML = `<b>${fmtMin(sel0.total)}</b> · ` + (sel0.legs.filter(l => l.type === 'transit').map(l => allLines(l).map(lineLabel).join(orWord)).join(' + ') || t('walking_only')) + ' · ' + t('tap_show');
-        $('trip-sub').innerHTML = `${o0.ctx.origin.source === 'gps' ? t('from_location') : t('from_test')}${note ? ' · ' + note : ''}`;
+        $('trip-sub').innerHTML = `${o0.ctx.origin.source === 'custom' ? t('from_word') + ' ' + esc(placeLabel(o0.ctx.origin.place)) : (o0.ctx.origin.source === 'gps' ? t('from_location') : t('from_test'))}${note ? ' · ' + note : ''}`;
 
         $('trip-list').innerHTML = options.map((o, i) => {
           const sel = o.sig === selectedSig;
@@ -4681,30 +5329,72 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         renderOptions(); drawOption(o, fit);
       }
 
-      async function planTripTo(lat, lon, name) {
-        const my = ++runId; lastDest = { lat, lon, name };
+      // Replace the straight-line walking estimates with real pedestrian routes from Valhalla (runs in the background).
+      // The selected option is done first so its walking lines snap onto the streets as soon as possible.
+      const _walkCache = new Map();
+      async function refineWalks(my) {
+        if (typeof Capacitor === 'undefined' || !Capacitor.Plugins?.Valhalla) { dbg('🚶 Valhalla plugin not available — walking legs stay straight lines'); return; }
+        const ordered = [...options].sort((a, b) => (b.sig === selectedSig) - (a.sig === selectedSig));
+        for (const o of ordered) {
+          let changed = false;
+          for (const l of o.legs) {
+            if (l.type !== 'walk' || l.refined) continue;
+            if (my !== runId) return;
+            if (l.meters < 40) { l.refined = true; continue; }
+            const key = l.from.join(',') + '>' + l.to.join(',');
+            try {
+              let res = _walkCache.get(key);
+              if (!res) {
+                res = await Capacitor.Plugins.Valhalla.route({ start: { lat: l.from[1], lon: l.from[0] }, end: { lat: l.to[1], lon: l.to[0] }, profile: 'pedestrian' });
+                _walkCache.set(key, res);
+              }
+              l.sec = Math.max(20, res.duration); l.meters = res.distance * 1000;
+              if (res.geometry) { const c = decodeValhallaPolyline(res.geometry); if (c.length > 1) l.coords = c; }
+              changed = true;
+            } catch (e) { dbg('🚶 Valhalla walk failed: ' + e.message); }
+            l.refined = true;
+          }
+          if (changed && my === runId) { finalizeOption(o); if (o.sig === selectedSig) selectOption(selectedSig, false); }   // redraw this option as soon as it's done
+        }
+        if (my !== runId) return;
+        options.forEach(finalizeOption);
+        options = sortOptions(options, sortPreference);
+        selectOption(options.find(o => o.sig === selectedSig) ? selectedSig : options[0].sig, false);
+      }
+
+      async function planTripTo(lat, lon, name, originOv) {          // originOv = a typed starting point; omit it to start from the current position
+        const my = ++runId; lastDest = { lat, lon, name }; lastOriginOv = originOv || null;
         openSheet();
         $('trip-title').textContent = `${t('to')} ${dispName(name)}`; $('trip-sub').textContent = '';
         setBody('<div class="trip-msg">Finding the best way…</div>');
         let origin;
-        try { origin = await resolveOrigin(); } catch (e) { return; }
+        try { origin = originOv || await resolveOrigin(); } catch (e) { return; }
         try { await loadTransitData(); } catch (e) { return; }
         if (my !== runId) return;
         if (!G.stops.length) { setBody('<div class="trip-msg">No transit data found.</div>'); return; }
         options = computeOptions(origin, { lat, lon, name });
         if (!options.length) {
-          setBody(`< div class="trip-msg" > No connection found.</div >`);
+          setBody(`<div class="trip-msg">${LANG === 'ar' ? 'لم يتم العثور على مسار.' : 'No connection found.'}</div>`);
           return;
         }
         options = sortOptions(options, sortPreference);
         selectedSig = options[0].sig;
         selectOption(selectedSig, true);
+        refineWalks(my);          // snap walking legs onto real streets (background)
       }
 
       function initTransitPlanner() {
         $('trip-close').onclick = closeTrip;
         $('trip-toggle').onclick = () => toggleSheet();
         $('trip-handle').onclick = () => toggleSheet();
+        watchTripSheet();
+        // starting-point bar
+        const oi = $('origin-input');
+        oi.addEventListener('input', () => { $('origin-here').classList.remove('active'); renderOriginResults(); });
+        oi.addEventListener('focus', e => e.target.select());
+        oi.addEventListener('keydown', e => { if (e.key === 'Enter' && _originShown.length) window.pickOrigin(0); });
+        $('origin-here').onclick = chooseCurrent;
+        $('origin-clear').onclick = () => { if (oi.value) { oi.value = ''; $('origin-results').classList.remove('open'); oi.focus(); } else hideOriginBar(); };   // 2nd tap on an empty box cancels
         $('trip-list').addEventListener('click', e => { const c = e.target.closest('.trip-card'); if (c && c.dataset.sig !== selectedSig) selectOption(c.dataset.sig); });
 
         const sortEl = $('trip-sort');
@@ -4724,6 +5414,7 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
       }
       window.initTransitPlanner = initTransitPlanner;
       window.planTripTo = planTripTo;
+      window.askOrigin = askOrigin;
       window.closeTrip = closeTrip;
     })();
 
