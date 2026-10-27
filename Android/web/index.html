@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="./lib/maplibre-gl.css" />
   <script src="./lib/maplibre-gl.js"></script>
   <script src="./lib/pmtiles.js"></script>
-  <script src="./lib/eo-translatorjs.min.js"></script>
   <style>
     :root {
       --c-bg: #f5f3f0;
@@ -451,6 +450,32 @@
       margin-bottom: 8px;
       cursor: pointer;
       border: 1px solid var(--c-border);
+    }
+
+    .map-tap-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .map-tap-action {
+      min-height: 44px;
+      padding: 9px 10px;
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      background: var(--c-bg);
+      color: var(--c-text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .map-tap-action.primary {
+      grid-column: 1 / -1;
+      border-color: var(--c-accent2);
+      background: var(--c-accent2);
+      color: #fff;
     }
 
     .route-icon {
@@ -1095,8 +1120,7 @@
     body:not(.dev-ui) #Ligne-panel,
     body:not(.dev-ui) #debug-panel,
     body:not(.dev-ui) #coord-picker-panel,
-    body:not(.dev-ui) #coord-debug-panel,
-    body:not(.dev-ui) #panel {
+    body:not(.dev-ui) #coord-debug-panel {
       display: none !important;
     }
 
@@ -1163,6 +1187,44 @@
       cursor: pointer;
       padding: 0;
       flex: none;
+    }
+
+    #trip-mode-filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0 0 8px;
+      flex: none;
+    }
+
+    .trip-mode-heading {
+      color: var(--c-muted);
+      font-size: 12px;
+      font-weight: 600;
+      margin-inline-end: 2px;
+    }
+
+    .trip-mode-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 32px;
+      padding: 4px 8px;
+      border: 1px solid var(--c-border);
+      border-radius: 999px;
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .trip-mode-option input {
+      width: 15px;
+      height: 15px;
+      margin: 0;
+      accent-color: var(--c-accent2);
     }
 
     #trip-list {
@@ -1273,7 +1335,7 @@
       border-radius: var(--r);
       background: var(--c-surface);
       border: 1.5px solid var(--c-border);
-      color: var(--c-text);
+      color: #f59e0b;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1876,13 +1938,19 @@
     </div>
     <select id="trip-sort"
       style="width:100%; padding:8px 10px; border:1px solid var(--c-border); border-radius:8px; background:var(--c-bg); color:var(--c-text); font-size:13px; margin-bottom:8px; outline:none;">
-      <option value="fastest">⚡ Fastest overall (Default)</option>
-      <option value="least_walking">🚶 Least walking</option>
-      <option value="least_transfers">🔄 Fewest transfers</option>
-      <option value="prefer_metro">🚊 Prefer Métro</option>
-      <option value="prefer_bus">🚌 Prefer Bus</option>
-      <option value="prefer_rfr">🚆 Prefer RFR</option>
+      <option value="fastest">⚡ المسار الموصى به</option>
+      <option value="least_walking">🚶 أقل مشي</option>
+      <option value="least_transfers">🔄 أقل تحويلات</option>
     </select>
+    <div id="trip-mode-filters" role="group" aria-labelledby="trip-mode-heading">
+      <span id="trip-mode-heading" class="trip-mode-heading">وسائل النقل:</span>
+      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="bus" checked><span>🚌 <span
+            data-mode-label="bus">حافلة</span></span></label>
+      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="metro" checked><span>🚊 <span
+            data-mode-label="metro">مترو</span></span></label>
+      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="rfr" checked><span>🚆 <span
+            data-mode-label="rfr">قطار</span></span></label>
+    </div>
     <div id="trip-list"></div>
   </div>
   <div id="toast"></div>
@@ -1902,26 +1970,35 @@
     let _fileCache = null;
     let _fetchPromise = null;
     let _offlinePlaces = [];
-    // Name to show for a search result in the current language.
-    //  Arabic UI : an Arabic name if the place has one, otherwise the Latin name converted to Arabic letters
-    //  English UI: a Latin name if the place has one, otherwise whatever it has
+    let tappedMapPoint = null;
+    // Read manually authored place names directly from places.json:
+    // na is preferred for Arabic; nl/n provide the Latin label.
+    const _placeName = value => typeof value === 'string' ? value.trim() : '';
+    function placeArabicName(p) {
+      return [p.na, p.n, p.nl].map(_placeName).find(name => /[\u0600-\u06FF]/.test(name)) || '';
+    }
+    function placeEnglishName(p) {
+      const names = [p.nl, p.n, p.na].map(_placeName);
+      return names.find(name => /[A-Za-z\u00C0-\u024F]/.test(name)) || names.find(Boolean) || '';
+    }
     function placeLabel(p) {
-      const hasLetter = s => /[A-Za-z\u00C0-\u024F\u0600-\u06FF]/.test(s);
-      let names = [p.na, p.nl, p.n].filter(x => x && hasLetter(x));       // skip names like "(1017)"
-      if (!names.length) names = [p.na, p.nl, p.n].filter(Boolean);
-      if (!names.length) return '';
-      const isAr = s => /[\u0600-\u06FF]/.test(s);
-      if (LANG === 'ar') {
-        const ar = names.find(isAr);
-        if (ar) {                                                        // "Carthagene قرطاجنة" → "قرطاجنة"
-          if (!/[A-Za-z\u00C0-\u024F]/.test(ar)) return ar;
-          const only = ar.replace(/[A-Za-z\u00C0-\u024F][A-Za-z\u00C0-\u024F0-9'’.&]*/g, ' ').replace(/\s+/g, ' ')
-            .replace(/^[\s\-–\/()\[\]|:,.]+|[\s\-–\/()\[\]|:,.]+$/g, '');
-          return only || ar;
+      const arabic = placeArabicName(p);
+      const latin = placeEnglishName(p);
+      return LANG === 'ar' ? (arabic || latin) : (latin || arabic);
+    }
+    function nearestPlaceAt(lat, lng, maxMeters = 50) {
+      const cosLat = Math.cos(lat * Math.PI / 180);
+      let nearest = null, nearestMeters = maxMeters;
+      for (const place of _offlinePlaces) {
+        const north = (Number(place.la) - lat) * 111320;
+        const east = (Number(place.lo) - lng) * 111320 * cosLat;
+        const meters = Math.hypot(north, east);
+        if (Number.isFinite(meters) && meters < nearestMeters) {
+          nearest = place;
+          nearestMeters = meters;
         }
-        return window.dispName ? window.dispName(names[0]) : names[0];
       }
-      return names.find(s => !isAr(s)) || names[0];
+      return nearest;
     }
     let routingClickActive = false;
     let activeRouteInput = null; // Tracks which input is waiting for a map tap
@@ -1936,7 +2013,7 @@
     // Dev UI (data collection, debug, layer toggles). Off by default.
     const DEV_UI = new URLSearchParams(location.search).has('dev') || localStorage.getItem('atlas_dev') === '1';
 
-    // ── LANGUAGE SYSTEM (Powered by EOTranslator) ─────────────────────────
+    // ── LANGUAGE SYSTEM ─────────────────────────
     let LANG = localStorage.getItem('atlas_lang') || 'ar';
     const T = {
       ar: {
@@ -1955,7 +2032,7 @@
         from_test: 'من 𖦏 موقع تجريبي',
         from_word: 'من',
         origin_placeholder: 'نقطة الانطلاق',
-        current_location: 'موقعك الحالي',
+        current_location: 'الموقع الحالي',
         tap_show: 'اضغط ⌄ لإظهار المسارات',
         best: 'الأفضل',
         walk: 'مشي',
@@ -1985,12 +2062,11 @@
         location_unavailable: '📡 الموقع غير متاح. GPS يعمل أفضل في الخارج.',
         location_timeout: '⏳ انتهت مهلة الموقع. حاول مرة أخرى.',
         device_no_gps: '❌ جهازك لا يدعم تحديد الموقع.',
-        sort_fastest: '⚡ الأسرع (افتراضي)',
+        sort_fastest: '⚡ المسار الموصى به',
         sort_least_walk: '🚶 أقل مشي',
         sort_least_transfers: '🔄 أقل تحويلات',
-        sort_prefer_metro: '🚊 تفضيل المترو',
-        sort_prefer_bus: '🚌 تفضيل الحافلة',
-        sort_prefer_rfr: '🚆 تفضيل RFR',
+        transport_modes: 'وسائل النقل',
+        no_selected_mode_route: 'لا يوجد مسار بالوسائل المحددة. فعّل وسيلة نقل أخرى وحاول مجددًا.',
         your_location: 'موقعك',
         favourites: '★ المفضّلة',
         no_favourites: 'لا توجد عناصر مفضّلة بعد',
@@ -1998,6 +2074,12 @@
         remove: 'إزالة',
         bus: 'حافلة',
         metro: 'مترو',
+        map_location: 'موقع على الخريطة',
+        copy_coordinates: 'نسخ الإحداثيات',
+        save_to_favourites: 'حفظ في المفضّلة',
+        route_to_location: 'إيجاد مسارات النقل إلى هنا',
+        coordinates_copied: 'تم نسخ الإحداثيات',
+        copy_failed: 'تعذّر نسخ الإحداثيات',
         rfr: 'قطار'
       },
       en: {
@@ -2016,7 +2098,7 @@
         from_test: 'From 𖦏 test location',
         from_word: 'From',
         origin_placeholder: 'Starting point',
-        current_location: 'Your location',
+        current_location: 'Current location',
         tap_show: 'tap ⌄ to show routes',
         best: 'Best',
         walk: 'Walk',
@@ -2046,12 +2128,11 @@
         location_unavailable: '📡 Location unavailable. GPS works best outdoors.',
         location_timeout: '⏳ Location request timed out. Try again.',
         device_no_gps: '❌ Geolocation is not supported by this device.',
-        sort_fastest: '⚡ Fastest overall (Default)',
+        sort_fastest: '⚡ Recommended',
         sort_least_walk: '🚶 Least walking',
         sort_least_transfers: '🔄 Fewest transfers',
-        sort_prefer_metro: '🚊 Prefer Métro',
-        sort_prefer_bus: '🚌 Prefer Bus',
-        sort_prefer_rfr: '🚆 Prefer RFR',
+        transport_modes: 'Transport modes',
+        no_selected_mode_route: 'No route found with the selected modes. Enable another mode and try again.',
         your_location: 'your location',
         favourites: '★ Favourites',
         no_favourites: 'No favourites yet',
@@ -2059,27 +2140,33 @@
         remove: 'Remove',
         bus: 'Bus',
         metro: 'Métro',
+        map_location: 'Map location',
+        copy_coordinates: 'Copy coordinates',
+        save_to_favourites: 'Save to favourites',
+        route_to_location: 'Find transit routes here',
+        coordinates_copied: 'Coordinates copied',
+        copy_failed: 'Could not copy coordinates',
         rfr: 'RFR'
       }
     };
 
-    // Instantiate EOTranslator with our dictionary and current language
-    const translator = new EOTranslator(T, LANG);
-
-    // Translation helper function using EOTranslator instance
-    function t(key, params) {
-      return translator.translate(key, { lang: LANG, params: params });
+    // Translate UI labels from the dictionaries above; no external translator is required.
+    function t(key, params = {}) {
+      const dictionary = T[LANG] || T.en || {};
+      const value = dictionary[key] ?? (T.en && T.en[key]) ?? key;
+      return String(value).replace(/\{([^}]+)\}/g, (match, name) =>
+        Object.prototype.hasOwnProperty.call(params, name) ? String(params[name]) : match
+      );
     }
-
     function setLang(lang) {
       LANG = lang;
-      translator.language = lang; // update translator instance state
+
       localStorage.setItem('atlas_lang', lang);
       document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
       document.documentElement.setAttribute('lang', lang);
 
-      // Automatically translate any static DOM elements using eo-translator attributes if present
-      translator.translateDOM(document, lang);
+
+
 
       const btn = document.getElementById('lang-toggle');
       if (btn) btn.textContent = lang === 'ar' ? 'EN' : 'ع';
@@ -2098,13 +2185,18 @@
       if (sort) {
         const prev = sort.value;
         sort.innerHTML = `
-      <option value="fastest">${t('sort_fastest')}</option>
-      <option value="least_walking">${t('sort_least_walk')}</option>
-      <option value="least_transfers">${t('sort_least_transfers')}</option>
-      <option value="prefer_metro">${t('sort_prefer_metro')}</option>
-      <option value="prefer_bus">${t('sort_prefer_bus')}</option>
-      <option value="prefer_rfr">${t('sort_prefer_rfr')}</option>`;
-        sort.value = prev;
+      <option value="fastest">⚡ المسار الموصى به</option>
+      <option value="least_walking">🚶 أقل مشي</option>
+      <option value="least_transfers">🔄 أقل تحويلات</option>`;
+        sort.value = [...sort.options].some(option => option.value === prev) ? prev : 'fastest';
+      }
+      const modeGroup = document.getElementById('trip-mode-filters');
+      if (modeGroup) {
+        const heading = document.getElementById('trip-mode-heading');
+        if (heading) heading.textContent = t('transport_modes') + ':';
+        modeGroup.querySelectorAll('[data-mode-label]').forEach(label => {
+          label.textContent = t(label.dataset.modeLabel);
+        });
       }
     }
     // Apply saved language on load
@@ -3168,38 +3260,35 @@
       };
       // ── MAP CLICK LOGIC ──────────────────────────────────────────────────
       map.on('click', e => {
-        if (!DEV_UI) { document.getElementById('search-results').classList.remove('open'); return; }
+        if (!DEV_UI) document.getElementById('search-results').classList.remove('open');
         const { lat, lng } = e.lngLat;
-        const v = `${lat.toFixed(7)},${lng.toFixed(7)}`;
-        // ── COORDINATE PICKER MODE ──
+        const v = lat.toFixed(7) + ',' + lng.toFixed(7);
+
         if (pickerMode) {
           addPickedCoord(lat, lng);
           return;
         }
-        // ── Place/update an orange marker at the clicked point ──
-        if (clickMarker) {
-          clickMarker.remove();
-        }
-        clickMarker = new maplibregl.Marker({ color: '#ff6b35' })
-          .setLngLat([lng, lat])
-          .setPopup(new maplibregl.Popup({ offset: 25 })
-            .setHTML(`<b>Clicked</b><br><small>Lat: ${lat.toFixed(7)}<br>Lng: ${lng.toFixed(7)}</small>`))
-          .addTo(map);
-        clickMarker.togglePopup();
-        dbg(`📍 Click marker placed: ${v}`);
 
-        // 1. Check if an input field is actively selected for picking
+        // Keep the orange marker and its debug popup for developer builds only.
+        if (DEV_UI) {
+          if (clickMarker) clickMarker.remove();
+          clickMarker = new maplibregl.Marker({ color: '#ff6b35' })
+            .setLngLat([lng, lat])
+            .setPopup(new maplibregl.Popup({ offset: 25 })
+              .setHTML('<b>Clicked</b><br><small>Lat: ' + lat.toFixed(7) + '<br>Lng: ' + lng.toFixed(7) + '</small>'))
+            .addTo(map);
+          clickMarker.togglePopup();
+          dbg('📍 Click marker placed: ' + v);
+        }
+
         if (activeRouteInput) {
           document.getElementById(activeRouteInput).value = v;
-          dbg(`✅ Set ${activeRouteInput} to ${v}`);
-
-          // Remove focus so it doesn't stay highlighted green
+          dbg('✅ Set ' + activeRouteInput + ' to ' + v);
           document.activeElement.blur();
           activeRouteInput = null;
           return;
         }
 
-        // 2. Fallback for routing mode (if they just open panel and tap map without focusing an input)
         if (routingClickActive) {
           const from = document.getElementById('from-input'), to = document.getElementById('to-input');
           if (!from.value) from.value = v;
@@ -3207,8 +3296,26 @@
           return;
         }
 
-        // 3. Default map click behavior (shows the bottom info panel)
-        showPanel(`${lat.toFixed(7)}, ${lng.toFixed(7)}`, 'Tapped location', `<div class="route-card" onclick="setRouteDest(${lat},${lng})"><div class="route-icon" style="background:rgba(74,222,128,.15)">📍</div><div><b>Route here</b><br><small>Set as destination</small></div></div>`);
+        const nearby = nearestPlaceAt(lat, lng);
+        const nameAr = nearby ? placeArabicName(nearby) : '';
+        const nameEn = nearby ? placeEnglishName(nearby) : '';
+        const displayName = LANG === 'ar' ? (nameAr || nameEn) : (nameEn || nameAr);
+        const coords = lat.toFixed(7) + ', ' + lng.toFixed(7);
+        tappedMapPoint = {
+          lat, lng, nameAr, nameEn,
+          name: displayName || t('map_location'),
+          favoriteLat: nearby ? Number(nearby.la) : lat,
+          favoriteLon: nearby ? Number(nearby.lo) : lng,
+          category: nearby ? nearby.c || '' : ''
+        };
+
+        const actions =
+          '<div class="map-tap-actions">' +
+          '<button class="map-tap-action" onclick="copyTappedMapCoordinates()">📋 ' + t('copy_coordinates') + '</button>' +
+          '<button class="map-tap-action" onclick="saveTappedMapLocation()">★ ' + t('save_to_favourites') + '</button>' +
+          '<button class="map-tap-action primary" onclick="routeToTappedMapLocation()">🚌 ' + t('route_to_location') + '</button>' +
+          '</div>';
+        showPanel(tappedMapPoint.name, coords, actions);
       });
     }
     // ── SEARCH ────────────────────────────────────────────────────────────────
@@ -3358,6 +3465,8 @@
       const head = _distInfo ? `<div class="sr-head">${districtHeader(_distInfo)}</div>` : '';
       el.innerHTML = chips + head + _shown.map((p, i) => {
         const label = placeLabel(p);
+        const arabicName = placeArabicName(p);
+        const englishName = placeEnglishName(p);
         const fav = window.isFavourite(p.la, p.lo);
         return `<div class="search-result-item" onclick="pickPlace(${i})">
           <div class="sri-icon">📍</div>
@@ -3365,7 +3474,7 @@
             <div class="sri-name">${_escS(label)}</div>
             <div class="sri-sub">${_escS(catLabel(_cat(p)))}</div>
           </div>
-          <button class="fav-star ${fav ? 'active' : ''}" data-lat="${p.la}" data-lon="${p.lo}" data-name="${_escS(label)}" data-cat="${_escS(_cat(p))}" onclick="event.stopPropagation(); window.toggleSearchFav(this)">${fav ? '★' : '☆'}</button>
+          <button class="fav-star ${fav ? 'active' : ''}" data-lat="${p.la}" data-lon="${p.lo}" data-name="${_escS(label)}" data-name-ar="${_escS(arabicName)}" data-name-en="${_escS(englishName)}" data-cat="${_escS(_cat(p))}" onclick="event.stopPropagation(); window.toggleSearchFav(this)">${fav ? '★' : '☆'}</button>
         </div>`;
       }).join('');
       el.classList.add('open');
@@ -3831,6 +3940,47 @@
       dbg('📂 Info panel closed');
     }
 
+    async function copyTappedMapCoordinates() {
+      if (!tappedMapPoint) return;
+      const text = tappedMapPoint.lat.toFixed(7) + ', ' + tappedMapPoint.lng.toFixed(7);
+      let copied = false;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        }
+      } catch (e) { /* use the WebView fallback below */ }
+      if (!copied) {
+        const field = document.createElement('textarea');
+        field.value = text;
+        field.style.position = 'fixed';
+        field.style.opacity = '0';
+        document.body.appendChild(field);
+        field.select();
+        try { copied = document.execCommand('copy'); } catch (e) { copied = false; }
+        field.remove();
+      }
+      showToast(copied ? t('coordinates_copied') : t('copy_failed'), !copied);
+    }
+
+    function saveTappedMapLocation() {
+      if (!tappedMapPoint) return;
+      if (typeof window.saveMapTapFavourite === 'function') {
+        window.saveMapTapFavourite(tappedMapPoint);
+        closePanel();
+      }
+    }
+
+    function routeToTappedMapLocation() {
+      if (!tappedMapPoint) return;
+      const point = tappedMapPoint;
+      closePanel();
+      if (typeof window.planTripTo === 'function') {
+        window.planTripTo(point.lat, point.lng, point.name || t('map_location'));
+      } else {
+        setRouteDest(point.lat, point.lng);
+      }
+    }
     // ── RAIL DEBUG ────────────────────────────────────────────────────────────
     // Answers two questions:
     //   Q1 — What features/classes are actually in the public_transport layer?
@@ -4877,22 +5027,6 @@
             if (a.walkSec !== b.walkSec) return a.walkSec - b.walkSec;
           } else if (pref === 'least_transfers') {
             if (a.transfers !== b.transfers) return a.transfers - b.transfers;
-          } else if (pref === 'prefer_metro') {
-            const aM = a.legs.filter(l => l.type === 'transit' && l.dl.mode === 'metro').length;
-            const bM = b.legs.filter(l => l.type === 'transit' && l.dl.mode === 'metro').length;
-            if (aM !== bM) return bM - aM;
-          } else if (pref === 'prefer_bus') {
-            const aB = a.legs.filter(l => l.type === 'transit' && l.dl.mode === 'bus').length;
-            const bB = b.legs.filter(l => l.type === 'transit' && l.dl.mode === 'bus').length;
-            if (aB !== bB) return bB - aB;
-          } else if (pref === 'prefer_rfr') {
-            const aR = a.legs.filter(l => l.type === 'transit' && l.dl.mode === 'rfr').length;
-            const bR = b.legs.filter(l => l.type === 'transit' && l.dl.mode === 'rfr').length;
-            const aOther = a.legs.filter(l => l.type === 'transit' && l.dl.mode !== 'rfr').length;
-            const bOther = b.legs.filter(l => l.type === 'transit' && l.dl.mode !== 'rfr').length;
-            if (aOther === 0 && bOther > 0) return -1;
-            if (bOther === 0 && aOther > 0) return 1;
-            if (aR !== bR) return bR - aR;
           }
           return a.score - b.score;
         });
@@ -4909,21 +5043,26 @@
           const p = dijkstra(O, D, ban, extra); if (!p) return null;
           const opt = makeOption(p, ctx); if (!opt) return null; if (!found.has(opt.sig)) found.set(opt.sig, opt); return opt;
         };
-        const none = () => ({ bases: new Set(), modes: new Set() });
+        const disabledModes = () => new Set(['bus', 'metro', 'rfr'].filter(mode => !enabledTransitModes.has(mode)));
+        const none = () => ({ bases: new Set(), modes: disabledModes() });
         const best = run(none());
         if (best) {
-          best.bases.forEach(b => run({ bases: new Set([b]), modes: new Set() }));
+          best.bases.forEach(b => run({ bases: new Set([b]), modes: disabledModes() }));
           best.legs.forEach((leg, i) => {
             if (leg.type !== 'transit') return;
             const banned = new Set([leg.dl.base]);
             for (let n = 0; n < 5; n++) {
-              const alt = run({ bases: banned, modes: new Set() });
+              const alt = run({ bases: banned, modes: disabledModes() });
               if (!alt || !sameShape(best, alt) || banned.has(alt.legs[i].dl.base)) break;
               banned.add(alt.legs[i].dl.base);
             }
           });
         }
-        ['bus', 'metro', 'rfr'].forEach(m => run({ bases: new Set(), modes: new Set([m]) }));
+        enabledTransitModes.forEach(mode => {
+          const bannedModes = disabledModes();
+          bannedModes.add(mode);
+          run({ bases: new Set(), modes: bannedModes });
+        });
         const out = [...found.values()];
         const directM = hav(op, dp) * CFG.WALK_DETOUR;
         if (directM <= CFG.WALK_ONLY_MAX_M) {
@@ -4933,6 +5072,31 @@
         out.sort((a, b) => a.score - b.score);
         if (!out.length) return out;
         return mergeSimilar(out.filter(o => o.score <= out[0].score * 2 + 900)).slice(0, CFG.MAX_OPTIONS);
+      }
+
+      function refreshRoutesForModeSelection() {
+        const group = $('trip-mode-filters');
+        if (group) {
+          enabledTransitModes = new Set([...group.querySelectorAll('input[data-transit-mode]:checked')]
+            .map(input => input.dataset.transitMode));
+        }
+        if (!lastDest || !lastResolvedOrigin || !G.stops.length) return;
+
+        const my = ++runId;
+        const previousSig = selectedSig;
+        options = computeOptions(lastResolvedOrigin, lastDest);
+        if (!options.length) {
+          selectedSig = null;
+          setBody(`<div class="trip-msg">${t('no_selected_mode_route')}</div>`);
+          if (map.getSource('trip')) map.getSource('trip').setData(EMPTY);
+          if (map.getSource('trip-pts')) map.getSource('trip-pts').setData(EMPTY);
+          return;
+        }
+        options = sortOptions(options, sortPreference);
+        const keepPrevious = options.some(option => option.sig === previousSig);
+        selectedSig = keepPrevious ? previousSig : options[0].sig;
+        selectOption(selectedSig, !keepPrevious);
+        refineWalks(my);
       }
 
       const stopPt = en => [en.stop.lon, en.stop.lat];
@@ -5020,6 +5184,21 @@
         showToast(LANG === 'ar' ? '✓ تمت الإضافة إلى المفضّلة' : '✓ Added to favourites');
       }
 
+      window.saveMapTapFavourite = function (point) {
+        const coords = point.lat.toFixed(6) + ', ' + point.lng.toFixed(6);
+        const nameEn = point.nameEn || T.en.map_location + ' (' + coords + ')';
+        const nameAr = point.nameAr || T.ar.map_location + ' (' + coords + ')';
+        addFavourite({
+          lat: point.favoriteLat ?? point.lat,
+          lon: point.favoriteLon ?? point.lng,
+          name: nameEn,
+          name_ar: nameAr,
+          name_en: nameEn,
+          category: point.category || ''
+        });
+        renderFavourites();
+        refreshSearchStars();
+      };
       function removeFavourite(id) {
         const favs = getFavourites().filter(f => f.id !== id);
         saveFavourites(favs);
@@ -5116,10 +5295,10 @@
         } else {
           addFavourite({
             lat, lon,
-            name: btn.dataset.name,
+            name: btn.dataset.nameAr || btn.dataset.nameEn || btn.dataset.name,
             category: btn.dataset.cat,
-            name_ar: btn.dataset.name,
-            name_en: btn.dataset.name
+            name_ar: btn.dataset.nameAr || '',
+            name_en: btn.dataset.nameEn || btn.dataset.name
           });
           btn.classList.add('active');
           btn.textContent = '★';
@@ -5155,8 +5334,9 @@
       };
       // total trip distance: walking legs + distance along the track/route for each transit leg
       const optDist = o => o.legs.reduce((s, l) => s + (l.type === 'walk' ? l.meters : Math.abs(l.b.d - l.a.d)), 0);
-      let runId = 0, lastDest = null, options = [], selectedSig = null, lastOriginOv = null;
+      let runId = 0, lastDest = null, options = [], selectedSig = null, lastOriginOv = null, lastResolvedOrigin = null;
       let sortPreference = 'fastest';
+      let enabledTransitModes = new Set(['bus', 'metro', 'rfr']);
 
       // Expose a safe global refresh function for language switching
       window.refreshTripUI = function () {
@@ -5202,7 +5382,7 @@
         pendingDest = null; clearCustomMarker();
       }
       function clearTripVisuals() {                                   // wipe a previous route before asking for a new start
-        runId++; lastDest = null; lastOriginOv = null; options = [];
+        runId++; lastDest = null; lastOriginOv = null; lastResolvedOrigin = null; options = [];
         $('trip-sheet').classList.remove('open');
         updateMapControlsPosition();
         if (map.getSource('trip')) { map.getSource('trip').setData(EMPTY); map.getSource('trip-pts').setData(EMPTY); }
@@ -5231,6 +5411,8 @@
         const head = found.info ? `<div class="sr-head">${districtHeader(found.info)}</div>` : '';
         el.innerHTML = head + _originShown.map((p, i) => {
           const label = placeLabel(p);
+          const arabicName = placeArabicName(p);
+          const englishName = placeEnglishName(p);
           const fav = window.isFavourite(p.la, p.lo);
           return `<div class="search-result-item" onclick="pickOrigin(${i})">
             <div class="sri-icon">📍</div>
@@ -5238,7 +5420,7 @@
               <div class="sri-name">${esc(label)}</div>
               <div class="sri-sub">${esc(catLabel(_cat(p)))}</div>
             </div>
-            <button class="fav-star ${fav ? 'active' : ''}" data-lat="${p.la}" data-lon="${p.lo}" data-name="${esc(label)}" data-cat="${esc(_cat(p))}" onclick="event.stopPropagation(); window.toggleSearchFav(this)">${fav ? '★' : '☆'}</button>
+            <button class="fav-star ${fav ? 'active' : ''}" data-lat="${p.la}" data-lon="${p.lo}" data-name="${esc(label)}" data-name-ar="${esc(arabicName)}" data-name-en="${esc(englishName)}" data-cat="${esc(_cat(p))}" onclick="event.stopPropagation(); window.toggleSearchFav(this)">${fav ? '★' : '☆'}</button>
           </div>`;
         }).join('');
         el.classList.add('open');
@@ -5254,7 +5436,7 @@
       };
 
       function closeTrip() {
-        runId++; lastDest = null; options = [];
+        runId++; lastDest = null; lastResolvedOrigin = null; options = [];
         $('trip-sheet').classList.remove('open');
         updateMapControlsPosition();
         hideOriginBar();
@@ -5363,7 +5545,7 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
       }
 
       async function planTripTo(lat, lon, name, originOv) {          // originOv = a typed starting point; omit it to start from the current position
-        const my = ++runId; lastDest = { lat, lon, name }; lastOriginOv = originOv || null;
+        const my = ++runId; lastDest = { lat, lon, name }; lastOriginOv = originOv || null; lastResolvedOrigin = null;
         openSheet();
         $('trip-title').textContent = `${t('to')} ${dispName(name)}`; $('trip-sub').textContent = '';
         setBody('<div class="trip-msg">Finding the best way…</div>');
@@ -5372,9 +5554,10 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         try { await loadTransitData(); } catch (e) { return; }
         if (my !== runId) return;
         if (!G.stops.length) { setBody('<div class="trip-msg">No transit data found.</div>'); return; }
+        lastResolvedOrigin = origin;
         options = computeOptions(origin, { lat, lon, name });
         if (!options.length) {
-          setBody(`<div class="trip-msg">${LANG === 'ar' ? 'لم يتم العثور على مسار.' : 'No connection found.'}</div>`);
+          setBody(`<div class="trip-msg">${t('no_selected_mode_route')}</div>`);
           return;
         }
         options = sortOptions(options, sortPreference);
@@ -5408,6 +5591,8 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
             }
           };
         }
+        const modeFilters = $('trip-mode-filters');
+        if (modeFilters) modeFilters.addEventListener('change', refreshRoutesForModeSelection);
 
         if (CFG.USE_TEST_ORIGIN) setOriginMarker(testOrigin);
         loadTransitData().catch(e => dbg('❌ Transit data: ' + e.message));
