@@ -5,7 +5,8 @@
     "na": "(1017)",
     "la": 36.806789,
     "lo": 10.184038,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "(1017)"
   },
   {
     "n": "(1057)",
@@ -13,7 +14,8 @@
     "na": "(1057)",
     "la": 36.906354,
     "lo": 10.302437,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "(1,057)"
   },
   {
     "n": "(2016)",
@@ -21,7 +23,8 @@
     "na": "(2016)",
     "la": 36.750953,
     "lo": 10.227357,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "(2016)"
   },
   {
     "n": "(2036)",
@@ -29,7 +32,8 @@
     "na": "(2036)",
     "la": 36.87439,
     "lo": 10.243705,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "( 1795 )"
   },
   {
     "n": "(2063)",
@@ -37,7 +41,8 @@
     "na": "(2063)",
     "la": 36.74737,
     "lo": 10.25245,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "( 2061 )"
   },
   {
     "n": "(2074)",
@@ -45,7 +50,8 @@
     "na": "(2074)",
     "la": 36.726354,
     "lo": 10.210574,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "(139)"
   },
   {
     "n": "(2074)",
@@ -53,7 +59,8 @@
     "na": "(2074)",
     "la": 36.733257,
     "lo": 10.209229,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "(139)"
   },
   {
     "n": "(2081)",
@@ -61,7 +68,8 @@
     "na": "(2081)",
     "la": 36.941183,
     "lo": 10.165572,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "2081"
   },
   {
     "n": "10 RUE PLINE",
@@ -69,7 +77,8 @@
     "na": "10 Rue PLINE",
     "la": 36.848447,
     "lo": 10.32735,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "10 Rue PLINE"
   },
   {
     "n": "10 ديسمبر 1984",
@@ -77,7 +86,8 @@
     "na": "10 ديسمبر 1984",
     "la": 36.844455,
     "lo": 10.184551,
-    "c": "bus_station"
+    "c": "bus_station",
+    "ne": "10 ديسمبر 1984"
   },
   {
     "n": "117 Tunis",
@@ -85,7 +95,8 @@
     "na": "117 تونس",
     "la": 36.924644,
     "lo": 10.285698,
-    "c": "bar"
+    "c": "bar",
+    "ne": "117 Tunis"
   },
   {
     "n": "162 RUE 9007 SIDI FATHALLAH - JBEL JLOUD",
@@ -93,7 +104,8 @@
     "na": "162 شارع 9007 سيدي فتح الله - جبل جلود",
     "la": 36.837371,
     "lo": 10.310174,
-    "c": "tyres"
+    "c": "tyres",
+    "ne": "162 Rue 9007 SIDI FATHALLAH - JBEL JLOUD"
   },
   {
     "n": "17 Heures Vin",
@@ -101,7 +113,8 @@
     "na": "الساعة 00/17",
     "la": 36.920217,
     "lo": 10.290123,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "17 Hours Wine"
   },
   {
     "n": "19C",
@@ -109,7 +122,8 @@
     "na": "19C",
     "la": 36.748454,
     "lo": 10.251501,
-    "c": "bus_station"
+    "c": "bus_station",
+    "ne": "19C"
   },
   {
     "n": "2 Mars 1934",
@@ -117,7 +131,8 @@
     "na": "2 مارس 1934",
     "la": 36.732455,
     "lo": 10.200028,
-    "c": "school"
+    "c": "school",
+    "ne": "2 March 1934"
   },
   {
     "n": "2 م",
@@ -125,7 +140,8 @@
     "na": "2 م",
     "la": 36.818554,
     "lo": 10.178494,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "2 م"
   },
   {
     "n": "210",
@@ -133,7 +149,8 @@
     "na": "210",
     "la": 36.839667,
     "lo": 10.045114,
-    "c": "travel_agency"
+    "c": "travel_agency",
+    "ne": "210"
   },
   {
     "n": "211",
@@ -141,7 +158,8 @@
     "na": "211",
     "la": 36.839835,
     "lo": 10.044361,
-    "c": "travel_agency"
+    "c": "travel_agency",
+    "ne": "211"
   },
   {
     "n": "213",
@@ -149,7 +167,8 @@
     "na": "213",
     "la": 36.8413,
     "lo": 10.044997,
-    "c": "travel_agency"
+    "c": "travel_agency",
+    "ne": "213"
   },
   {
     "n": "2843",
@@ -157,7 +176,8 @@
     "na": "2843",
     "la": 36.796629,
     "lo": 10.107985,
-    "c": "travel_agency"
+    "c": "travel_agency",
+    "ne": "2843 - "
   },
   {
     "n": "360",
@@ -165,7 +185,8 @@
     "na": "360",
     "la": 36.884157,
     "lo": 10.332,
-    "c": "bar"
+    "c": "bar",
+    "ne": "360"
   },
   {
     "n": "360 restaurant",
@@ -173,7 +194,8 @@
     "na": "مطعم 360",
     "la": 36.770767,
     "lo": 10.113278,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "360 restaurant"
   },
   {
     "n": "37",
@@ -181,7 +203,8 @@
     "na": "37",
     "la": 36.870338,
     "lo": 10.337066,
-    "c": "guest_house"
+    "c": "guest_house",
+    "ne": "37."
   },
   {
     "n": "3AM kamel",
@@ -189,7 +212,8 @@
     "na": "3am kamel",
     "la": 36.76525,
     "lo": 10.104988,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "3am kamel"
   },
   {
     "n": "3ARBI",
@@ -197,7 +221,8 @@
     "na": "3ARBI",
     "la": 36.771306,
     "lo": 10.1132,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "3ARBI"
   },
   {
     "n": "3Click Car Hire",
@@ -205,7 +230,8 @@
     "na": "3 كليك لتأجير السيارات",
     "la": 36.848562,
     "lo": 10.217127,
-    "c": "car_rental"
+    "c": "car_rental",
+    "ne": "3Click Car Hire"
   },
   {
     "n": "3am Hbib",
@@ -213,7 +239,8 @@
     "na": "3am Hbib",
     "la": 36.88916,
     "lo": 10.322037,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "3am Hbib"
   },
   {
     "n": "3am Sleh",
@@ -221,7 +248,8 @@
     "na": "3am Sleh",
     "la": 36.742735,
     "lo": 10.204853,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "3am Sleh"
   },
   {
     "n": "3ebsi",
@@ -229,7 +257,8 @@
     "na": "3ebsi",
     "la": 36.766578,
     "lo": 10.104408,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "3ebsi"
   },
   {
     "n": "55",
@@ -237,7 +266,8 @@
     "na": "55",
     "la": 36.833087,
     "lo": 10.095681,
-    "c": "bus_station"
+    "c": "bus_station",
+    "ne": "55"
   },
   {
     "n": "5àsec",
@@ -245,7 +275,8 @@
     "na": "5 àsec",
     "la": 36.89948,
     "lo": 10.12249,
-    "c": "dry_cleaning"
+    "c": "dry_cleaning",
+    "ne": "5àsec"
   },
   {
     "n": "710 Market",
@@ -253,7 +284,8 @@
     "na": "710 ماركت",
     "la": 36.876651,
     "lo": 10.308126,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "710 Market"
   },
   {
     "n": "713 Café lounge",
@@ -261,7 +293,8 @@
     "na": "713 مقهى لاونج",
     "la": 36.860355,
     "lo": 10.270513,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "713 Café lounge"
   },
   {
     "n": "716 Cafe",
@@ -269,7 +302,8 @@
     "na": "716 مقهى",
     "la": 36.841757,
     "lo": 10.273069,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "716 Cafe"
   },
   {
     "n": "91",
@@ -277,7 +311,8 @@
     "na": "91",
     "la": 36.86088,
     "lo": 10.274693,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "91"
   },
   {
     "n": "ABC",
@@ -285,7 +320,8 @@
     "na": "تفعيل خاصية النُطق ..أ، ب",
     "la": 36.798943,
     "lo": 10.182686,
-    "c": "cinema"
+    "c": "cinema",
+    "ne": "ABC"
   },
   {
     "n": "AL hidhab cofee",
@@ -293,7 +329,8 @@
     "na": "قهوة الهضاب",
     "la": 36.706627,
     "lo": 10.1754,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "AL hidhab cofee"
   },
   {
     "n": "ALI Café",
@@ -301,7 +338,8 @@
     "na": "مقهى علي",
     "la": 36.709737,
     "lo": 10.174411,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "ALI CAFÉ"
   },
   {
     "n": "ALYSSA DIALYSE",
@@ -309,7 +347,8 @@
     "na": "غسيل أليسا الكلوي",
     "la": 36.748121,
     "lo": 10.312461,
-    "c": "clinic"
+    "c": "clinic",
+    "ne": "ALYSSA DIALYSIS"
   },
   {
     "n": "ALZOUHOUR",
@@ -317,7 +356,8 @@
     "na": "الزهور",
     "la": 36.768956,
     "lo": 10.111496,
-    "c": "childcare"
+    "c": "childcare",
+    "ne": "ALZOUHOUR"
   },
   {
     "n": "ALtijeri",
@@ -325,7 +365,8 @@
     "na": "التجيري",
     "la": 36.84526,
     "lo": 10.322004,
-    "c": "bank"
+    "c": "bank",
+    "ne": "ALtijeri"
   },
   {
     "n": "AMANI",
@@ -333,7 +374,8 @@
     "na": "فندق أماني (Amani)",
     "la": 36.7707,
     "lo": 10.112805,
-    "c": "party"
+    "c": "party",
+    "ne": "AMANI"
   },
   {
     "n": "AMEN auto",
@@ -341,7 +383,8 @@
     "na": "AMEN AUTO",
     "la": 36.776227,
     "lo": 10.114211,
-    "c": "driving_school"
+    "c": "driving_school",
+    "ne": "AMEN AUTO"
   },
   {
     "n": "ANIS",
@@ -349,7 +392,8 @@
     "na": "الينسون",
     "la": 36.823722,
     "lo": 10.086323,
-    "c": "fitness_centre"
+    "c": "fitness_centre",
+    "ne": "ANISE"
   },
   {
     "n": "ASB Bank",
@@ -357,7 +401,8 @@
     "na": "بنك ايه اس بي",
     "la": 36.799359,
     "lo": 10.187335,
-    "c": "bank"
+    "c": "bank",
+    "ne": "ASB Bank"
   },
   {
     "n": "AZIZA",
@@ -365,7 +410,8 @@
     "na": "عزيزة",
     "la": 36.700941,
     "lo": 10.156505,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "Aziza"
   },
   {
     "n": "Aarous Elbaher",
@@ -373,7 +419,8 @@
     "na": "عروس الباهر",
     "la": 36.834176,
     "lo": 10.108648,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "Aarous Elbaher"
   },
   {
     "n": "Abandoned land",
@@ -381,7 +428,8 @@
     "na": "أرض مهجورة",
     "la": 36.807497,
     "lo": 10.101927,
-    "c": "parking"
+    "c": "parking",
+    "ne": "Abandoned land"
   },
   {
     "n": "Abdaoui Optic",
@@ -389,7 +437,8 @@
     "na": "عبداوي للبصريات",
     "la": 36.858956,
     "lo": 10.191031,
-    "c": "optician"
+    "c": "optician",
+    "ne": "Abdaoui Optic"
   },
   {
     "n": "Abdelli frippe",
@@ -397,7 +446,8 @@
     "na": "عبدلي فريب",
     "la": 36.704056,
     "lo": 10.177143,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "Abdelli frippe"
   },
   {
     "n": "Abdennadher design",
@@ -405,7 +455,8 @@
     "na": "تصميم عبد الناظر",
     "la": 36.716165,
     "lo": 10.273891,
-    "c": "furniture"
+    "c": "furniture",
+    "ne": "Abdennadher design"
   },
   {
     "n": "Abla coiff",
@@ -413,7 +464,8 @@
     "na": "عبلة كوف",
     "la": 36.770859,
     "lo": 10.104983,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "Abla coiff"
   },
   {
     "n": "Abou Firas",
@@ -421,7 +473,8 @@
     "na": "ابو فراس",
     "la": 36.847134,
     "lo": 10.167258,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Abu Firas"
   },
   {
     "n": "Abou Firas",
@@ -429,7 +482,8 @@
     "na": "ابو فراس",
     "la": 36.802408,
     "lo": 10.183697,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Abu Firas"
   },
   {
     "n": "Abou Ghnim",
@@ -437,7 +491,8 @@
     "na": "أبو غنيم",
     "la": 36.854972,
     "lo": 10.261646,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Abu Ghnim"
   },
   {
     "n": "Academie L'Oréal Professionnel TUNISIE",
@@ -445,7 +500,8 @@
     "na": "أكاديمية لوريال المهنية تونس",
     "la": 36.848056,
     "lo": 10.210199,
-    "c": "college"
+    "c": "college",
+    "ne": "L'Oréal Professional Academy TUNISIA"
   },
   {
     "n": "Academy fight sport",
@@ -453,7 +509,8 @@
     "na": "رياضة قتال الأكاديمية",
     "la": 36.70256,
     "lo": 10.157489,
-    "c": "fitness_centre"
+    "c": "fitness_centre",
+    "ne": "Academy fight sport"
   },
   {
     "n": "Acro Gym",
@@ -461,7 +518,8 @@
     "na": "أكرو جيم",
     "la": 36.8827,
     "lo": 10.32341,
-    "c": "sports_centre"
+    "c": "sports_centre",
+    "ne": "Acro Gym"
   },
   {
     "n": "Adem Coffee Bomba Chicha",
@@ -469,7 +527,8 @@
     "na": "آدم كوفي بومبا شيشا",
     "la": 36.707661,
     "lo": 10.165,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Adem Coffee Bomba Chicha"
   },
   {
     "n": "Adem school",
@@ -477,7 +536,8 @@
     "na": "مدرسة آدم",
     "la": 36.768375,
     "lo": 10.113268,
-    "c": "school"
+    "c": "school",
+    "ne": "Adem school"
   },
   {
     "n": "AfriTours",
@@ -485,7 +545,8 @@
     "na": "AfriTours",
     "la": 36.807155,
     "lo": 10.181564,
-    "c": "travel_agency"
+    "c": "travel_agency",
+    "ne": "AfriTours"
   },
   {
     "n": "Afric Optic",
@@ -493,7 +554,8 @@
     "na": "أفريك أوبتيك",
     "la": 36.883995,
     "lo": 10.329925,
-    "c": "optician"
+    "c": "optician",
+    "ne": "Afric Optic"
   },
   {
     "n": "Afriqiyah Airlines",
@@ -501,7 +563,8 @@
     "na": "الخطوط الجوية الافريقية",
     "la": 36.847608,
     "lo": 10.217368,
-    "c": "travel_agency"
+    "c": "travel_agency",
+    "ne": "Afriqiyah Airlines"
   },
   {
     "n": "Afrique Auto",
@@ -509,7 +572,8 @@
     "na": "أفريك أوتو",
     "la": 36.850487,
     "lo": 10.207171,
-    "c": "car"
+    "c": "car",
+    "ne": "Afrique Auto"
   },
   {
     "n": "After Work",
@@ -517,7 +581,8 @@
     "na": "بعد العمل",
     "la": 36.849076,
     "lo": 10.182466,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Fly after work"
   },
   {
     "n": "Agence comptable",
@@ -525,7 +590,8 @@
     "na": "وكالة محاسبة؛",
     "la": 36.891022,
     "lo": 10.185047,
-    "c": "ticket"
+    "c": "ticket",
+    "ne": "Agence Comptable"
   },
   {
     "n": "Agence de police Omrane Superieur",
@@ -533,7 +599,8 @@
     "na": "وكالة شرطة عمران العليا",
     "la": 36.837972,
     "lo": 10.129155,
-    "c": "police"
+    "c": "police",
+    "ne": "Omrane Superior Police Agency"
   },
   {
     "n": "Agence de police cité intilakha",
@@ -541,7 +608,8 @@
     "na": "وكالة شرطة مدينة انطلاقة",
     "la": 36.841961,
     "lo": 10.122894,
-    "c": "police"
+    "c": "police",
+    "ne": "Intilakha City Police Agency"
   },
   {
     "n": "Agil Aire de restauration et café",
@@ -549,7 +617,8 @@
     "na": "أجيل فود كورت وكوفي شوب",
     "la": 36.834329,
     "lo": 10.222247,
-    "c": "food_court"
+    "c": "food_court",
+    "ne": "Agil Food court and coffee shop"
   },
   {
     "n": "Agora informatique",
@@ -557,7 +626,8 @@
     "na": "أغورا لتكنولوجيا المعلومات",
     "la": 36.80978,
     "lo": 10.179923,
-    "c": "computer"
+    "c": "computer",
+    "ne": "IT Agora"
   },
   {
     "n": "Ahlem Hajjar",
@@ -565,7 +635,8 @@
     "na": "أحلام حجار",
     "la": 36.840024,
     "lo": 10.102902,
-    "c": "chemist"
+    "c": "chemist",
+    "ne": "Ahlem Hajjar"
   },
   {
     "n": "Ahmed",
@@ -573,7 +644,8 @@
     "na": "أحمد",
     "la": 36.835583,
     "lo": 10.106192,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "Ahmed"
   },
   {
     "n": "Aicha Automobile",
@@ -581,7 +653,8 @@
     "na": "عائشة للسيارات",
     "la": 36.849409,
     "lo": 10.26376,
-    "c": "car"
+    "c": "car",
+    "ne": "Aicha Automobile"
   },
   {
     "n": "Air France",
@@ -589,7 +662,8 @@
     "na": "الخطوط الجوية الفرنسية",
     "la": 36.847243,
     "lo": 10.217269,
-    "c": "travel_agency"
+    "c": "travel_agency",
+    "ne": "Air France"
   },
   {
     "n": "Air Malta",
@@ -597,7 +671,8 @@
     "na": "طيران مالطا",
     "la": 36.84737,
     "lo": 10.217307,
-    "c": "travel_agency"
+    "c": "travel_agency",
+    "ne": "Air Malta"
   },
   {
     "n": "Ajil",
@@ -605,7 +680,8 @@
     "na": "عجيل",
     "la": 36.871555,
     "lo": 10.341844,
-    "c": "kiosk"
+    "c": "kiosk",
+    "ne": "Ajil"
   },
   {
     "n": "Al Baraka",
@@ -613,7 +689,8 @@
     "na": "بنك البركة",
     "la": 36.765383,
     "lo": 10.22391,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Al Baraka"
   },
   {
     "n": "Al Baraka",
@@ -621,7 +698,8 @@
     "na": "بنك البركة",
     "la": 36.830294,
     "lo": 10.314158,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Al Baraka"
   },
   {
     "n": "Al HERMI",
@@ -629,7 +707,8 @@
     "na": "الهرمي",
     "la": 36.83967,
     "lo": 10.103271,
-    "c": "shoes"
+    "c": "shoes",
+    "ne": "Al Hermi"
   },
   {
     "n": "Al-Chami",
@@ -637,7 +716,8 @@
     "na": "الشامي",
     "la": 36.885428,
     "lo": 10.323963,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Al-Chami"
   },
   {
     "n": "Ala Turka",
@@ -645,7 +725,8 @@
     "na": "علاء تركه",
     "la": 36.878681,
     "lo": 10.327071,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Ala Turka"
   },
   {
     "n": "Aladin",
@@ -653,7 +734,8 @@
     "na": "عــلاء الدين",
     "la": 36.862205,
     "lo": 10.161858,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Aladin"
   },
   {
     "n": "Alcazar Salón de Thè",
@@ -661,7 +743,8 @@
     "na": "Alcazar Salón de Thè",
     "la": 36.84426,
     "lo": 10.197493,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Alcazar Salón de Thè"
   },
   {
     "n": "Aldo",
@@ -669,7 +752,8 @@
     "na": "! (ألدو)",
     "la": 36.899251,
     "lo": 10.122163,
-    "c": "shoes"
+    "c": "shoes",
+    "ne": "Aldo"
   },
   {
     "n": "Ali",
@@ -677,7 +761,8 @@
     "na": "ميليك",
     "la": 36.903184,
     "lo": 10.292875,
-    "c": "tailor"
+    "c": "tailor",
+    "ne": "Ali"
   },
   {
     "n": "AliBaba Music",
@@ -685,7 +770,8 @@
     "na": "موسيقى علي بابا",
     "la": 36.835577,
     "lo": 10.246545,
-    "c": "musical_instrument"
+    "c": "musical_instrument",
+    "ne": "AliBaba Music"
   },
   {
     "n": "Alimentation General",
@@ -693,7 +779,8 @@
     "na": "السلطة العامة",
     "la": 36.867785,
     "lo": 10.304824,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "General Power"
   },
   {
     "n": "Alo Vape",
@@ -701,7 +788,8 @@
     "na": "ألو فيب",
     "la": 36.728113,
     "lo": 10.306816,
-    "c": "e-cigarette"
+    "c": "e-cigarette",
+    "ne": "Alo Vape"
   },
   {
     "n": "Alpha Ford & Hyundai Tunisie",
@@ -709,7 +797,8 @@
     "na": "ألفا فورد وهيونداي تونس",
     "la": 36.727958,
     "lo": 10.238275,
-    "c": "car"
+    "c": "car",
+    "ne": "Alpha Ford & Hyundai Tunisia"
   },
   {
     "n": "Alpha International Tunisie",
@@ -717,7 +806,8 @@
     "na": "ألفا انترناشيونال تونس",
     "la": 36.727497,
     "lo": 10.238248,
-    "c": "car"
+    "c": "car",
+    "ne": "Alpha International Tunisia"
   },
   {
     "n": "Alpha Jaguar & Land Rover Tunisie",
@@ -725,7 +815,8 @@
     "na": "ألفا جاكوار ولاند روفر تونس",
     "la": 36.727631,
     "lo": 10.238748,
-    "c": "car"
+    "c": "car",
+    "ne": "Alpha Jaguar & Land Rover Tunisia"
   },
   {
     "n": "Am Hamadi",
@@ -733,7 +824,8 @@
     "na": "آم حمادي",
     "la": 36.838267,
     "lo": 10.100842,
-    "c": "supermarket"
+    "c": "supermarket",
+    "ne": "Am Hamadi"
   },
   {
     "n": "Amen Bank",
@@ -741,7 +833,8 @@
     "na": "بنك الأمان",
     "la": 36.810827,
     "lo": 10.164549,
-    "c": "bank"
+    "c": "bank",
+    "ne": "AMEN BANK"
   },
   {
     "n": "American Cooperative School of Tunis",
@@ -749,7 +842,8 @@
     "na": "المدرسة التعاونية الأمريكية بتونس",
     "la": 36.853149,
     "lo": 10.269245,
-    "c": "school"
+    "c": "school",
+    "ne": "American Cooperative School of Tunis"
   },
   {
     "n": "Amilcar",
@@ -757,7 +851,8 @@
     "na": "أميلكار",
     "la": 36.867859,
     "lo": 10.34036,
-    "c": "hotel"
+    "c": "hotel",
+    "ne": "Amilcar"
   },
   {
     "n": "Amina Optique",
@@ -765,7 +860,8 @@
     "na": "أمينة بصرية",
     "la": 36.889025,
     "lo": 10.321928,
-    "c": "optician"
+    "c": "optician",
+    "ne": "Optical Amina"
   },
   {
     "n": "Amir",
@@ -773,7 +869,8 @@
     "na": "Amir",
     "la": 36.834486,
     "lo": 10.104198,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Amir (name)"
   },
   {
     "n": "Amir Boulangerie",
@@ -781,7 +878,8 @@
     "na": "مخبز أمير",
     "la": 36.811345,
     "lo": 10.179464,
-    "c": "bakery"
+    "c": "bakery",
+    "ne": "Amir Bakery"
   },
   {
     "n": "Ammar",
@@ -789,7 +887,8 @@
     "na": "عمار الوحيدي",
     "la": 36.698145,
     "lo": 10.16091,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "Ammar"
   },
   {
     "n": "Amphi EY",
@@ -797,7 +896,8 @@
     "na": "Amphi EY",
     "la": 36.843841,
     "lo": 10.196741,
-    "c": "community_centre"
+    "c": "community_centre",
+    "ne": "Amphi EY"
   },
   {
     "n": "Amphis A8-A1",
@@ -805,7 +905,8 @@
     "na": "Amphis A8 - A1",
     "la": 36.843542,
     "lo": 10.196896,
-    "c": "community_centre"
+    "c": "community_centre",
+    "ne": "Amphis A8-A1"
   },
   {
     "n": "Anatolia",
@@ -813,7 +914,8 @@
     "na": "الأناضول",
     "la": 36.750295,
     "lo": 10.226339,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Anatolia"
   },
   {
     "n": "Ancienne mosquée",
@@ -821,7 +923,8 @@
     "na": "المسجد القديم",
     "la": 36.748756,
     "lo": 10.222407,
-    "c": "place_of_worship"
+    "c": "place_of_worship",
+    "ne": "Old Mosque"
   },
   {
     "n": "Andiamo Pizza",
@@ -829,7 +932,8 @@
     "na": "أنديامو بيتزا",
     "la": 36.893569,
     "lo": 10.296585,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Andiamo Pizza"
   },
   {
     "n": "Animal Planet",
@@ -837,7 +941,8 @@
     "na": "برنامج عالم الحيوان",
     "la": 36.726083,
     "lo": 10.305378,
-    "c": "pet"
+    "c": "pet",
+    "ne": "Animal Planet"
   },
   {
     "n": "Animalerie Idefix",
@@ -845,7 +950,8 @@
     "na": "متجر Idefix للحيوانات الأليفة",
     "la": 36.903391,
     "lo": 10.295606,
-    "c": "pet"
+    "c": "pet",
+    "ne": "Idefix Pet Shop"
   },
   {
     "n": "Annawress",
@@ -853,7 +959,8 @@
     "na": "أناورس",
     "la": 36.709899,
     "lo": 10.206277,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Annawress"
   },
   {
     "n": "Anouar Market",
@@ -861,7 +968,8 @@
     "na": "سوق الأنوار",
     "la": 36.710928,
     "lo": 10.216492,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "Anouar Market"
   },
   {
     "n": "Aqua lounge",
@@ -869,7 +977,8 @@
     "na": "Aqua lounge",
     "la": 36.835116,
     "lo": 10.245582,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "salon"
   },
   {
     "n": "Aquarium",
@@ -877,7 +986,8 @@
     "na": "مربى مائي",
     "la": 36.766831,
     "lo": 10.27119,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Aquarium"
   },
   {
     "n": "ArTempo Musique et Danse",
@@ -885,7 +995,8 @@
     "na": "أرتيمبو للموسيقى والرقص",
     "la": 36.880939,
     "lo": 10.327991,
-    "c": "music_school"
+    "c": "music_school",
+    "ne": "ArTempo Music and Dance"
   },
   {
     "n": "Arabesque",
@@ -893,7 +1004,8 @@
     "na": ". أولاً ، الأرابيسك ( الأرابيسك : وضعيه برقصة البالية )",
     "la": 36.880347,
     "lo": 10.328102,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Arabesque"
   },
   {
     "n": "Arabesque",
@@ -901,7 +1013,8 @@
     "na": ". أولاً ، الأرابيسك ( الأرابيسك : وضعيه برقصة البالية )",
     "la": 36.82574,
     "lo": 10.184867,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Arabesque"
   },
   {
     "n": "Archi Seven",
@@ -909,7 +1022,8 @@
     "na": "آرتشي سيفين",
     "la": 36.871727,
     "lo": 10.338073,
-    "c": "copyshop"
+    "c": "copyshop",
+    "ne": "Archi Seven"
   },
   {
     "n": "Argenterie & Bijouterie",
@@ -917,7 +1031,8 @@
     "na": "الأواني الفضية والمجوهرات",
     "la": 36.747147,
     "lo": 10.3105,
-    "c": "jewelry"
+    "c": "jewelry",
+    "ne": "Silverware & Jewellery"
   },
   {
     "n": "Ariana",
@@ -925,7 +1040,8 @@
     "na": "أريانة",
     "la": 36.876615,
     "lo": 10.185777,
-    "c": "fuel"
+    "c": "fuel",
+    "ne": "Ariana"
   },
   {
     "n": "Arij",
@@ -933,7 +1049,8 @@
     "na": "أريج",
     "la": 36.792072,
     "lo": 10.180304,
-    "c": "hotel"
+    "c": "hotel",
+    "ne": "Arij"
   },
   {
     "n": "Art Gallery 'El Artista'",
@@ -941,7 +1058,8 @@
     "na": "معرض الفنون \"إل أرتيستا\"",
     "la": 36.870767,
     "lo": 10.348617,
-    "c": "art"
+    "c": "art",
+    "ne": "Art Gallery 'El Artista'"
   },
   {
     "n": "Artisanat",
@@ -949,7 +1067,8 @@
     "na": "الصناعات الحرفية",
     "la": 36.859829,
     "lo": 10.190364,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "Handicrafts"
   },
   {
     "n": "Asia House",
@@ -957,7 +1076,8 @@
     "na": "بيت آسيا",
     "la": 36.866019,
     "lo": 10.297202,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Asia House"
   },
   {
     "n": "Atelier D",
@@ -965,7 +1085,8 @@
     "na": "ورشة العمل د",
     "la": 36.801563,
     "lo": 10.167653,
-    "c": "hotel"
+    "c": "hotel",
+    "ne": "Workshop D"
   },
   {
     "n": "Atelier de perfection mécanique",
@@ -973,7 +1094,8 @@
     "na": "ورشة الكمال الميكانيكي",
     "la": 36.771944,
     "lo": 10.103619,
-    "c": "car_repair"
+    "c": "car_repair",
+    "ne": "Mechanical perfection workshop"
   },
   {
     "n": "Atelier et Laboratoires de Thermique",
@@ -981,7 +1103,8 @@
     "na": "الورشة الحرارية والمختبرات",
     "la": 36.84378,
     "lo": 10.196436,
-    "c": "research_institute"
+    "c": "research_institute",
+    "ne": "Thermal Workshop and Laboratories"
   },
   {
     "n": "Ateliers et Laboratoires de Mecanique",
@@ -989,7 +1112,8 @@
     "na": "ورش عمل ومختبرات الميكانيكا",
     "la": 36.844587,
     "lo": 10.195948,
-    "c": "research_institute"
+    "c": "research_institute",
+    "ne": "Mechanics Workshops and Laboratories"
   },
   {
     "n": "Atmosp'hair",
@@ -997,7 +1121,8 @@
     "na": "جوالشعر",
     "la": 36.875993,
     "lo": 10.329004,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "Atmosp'hair"
   },
   {
     "n": "Attessia TV",
@@ -1005,7 +1130,8 @@
     "na": "أتيسيا تي في",
     "la": 36.848444,
     "lo": 10.205085,
-    "c": "studio"
+    "c": "studio",
+    "ne": "Attessia TV"
   },
   {
     "n": "Attijari",
@@ -1013,7 +1139,8 @@
     "na": "التجاري",
     "la": 36.856035,
     "lo": 10.178571,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari"
   },
   {
     "n": "Attijari",
@@ -1021,7 +1148,8 @@
     "na": "التجاري",
     "la": 36.879547,
     "lo": 10.17933,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari"
   },
   {
     "n": "Attijari",
@@ -1029,7 +1157,8 @@
     "na": "التجاري",
     "la": 36.793061,
     "lo": 10.107589,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari"
   },
   {
     "n": "Attijari",
@@ -1037,7 +1166,8 @@
     "na": "التجاري",
     "la": 36.849684,
     "lo": 10.183026,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari"
   },
   {
     "n": "Attijari BANK",
@@ -1045,7 +1175,8 @@
     "na": "التجاري بنك",
     "la": 36.858992,
     "lo": 10.195917,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari Bank"
   },
   {
     "n": "Attijari Bank",
@@ -1053,7 +1184,8 @@
     "na": "التجاري بنك",
     "la": 36.84788,
     "lo": 10.217458,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari Bank"
   },
   {
     "n": "Attijari Bank",
@@ -1061,7 +1193,8 @@
     "na": "التجاري بنك",
     "la": 36.861652,
     "lo": 10.277175,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari Bank"
   },
   {
     "n": "Attijari Bank - Siège Social",
@@ -1069,7 +1202,8 @@
     "na": "بنك التجاري - المكتب الرئيسي",
     "la": 36.846296,
     "lo": 10.188374,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari Bank - Head Office"
   },
   {
     "n": "Attijari Banque",
@@ -1077,7 +1211,8 @@
     "na": "بنك التجاري",
     "la": 36.739858,
     "lo": 10.302611,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari Bank"
   },
   {
     "n": "Attijari banque",
@@ -1085,7 +1220,8 @@
     "na": "بنك التجاري",
     "la": 36.696014,
     "lo": 10.167448,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijari Bank"
   },
   {
     "n": "Attijariwafa Bank",
@@ -1093,7 +1229,8 @@
     "na": "التجاري وفا بنك",
     "la": 36.85713,
     "lo": 10.188749,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijariwafa Bank"
   },
   {
     "n": "Attijati Bank",
@@ -1101,7 +1238,8 @@
     "na": "بنك التوجهاتي",
     "la": 36.813066,
     "lo": 10.173155,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Attijati Bank"
   },
   {
     "n": "Au Beau Vieux Temps",
@@ -1109,7 +1247,8 @@
     "na": "Au Beau Vieux Temps",
     "la": 36.870972,
     "lo": 10.350025,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Au Beau Vieux Temps"
   },
   {
     "n": "Au Bon Menu",
@@ -1117,7 +1256,8 @@
     "na": "قائمة طعام أو بون",
     "la": 36.813088,
     "lo": 10.182103,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Au Bon Menu"
   },
   {
     "n": "Au Petit Salem",
@@ -1125,7 +1265,8 @@
     "na": "في بيتي سالم",
     "la": 36.884459,
     "lo": 10.331598,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "At Petit Salem"
   },
   {
     "n": "Auberge de Jeunesse",
@@ -1133,7 +1274,8 @@
     "na": "نعم.",
     "la": 36.799448,
     "lo": 10.16996,
-    "c": "hostel"
+    "c": "hostel",
+    "ne": "Hostel"
   },
   {
     "n": "Aurea",
@@ -1141,7 +1283,8 @@
     "na": "أوريا",
     "la": 36.878795,
     "lo": 10.305709,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Aurea"
   },
   {
     "n": "Auto Land",
@@ -1149,7 +1292,8 @@
     "na": "هبوط تلقائي",
     "la": 36.878525,
     "lo": 10.304892,
-    "c": "car_repair"
+    "c": "car_repair",
+    "ne": "Auto Land"
   },
   {
     "n": "Auto ecole farah",
@@ -1157,7 +1301,8 @@
     "na": "مدرسة فرح للسيارات",
     "la": 36.771901,
     "lo": 10.108122,
-    "c": "driving_school"
+    "c": "driving_school",
+    "ne": "Farah car school"
   },
   {
     "n": "Auto École Abidi Ridha",
@@ -1165,7 +1310,8 @@
     "na": "أوتو إيكول عبيدي رضا",
     "la": 36.891892,
     "lo": 10.297743,
-    "c": "driving_school"
+    "c": "driving_school",
+    "ne": "Auto École Abidi Ridha"
   },
   {
     "n": "Auto école Hichem",
@@ -1173,7 +1319,8 @@
     "na": "مدرسة هشام للسيارات",
     "la": 36.854747,
     "lo": 10.267967,
-    "c": "driving_school"
+    "c": "driving_school",
+    "ne": "Hichem Auto School"
   },
   {
     "n": "Auto école tarek",
@@ -1181,7 +1328,8 @@
     "na": "مدرسة طارق للسيارات",
     "la": 36.850396,
     "lo": 10.177252,
-    "c": "driving_school"
+    "c": "driving_school",
+    "ne": "Tarek car school"
   },
   {
     "n": "Auto-Restaurant, Prêt-à-Manger, Cafétéria & Traiteur",
@@ -1189,7 +1337,8 @@
     "na": "مطعم تلقائي، جاهز للأكل، كافتيريا ومتعهد تقديم الطعام",
     "la": 36.822525,
     "lo": 10.194224,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Auto-Restaurant, Ready-to-Eat, Cafeteria & Caterer"
   },
   {
     "n": "Auto-école Kamel",
@@ -1197,7 +1346,8 @@
     "na": "مدرسة كامل لتعليم قيادة السيارات",
     "la": 36.745867,
     "lo": 10.310116,
-    "c": "driving_school"
+    "c": "driving_school",
+    "ne": "Kamel driving school"
   },
   {
     "n": "AutoXpert",
@@ -1205,7 +1355,8 @@
     "na": "AutoXpert",
     "la": 36.883656,
     "lo": 10.309487,
-    "c": "car_repair"
+    "c": "car_repair",
+    "ne": "AutoXpert"
   },
   {
     "n": "Autorent",
@@ -1213,7 +1364,8 @@
     "na": "مصرح به",
     "la": 36.87903,
     "lo": 10.306477,
-    "c": "car_rental"
+    "c": "car_rental",
+    "ne": "Authorized"
   },
   {
     "n": "Aux Champs Elysée",
@@ -1221,7 +1373,8 @@
     "na": "في الشانزليزيه",
     "la": 36.831468,
     "lo": 10.222459,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "At the Champs Elysée"
   },
   {
     "n": "Avicenne Private Business School",
@@ -1229,7 +1382,8 @@
     "na": "مدرسة ابن سينا الخاصة للأعمال",
     "la": 36.84658,
     "lo": 10.153154,
-    "c": "school"
+    "c": "school",
+    "ne": "Avicenna Private Business School"
   },
   {
     "n": "Avon",
@@ -1237,7 +1391,8 @@
     "na": "- أفون",
     "la": 36.844331,
     "lo": 10.207801,
-    "c": "cosmetics"
+    "c": "cosmetics",
+    "ne": "Avon"
   },
   {
     "n": "Axel D. Bodega",
@@ -1245,7 +1400,8 @@
     "na": "أكسل د. بوديغا",
     "la": 36.925622,
     "lo": 10.272647,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Axel D. Bodega"
   },
   {
     "n": "Ayachi",
@@ -1253,7 +1409,8 @@
     "na": "Ayachi",
     "la": 36.763656,
     "lo": 10.246014,
-    "c": "chemist"
+    "c": "chemist",
+    "ne": "Ayachi"
   },
   {
     "n": "Ayam Zaman Restaurant",
@@ -1261,7 +1418,8 @@
     "na": "مطعم أيام زمان",
     "la": 36.870873,
     "lo": 10.350403,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Ayam Zaman Restaurant"
   },
   {
     "n": "Ayem Ezzmen",
@@ -1269,7 +1427,8 @@
     "na": "أيم عزمان",
     "la": 36.882025,
     "lo": 10.322308,
-    "c": "pastry"
+    "c": "pastry",
+    "ne": "Ayem Ezzmen"
   },
   {
     "n": "Aylan",
@@ -1277,7 +1436,8 @@
     "na": "أكسيل",
     "la": 36.884156,
     "lo": 10.3299,
-    "c": "shoes"
+    "c": "shoes",
+    "ne": "Aylan"
   },
   {
     "n": "Aym & Med Tunis Coiffure",
@@ -1285,7 +1445,8 @@
     "na": "أيم آند ميد تصفيف الشعر بتونس",
     "la": 36.862177,
     "lo": 10.267325,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "Aym & Med Tunis Hairstyling"
   },
   {
     "n": "Ayoub Beauty",
@@ -1293,7 +1454,8 @@
     "na": "أيوب بيوتي",
     "la": 36.863581,
     "lo": 10.270089,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "Ayoub Beauty"
   },
   {
     "n": "Azaza",
@@ -1301,7 +1463,8 @@
     "na": "اعزاز",
     "la": 36.800509,
     "lo": 10.184354,
-    "c": "supermarket"
+    "c": "supermarket",
+    "ne": "Azaza"
   },
   {
     "n": "Aziz",
@@ -1309,7 +1472,8 @@
     "na": "هن ا النص الذي تراه هنا",
     "la": 36.70403,
     "lo": 10.160632,
-    "c": "jewelry"
+    "c": "jewelry",
+    "ne": "Aziz"
   },
   {
     "n": "Aziza",
@@ -1317,7 +1481,8 @@
     "na": "عزيزة",
     "la": 36.727487,
     "lo": 10.306606,
-    "c": "general"
+    "c": "general",
+    "ne": "Aziza"
   },
   {
     "n": "Aziza",
@@ -1325,7 +1490,8 @@
     "na": "عزيزة",
     "la": 36.876709,
     "lo": 10.294136,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "Aziza"
   },
   {
     "n": "Aziza",
@@ -1333,7 +1499,8 @@
     "na": "عزيزة",
     "la": 36.831129,
     "lo": 10.123389,
-    "c": "general"
+    "c": "general",
+    "ne": "Aziza"
   },
   {
     "n": "Aziza",
@@ -1341,7 +1508,8 @@
     "na": "عزيزة",
     "la": 36.731702,
     "lo": 10.124406,
-    "c": "yes"
+    "c": "yes",
+    "ne": "Aziza"
   },
   {
     "n": "Aziza",
@@ -1349,7 +1517,8 @@
     "na": "عزيزة",
     "la": 36.70482,
     "lo": 10.159753,
-    "c": "general"
+    "c": "general",
+    "ne": "Aziza"
   },
   {
     "n": "Aziza",
@@ -1357,7 +1526,8 @@
     "na": "عزيزة",
     "la": 36.780977,
     "lo": 10.111917,
-    "c": "yes"
+    "c": "yes",
+    "ne": "Aziza"
   },
   {
     "n": "Aziza",
@@ -1365,7 +1535,8 @@
     "na": "عزيزة",
     "la": 36.698988,
     "lo": 10.158477,
-    "c": "marketplace"
+    "c": "marketplace",
+    "ne": "Aziza"
   },
   {
     "n": "Azur Rent a Car",
@@ -1373,7 +1544,8 @@
     "na": "أزور لتأجير السيارات",
     "la": 36.808706,
     "lo": 10.183723,
-    "c": "car_rental"
+    "c": "car_rental",
+    "ne": "Azur Rent a Car"
   },
   {
     "n": "Azzure",
@@ -1381,7 +1553,8 @@
     "na": "أزور",
     "la": 36.847622,
     "lo": 10.266983,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Azzure"
   },
   {
     "n": "B'art",
@@ -1389,7 +1562,8 @@
     "na": "B'art",
     "la": 36.87183,
     "lo": 10.337981,
-    "c": "books"
+    "c": "books",
+    "ne": "B'art"
   },
   {
     "n": "B12 Salon de thé",
@@ -1397,7 +1571,8 @@
     "na": "B12 غرفة الشاي",
     "la": 36.860614,
     "lo": 10.270413,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Tea room "
   },
   {
     "n": "BATAM",
@@ -1405,7 +1580,8 @@
     "na": "باتام",
     "la": 36.858271,
     "lo": 10.191691,
-    "c": "appliance"
+    "c": "appliance",
+    "ne": "Batam"
   },
   {
     "n": "BBS",
@@ -1413,7 +1589,8 @@
     "na": "بي بي اس",
     "la": 36.724853,
     "lo": 10.306653,
-    "c": "sports_centre"
+    "c": "sports_centre",
+    "ne": "BBS"
   },
   {
     "n": "BEN YEDDER",
@@ -1421,7 +1598,8 @@
     "na": "بن يدر",
     "la": 36.768599,
     "lo": 10.111843,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "BEN YEDDER"
   },
   {
     "n": "BFRIES",
@@ -1429,7 +1607,8 @@
     "na": "BFRIES",
     "la": 36.885472,
     "lo": 10.324079,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "BFRIES"
   },
   {
     "n": "BFT",
@@ -1437,7 +1616,8 @@
     "na": "BFT",
     "la": 36.792595,
     "lo": 10.17607,
-    "c": "bank"
+    "c": "bank",
+    "ne": "WHG"
   },
   {
     "n": "BFT",
@@ -1445,7 +1625,8 @@
     "na": "BFT",
     "la": 36.820617,
     "lo": 10.192981,
-    "c": "bank"
+    "c": "bank",
+    "ne": "WHG"
   },
   {
     "n": "BH",
@@ -1453,7 +1634,8 @@
     "na": "BH",
     "la": 36.836562,
     "lo": 10.166129,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BH"
   },
   {
     "n": "BH",
@@ -1461,7 +1643,8 @@
     "na": "BH",
     "la": 36.710887,
     "lo": 10.172816,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BH"
   },
   {
     "n": "BH",
@@ -1469,7 +1652,8 @@
     "na": "BH",
     "la": 36.718746,
     "lo": 10.16688,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BH"
   },
   {
     "n": "BH",
@@ -1477,7 +1661,8 @@
     "na": "BH",
     "la": 36.768481,
     "lo": 10.11178,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BH"
   },
   {
     "n": "BH",
@@ -1485,7 +1670,8 @@
     "na": "BH",
     "la": 36.837724,
     "lo": 10.116861,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BH"
   },
   {
     "n": "BH",
@@ -1493,7 +1679,8 @@
     "na": "BH",
     "la": 36.847043,
     "lo": 10.200081,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BH"
   },
   {
     "n": "BIAT",
@@ -1501,7 +1688,8 @@
     "na": "بنك تونس العربي الدولي",
     "la": 36.809289,
     "lo": 10.183605,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BIAT"
   },
   {
     "n": "BIAT",
@@ -1509,7 +1697,8 @@
     "na": "بنك تونس العربي الدولي",
     "la": 36.81927,
     "lo": 10.182671,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BIAT"
   },
   {
     "n": "BIAT",
@@ -1517,7 +1706,8 @@
     "na": "بنك تونس العربي الدولي",
     "la": 36.769248,
     "lo": 10.11337,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BIAT"
   },
   {
     "n": "BIAT",
@@ -1525,7 +1715,8 @@
     "na": "بنك تونس العربي الدولي",
     "la": 36.71548,
     "lo": 10.180141,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BIAT"
   },
   {
     "n": "BIAT - Agence Berges du Lac",
@@ -1533,7 +1724,8 @@
     "na": "BIAT - Berges du Lac Agency",
     "la": 36.83697,
     "lo": 10.239168,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BIAT - Berges du Lac Agency"
   },
   {
     "n": "BIAT bellevue",
@@ -1541,7 +1733,8 @@
     "na": "BIAT Bellevue",
     "la": 36.774749,
     "lo": 10.187496,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BIAT Bellevue"
   },
   {
     "n": "BILEL",
@@ -1549,7 +1742,8 @@
     "na": "بلال",
     "la": 36.771373,
     "lo": 10.113258,
-    "c": "butcher"
+    "c": "butcher",
+    "ne": "Bilel"
   },
   {
     "n": "BLU Bar & Grill",
@@ -1557,7 +1751,8 @@
     "na": "بلو بار آند جريل",
     "la": 36.921114,
     "lo": 10.295155,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "BLU Bar & Grill"
   },
   {
     "n": "BSMNT",
@@ -1565,7 +1760,8 @@
     "na": "BSMNT",
     "la": 36.920557,
     "lo": 10.289422,
-    "c": "nightclub"
+    "c": "nightclub",
+    "ne": "BSMNT"
   },
   {
     "n": "BTE",
@@ -1573,7 +1769,8 @@
     "na": "BTE",
     "la": 36.822484,
     "lo": 10.193138,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Bottle"
   },
   {
     "n": "BTE",
@@ -1581,7 +1778,8 @@
     "na": "BTE",
     "la": 36.843876,
     "lo": 10.282968,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Bottle"
   },
   {
     "n": "BTE",
@@ -1589,7 +1787,8 @@
     "na": "BTE",
     "la": 36.828521,
     "lo": 10.313415,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Bottle"
   },
   {
     "n": "BTE",
@@ -1597,7 +1796,8 @@
     "na": "BTE",
     "la": 36.731521,
     "lo": 10.313952,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Bottle"
   },
   {
     "n": "BTE",
@@ -1605,7 +1805,8 @@
     "na": "BTE",
     "la": 36.818761,
     "lo": 10.179301,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Bottle"
   },
   {
     "n": "BTE",
@@ -1613,7 +1814,8 @@
     "na": "BTE",
     "la": 36.747543,
     "lo": 10.229715,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Bottle"
   },
   {
     "n": "BTE",
@@ -1621,7 +1823,8 @@
     "na": "BTE",
     "la": 36.822139,
     "lo": 10.179741,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Bottle"
   },
   {
     "n": "BTK",
@@ -1629,7 +1832,8 @@
     "na": "-و.ل.ن\"؟\"",
     "la": 36.735032,
     "lo": 10.211339,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BTK"
   },
   {
     "n": "BTK",
@@ -1637,7 +1841,8 @@
     "na": "-و.ل.ن\"؟\"",
     "la": 36.863582,
     "lo": 10.215803,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BTK"
   },
   {
     "n": "BTK",
@@ -1645,7 +1850,8 @@
     "na": "-و.ل.ن\"؟\"",
     "la": 36.840467,
     "lo": 10.199043,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BTK"
   },
   {
     "n": "BTK",
@@ -1653,7 +1859,8 @@
     "na": "-و.ل.ن\"؟\"",
     "la": 36.811517,
     "lo": 10.142539,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BTK"
   },
   {
     "n": "BTK",
@@ -1661,7 +1868,8 @@
     "na": "-و.ل.ن\"؟\"",
     "la": 36.716369,
     "lo": 10.180992,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BTK"
   },
   {
     "n": "BTK Agence Centrale",
@@ -1669,7 +1877,8 @@
     "na": "الوكالة المركزية BTK",
     "la": 36.801865,
     "lo": 10.185464,
-    "c": "bank"
+    "c": "bank",
+    "ne": "CENTRAL AGENCY"
   },
   {
     "n": "BTK banque",
@@ -1677,7 +1886,8 @@
     "na": "بنك بي تي كيه",
     "la": 36.712988,
     "lo": 10.215357,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BTK bank"
   },
   {
     "n": "BTL",
@@ -1685,7 +1895,8 @@
     "na": "BTL",
     "la": 36.752281,
     "lo": 10.224184,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BTL"
   },
   {
     "n": "BTL",
@@ -1693,7 +1904,8 @@
     "na": "BTL",
     "la": 36.846433,
     "lo": 10.196312,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BTL"
   },
   {
     "n": "BURGER STOP - Tunis",
@@ -1701,7 +1913,8 @@
     "na": "برجر ستوب - تونس",
     "la": 36.87327,
     "lo": 10.338925,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "BURGER STOP - Tunis"
   },
   {
     "n": "Bab Alkhadhra",
@@ -1709,7 +1922,8 @@
     "na": "باب الخضراء",
     "la": 36.812829,
     "lo": 10.171278,
-    "c": "hotel"
+    "c": "hotel",
+    "ne": "Bab Alkhadhra"
   },
   {
     "n": "Bab El Houma",
@@ -1717,7 +1931,8 @@
     "na": "باب الحومة",
     "la": 36.900925,
     "lo": 10.124564,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Bab El Houma"
   },
   {
     "n": "Babolat Tunisie",
@@ -1725,7 +1940,8 @@
     "na": "بابلات تونس",
     "la": 36.824339,
     "lo": 10.183526,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "Babolat Tunisia"
   },
   {
     "n": "Babylone",
@@ -1733,7 +1949,8 @@
     "na": "بابل",
     "la": 36.838235,
     "lo": 10.176213,
-    "c": "bar"
+    "c": "bar",
+    "ne": "Babylon"
   },
   {
     "n": "Bagdad Café",
@@ -1741,7 +1958,8 @@
     "na": "مقهى بغداد",
     "la": 36.860616,
     "lo": 10.296762,
-    "c": "coffee"
+    "c": "coffee",
+    "ne": "Baghdad Café"
   },
   {
     "n": "Baguette Lac 2",
@@ -1749,7 +1967,8 @@
     "na": "باغيت لاك 2",
     "la": 36.845359,
     "lo": 10.284328,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Baguette Lac 2"
   },
   {
     "n": "Baharat",
@@ -1757,7 +1976,8 @@
     "na": "بهارات",
     "la": 36.86282,
     "lo": 10.270289,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "Baharat"
   },
   {
     "n": "Bahri Khaled",
@@ -1765,7 +1985,8 @@
     "na": "بحري خالد",
     "la": 36.818139,
     "lo": 10.167926,
-    "c": "pharmacy"
+    "c": "pharmacy",
+    "ne": "Bahri Khaled"
   },
   {
     "n": "Bakhta",
@@ -1773,7 +1994,8 @@
     "na": "بختا",
     "la": 36.744811,
     "lo": 10.194999,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "Bakhta"
   },
   {
     "n": "BakoMotors",
@@ -1781,7 +2003,8 @@
     "na": "باكوموتورز",
     "la": 36.710383,
     "lo": 10.175368,
-    "c": "car"
+    "c": "car",
+    "ne": "BakoMotors"
   },
   {
     "n": "Balti Optique",
@@ -1789,7 +2012,8 @@
     "na": "Balti Optic",
     "la": 36.89955,
     "lo": 10.12259,
-    "c": "optician"
+    "c": "optician",
+    "ne": "Balti Optic"
   },
   {
     "n": "Bambaloni",
@@ -1797,7 +2021,8 @@
     "na": "بامبالوني",
     "la": 36.859335,
     "lo": 10.25773,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Bambaloni"
   },
   {
     "n": "Bambou",
@@ -1805,7 +2030,8 @@
     "na": "خيزران",
     "la": 36.859508,
     "lo": 10.162717,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Bamboo"
   },
   {
     "n": "Banette",
@@ -1813,7 +2039,8 @@
     "na": "بانيت",
     "la": 36.76645,
     "lo": 10.271379,
-    "c": "bakery"
+    "c": "bakery",
+    "ne": "Banette"
   },
   {
     "n": "Bani Hashim",
@@ -1821,7 +2048,8 @@
     "na": "بني هاشم",
     "la": 36.824343,
     "lo": 10.095819,
-    "c": "place_of_worship"
+    "c": "place_of_worship",
+    "ne": "Bani Hashim"
   },
   {
     "n": "Banque Internationale Arabe de Tunisie (BIAT)",
@@ -1829,7 +2057,8 @@
     "na": "بنك تونس العربي الدولي 'BIAT'",
     "la": 36.899291,
     "lo": 10.121848,
-    "c": "bank"
+    "c": "bank",
+    "ne": "International Arab Bank of Tunisia"
   },
   {
     "n": "Banque Nationale Agricole",
@@ -1837,7 +2066,8 @@
     "na": "البنك الوطني الفلاحي 'BNA'",
     "la": 36.848815,
     "lo": 10.203307,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Banque National Agricole"
   },
   {
     "n": "Banque Nationale de Gênes",
@@ -1845,7 +2075,8 @@
     "na": "بنك جنوة الوطني",
     "la": 36.841598,
     "lo": 10.211442,
-    "c": "bank"
+    "c": "bank",
+    "ne": "National Bank of Genoa"
   },
   {
     "n": "Banque de Tunisie",
@@ -1853,7 +2084,8 @@
     "na": "البنك التونسي 'BT'",
     "la": 36.821588,
     "lo": 10.190147,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BANK OF TUNISIA"
   },
   {
     "n": "Banque de Tunisie",
@@ -1861,7 +2093,8 @@
     "na": "البنك التونسي 'BT'",
     "la": 36.830524,
     "lo": 10.122549,
-    "c": "bank"
+    "c": "bank",
+    "ne": "BANK OF TUNISIA"
   },
   {
     "n": "Banque de l'Habitat",
@@ -1869,7 +2102,8 @@
     "na": "بنك الموئل",
     "la": 36.737252,
     "lo": 10.220165,
-    "c": "bank"
+    "c": "bank",
+    "ne": "Banque de l'Habitat"
   },
   {
     "n": "Bar L'Avenue",
@@ -1877,7 +2111,8 @@
     "na": "بار L'Avenue",
     "la": 36.798929,
     "lo": 10.182352,
-    "c": "bar"
+    "c": "bar",
+    "ne": "L'Avenue bar"
   },
   {
     "n": "Bar Lounge SAADI",
@@ -1885,7 +2120,8 @@
     "na": "بار ردهة سعدي",
     "la": 36.845184,
     "lo": 10.183424,
-    "c": "bar"
+    "c": "bar",
+    "ne": "SAADI Lounge Bar"
   },
   {
     "n": "Barada Coiff",
@@ -1893,7 +2129,8 @@
     "na": "بردى كوف",
     "la": 36.844931,
     "lo": 10.281111,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "Barada Coiff"
   },
   {
     "n": "Barbeq",
@@ -1901,7 +2138,8 @@
     "na": "باربيكيو",
     "la": 36.884095,
     "lo": 10.330001,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Barbeq"
   },
   {
     "n": "Barber House -haircuts and shaves-",
@@ -1909,7 +2147,8 @@
     "na": "بيت الحلاقة - قص الشعر والحلاقة -",
     "la": 36.836471,
     "lo": 10.136972,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "Barber House -haircuts and shaves-"
   },
   {
     "n": "Bardo",
@@ -1917,7 +2156,8 @@
     "na": "Bardo",
     "la": 36.80851,
     "lo": 10.134656,
-    "c": "garden"
+    "c": "garden",
+    "ne": "Bardo"
   },
   {
     "n": "Bardo Time",
@@ -1925,7 +2165,8 @@
     "na": "وقت باردو",
     "la": 36.811059,
     "lo": 10.142612,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Bardo Time"
   },
   {
     "n": "Bariolo Juices - Tunisia Mall",
@@ -1933,7 +2174,8 @@
     "na": "عصائر باريولو - تونس مول",
     "la": 36.84758,
     "lo": 10.279306,
-    "c": "bar"
+    "c": "bar",
+    "ne": "Bariolo Juices - Tunisia Mall"
   },
   {
     "n": "Barista's Cafe",
@@ -1941,7 +2183,8 @@
     "na": "مقهى باريستا",
     "la": 36.834811,
     "lo": 10.241205,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Barista's Cafe"
   },
   {
     "n": "Barista's Coffee",
@@ -1949,7 +2192,8 @@
     "na": "قهوة باريستا",
     "la": 36.879359,
     "lo": 10.332987,
-    "c": "coffee"
+    "c": "coffee",
+    "ne": "Barista's Coffee"
   },
   {
     "n": "Barrio",
@@ -1957,7 +2201,8 @@
     "na": "باريو)",
     "la": 36.924075,
     "lo": 10.2856,
-    "c": "bar"
+    "c": "bar",
+    "ne": "Barrio"
   },
   {
     "n": "Basilique de Damous el Karita",
@@ -1965,7 +2210,8 @@
     "na": "كنيسة داموس الكاريتا",
     "la": 36.861503,
     "lo": 10.331036,
-    "c": "attraction"
+    "c": "attraction",
+    "ne": "Damous el Karita Basilica."
   },
   {
     "n": "Bata",
@@ -1973,7 +2219,8 @@
     "na": "باتا",
     "la": 36.834655,
     "lo": 10.102038,
-    "c": "shoes"
+    "c": "shoes",
+    "ne": "Bata"
   },
   {
     "n": "Bata",
@@ -1981,7 +2228,8 @@
     "na": "باتا",
     "la": 36.829636,
     "lo": 10.111657,
-    "c": "shoes"
+    "c": "shoes",
+    "ne": "Bata"
   },
   {
     "n": "Batam",
@@ -1989,7 +2237,8 @@
     "na": "باتام",
     "la": 36.838798,
     "lo": 10.116589,
-    "c": "electronics"
+    "c": "electronics",
+    "ne": "Batam"
   },
   {
     "n": "Be ice",
@@ -1997,7 +2246,8 @@
     "na": "كن كالثلج",
     "la": 36.843494,
     "lo": 10.165688,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Be ice"
   },
   {
     "n": "Beans & Co coffee house",
@@ -2005,7 +2255,8 @@
     "na": "مقهى بينز آند كو",
     "la": 36.859826,
     "lo": 10.255089,
-    "c": "hostel"
+    "c": "hostel",
+    "ne": "Beans & Co coffee house"
   },
   {
     "n": "Beauty",
@@ -2013,7 +2264,8 @@
     "na": "الجمال",
     "la": 36.706661,
     "lo": 10.166722,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "Beauty"
   },
   {
     "n": "Beb Bhar",
@@ -2021,7 +2273,8 @@
     "na": "بيب بهار",
     "la": 36.924579,
     "lo": 10.28603,
-    "c": "bar"
+    "c": "bar",
+    "ne": "Beb Bhar"
   },
   {
     "n": "Beb Eddiwen",
@@ -2029,7 +2282,8 @@
     "na": "بيب إدوين",
     "la": 36.739601,
     "lo": 10.302398,
-    "c": "pastry"
+    "c": "pastry",
+    "ne": "Beb Eddiwen"
   },
   {
     "n": "Beb Eddiwen",
@@ -2037,7 +2291,8 @@
     "na": "بيب إدوين",
     "la": 36.856728,
     "lo": 10.265089,
-    "c": "pastry"
+    "c": "pastry",
+    "ne": "Beb Eddiwen"
   },
   {
     "n": "Bel Air",
@@ -2045,7 +2300,8 @@
     "na": "انه في (بيل اير) ,ليس هناك رقم",
     "la": 36.728868,
     "lo": 10.306945,
-    "c": "bakery"
+    "c": "bakery",
+    "ne": "Bel Air"
   },
   {
     "n": "Belair Change",
@@ -2053,7 +2309,8 @@
     "na": "تغيير Belair",
     "la": 36.728938,
     "lo": 10.307948,
-    "c": "bureau_de_change"
+    "c": "bureau_de_change",
+    "ne": "Belair Change"
   },
   {
     "n": "Belkamel Pièces et Accessoires Auto",
@@ -2061,7 +2318,8 @@
     "na": "بلكامل لقطع غيار واكسسوارات السيارات",
     "la": 36.77706,
     "lo": 10.224166,
-    "c": "car_parts"
+    "c": "car_parts",
+    "ne": "Belkamel Auto Parts & Accessories"
   },
   {
     "n": "Bella Napoli",
@@ -2069,7 +2327,8 @@
     "na": "بيلا نابولي",
     "la": 36.924431,
     "lo": 10.284705,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Bella Napoli"
   },
   {
     "n": "Bella baya",
@@ -2077,7 +2336,8 @@
     "na": "بيلا بايا",
     "la": 36.703138,
     "lo": 10.160783,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "Bella baya"
   },
   {
     "n": "Bellini",
@@ -2085,7 +2345,8 @@
     "na": "بيليني؟",
     "la": 36.916802,
     "lo": 10.317355,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Bellini"
   },
   {
     "n": "Belvedere Zoo Entry",
@@ -2093,7 +2354,8 @@
     "na": "دخول حديقة حيوان بلفيدير",
     "la": 36.817018,
     "lo": 10.174876,
-    "c": "ticket"
+    "c": "ticket",
+    "ne": "Belvedere Zoo Entry"
   },
   {
     "n": "Belvédère Optique",
@@ -2101,7 +2363,8 @@
     "na": "بلفيدير البصري",
     "la": 36.815463,
     "lo": 10.175889,
-    "c": "optician"
+    "c": "optician",
+    "ne": "Optical Belvedere"
   },
   {
     "n": "Ben Arous",
@@ -2109,7 +2372,8 @@
     "na": "Ben Arous",
     "la": 36.752097,
     "lo": 10.22332,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "Ben Arous"
   },
   {
     "n": "Ben Arous Market",
@@ -2117,7 +2381,8 @@
     "na": "سوق بن عروس",
     "la": 36.747639,
     "lo": 10.219933,
-    "c": "marketplace"
+    "c": "marketplace",
+    "ne": "Ben Arous Market"
   },
   {
     "n": "Ben Jannet",
@@ -2125,7 +2390,8 @@
     "na": "بن جانيت",
     "la": 36.899673,
     "lo": 10.122766,
-    "c": "yes"
+    "c": "yes",
+    "ne": "Ben Jannet"
   },
   {
     "n": "Ben Jemaa Motors",
@@ -2133,7 +2399,8 @@
     "na": "بن جمعة للسيارات",
     "la": 36.851921,
     "lo": 10.207054,
-    "c": "car"
+    "c": "car",
+    "ne": "Ben Jemaa Motors"
   },
   {
     "n": "Ben Jmi3",
@@ -2141,7 +2408,8 @@
     "na": "بن جمعي3",
     "la": 36.905222,
     "lo": 10.299664,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Ben Jmi3"
   },
   {
     "n": "Ben Massoud",
@@ -2149,7 +2417,8 @@
     "na": "بن مسعود",
     "la": 36.885156,
     "lo": 10.324006,
-    "c": "kiosk"
+    "c": "kiosk",
+    "ne": "Ben Massoud"
   },
   {
     "n": "Ben Mehrez",
@@ -2157,7 +2426,8 @@
     "na": "بن محرز",
     "la": 36.886593,
     "lo": 10.315884,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Ben Mehrez"
   },
   {
     "n": "Ben Othmen",
@@ -2165,7 +2435,8 @@
     "na": "بن عثمان",
     "la": 36.881801,
     "lo": 10.305261,
-    "c": "convenience"
+    "c": "convenience",
+    "ne": "Ben Othmen"
   },
   {
     "n": "Ben Rahim - بن رحيم",
@@ -2173,7 +2444,8 @@
     "na": "بن رحيم - بن رحيم",
     "la": 36.869871,
     "lo": 10.344186,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Ben Rahim - بن رحيم"
   },
   {
     "n": "Ben Rayech",
@@ -2181,7 +2453,8 @@
     "na": "بن ريتش",
     "la": 36.834755,
     "lo": 10.10467,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Ben Rayech"
   },
   {
     "n": "Ben Rhouma",
@@ -2189,7 +2462,8 @@
     "na": "بن رومة",
     "la": 36.834862,
     "lo": 10.108155,
-    "c": "sports_centre"
+    "c": "sports_centre",
+    "ne": "Ben Rhouma"
   },
   {
     "n": "Ben Yaghlane",
@@ -2197,7 +2471,8 @@
     "na": "بن يغلان",
     "la": 36.868486,
     "lo": 10.307071,
-    "c": "spices"
+    "c": "spices",
+    "ne": "Ben Yaghlane"
   },
   {
     "n": "Ben Yaghlane La Marsa",
@@ -2205,7 +2480,8 @@
     "na": "بن يغلان المرسى",
     "la": 36.886893,
     "lo": 10.316802,
-    "c": "supermarket"
+    "c": "supermarket",
+    "ne": "Ben Yaghlane La Marsa"
   },
   {
     "n": "Ben Yahia Aluminium",
@@ -2213,7 +2489,8 @@
     "na": "بن يحيى للألمنيوم",
     "la": 36.907907,
     "lo": 10.288559,
-    "c": "houseware"
+    "c": "houseware",
+    "ne": "Ben Yahia Aluminium"
   },
   {
     "n": "Ben Yeder",
@@ -2221,7 +2498,8 @@
     "na": "بن يدر",
     "la": 36.704439,
     "lo": 10.176782,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Ben Yeder"
   },
   {
     "n": "Ben's",
@@ -2229,7 +2507,8 @@
     "na": "Ben's",
     "la": 36.810367,
     "lo": 10.179663,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Ben's"
   },
   {
     "n": "Ben's",
@@ -2237,7 +2516,8 @@
     "na": "Ben's",
     "la": 36.812236,
     "lo": 10.178358,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Ben's"
   },
   {
     "n": "Ben's Café",
@@ -2245,7 +2525,8 @@
     "na": "مقهى بنز",
     "la": 36.831051,
     "lo": 10.231535,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Ben's Café"
   },
   {
     "n": "BenYaghlene",
@@ -2253,7 +2534,8 @@
     "na": "بن يغلين",
     "la": 36.857734,
     "lo": 10.253956,
-    "c": "supermarket"
+    "c": "supermarket",
+    "ne": "BenYaghlene"
   },
   {
     "n": "Benetton",
@@ -2261,7 +2543,8 @@
     "na": "بينيتون",
     "la": 36.899921,
     "lo": 10.123402,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "Benetton Group"
   },
   {
     "n": "Benetton Junior",
@@ -2269,7 +2552,8 @@
     "na": "بينيتون جونيور",
     "la": 36.900742,
     "lo": 10.124087,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "Benetton Junior"
   },
   {
     "n": "Bennour Deco",
@@ -2277,7 +2561,8 @@
     "na": "بينور ديكو",
     "la": 36.858662,
     "lo": 10.194695,
-    "c": "interior_decoration"
+    "c": "interior_decoration",
+    "ne": "Bennour Deco"
   },
   {
     "n": "Bent l'bey",
@@ -2285,7 +2570,8 @@
     "na": "بنت لي",
     "la": 36.799791,
     "lo": 10.169047,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Bent l 'ey"
   },
   {
     "n": "Benzineb Immo Centre Urbain Nord",
@@ -2293,7 +2579,8 @@
     "na": "Benzineb Immo Centre Urbain Nord",
     "la": 36.848622,
     "lo": 10.190271,
-    "c": "hotel"
+    "c": "hotel",
+    "ne": "Benzineb Immo Centre Urbain Nord"
   },
   {
     "n": "Best Mountain",
@@ -2301,7 +2588,8 @@
     "na": "أفضل جبل",
     "la": 36.900192,
     "lo": 10.123798,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "Best Mountain"
   },
   {
     "n": "Bibliotheque municipale Menzah 5",
@@ -2309,7 +2597,8 @@
     "na": "مكتبة منزه 5 البلدية",
     "la": 36.847972,
     "lo": 10.175446,
-    "c": "library"
+    "c": "library",
+    "ne": "Menzah 5 Municipal Library"
   },
   {
     "n": "Bibliothèque",
@@ -2317,7 +2606,8 @@
     "na": "المكتبات",
     "la": 36.77515,
     "lo": 10.109025,
-    "c": "library"
+    "c": "library",
+    "ne": "Library"
   },
   {
     "n": "Bibliothèque",
@@ -2325,7 +2615,8 @@
     "na": "المكتبات",
     "la": 36.773904,
     "lo": 10.106777,
-    "c": "library"
+    "c": "library",
+    "ne": "Library"
   },
   {
     "n": "Bibliothèque",
@@ -2333,7 +2624,8 @@
     "na": "المكتبات",
     "la": 36.776452,
     "lo": 10.106498,
-    "c": "library"
+    "c": "library",
+    "ne": "Library"
   },
   {
     "n": "Bibliothèque",
@@ -2341,7 +2633,8 @@
     "na": "المكتبات",
     "la": 36.775708,
     "lo": 10.107061,
-    "c": "library"
+    "c": "library",
+    "ne": "Library"
   },
   {
     "n": "Bibliothèque Avenue de Bellevue",
@@ -2349,7 +2642,8 @@
     "na": "مكتبة أفينيو دي بلفيو",
     "la": 36.776031,
     "lo": 10.188067,
-    "c": "library"
+    "c": "library",
+    "ne": "Avenue de Bellevue Library"
   },
   {
     "n": "Bibliothèque de Langue",
@@ -2357,7 +2651,8 @@
     "na": "مكتبة اللغات",
     "la": 36.812694,
     "lo": 10.065478,
-    "c": "library"
+    "c": "library",
+    "ne": "Language Library"
   },
   {
     "n": "Bibliothèque publique Carthage Byrsa",
@@ -2365,7 +2660,8 @@
     "na": "مكتبة قرطاج بيرسا العامة",
     "la": 36.845852,
     "lo": 10.320835,
-    "c": "library"
+    "c": "library",
+    "ne": "Carthage Byrsa Public Library"
   },
   {
     "n": "Bibliothéque public d'El Mnihla",
@@ -2373,7 +2669,8 @@
     "na": "مكتبة المنهلة العامة",
     "la": 36.845924,
     "lo": 10.117722,
-    "c": "library"
+    "c": "library",
+    "ne": "El Mnihla Public Library"
   },
   {
     "n": "Big 7",
@@ -2381,7 +2678,8 @@
     "na": "BIG 7",
     "la": 36.87611,
     "lo": 10.3085,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Big 7"
   },
   {
     "n": "Big Boss",
@@ -2389,7 +2687,8 @@
     "na": "(فيغر) الكبير",
     "la": 36.835423,
     "lo": 10.105884,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "gorilla,the big"
   },
   {
     "n": "Big Jaw",
@@ -2397,7 +2696,8 @@
     "na": "فك كبير",
     "la": 36.863294,
     "lo": 10.289524,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Big Jaw"
   },
   {
     "n": "Bijouterie Bouzid",
@@ -2405,7 +2705,8 @@
     "na": "مجوهرات بوزيد",
     "la": 36.857507,
     "lo": 10.188743,
-    "c": "jewelry"
+    "c": "jewelry",
+    "ne": "Bouzid Jewellery"
   },
   {
     "n": "Bijouterie Errayen",
@@ -2413,7 +2714,8 @@
     "na": "Errayen Jewellery",
     "la": 36.859187,
     "lo": 10.18856,
-    "c": "jewelry"
+    "c": "jewelry",
+    "ne": "Errayen Jewellery"
   },
   {
     "n": "Bijouterie Memmi",
@@ -2421,7 +2723,8 @@
     "na": "متجر ميمي للمجوهرات",
     "la": 36.798537,
     "lo": 10.181052,
-    "c": "jewelry"
+    "c": "jewelry",
+    "ne": "Memmi Jewelry Store"
   },
   {
     "n": "Bijouterie Triad'or",
@@ -2429,7 +2732,8 @@
     "na": "مجوهرات الثالوث",
     "la": 36.85937,
     "lo": 10.191577,
-    "c": "jewelry"
+    "c": "jewelry",
+    "ne": "Triad 'or Jewellery"
   },
   {
     "n": "Bijouterie Zaydoune Sassi",
@@ -2437,7 +2741,8 @@
     "na": "متجر زيدون ساسي للمجوهرات",
     "la": 36.802156,
     "lo": 10.106507,
-    "c": "jewelry"
+    "c": "jewelry",
+    "ne": "Zaydoune Sassi Jewelry Store"
   },
   {
     "n": "Bilel",
@@ -2445,7 +2750,8 @@
     "na": "بلال",
     "la": 36.841967,
     "lo": 10.10161,
-    "c": "books"
+    "c": "books",
+    "ne": "Bilel"
   },
   {
     "n": "Billionaire",
@@ -2453,7 +2759,8 @@
     "na": "(مليونير) ؟",
     "la": 36.921758,
     "lo": 10.291342,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Billionaire"
   },
   {
     "n": "Bingo",
@@ -2461,7 +2768,8 @@
     "na": "بينغو!",
     "la": 36.743527,
     "lo": 10.297187,
-    "c": "supermarket"
+    "c": "supermarket",
+    "ne": "Bingo"
   },
   {
     "n": "Bistro Nippon",
@@ -2469,7 +2777,8 @@
     "na": "بيسترو نيبون",
     "la": 36.878551,
     "lo": 10.324989,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Bistro Nippon"
   },
   {
     "n": "Biwaï",
@@ -2477,7 +2786,8 @@
     "na": "بيواي",
     "la": 36.868438,
     "lo": 10.306951,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Biwai"
   },
   {
     "n": "Biwaï",
@@ -2485,7 +2795,8 @@
     "na": "بيواي",
     "la": 36.887809,
     "lo": 10.322698,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Biwai"
   },
   {
     "n": "Black",
@@ -2493,7 +2804,8 @@
     "na": "أسود",
     "la": 36.835766,
     "lo": 10.106515,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "Black"
   },
   {
     "n": "Black & White",
@@ -2501,7 +2813,8 @@
     "na": "أبيض وأسود",
     "la": 36.837043,
     "lo": 10.169679,
-    "c": "hairdresser"
+    "c": "hairdresser",
+    "ne": "BLACK / WHITE"
   },
   {
     "n": "Black Coffee",
@@ -2509,7 +2822,8 @@
     "na": "قهوة سوداء",
     "la": 36.876088,
     "lo": 10.308634,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Black Coffee"
   },
   {
     "n": "Black Diamond",
@@ -2517,7 +2831,8 @@
     "na": "ماس أسود",
     "la": 36.851137,
     "lo": 10.174319,
-    "c": "fitness_centre"
+    "c": "fitness_centre",
+    "ne": "Black Diamond"
   },
   {
     "n": "Blanc Bleu",
@@ -2525,7 +2840,8 @@
     "na": "أزرق أبيض",
     "la": 36.825526,
     "lo": 10.310721,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "White Blue"
   },
   {
     "n": "Blue Emerald",
@@ -2533,7 +2849,8 @@
     "na": "الزمرد الأزرق",
     "la": 36.878752,
     "lo": 10.30599,
-    "c": "art"
+    "c": "art",
+    "ne": "Blue Emerald"
   },
   {
     "n": "Blue House cafe",
@@ -2541,7 +2858,8 @@
     "na": "بلو هاوس كافيه",
     "la": 36.889353,
     "lo": 10.322397,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Blue House cafe"
   },
   {
     "n": "Blue Island",
@@ -2549,7 +2867,8 @@
     "na": "بلو آيلاند",
     "la": 36.844539,
     "lo": 10.168394,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "BLUE ISLAND"
   },
   {
     "n": "Blue Island",
@@ -2557,7 +2876,8 @@
     "na": "بلو آيلاند",
     "la": 36.900298,
     "lo": 10.123688,
-    "c": "clothes"
+    "c": "clothes",
+    "ne": "BLUE ISLAND"
   },
   {
     "n": "Blues House",
@@ -2565,7 +2885,8 @@
     "na": "بلوز هاوس",
     "la": 36.88939,
     "lo": 10.32246,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Blues House"
   },
   {
     "n": "Bochra",
@@ -2573,7 +2894,8 @@
     "na": "بشرة",
     "la": 36.812599,
     "lo": 10.179669,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Bochra"
   },
   {
     "n": "Body Factory Gym",
@@ -2581,7 +2903,8 @@
     "na": "بودي فاكتوري جيم",
     "la": 36.888112,
     "lo": 10.313005,
-    "c": "fitness_centre"
+    "c": "fitness_centre",
+    "ne": "Body Factory Gym"
   },
   {
     "n": "Boeing Food",
@@ -2589,7 +2912,8 @@
     "na": "بوينج فود",
     "la": 36.85864,
     "lo": 10.194484,
-    "c": "fast_food"
+    "c": "fast_food",
+    "ne": "Boeing Food"
   },
   {
     "n": "Bon Goût Le Bardo",
@@ -2597,7 +2921,8 @@
     "na": "مذاق جيد لو باردو",
     "la": 36.810004,
     "lo": 10.137756,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Good Taste Le Bardo"
   },
   {
     "n": "Bon goût",
@@ -2605,7 +2930,8 @@
     "na": "-ملائمة؟",
     "la": 36.862048,
     "lo": 10.170291,
-    "c": "bakery"
+    "c": "bakery",
+    "ne": "Good flavour"
   },
   {
     "n": "Bondin",
@@ -2613,7 +2939,8 @@
     "na": "بوندن",
     "la": 36.859006,
     "lo": 10.191632,
-    "c": "coffee"
+    "c": "coffee",
+    "ne": "Bondin"
   },
   {
     "n": "Bonsai",
@@ -2621,7 +2948,8 @@
     "na": "بونساي",
     "la": 36.882647,
     "lo": 10.307764,
-    "c": "cafe"
+    "c": "cafe",
+    "ne": "Bonsai"
   },
   {
     "n": "Borj Cedria International Scouting Camp",
@@ -2629,7 +2957,8 @@
     "na": "مخيم برج سيدريا الكشفي الدولي",
     "la": 36.713062,
     "lo": 10.403681,
-    "c": "camp_site"
+    "c": "camp_site",
+    "ne": "Borj Cedria International Scouting Camp"
   },
   {
     "n": "Boston Pizza",
@@ -2637,7 +2966,8 @@
     "na": "بيتزا بوسطن",
     "la": 36.832422,
     "lo": 10.088233,
-    "c": "restaurant"
+    "c": "restaurant",
+    "ne": "Boston Pizza"
   },
   {
     "n": "Bou Mhel",
@@ -2645,7 +2975,8 @@
     "na": "بو مهل",
     "la": 36.722943,
     "lo": 10.303191,
-    "c": "post_office"
+    "c": "post_office",
+    "ne": "Bou Mhel"
   },
   {
     "n": "Boucherie",
@@ -2653,7 +2984,8 @@
     "na": "البوشي",
     "la": 36.747761,
     "lo": 10.309873,
-    "c": "butcher"
+    "c": "butcher",
+    "ne": "Meat industry "
   },
   {
     "n": "Boucherie",

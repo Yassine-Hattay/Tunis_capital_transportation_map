@@ -52,7 +52,8 @@
       top: 14px;
       left: 12px;
       right: 12px;
-      z-index: 100;
+      z-index: 1000;
+      pointer-events: auto;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -81,6 +82,7 @@
 
     #search-input {
       flex: 1;
+      pointer-events: auto;
       background: none;
       border: none;
       outline: none;
@@ -134,9 +136,123 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
     }
 
+    #search-results {
+      top: calc(100% + 56px);
+    }
+
     #search-results.open,
     #origin-results.open {
       display: block;
+    }
+
+    #poi-category-strip {
+      position: absolute;
+      top: 56px;
+      left: 0;
+      right: 0;
+      z-index: 110;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 36px;
+      direction: ltr;
+      box-sizing: border-box;
+    }
+
+    #poi-category-tabs {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 36px;
+      gap: 6px;
+      margin: 0;
+      padding: 0 1px 4px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      touch-action: pan-x;
+      box-sizing: border-box;
+    }
+
+    #poi-category-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .poi-scroll-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 30px;
+      width: 30px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid var(--c-border);
+      border-radius: 999px;
+      background: var(--c-surface);
+      color: var(--c-text);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .poi-scroll-arrow svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .poi-scroll-arrow:disabled {
+      opacity: .35;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    .poi-category-tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      flex: none;
+      min-height: 32px;
+      padding: 5px 9px;
+      border: 1px solid var(--c-border);
+      border-radius: 999px;
+      background: var(--c-surface);
+      color: var(--c-text);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+      font: inherit;
+      font-size: 11px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .poi-category-tab.active {
+      background: var(--c-accent2);
+      border-color: var(--c-accent2);
+      color: #fff;
+    }
+
+    .poi-category-tab .poi-tab-icon {
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .poi-map-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 14px;
+      line-height: 1;
+      box-shadow: 0 2px 7px rgba(0, 0, 0, .35);
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .search-result-item {
@@ -244,10 +360,28 @@
     /* ── starting-point bar (appears under the search bar after you pick a destination) ── */
     #origin-bar {
       display: none;
-      flex: 0 0 100%;
-      position: relative;
+      position: absolute;
+      top: 96px;
+      left: 0;
+      right: 0;
       align-items: center;
-      gap: 8px;
+      gap: 0;
+      height: 44px;
+      padding: 0 6px;
+      box-sizing: border-box;
+      direction: rtl;
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--r);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
+      backdrop-filter: blur(16px);
+    }
+
+    /* Keep the field/button positions fixed, but match each language inside them. */
+    html[dir="ltr"] #origin-box,
+    html[dir="ltr"] #origin-here,
+    html[dir="ltr"] #origin-results {
+      direction: ltr;
     }
 
     #origin-bar.open {
@@ -260,12 +394,12 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      height: 44px;
-      padding: 0 12px;
-      background: var(--c-surface);
-      border: 1.5px solid var(--c-border);
-      border-radius: var(--r);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
+      height: 100%;
+      padding: 0 8px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
 
     #origin-box .ob-dot {
@@ -296,28 +430,46 @@
     }
 
     #origin-clear {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 32px;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid rgba(239, 68, 68, .2);
+      border-radius: 9px;
+      background: rgba(239, 68, 68, .08);
+      color: #dc2626;
+      font-size: 23px;
+      line-height: 1;
+      opacity: 1;
       cursor: pointer;
-      opacity: .6;
-      padding: 4px;
+    }
+
+    #origin-clear:hover {
+      background: rgba(239, 68, 68, .14);
     }
 
     #origin-here {
       flex: none;
-      height: 44px;
+      align-self: stretch;
+      height: auto;
       padding: 0 12px;
-      border-radius: var(--r);
-      border: 1.5px solid var(--c-border);
-      background: var(--c-surface);
+      border: 0;
+      border-right: 1px solid var(--c-border);
+      border-radius: 0;
+      background: transparent;
       color: var(--c-text);
       font-size: 13px;
       cursor: pointer;
       white-space: nowrap;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
+      box-shadow: none;
     }
 
     #origin-here.active {
-      border-color: var(--c-accent2);
-      background: rgba(129, 140, 248, .14);
+      color: var(--c-accent2);
+      background: rgba(129, 140, 248, .1);
       font-weight: 600;
     }
 
@@ -385,6 +537,11 @@
       height: 16px;
     }
 
+    #map-controls #btn-compass svg {
+      width: 21px;
+      height: 21px;
+    }
+
     #debug-panel {
       position: absolute;
       top: 76px;
@@ -440,6 +597,36 @@
       display: block;
     }
 
+    .map-tap-panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    #panel-title {
+      flex: 1;
+      min-width: 0;
+    }
+
+    #panel-close {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(239, 68, 68, .08);
+      border: 1px solid rgba(239, 68, 68, .2);
+      border-radius: 10px;
+      color: #dc2626;
+      font-size: 30px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+      flex: none;
+    }
+
     .route-card {
       display: flex;
       align-items: center;
@@ -476,6 +663,12 @@
       border-color: var(--c-accent2);
       background: var(--c-accent2);
       color: #fff;
+    }
+
+    .map-tap-save-icon {
+      font-size: 16px;
+      margin-inline-end: 5px;
+      vertical-align: -1px;
     }
 
     .route-icon {
@@ -1143,6 +1336,11 @@
       display: flex;
     }
 
+    #trip-sheet.animating {
+      overflow: hidden;
+      transition: height 450ms cubic-bezier(.22, 1, .36, 1);
+    }
+
     #trip-handle {
       width: 40px;
       height: 4px;
@@ -1255,6 +1453,25 @@
       box-shadow: 0 2px 12px rgba(129, 140, 248, .25);
     }
 
+    .trip-start-simulation {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 0;
+      border-radius: 10px;
+      background: #2563eb;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 7px rgba(37, 99, 235, .28);
+    }
+
+    .trip-start-simulation:active {
+      transform: scale(.985);
+    }
+
     .trip-top {
       display: flex;
       justify-content: space-between;
@@ -1328,28 +1545,96 @@
       color: #f59e0b;
     }
 
-    #fav-btn {
+    #menu-container {
+      position: relative;
+      flex: 0 0 48px;
       width: 48px;
       height: 48px;
-      flex-shrink: 0;
-      border-radius: var(--r);
-      background: var(--c-surface);
-      border: 1.5px solid var(--c-border);
-      color: #f59e0b;
+      order: 1;
+    }
+
+    #menu-toggle {
+      width: 48px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 0;
+      border-radius: var(--r);
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
+      color: var(--c-text);
       cursor: pointer;
-      font-size: 20px;
       backdrop-filter: blur(16px);
       box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
-      position: relative;
+    }
+
+    #menu-toggle svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    #main-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 500;
+      flex-direction: column;
+      gap: 3px;
+      width: min(240px, 88vw);
+      padding: 8px;
+      box-sizing: border-box;
+      background: var(--c-surface);
+      border: 1.5px solid var(--c-border);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+      backdrop-filter: blur(16px);
+    }
+
+    #main-menu.open {
+      display: flex;
+    }
+
+    .menu-action {
+      width: 100%;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--c-text);
+      font: inherit;
+      font-size: 14px;
+      text-align: start;
+      cursor: pointer;
+    }
+
+    .menu-action:hover,
+    #lang-toggle:hover {
+      background: var(--c-bg);
+    }
+
+    .menu-item-icon {
+      width: 22px;
+      flex: 0 0 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    #fav-btn .menu-item-icon {
+      color: #f59e0b;
     }
 
     .fav-badge {
-      position: absolute;
-      top: -4px;
-      right: -4px;
+      position: static;
+      margin-inline-start: auto;
       background: #ef4444;
       color: white;
       border-radius: 999px;
@@ -1371,7 +1656,7 @@
       width: min(360px, 85vw);
       background: var(--c-surface);
       box-shadow: -4px 0 32px rgba(0, 0, 0, .2);
-      z-index: 600;
+      z-index: 1100;
       transform: translateX(100%);
       transition: transform 0.3s ease;
       display: flex;
@@ -1392,9 +1677,159 @@
     }
 
     .fav-panel-header h3 {
+      flex: 1;
+      min-width: 0;
       margin: 0;
       font-size: 16px;
       font-weight: 700;
+    }
+
+    .saved-panel-back {
+      flex: none;
+      width: 34px;
+      height: 34px;
+      margin-inline-end: 8px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--c-text);
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    #saved-panel-footer {
+      flex: none;
+      padding: 8px;
+      border-top: 1px solid var(--c-border);
+      background: var(--c-surface);
+    }
+
+    #saved-new-list-btn {
+      justify-content: center;
+      color: var(--c-accent2);
+    }
+
+    #saved-new-list-form {
+      align-items: center;
+      gap: 6px;
+      padding-top: 4px;
+    }
+
+    #saved-new-list-form input {
+      flex: 1;
+      min-width: 0;
+      height: 40px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      background: var(--c-bg);
+      color: var(--c-text);
+      font: inherit;
+      font-size: 14px;
+    }
+
+    #saved-new-list-form button,
+    #saved-picker-done-btn {
+      min-height: 40px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--c-accent2);
+      color: #fff;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    #saved-new-list-form #saved-cancel-list-btn {
+      min-width: 38px;
+      padding: 0;
+      background: rgba(239, 68, 68, .08);
+      color: #dc2626;
+      font-size: 22px;
+    }
+
+    #saved-picker-done-btn {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .collection-row-arrow {
+      margin-inline-start: auto;
+      color: var(--c-muted);
+      font-size: 24px;
+      line-height: 1;
+      flex: none;
+    }
+
+    .saved-list-star-icon {
+      color: #f59e0b;
+    }
+
+    .saved-list-flag-icon {
+      color: #fff;
+      background: #64748b;
+    }
+
+    .saved-title-star-icon {
+      color: #f59e0b;
+    }
+
+    .saved-title-flag-icon {
+      display: inline-block;
+      padding: 1px 5px;
+      margin-inline-end: 5px;
+      border-radius: 6px;
+      background: #64748b;
+      color: #fff;
+      font-size: .85em;
+    }
+
+    .saved-collection-delete {
+      flex: none;
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid #dc2626;
+      border-radius: 9px;
+      background: #dc2626;
+      color: #fff;
+      opacity: 1;
+      box-shadow: 0 3px 8px rgba(220, 38, 38, .2);
+    }
+
+    .saved-collection-delete:hover {
+      background: #b91c1c;
+      border-color: #b91c1c;
+      color: #fff;
+      opacity: 1;
+    }
+
+    .saved-collection-delete:focus-visible {
+      outline: 3px solid rgba(239, 68, 68, .32);
+      outline-offset: 2px;
+    }
+
+    .collection-picker-check {
+      flex: none;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--c-border);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .collection-picker-check.selected {
+      border-color: var(--c-accent2);
+      background: var(--c-accent2);
     }
 
     .fav-panel-close {
@@ -1437,6 +1872,10 @@
       justify-content: center;
       font-size: 18px;
       flex-shrink: 0;
+    }
+
+    .recent-item-icon {
+      background: rgba(59, 130, 246, .13);
     }
 
     .fav-item-info {
@@ -1490,31 +1929,97 @@
       margin-bottom: 12px;
     }
 
-    /* ── Language Toggle Button ─────────────────────────────────────────── */
+    /* ── Menu and language choices ───────────────────────────────────────── */
+    #search-wrap {
+      order: 0;
+    }
+
+    html[dir="rtl"] #menu-container {
+      order: -1;
+    }
+
+    html[dir="rtl"] #search-wrap {
+      order: 1;
+    }
+
+    #lang-switcher {
+      position: relative;
+      width: 100%;
+      height: auto;
+      flex: none;
+    }
+
     #lang-toggle {
-      width: 48px;
-      height: 48px;
-      flex-shrink: 0;
-      border-radius: var(--r);
-      background: var(--c-surface);
-      border: 1.5px solid var(--c-border);
+      min-height: 44px;
+      height: auto;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
       color: var(--c-text);
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      gap: 10px;
       cursor: pointer;
+      box-shadow: none;
+      backdrop-filter: none;
+      font: inherit;
       font-size: 14px;
-      font-weight: 700;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
-      order: 1;
-      /* Pushes it to the far right in LTR (English) */
+      text-align: start;
     }
 
-    /* In RTL (Arabic), the start of the flex container is the right side. 
-   Setting order to -1 makes it the first visual item, keeping it on the right. */
-    html[dir="rtl"] #lang-toggle {
-      order: -1;
+    #lang-toggle svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 19px;
+    }
+
+    #lang-toggle [data-menu-label] {
+      flex: 1;
+    }
+
+    .menu-chevron {
+      color: var(--c-muted);
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    #lang-menu {
+      display: none;
+      position: static;
+      width: auto;
+      margin: 2px 0 3px 28px;
+      padding: 4px;
+      flex-direction: column;
+      gap: 2px;
+      background: var(--c-bg);
+      border: 1px solid var(--c-border);
+      border-radius: 8px;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    #lang-menu.open {
+      display: flex;
+    }
+
+    .lang-choice {
+      width: 100%;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--c-text);
+      text-align: start;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .lang-choice:hover,
+    .lang-choice.active {
+      background: var(--c-bg);
+      color: var(--c-accent2);
     }
 
     /* ── RTL Support (Arabic) ───────────────────────────────────────────── */
@@ -1584,6 +2089,21 @@
       gap: 10px;
       font-size: 13px;
       padding: 5px 0;
+      border-radius: 8px;
+      transition: background-color 180ms ease, opacity 180ms ease;
+    }
+
+    .step.active {
+      background: rgba(59, 130, 246, .1);
+      padding-inline: 7px;
+    }
+
+    .step.active .ico {
+      color: #2563eb;
+    }
+
+    .step.done {
+      opacity: .48;
     }
 
     .step .ico {
@@ -1635,7 +2155,7 @@
     #trip-toggle svg {
       width: 24px;
       height: 24px;
-      transition: transform .2s;
+      transition: transform 380ms ease;
     }
 
     #trip-sheet.collapsed #trip-toggle svg {
@@ -1649,8 +2169,148 @@
       margin: 2px 0 4px;
     }
 
+    .trip-mini-step {
+      font-weight: 600;
+    }
+
+    .trip-mini-step.mode-walk {
+      color: #2563eb;
+    }
+
+    .trip-mini-step.mode-bus {
+      color: #b7791f;
+    }
+
+    .trip-mini-step.mode-metro {
+      color: #dc2626;
+    }
+
+    .trip-mini-step.mode-rfr {
+      color: #7c3aed;
+    }
+
+    #route-cancel-modal,
+    #list-delete-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, .58);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
+    #route-cancel-modal.open,
+    #list-delete-modal.open {
+      display: flex;
+    }
+
+    .route-cancel-dialog {
+      width: min(100%, 380px);
+      box-sizing: border-box;
+      padding: 24px;
+      border: 1px solid var(--c-border);
+      border-radius: 22px;
+      background: var(--c-surface);
+      color: var(--c-text);
+      text-align: center;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .28);
+      animation: route-cancel-enter 220ms cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    @keyframes route-cancel-enter {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .route-cancel-icon {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 15px;
+      border: 1px solid rgba(239, 68, 68, .2);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(239, 68, 68, .16), rgba(239, 68, 68, .06));
+      color: #dc2626;
+      font-size: 34px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .route-cancel-dialog h2 {
+      margin: 0 0 8px;
+      font-size: 19px;
+      line-height: 1.3;
+    }
+
+    .route-cancel-dialog p {
+      margin: 0;
+      color: var(--c-muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .route-cancel-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .route-cancel-actions button {
+      flex: 1;
+      min-height: 46px;
+      padding: 0 12px;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 140ms ease, filter 140ms ease;
+    }
+
+    .route-cancel-actions button:active {
+      transform: scale(.97);
+    }
+
+    #route-cancel-keep {
+      border: 1px solid var(--c-border);
+      background: var(--c-bg);
+      color: var(--c-text);
+    }
+
+    #list-delete-keep {
+      border: 1px solid var(--c-border);
+      background: var(--c-bg);
+      color: var(--c-text);
+    }
+
+    #route-cancel-confirm,
+    #list-delete-confirm {
+      border: 1px solid #dc2626;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+      box-shadow: 0 5px 14px rgba(220, 38, 38, .22);
+    }
+
+    .route-cancel-actions button:hover {
+      filter: brightness(1.04);
+    }
+
     #trip-sheet.collapsed #trip-list,
-    #trip-sheet.collapsed #trip-sub {
+    #trip-sheet.collapsed #trip-sub,
+    #trip-sheet.collapsed #trip-sort,
+    #trip-sheet.collapsed #trip-mode-filters {
       display: none;
     }
 
@@ -1671,6 +2331,19 @@
   <div id="map"></div>
 
   <div id="map-controls" aria-label="Map controls">
+    <button type="button" class="icon-btn map-control-btn" id="btn-compass" title="Reset map to north"
+      aria-label="Reset map to north">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+        <circle cx="12" cy="12" r="9.2"></circle>
+        <path d="M12 2.8v2M12 19.2v2M2.8 12h2M19.2 12h2" stroke-linecap="round"></path>
+        <g id="compass-needle">
+          <path d="m12 5.5 2.15 6.5L12 10.8 9.85 12 12 5.5Z" fill="#dc2626" stroke="#dc2626" stroke-linejoin="round">
+          </path>
+          <path d="m12 18.5-2.15-6.5L12 13.2 14.15 12 12 18.5Z" fill="currentColor" stroke="currentColor"
+            stroke-linejoin="round"></path>
+        </g>
+      </svg>
+    </button>
     <button type="button" class="icon-btn map-control-btn" id="btn-zoom-in" title="Zoom in"
       aria-label="Zoom in">+</button>
     <button type="button" class="icon-btn map-control-btn" id="btn-zoom-out" title="Zoom out"
@@ -1735,12 +2408,44 @@
   </div>
 
   <div id="topbar">
-    <button id="fav-btn" title="Favourites">
-      ★
-      <span class="fav-badge" id="fav-badge" style="display:none;">0</span>
-    </button>
-
-    <button id="lang-toggle" title="English / العربية">EN</button>
+    <div id="menu-container">
+      <button id="menu-toggle" type="button" aria-label="Menu" aria-controls="main-menu" aria-expanded="false"
+        title="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <div id="main-menu" role="menu" aria-label="Menu">
+        <button id="fav-btn" class="menu-action" type="button" role="menuitem" title="Favourites">
+          <span class="menu-item-icon" aria-hidden="true">🔖</span>
+          <span data-menu-label="saved_locations">المواقع المحفوظة</span>
+          <span class="fav-badge" id="fav-badge" style="display:none;">0</span>
+        </button>
+        <div id="lang-switcher">
+          <button id="lang-toggle" class="menu-action" type="button" role="menuitem" aria-haspopup="true"
+            aria-expanded="false" title="Language">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+            </svg>
+            <span data-menu-label="menu_language">اللغة</span>
+            <span class="menu-chevron" aria-hidden="true">⌄</span>
+          </button>
+          <div id="lang-menu" role="menu" aria-label="Choose language">
+            <button class="lang-choice" type="button" role="menuitemradio" data-language-choice="ar" lang="ar"
+              dir="rtl">العربية</button>
+            <button class="lang-choice" type="button" role="menuitemradio" data-language-choice="en" lang="en"
+              dir="ltr">English</button>
+          </div>
+        </div>
+        <button id="recent-btn" class="menu-action" type="button" role="menuitem" title="Recently visited">
+          <span class="menu-item-icon" aria-hidden="true">🕘</span>
+          <span data-menu-label="recently_visited">الوجهات الأخيرة</span>
+        </button>
+      </div>
+    </div>
     <div id="search-wrap">
       <div id="search-box">
         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
@@ -1752,6 +2457,36 @@
         <span id="search-clear">✕</span>
       </div>
       <div id="search-results"></div>
+    </div>
+    <div id="poi-category-strip">
+      <button id="poi-scroll-left" class="poi-scroll-arrow" type="button" aria-label="Scroll categories left"
+        title="Scroll left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      </button>
+      <div id="poi-category-tabs" role="group" aria-label="Nearby places">
+        <button class="poi-category-tab" type="button" data-poi-category="restaurants" aria-pressed="false"><span
+            class="poi-tab-icon">🍽️</span><span data-poi-label="poi_restaurants">مطاعم</span></button>
+        <button class="poi-category-tab" type="button" data-poi-category="cafes" aria-pressed="false"><span
+            class="poi-tab-icon">☕</span><span data-poi-label="poi_cafes">مقاهي</span></button>
+        <button class="poi-category-tab" type="button" data-poi-category="hotels" aria-pressed="false"><span
+            class="poi-tab-icon">🛏️</span><span data-poi-label="poi_hotels">فنادق</span></button>
+        <button class="poi-category-tab" type="button" data-poi-category="museums" aria-pressed="false"><span
+            class="poi-tab-icon">🏛️</span><span data-poi-label="poi_museums">متاحف</span></button>
+        <button class="poi-category-tab" type="button" data-poi-category="pharmacies" aria-pressed="false"><span
+            class="poi-tab-icon">💊</span><span data-poi-label="poi_pharmacies">صيدليات</span></button>
+        <button class="poi-category-tab" type="button" data-poi-category="hospitals" aria-pressed="false"><span
+            class="poi-tab-icon">🏥</span><span data-poi-label="poi_hospitals">مستشفيات</span></button>
+      </div>
+      <button id="poi-scroll-right" class="poi-scroll-arrow" type="button" aria-label="Scroll categories right"
+        title="Scroll right">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
     </div>
 
     <!-- Starting point (shown after a destination is picked) -->
@@ -1913,10 +2648,22 @@
   </div>
   <div id="fav-panel">
     <div class="fav-panel-header">
-      <h3 id="fav-panel-title">★ Favourites</h3>
-      <button class="fav-panel-close" id="fav-panel-close">✕</button>
+      <button class="saved-panel-back" id="saved-panel-back" type="button" aria-label="Back"
+        style="display:none">‹</button>
+      <h3 id="fav-panel-title">🔖 Saved locations</h3>
+      <button class="fav-panel-close" id="fav-panel-close" type="button" aria-label="Close">✕</button>
     </div>
     <div class="fav-list" id="fav-list"></div>
+    <div id="saved-panel-footer">
+      <button id="saved-new-list-btn" class="menu-action" type="button"><span aria-hidden="true">＋</span><span
+          data-saved-label="new_list">New list</span></button>
+      <div id="saved-new-list-form" style="display:none">
+        <input id="saved-list-name" type="text" maxlength="48" placeholder="List name" autocomplete="off" />
+        <button id="saved-create-list-btn" type="button" data-saved-label="create_list">Create</button>
+        <button id="saved-cancel-list-btn" type="button" aria-label="Cancel" title="Cancel">×</button>
+      </div>
+      <button id="saved-picker-done-btn" type="button" data-saved-label="done" style="display:none">Done</button>
+    </div>
   </div>
   <!-- ── TRIP PLANNER SHEET ─────────────────────────────────────────────────── -->
   <div id="trip-sheet">
@@ -1933,14 +2680,13 @@
             stroke-linejoin="round" aria-hidden="true">
             <path d="m6 9 6 6 6-6" />
           </svg></button>
-        <button id="trip-close" aria-label="Clear route">×</button>
+        <button id="trip-close" aria-label="Cancel route" title="Cancel route">×</button>
       </div>
     </div>
     <select id="trip-sort"
       style="width:100%; padding:8px 10px; border:1px solid var(--c-border); border-radius:8px; background:var(--c-bg); color:var(--c-text); font-size:13px; margin-bottom:8px; outline:none;">
-      <option value="fastest">⚡ المسار الموصى به</option>
-      <option value="least_walking">🚶 أقل مشي</option>
       <option value="least_transfers">🔄 أقل تحويلات</option>
+      <option value="least_walking">🚶 أقل مشي</option>
     </select>
     <div id="trip-mode-filters" role="group" aria-labelledby="trip-mode-heading">
       <span id="trip-mode-heading" class="trip-mode-heading">وسائل النقل:</span>
@@ -1953,14 +2699,45 @@
     </div>
     <div id="trip-list"></div>
   </div>
+  <div id="route-cancel-modal" aria-hidden="true">
+    <div class="route-cancel-dialog" role="dialog" aria-modal="true" aria-labelledby="route-cancel-title"
+      aria-describedby="route-cancel-message">
+      <div class="route-cancel-icon" aria-hidden="true">×</div>
+      <h2 id="route-cancel-title" data-dialog-label="cancel_route_title">Cancel this route?</h2>
+      <p id="route-cancel-message" data-dialog-label="confirm_cancel_route">Are you sure you want to cancel this route?
+        It will be removed from the map.</p>
+      <div class="route-cancel-actions">
+        <button id="route-cancel-keep" type="button" data-dialog-label="keep_route">Keep route</button>
+        <button id="route-cancel-confirm" type="button" data-dialog-label="cancel_route_action">Cancel route</button>
+      </div>
+    </div>
+  </div>
+  <div id="list-delete-modal" aria-hidden="true">
+    <div class="route-cancel-dialog" role="dialog" aria-modal="true" aria-labelledby="list-delete-title"
+      aria-describedby="list-delete-message">
+      <div class="route-cancel-icon" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
+        </svg>
+      </div>
+      <h2 id="list-delete-title" data-dialog-label="delete_list_title">Delete this list?</h2>
+      <p id="list-delete-message"></p>
+      <div class="route-cancel-actions">
+        <button id="list-delete-keep" type="button" data-dialog-label="cancel">Cancel</button>
+        <button id="list-delete-confirm" type="button" data-dialog-label="delete_list">Delete list</button>
+      </div>
+    </div>
+  </div>
   <div id="toast"></div>
 
   <div id="panel">
-    <div id="panel-title" style="font-weight:bold;font-size:16px"></div>
+    <div class="map-tap-panel-header">
+      <div id="panel-title" style="font-weight:bold;font-size:16px"></div>
+      <button id="panel-close" type="button" onclick="closePanel()" aria-label="إغلاق" title="إغلاق">×</button>
+    </div>
     <div id="panel-sub" style="font-size:12px;color:var(--c-muted);margin-bottom:12px"></div>
     <div id="panel-content"></div>
-    <button onclick="closePanel()"
-      style="width:100%;padding:10px;margin-top:15px;background:var(--c-border);border:none;border-radius:8px;color:var(--c-text)">Close</button>
   </div>
 
   <script>
@@ -2000,6 +2777,143 @@
       }
       return nearest;
     }
+
+    const POI_CATEGORY_CONFIG = {
+      restaurants: { categories: ['restaurant', 'fast_food', 'food_court'], icon: '🍽️', color: '#e65f36', label: 'poi_restaurants' },
+      cafes: { categories: ['cafe', 'coffee', 'internet_cafe'], icon: '☕', color: '#8b5e3c', label: 'poi_cafes' },
+      hotels: { categories: ['hotel', 'guest_house', 'hostel', 'motel', 'resort'], icon: '🛏️', color: '#6366f1', label: 'poi_hotels' },
+      museums: { categories: ['museum'], icon: '🏛️', color: '#8b5cf6', label: 'poi_museums' },
+      pharmacies: { categories: ['pharmacy'], icon: '💊', color: '#059669', label: 'poi_pharmacies' },
+      hospitals: { categories: ['hospital'], icon: '🏥', color: '#dc2626', label: 'poi_hospitals' },
+    };
+    const RECENT_DESTINATIONS_KEY = 'atlas_recent_destinations';
+    const selectedPOICategories = new Set();
+    let poiMapMarkers = [];
+    let poiMapReady = false;
+
+    function getRecentDestinations() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(RECENT_DESTINATIONS_KEY) || '[]');
+        if (!Array.isArray(saved)) return [];
+        return saved.filter(item => item && Number.isFinite(Number(item.lat)) && Number.isFinite(Number(item.lon)))
+          .map(item => ({
+            ...item,
+            lat: Number(item.lat),
+            lon: Number(item.lon),
+            name: String(item.name || '').trim(),
+            nameAr: String(item.nameAr || '').trim(),
+            nameEn: String(item.nameEn || '').trim(),
+            routedAt: Number(item.routedAt) || 0
+          })).slice(0, 12);
+      } catch (e) { return []; }
+    }
+
+    function rememberRecentDestination(lat, lon, name) {
+      lat = Number(lat); lon = Number(lon);
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+      const label = String(name || '').trim();
+      const samePlace = getRecentDestinations().find(item =>
+        Math.abs(item.lat - lat) < 0.00005 && Math.abs(item.lon - lon) < 0.00005
+      );
+      const destination = {
+        lat, lon,
+        name: label || samePlace?.name || `${lat.toFixed(6)}, ${lon.toFixed(6)}`,
+        nameAr: samePlace?.nameAr || (LANG === 'ar' ? label : ''),
+        nameEn: samePlace?.nameEn || (LANG === 'en' ? label : ''),
+        routedAt: Date.now()
+      };
+      const updated = [destination, ...getRecentDestinations().filter(item =>
+        Math.abs(item.lat - lat) >= 0.00005 || Math.abs(item.lon - lon) >= 0.00005
+      )].slice(0, 12);
+      try { localStorage.setItem(RECENT_DESTINATIONS_KEY, JSON.stringify(updated)); } catch (e) { /* storage can be unavailable */ }
+    }
+
+    function updatePOIScrollArrows() {
+      const tabs = document.getElementById('poi-category-tabs');
+      const left = document.getElementById('poi-scroll-left');
+      const right = document.getElementById('poi-scroll-right');
+      if (!tabs || !left || !right) return;
+      const viewport = tabs.getBoundingClientRect();
+      const buttons = [...tabs.querySelectorAll('.poi-category-tab')];
+      left.disabled = !buttons.some(button => button.getBoundingClientRect().left < viewport.left - 1);
+      right.disabled = !buttons.some(button => button.getBoundingClientRect().right > viewport.right + 1);
+    }
+
+    function scrollPOICategories(side) {
+      const tabs = document.getElementById('poi-category-tabs');
+      if (!tabs) return;
+      const viewport = tabs.getBoundingClientRect();
+      const buttons = [...tabs.querySelectorAll('.poi-category-tab')];
+      const target = side === 'left'
+        ? buttons.filter(button => button.getBoundingClientRect().left < viewport.left - 1)
+          .sort((a, b) => b.getBoundingClientRect().right - a.getBoundingClientRect().right)[0]
+        : buttons.filter(button => button.getBoundingClientRect().right > viewport.right + 1)
+          .sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left)[0];
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
+
+    function refreshPOIMarkers() {
+      if (!map || !poiMapReady) return;
+      poiMapMarkers.forEach(marker => marker.remove());
+      poiMapMarkers = [];
+      if (!selectedPOICategories.size || !_offlinePlaces.length) return;
+
+      const bounds = map.getBounds();
+      const center = map.getCenter();
+      const visible = [];
+      for (const place of _offlinePlaces) {
+        const category = _cat(place);
+        const group = Object.keys(POI_CATEGORY_CONFIG).find(key =>
+          selectedPOICategories.has(key) && POI_CATEGORY_CONFIG[key].categories.includes(category)
+        );
+        if (!group) continue;
+        const lat = Number(place.la), lon = Number(place.lo);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon) || !bounds.contains([lon, lat])) continue;
+        visible.push({ place, lat, lon, group, config: POI_CATEGORY_CONFIG[group] });
+      }
+
+      const markerLimit = 220;
+      if (visible.length > markerLimit) {
+        visible.sort((a, b) => {
+          const da = (a.lon - center.lng) ** 2 + (a.lat - center.lat) ** 2;
+          const db = (b.lon - center.lng) ** 2 + (b.lat - center.lat) ** 2;
+          return da - db;
+        });
+        visible.length = markerLimit;
+      }
+
+      visible.forEach(item => {
+        const element = document.createElement('button');
+        element.type = 'button';
+        element.className = 'poi-map-marker';
+        element.textContent = item.config.icon;
+        element.style.backgroundColor = item.config.color;
+        const label = `${placeLabel(item.place)} · ${t(item.config.label)}`;
+        element.title = label;
+        element.setAttribute('aria-label', label);
+        element.addEventListener('click', event => {
+          event.stopPropagation();
+          showPOIPlacePanel(item.place);
+        });
+        poiMapMarkers.push(new maplibregl.Marker({ element, anchor: 'center' })
+          .setLngLat([item.lon, item.lat])
+          .addTo(map));
+      });
+    }
+
+    function showPOIPlacePanel(place) {
+      const lat = Number(place.la), lng = Number(place.lo);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+      const coords = lat.toFixed(7) + ', ' + lng.toFixed(7);
+      const nameAr = placeArabicName(place), nameEn = placeEnglishName(place);
+      tappedMapPoint = {
+        lat, lng, nameAr, nameEn,
+        name: (LANG === 'ar' ? (nameAr || nameEn) : (nameEn || nameAr)) || coords,
+        favoriteLat: lat, favoriteLon: lng, category: _cat(place)
+      };
+      renderTappedMapPanel();
+    }
+
     let routingClickActive = false;
     let activeRouteInput = null; // Tracks which input is waiting for a map tap
     let pickerMode = false;
@@ -2018,6 +2932,15 @@
     const T = {
       ar: {
         search_placeholder: 'إلى أين تريد الذهاب؟',
+        poi_categories: 'أماكن قريبة',
+        poi_scroll_left: 'عرض الفئات إلى اليسار',
+        poi_scroll_right: 'عرض الفئات إلى اليمين',
+        poi_restaurants: 'مطاعم',
+        poi_cafes: 'مقاهي',
+        poi_hotels: 'فنادق',
+        poi_museums: 'متاحف',
+        poi_pharmacies: 'صيدليات',
+        poi_hospitals: 'مستشفيات',
         meters: 'م',
         km: 'كم',
         min: 'دق',
@@ -2032,8 +2955,17 @@
         from_test: 'من 𖦏 موقع تجريبي',
         from_word: 'من',
         origin_placeholder: 'نقطة الانطلاق',
-        current_location: 'الموقع الحالي',
-        tap_show: 'اضغط ⌄ لإظهار المسارات',
+        current_location: 'موقعك الحالي',
+        compass_reset: 'إعادة ضبط اتجاه الخريطة شمالاً',
+        tap_show: 'اضغط ^ لإظهار المسارات',
+        collapsed_walk_step: 'امشِ إلى {place}',
+        collapsed_board_step: 'اركب {line} من محطة {station}',
+        collapsed_ride_step: 'اركب {line} إلى {station}',
+        simulation_arrived: 'وصلت إلى الوجهة',
+        cancel_route_title: 'إلغاء المسار؟',
+        confirm_cancel_route: 'هل أنت متأكد أنك تريد إلغاء هذا المسار؟ ستتم إزالة المسار من الخريطة.',
+        keep_route: 'متابعة المسار',
+        cancel_route_action: 'إلغاء المسار',
         best: 'الأفضل',
         walk: 'مشي',
         transfer_one: 'تحويل واحد',
@@ -2062,21 +2994,52 @@
         location_unavailable: '📡 الموقع غير متاح. GPS يعمل أفضل في الخارج.',
         location_timeout: '⏳ انتهت مهلة الموقع. حاول مرة أخرى.',
         device_no_gps: '❌ جهازك لا يدعم تحديد الموقع.',
-        sort_fastest: '⚡ المسار الموصى به',
         sort_least_walk: '🚶 أقل مشي',
         sort_least_transfers: '🔄 أقل تحويلات',
         transport_modes: 'وسائل النقل',
         no_selected_mode_route: 'لا يوجد مسار بالوسائل المحددة. فعّل وسيلة نقل أخرى وحاول مجددًا.',
         your_location: 'موقعك',
-        favourites: '★ المفضّلة',
-        no_favourites: 'لا توجد عناصر مفضّلة بعد',
-        no_favourites_hint: 'اضغط على ★ بجانب أي مكان لإضافته إلى المفضّلة',
+        menu: 'القائمة',
+        saved_locations: 'المواقع المحفوظة',
+        list_favorite_places: 'الأماكن المفضلة',
+        list_want_to_visit: 'أماكن أريد زيارتها',
+        list_travel_plans: 'خطط السفر',
+        list_saved_places: 'الأماكن المحفوظة',
+        list_starred_places: 'الأماكن المميزة',
+        menu_language: 'اللغة',
+        recently_visited: 'الوجهات الأخيرة',
+        save_to_list: 'حفظ في قائمة',
+        save_to_saved_locations: 'حفظ في المواقع المحفوظة',
+        new_list: 'قائمة جديدة',
+        list_name: 'اسم القائمة',
+        create_list: 'إنشاء',
+        cancel: 'إلغاء',
+        done: 'تم',
+        private: 'خاصّة',
+        place_one: 'مكان',
+        place_many: 'أماكن',
+        empty_list: 'هذه القائمة فارغة',
+        saved_to_list: '✓ تمت الإضافة إلى القائمة',
+        removed_from_list: 'تمت الإزالة من القائمة',
+        list_created: '✓ تم إنشاء القائمة',
+        delete_list: 'حذف القائمة',
+        delete_list_title: 'حذف هذه القائمة؟',
+        delete_collection_confirm: 'هل تريد حذف «{name}» وجميع الأماكن المحفوظة فيها؟',
+        list_deleted: '✓ تم حذف القائمة',
+        back: 'رجوع',
+        no_recent_destinations: 'لا توجد وجهات حديثة بعد',
+        no_recent_destinations_hint: 'ستظهر هنا الوجهات التي خططت للوصول إليها',
+        recent_time_unavailable: 'التاريخ والوقت غير متاحين',
+        favourites: '🔖 المواقع المحفوظة',
+        no_favourites: 'لا توجد مواقع محفوظة بعد',
+        no_favourites_hint: 'اختر قائمة لحفظ مكان فيها',
         remove: 'إزالة',
         bus: 'حافلة',
         metro: 'مترو',
         map_location: 'موقع على الخريطة',
+        close_panel: 'إغلاق',
         copy_coordinates: 'نسخ الإحداثيات',
-        save_to_favourites: 'حفظ في المفضّلة',
+        save_to_favourites: 'حفظ في المواقع المحفوظة',
         route_to_location: 'إيجاد مسارات النقل إلى هنا',
         coordinates_copied: 'تم نسخ الإحداثيات',
         copy_failed: 'تعذّر نسخ الإحداثيات',
@@ -2084,6 +3047,15 @@
       },
       en: {
         search_placeholder: 'Where do you want to go?',
+        poi_categories: 'Nearby places',
+        poi_scroll_left: 'Scroll categories left',
+        poi_scroll_right: 'Scroll categories right',
+        poi_restaurants: 'Restaurants',
+        poi_cafes: 'Cafés',
+        poi_hotels: 'Hotels',
+        poi_museums: 'Museums',
+        poi_pharmacies: 'Pharmacies',
+        poi_hospitals: 'Hospitals',
         meters: 'm',
         km: 'km',
         min: 'min',
@@ -2098,8 +3070,17 @@
         from_test: 'From 𖦏 test location',
         from_word: 'From',
         origin_placeholder: 'Starting point',
-        current_location: 'Current location',
-        tap_show: 'tap ⌄ to show routes',
+        current_location: 'Your current location',
+        compass_reset: 'Reset map to north',
+        tap_show: 'tap ^ to show routes',
+        collapsed_walk_step: 'Walk to {place}',
+        collapsed_board_step: 'Board {line} at {station}',
+        collapsed_ride_step: 'Ride {line} to {station}',
+        simulation_arrived: 'Arrived at destination',
+        cancel_route_title: 'Cancel this route?',
+        confirm_cancel_route: 'Are you sure you want to cancel this route? It will be removed from the map.',
+        keep_route: 'Keep route',
+        cancel_route_action: 'Cancel route',
         best: 'Best',
         walk: 'Walk',
         transfer_one: '1 transfer',
@@ -2128,21 +3109,52 @@
         location_unavailable: '📡 Location unavailable. GPS works best outdoors.',
         location_timeout: '⏳ Location request timed out. Try again.',
         device_no_gps: '❌ Geolocation is not supported by this device.',
-        sort_fastest: '⚡ Recommended',
         sort_least_walk: '🚶 Least walking',
         sort_least_transfers: '🔄 Fewest transfers',
         transport_modes: 'Transport modes',
         no_selected_mode_route: 'No route found with the selected modes. Enable another mode and try again.',
         your_location: 'your location',
-        favourites: '★ Favourites',
-        no_favourites: 'No favourites yet',
-        no_favourites_hint: 'Tap the ★ on any place to save it here',
+        menu: 'Menu',
+        saved_locations: 'Saved locations',
+        list_favorite_places: 'Favorite places',
+        list_want_to_visit: 'Want to visit',
+        list_travel_plans: 'Travel plans',
+        list_saved_places: 'Saved places',
+        list_starred_places: 'Starred places',
+        menu_language: 'Language',
+        recently_visited: 'Recently visited',
+        save_to_list: 'Save to a list',
+        save_to_saved_locations: 'Save to saved locations',
+        new_list: 'New list',
+        list_name: 'List name',
+        create_list: 'Create',
+        cancel: 'Cancel',
+        done: 'Done',
+        private: 'Private',
+        place_one: 'place',
+        place_many: 'places',
+        empty_list: 'This list is empty',
+        saved_to_list: '✓ Added to list',
+        removed_from_list: 'Removed from list',
+        list_created: '✓ List created',
+        delete_list: 'Delete list',
+        delete_list_title: 'Delete this list?',
+        delete_collection_confirm: 'Delete “{name}” and all places saved in it?',
+        list_deleted: '✓ List deleted',
+        back: 'Back',
+        no_recent_destinations: 'No recent destinations yet',
+        no_recent_destinations_hint: 'Places you route to will appear here',
+        recent_time_unavailable: 'Date and time unavailable',
+        favourites: '🔖 Saved locations',
+        no_favourites: 'No saved locations yet',
+        no_favourites_hint: 'Choose a list to save this place',
         remove: 'Remove',
         bus: 'Bus',
         metro: 'Métro',
         map_location: 'Map location',
+        close_panel: 'Close',
         copy_coordinates: 'Copy coordinates',
-        save_to_favourites: 'Save to favourites',
+        save_to_favourites: 'Save to saved locations',
         route_to_location: 'Find transit routes here',
         coordinates_copied: 'Coordinates copied',
         copy_failed: 'Could not copy coordinates',
@@ -2164,31 +3176,115 @@
       localStorage.setItem('atlas_lang', lang);
       document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
       document.documentElement.setAttribute('lang', lang);
+      applyMapLabelLanguage(lang);
 
 
 
 
       const btn = document.getElementById('lang-toggle');
-      if (btn) btn.textContent = lang === 'ar' ? 'EN' : 'ع';
+      if (btn) {
+        btn.setAttribute('aria-label', t('menu_language'));
+        btn.title = t('menu_language');
+      }
+      const menuToggle = document.getElementById('menu-toggle');
+      const mainMenu = document.getElementById('main-menu');
+      if (menuToggle) {
+        menuToggle.setAttribute('aria-label', t('menu'));
+        menuToggle.title = t('menu');
+      }
+      if (mainMenu) mainMenu.setAttribute('aria-label', t('menu'));
+      const languageMenu = document.getElementById('lang-menu');
+      if (languageMenu) languageMenu.setAttribute('aria-label', t('menu_language'));
+      document.querySelectorAll('[data-menu-label]').forEach(label => {
+        label.textContent = t(label.dataset.menuLabel);
+      });
+      document.querySelectorAll('[data-saved-label]').forEach(label => {
+        label.textContent = t(label.dataset.savedLabel);
+      });
+      document.querySelectorAll('[data-dialog-label]').forEach(label => {
+        label.textContent = t(label.dataset.dialogLabel);
+      });
+      const tripCloseButton = document.getElementById('trip-close');
+      if (tripCloseButton) {
+        tripCloseButton.title = t('cancel_route_action');
+        tripCloseButton.setAttribute('aria-label', t('cancel_route_action'));
+      }
+      const compassButton = document.getElementById('btn-compass');
+      if (compassButton) {
+        compassButton.title = t('compass_reset');
+        compassButton.setAttribute('aria-label', t('compass_reset'));
+      }
+      const savedNameInput = document.getElementById('saved-list-name');
+      if (savedNameInput) savedNameInput.placeholder = t('list_name');
+      const savedCancelButton = document.getElementById('saved-cancel-list-btn');
+      if (savedCancelButton) {
+        savedCancelButton.title = t('cancel');
+        savedCancelButton.setAttribute('aria-label', t('cancel'));
+      }
+      const savedBackButton = document.getElementById('saved-panel-back');
+      if (savedBackButton) {
+        savedBackButton.title = t('back');
+        savedBackButton.setAttribute('aria-label', t('back'));
+      }
+      const savedPanelClose = document.getElementById('fav-panel-close');
+      if (savedPanelClose) {
+        savedPanelClose.title = t('close_panel');
+        savedPanelClose.setAttribute('aria-label', t('close_panel'));
+      }
+      const favMenuButton = document.getElementById('fav-btn');
+      const recentMenuButton = document.getElementById('recent-btn');
+      if (favMenuButton) favMenuButton.title = t('saved_locations');
+      if (recentMenuButton) recentMenuButton.title = t('recently_visited');
+      document.querySelectorAll('[data-language-choice]').forEach(choice => {
+        const selected = choice.dataset.languageChoice === lang;
+        choice.classList.toggle('active', selected);
+        choice.setAttribute('aria-checked', String(selected));
+      });
       const input = document.getElementById('search-input');
       if (input) input.placeholder = t('search_placeholder');
       const oi = document.getElementById('origin-input'), oh = document.getElementById('origin-here-label');
       if (oi) oi.placeholder = t('origin_placeholder');
       if (oh) oh.textContent = t('current_location');
+      const panelClose = document.getElementById('panel-close');
+      if (panelClose) {
+        panelClose.textContent = '×';
+        panelClose.setAttribute('aria-label', t('close_panel'));
+        panelClose.title = t('close_panel');
+      }
+      const poiTabs = document.getElementById('poi-category-tabs');
+      const poiScrollLeft = document.getElementById('poi-scroll-left');
+      const poiScrollRight = document.getElementById('poi-scroll-right');
+      if (poiScrollLeft) {
+        poiScrollLeft.setAttribute('aria-label', t('poi_scroll_left'));
+        poiScrollLeft.title = t('poi_scroll_left');
+      }
+      if (poiScrollRight) {
+        poiScrollRight.setAttribute('aria-label', t('poi_scroll_right'));
+        poiScrollRight.title = t('poi_scroll_right');
+      }
+      if (poiTabs) {
+        poiTabs.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        poiTabs.setAttribute('aria-label', t('poi_categories'));
+        poiTabs.querySelectorAll('[data-poi-label]').forEach(label => {
+          label.textContent = t(label.dataset.poiLabel);
+        });
+      }
+      refreshPOIMarkers();
+      if (typeof window.refreshMapTapPanel === 'function') window.refreshMapTapPanel();
       if (oi && document.getElementById('origin-here')?.classList.contains('active')) oi.value = '𖦏 ' + t('current_location');
       const rs = document.getElementById('search-results');
       if (rs && rs.classList.contains('open') && input) input.dispatchEvent(new Event('input'));
 
       if (typeof window.refreshTripUI === 'function') window.refreshTripUI();
+      if (typeof window.refreshSavedPanel === 'function') window.refreshSavedPanel();
 
       const sort = document.getElementById('trip-sort');
       if (sort) {
         const prev = sort.value;
         sort.innerHTML = `
-      <option value="fastest">⚡ المسار الموصى به</option>
-      <option value="least_walking">🚶 أقل مشي</option>
-      <option value="least_transfers">🔄 أقل تحويلات</option>`;
-        sort.value = [...sort.options].some(option => option.value === prev) ? prev : 'fastest';
+      <option value="least_transfers">${t('sort_least_transfers')}</option>
+      <option value="least_walking">${t('sort_least_walk')}</option>`;
+        sort.value = [...sort.options].some(option => option.value === prev) ? prev : 'least_transfers';
       }
       const modeGroup = document.getElementById('trip-mode-filters');
       if (modeGroup) {
@@ -2271,6 +3367,25 @@
       }
       return _origFetch.apply(window, arguments);
     };
+
+    function mapNameExpression(lang = LANG) {
+      const fields = lang === 'ar'
+        ? ['name:ar', 'name_ar', 'name:nonlatin', 'name', 'name:en', 'name_en', 'name:latin', 'name_int', 'name:fr', 'name_fr']
+        : ['name_en', 'name:en', 'name_fr', 'name:fr', 'name:latin', 'name_int', 'name', 'name_ar', 'name:ar', 'name:nonlatin'];
+      return ['coalesce', ...fields.map(field => ['get', field])];
+    }
+
+    function applyMapLabelLanguage(lang = LANG) {
+      if (!map) return;
+      if (!map.getLayer('place-labels')) {
+        map.once('load', () => applyMapLabelLanguage(lang));
+        return;
+      }
+      const textField = mapNameExpression(lang);
+      ['sites-generic-label', 'public-transport', 'pois', 'place-labels', 'street-labels'].forEach(id => {
+        if (map.getLayer(id)) map.setLayoutProperty(id, 'text-field', textField);
+      });
+    }
 
     // ── STYLE BUILDER (FULL ORIGINAL THEME RE-INTEGRATED) ─────────────────────
     async function buildStyle(theme) {
@@ -2367,7 +3482,7 @@
           filter: ['all', ['has', 'class'], ['!', ['in', ['get', 'class'], ['literal', ['university', 'college', 'school', 'hospital', 'park', 'garden']]]]],
           minzoom: 14,
           layout: {
-            'text-field': ['coalesce', ['get', 'name:ar'], ['get', 'name:en'], ['get', 'name:fr'], ['get', 'name']],
+            'text-field': mapNameExpression(),
             'text-font': ['Noto Sans Regular'],
             'text-size': 11,
             'text-anchor': 'center',
@@ -2471,10 +3586,10 @@
       const spriteAlias = { 'icon-platform': 'icon-bus', 'icon-stop_position': 'icon-bus', 'icon-light_rail': 'icon-rail', 'icon-museum': 'icon-historic', 'icon-park': 'icon-pitch', 'icon-garden': 'icon-pitch' };
       const poiIconExpr = ['case', ['all', ['has', 'class'], ['!=', ['get', 'class'], '']], ['coalesce', ['get', ['concat', 'icon-', ['get', 'class']], ['literal', spriteAlias]], ['concat', 'icon-', ['get', 'class']]], ['all', ['has', 'kind'], ['!=', ['get', 'kind'], '']], ['coalesce', ['get', ['concat', 'icon-', ['get', 'kind']], ['literal', spriteAlias]], ['concat', 'icon-', ['get', 'kind']]], 'icon-shop'];
 
-      style.layers.push({ id: 'public-transport', type: 'symbol', source: 'omt', 'source-layer': 'public_transport', minzoom: 13, layout: { 'icon-image': poiIconExpr, 'icon-optional': true, 'text-field': '{name}', 'text-font': ['Noto Sans Regular'], 'text-size': 10, 'text-anchor': 'top', 'text-offset': [0, 0.5] }, paint: { 'text-color': c.poiLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
-      style.layers.push({ id: 'pois', type: 'symbol', source: 'omt', 'source-layer': 'pois', minzoom: 14, layout: { 'icon-image': poiIconExpr, 'icon-optional': true, 'text-field': '{name}', 'text-font': ['Noto Sans Regular'], 'text-size': 11, 'text-anchor': 'top', 'text-offset': [0, 0.6] }, paint: { 'text-color': c.poiLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
-      style.layers.push({ id: 'place-labels', type: 'symbol', source: 'omt', 'source-layer': 'place_labels', layout: { 'text-field': '{name}', 'text-font': ['Noto Sans Bold'], 'text-size': { stops: [[7, 12], [10, 16]] } }, paint: { 'text-color': c.placeLabel, 'text-halo-color': c.halo, 'text-halo-width': 1.5 } });
-      style.layers.push({ id: 'street-labels', type: 'symbol', source: 'omt', 'source-layer': 'street_labels', minzoom: 13, layout: { 'symbol-placement': 'line', 'text-field': '{name}', 'text-font': ['Noto Sans Regular'], 'text-size': 11 }, paint: { 'text-color': c.roadLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
+      style.layers.push({ id: 'public-transport', type: 'symbol', source: 'omt', 'source-layer': 'public_transport', minzoom: 13, layout: { 'icon-image': poiIconExpr, 'icon-optional': true, 'text-field': mapNameExpression(), 'text-font': ['Noto Sans Regular'], 'text-size': 10, 'text-anchor': 'top', 'text-offset': [0, 0.5] }, paint: { 'text-color': c.poiLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
+      style.layers.push({ id: 'pois', type: 'symbol', source: 'omt', 'source-layer': 'pois', minzoom: 14, layout: { 'icon-image': poiIconExpr, 'icon-optional': true, 'text-field': mapNameExpression(), 'text-font': ['Noto Sans Regular'], 'text-size': 11, 'text-anchor': 'top', 'text-offset': [0, 0.6] }, paint: { 'text-color': c.poiLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
+      style.layers.push({ id: 'place-labels', type: 'symbol', source: 'omt', 'source-layer': 'place_labels', layout: { 'text-field': mapNameExpression(), 'text-font': ['Noto Sans Bold'], 'text-size': { stops: [[7, 12], [10, 16]] } }, paint: { 'text-color': c.placeLabel, 'text-halo-color': c.halo, 'text-halo-width': 1.5 } });
+      style.layers.push({ id: 'street-labels', type: 'symbol', source: 'omt', 'source-layer': 'street_labels', minzoom: 13, layout: { 'symbol-placement': 'line', 'text-field': mapNameExpression(), 'text-font': ['Noto Sans Regular'], 'text-size': 11 }, paint: { 'text-color': c.roadLabel, 'text-halo-color': c.haloLight, 'text-halo-width': 1 } });
 
       // Satellite overlay: sits above the entire cartoon basemap so it fully
       // covers it when shown, but stays under anything added later via
@@ -2548,7 +3663,9 @@
 
         map.on('load', () => {
           dbg('✓ MAP LOADED');
+          poiMapReady = true;
           map.resize();
+          refreshPOIMarkers();
           initTransitPlanner();
           dbg(`🔍 Initial Zoom: ${map.getZoom().toFixed(2)}`);
 
@@ -3080,6 +4197,7 @@
         map.on('moveend', () => {
           const c = map.getCenter();
           dbg(`📍 Map Center: ${c.lat.toFixed(5)}, ${c.lng.toFixed(5)}`);
+          refreshPOIMarkers();
         });
         map.on('idle', () => dbg('🏁 Map idle (tiles finished rendering)'));
 
@@ -3195,9 +4313,83 @@
       document.getElementById('btn-bus').onclick = toggleBusPanel;
       document.getElementById('btn-Ligne').onclick = toggleLignePanel;
       document.getElementById('search-clear').onclick = clearSearch;
-      document.getElementById('lang-toggle').onclick = () => setLang(LANG === 'ar' ? 'en' : 'ar'); document.getElementById('btn-picker').onclick = togglePickerMode;
-      document.getElementById('fav-btn').onclick = window.openFavPanel;
+      const poiTabs = document.getElementById('poi-category-tabs');
+      const poiScrollLeft = document.getElementById('poi-scroll-left');
+      const poiScrollRight = document.getElementById('poi-scroll-right');
+      if (poiScrollLeft) poiScrollLeft.onclick = () => scrollPOICategories('left');
+      if (poiScrollRight) poiScrollRight.onclick = () => scrollPOICategories('right');
+      if (poiTabs) {
+        poiTabs.addEventListener('scroll', () => requestAnimationFrame(updatePOIScrollArrows), { passive: true });
+        window.addEventListener('resize', updatePOIScrollArrows);
+        requestAnimationFrame(updatePOIScrollArrows);
+      }
+      document.querySelectorAll('.poi-category-tab').forEach(button => {
+        button.onclick = () => {
+          const category = button.dataset.poiCategory;
+          if (selectedPOICategories.has(category)) selectedPOICategories.delete(category);
+          else selectedPOICategories.add(category);
+          const active = selectedPOICategories.has(category);
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', String(active));
+          refreshPOIMarkers();
+        };
+      });
+      const menuContainer = document.getElementById('menu-container');
+      const menuToggle = document.getElementById('menu-toggle');
+      const mainMenu = document.getElementById('main-menu');
+      const languageToggle = document.getElementById('lang-toggle');
+      const languageMenu = document.getElementById('lang-menu');
+      const setLanguageMenuOpen = open => {
+        languageMenu.classList.toggle('open', open);
+        languageToggle.setAttribute('aria-expanded', String(open));
+      };
+      const setMainMenuOpen = open => {
+        mainMenu.classList.toggle('open', open);
+        menuToggle.setAttribute('aria-expanded', String(open));
+        if (!open) setLanguageMenuOpen(false);
+      };
+      menuToggle.onclick = event => {
+        event.stopPropagation();
+        setMainMenuOpen(!mainMenu.classList.contains('open'));
+      };
+      languageToggle.onclick = event => {
+        event.stopPropagation();
+        setLanguageMenuOpen(!languageMenu.classList.contains('open'));
+      };
+      languageMenu.addEventListener('click', event => {
+        const choice = event.target.closest('[data-language-choice]');
+        if (!choice) return;
+        setLang(choice.dataset.languageChoice);
+        setMainMenuOpen(false);
+      });
+      document.addEventListener('click', event => {
+        if (!menuContainer.contains(event.target)) setMainMenuOpen(false);
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') setMainMenuOpen(false);
+      });
+      document.getElementById('btn-picker').onclick = togglePickerMode;
+      document.getElementById('fav-btn').onclick = () => {
+        setMainMenuOpen(false);
+        window.openFavPanel();
+      };
+      document.getElementById('recent-btn').onclick = () => {
+        setMainMenuOpen(false);
+        window.openRecentPanel();
+      };
       document.getElementById('fav-panel-close').onclick = window.closeFavPanel;
+      document.getElementById('saved-panel-back').onclick = window.openSavedPanel;
+      document.getElementById('saved-new-list-btn').onclick = () => {
+        const form = document.getElementById('saved-new-list-form');
+        window.setNewListFormVisible(form.style.display === 'none');
+      };
+      document.getElementById('saved-create-list-btn').onclick = window.createSavedCollectionFromInput;
+      document.getElementById('saved-cancel-list-btn').onclick = () => window.setNewListFormVisible(false);
+      document.getElementById('saved-picker-done-btn').onclick = window.closeFavPanel;
+      document.getElementById('saved-list-name').addEventListener('keydown', event => {
+        if (event.key === 'Enter') window.createSavedCollectionFromInput();
+        if (event.key === 'Escape') window.setNewListFormVisible(false);
+      });
       window.updateFavBadge();
       document.getElementById("btn-zoom-in").onclick = () => { if (map) map.zoomIn({ duration: 250 }); };
       document.getElementById("btn-zoom-out").onclick = () => { if (map) map.zoomOut({ duration: 250 }); };
@@ -3303,19 +4495,13 @@
         const coords = lat.toFixed(7) + ', ' + lng.toFixed(7);
         tappedMapPoint = {
           lat, lng, nameAr, nameEn,
-          name: displayName || t('map_location'),
+          name: displayName || coords,
           favoriteLat: nearby ? Number(nearby.la) : lat,
           favoriteLon: nearby ? Number(nearby.lo) : lng,
           category: nearby ? nearby.c || '' : ''
         };
 
-        const actions =
-          '<div class="map-tap-actions">' +
-          '<button class="map-tap-action" onclick="copyTappedMapCoordinates()">📋 ' + t('copy_coordinates') + '</button>' +
-          '<button class="map-tap-action" onclick="saveTappedMapLocation()">★ ' + t('save_to_favourites') + '</button>' +
-          '<button class="map-tap-action primary" onclick="routeToTappedMapLocation()">🚌 ' + t('route_to_location') + '</button>' +
-          '</div>';
-        showPanel(tappedMapPoint.name, coords, actions);
+        renderTappedMapPanel();
       });
     }
     // ── SEARCH ────────────────────────────────────────────────────────────────
@@ -3675,6 +4861,7 @@
         const r = await fetch('./data/places.json');
         _offlinePlaces = await r.json();
         dbg(`🔍 Loaded ${_offlinePlaces.length} places`);
+        refreshPOIMarkers();
         loadDistricts();            // district polygons for "hotel marsa" style searches (loads in the background)
       } catch (e) { dbg('❌ Search load failed'); }
       const input = document.getElementById('search-input'), resultsEl = document.getElementById('search-results');
@@ -3935,6 +5122,25 @@
       document.getElementById('panel').classList.add('open');
       dbg('📂 Info panel opened');
     }
+    function renderTappedMapPanel() {
+      if (!tappedMapPoint) return;
+      const coords = tappedMapPoint.lat.toFixed(7) + ', ' + tappedMapPoint.lng.toFixed(7);
+      const name = LANG === 'ar'
+        ? (tappedMapPoint.nameAr || tappedMapPoint.nameEn || coords)
+        : (tappedMapPoint.nameEn || tappedMapPoint.nameAr || coords);
+      tappedMapPoint.name = name;
+      const actions =
+        '<div class="map-tap-actions">' +
+        '<button class="map-tap-action" onclick="copyTappedMapCoordinates()">📋 ' + t('copy_coordinates') + '</button>' +
+        '<button class="map-tap-action" onclick="saveTappedMapLocation()"><span class="map-tap-save-icon" aria-hidden="true">🔖</span>' + t('save_to_saved_locations') + '</button>' +
+        '<button class="map-tap-action primary" onclick="routeToTappedMapLocation()">🚌 ' + t('route_to_location') + '</button>' +
+        '</div>';
+      showPanel(name, coords, actions);
+    }
+    window.refreshMapTapPanel = function () {
+      const panel = document.getElementById('panel');
+      if (panel && panel.classList.contains('open') && tappedMapPoint) renderTappedMapPanel();
+    };
     function closePanel() {
       document.getElementById('panel').classList.remove('open');
       dbg('📂 Info panel closed');
@@ -3975,8 +5181,11 @@
       if (!tappedMapPoint) return;
       const point = tappedMapPoint;
       closePanel();
-      if (typeof window.planTripTo === 'function') {
-        window.planTripTo(point.lat, point.lng, point.name || t('map_location'));
+      const name = point.name || `${point.lat.toFixed(7)}, ${point.lng.toFixed(7)}`;
+      if (typeof window.askOrigin === 'function') {
+        window.askOrigin(point.lat, point.lng, name);
+      } else if (typeof window.planTripTo === 'function') {
+        window.planTripTo(point.lat, point.lng, name);
       } else {
         setRouteDest(point.lat, point.lng);
       }
@@ -4558,9 +5767,16 @@
       const CFG = {
         USE_TEST_ORIGIN: true,
         FALLBACK_TO_TEST_ON_GPS_FAIL: true,
-        TEST_ORIGIN: { lat: 36.7845, lon: 10.1815 },
+        // Fixed initial simulation point on the south-west side of Lac de Tunis.
+        TEST_ORIGIN: { lat: 36.79255, lon: 10.20078 },
         GPS_TIMEOUT_MS: 5000,
         WALK_MPS: 1.33, WALK_DETOUR: 1.3, ACCESS_MAX_M: 1800, ACCESS_PER_LINE: 3,
+        SIMULATION_SPEED_MPS: 64, // fast preview speed for route simulation
+        SIMULATION_CAMERA_ZOOM: 19.2, SIMULATION_CAMERA_PITCH: 55,
+        SIMULATION_CAMERA_UPDATE_MS: 400, SIMULATION_CAMERA_DURATION_MS: 480,
+        GPS_NOISE_SIDE_M: 8, GPS_NOISE_FORWARD_M: 3,
+        ROUTE_TRACE_UPDATE_MS: 120,
+        STEP_ADVANCE_RADIUS_M: 100,
         TRANSFER_MAX_M: 400, TRANSFER_MIN_S: 60, WALK_ONLY_MAX_M: 2500, MAX_OPTIONS: 4,
         SIMILAR_M: 60, OFF_TRACK_MAX_M: 250, DWELL_S: 25, ALIGHT_S: 15,
         BUS_BOARD_NON_BENCH: true, BUS_BENCH_PENALTY_S: 480, BUS_NON_BENCH_PENALTY_S: 180,
@@ -5086,6 +6302,7 @@
         const previousSig = selectedSig;
         options = computeOptions(lastResolvedOrigin, lastDest);
         if (!options.length) {
+          stopRouteSimulation(true);
           selectedSig = null;
           setBody(`<div class="trip-msg">${t('no_selected_mode_route')}</div>`);
           if (map.getSource('trip')) map.getSource('trip').setData(EMPTY);
@@ -5130,181 +6347,900 @@
         });
       }
 
-      let testOrigin = { ...CFG.TEST_ORIGIN }, originMarker = null;
-      function setOriginMarker(o) {
-        if (!originMarker) {
-          const el = document.createElement('div'); el.className = 'location-marker';
-          originMarker = new maplibregl.Marker({ element: el }).setLngLat([o.lon, o.lat]).addTo(map);
-        } else originMarker.setLngLat([o.lon, o.lat]);
+      let testOrigin = { ...CFG.TEST_ORIGIN }, markerPosition = { ...CFG.TEST_ORIGIN };
+      let simulatedHeading = 0, testMarkerVisible = true;
+
+      function updateSimulatedMarkerData() {
+        const source = map?.getSource('sim-user-location');
+        if (!source) return;
+        source.setData(testMarkerVisible ? {
+          type: 'FeatureCollection',
+          features: [{
+            type: 'Feature',
+            properties: { heading: simulatedHeading },
+            geometry: { type: 'Point', coordinates: [markerPosition.lon, markerPosition.lat] }
+          }]
+        } : { type: 'FeatureCollection', features: [] });
       }
+      function ensureSimulatedMarkerLayers() {
+        if (!map) return;
+        if (!map.hasImage('sim-user-arrow-icon')) {
+          const canvas = document.createElement('canvas');
+          canvas.width = 36; canvas.height = 40;
+          const ctx = canvas.getContext('2d');
+          ctx.beginPath();
+          ctx.moveTo(18, 2); ctx.lineTo(34, 37); ctx.lineTo(18, 28); ctx.lineTo(2, 37); ctx.closePath();
+          ctx.fillStyle = '#2563eb'; ctx.fill();
+          ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+          map.addImage('sim-user-arrow-icon', ctx.getImageData(0, 0, canvas.width, canvas.height), { pixelRatio: 2 });
+        }
+        if (!map.getSource('sim-user-location')) {
+          map.addSource('sim-user-location', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+        }
+        if (!map.getLayer('sim-user-circle')) {
+          map.addLayer({
+            id: 'sim-user-circle', type: 'circle', source: 'sim-user-location',
+            paint: { 'circle-radius': 9, 'circle-color': '#3b82f6', 'circle-stroke-width': 3, 'circle-stroke-color': '#ffffff', 'circle-blur': 0.05 }
+          });
+        }
+        if (!map.getLayer('sim-user-arrow')) {
+          map.addLayer({
+            id: 'sim-user-arrow', type: 'symbol', source: 'sim-user-location',
+            layout: {
+              'icon-image': 'sim-user-arrow-icon', 'icon-size': 1.1, 'icon-anchor': 'bottom',
+              'icon-rotate': ['get', 'heading'], 'icon-rotation-alignment': 'map',
+              'icon-allow-overlap': true, 'icon-ignore-placement': true
+            },
+          });
+        }
+        updateSimulatedMarkerData();
+      }
+      function bringSimulatedMarkerToTop() {
+        if (map?.getLayer('sim-user-circle')) map.moveLayer('sim-user-circle');
+        if (map?.getLayer('sim-user-arrow')) map.moveLayer('sim-user-arrow');
+      }
+      function setOriginMarker(o) {
+        markerPosition = { lat: o.lat, lon: o.lon };
+        ensureSimulatedMarkerLayers();
+      }
+
+      let simulationFrame = 0, simulationSegments = [], simulationSegmentIndex = 0, simulationDistance = 0;
+      let simulationChosen = false, simulationArrived = false, simulationSig = null;
+      let simulationOption = null, simulationLastUiUpdate = 0, simulationLastUiSegment = -1, simulationLastUiLegIndex = -1;
+      let simulationPassedStations = new Set();
+      let simulationCameraNorthUp = false;
+      let simulationLastFrame = 0, simulationLastRouteRender = 0, simulationLastRenderedSegment = -1, simulationLastCameraUpdate = 0;
+      let gpsNoiseStartedAt = 0, gpsNoiseSidePhase = 0, gpsNoiseForwardPhase = 0;
+      function positionOnLine(line, distance) {
+        if (!line || !line.coords.length) return null;
+        const d = Math.max(0, Math.min(line.len, distance));
+        let lo = 0, hi = line.cum.length - 1;
+        while (lo < hi) {
+          const mid = Math.floor((lo + hi) / 2);
+          if (line.cum[mid] < d) lo = mid + 1; else hi = mid;
+        }
+        const i = Math.max(0, lo - 1), segmentM = line.cum[i + 1] - line.cum[i];
+        const part = segmentM > 0 ? (d - line.cum[i]) / segmentM : 0;
+        const a = line.coords[i], b = line.coords[i + 1] || a;
+        return [a[0] + (b[0] - a[0]) * part, a[1] + (b[1] - a[1]) * part];
+      }
+      function closestDistanceOnLine(line, point) {
+        let bestDistance = Infinity, bestAlong = 0;
+        for (let i = 0; i < line.coords.length - 1; i++) {
+          const a = line.coords[i], b = line.coords[i + 1];
+          const cosLat = Math.cos(point[1] * RAD);
+          const bx = (b[0] - a[0]) * cosLat, by = b[1] - a[1];
+          const px = (point[0] - a[0]) * cosLat, py = point[1] - a[1];
+          const length2 = bx * bx + by * by;
+          const part = length2 ? Math.max(0, Math.min(1, (px * bx + py * by) / length2)) : 0;
+          const candidate = [a[0] + (b[0] - a[0]) * part, a[1] + (b[1] - a[1]) * part];
+          const distance = hav(point, candidate);
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            bestAlong = line.cum[i] + (line.cum[i + 1] - line.cum[i]) * part;
+          }
+        }
+        return bestAlong;
+      }
+      function routeGeometryParts(option) {
+        const parts = [];
+        const cleanCoords = coords => {
+          const clean = [];
+          (coords || []).forEach(point => {
+            if (!Array.isArray(point) || point.length < 2 || !Number.isFinite(+point[0]) || !Number.isFinite(+point[1])) return;
+            const next = [+point[0], +point[1]];
+            if (!clean.length || hav(clean[clean.length - 1], next) > 0.25) clean.push(next);
+          });
+          return clean;
+        };
+        const add = (coords, kind, color, legIndex) => {
+          const clean = cleanCoords(coords);
+          if (clean.length > 1) parts.push({ coords: clean, kind, color, legIndex });
+        };
+
+        let cursor = option.ctx.op;
+        option.legs.forEach((leg, legIndex) => {
+          const coords = cleanCoords(leg.coords);
+          if (coords.length < 2) return;
+          if (cursor && hav(cursor, coords[0]) > 0.25) add([cursor, coords[0]], 'walk', '#374151', legIndex);
+          add(coords, leg.type === 'walk' ? 'walk' : 'transit', leg.type === 'walk' ? '#374151' : CFG.MODES[leg.dl.mode].color, legIndex);
+          cursor = coords[coords.length - 1];
+        });
+        if (cursor && option.ctx.dp && hav(cursor, option.ctx.dp) > 0.25) add([cursor, option.ctx.dp], 'walk', '#374151', Math.max(0, option.legs.length - 1));
+        return parts;
+      }
+      function routeSimulationSegments(option) {
+        return routeGeometryParts(option).map(part => ({ ...part, line: buildLine(part.coords) })).filter(part => part.line.len > 0.05);
+      }
+      function routeStationFeatures(option) {
+        const features = [];
+        option.legs.forEach((leg, legIndex) => {
+          if (leg.type !== 'transit') return;
+          const color = CFG.MODES[leg.dl.mode].color;
+          features.push({
+            type: 'Feature',
+            properties: { color, label: leg.a.stop.name, legIndex, endpoint: 'from' },
+            geometry: { type: 'Point', coordinates: [leg.a.stop.lon, leg.a.stop.lat] }
+          });
+          features.push({
+            type: 'Feature',
+            properties: { color, label: leg.b.stop.name, legIndex, endpoint: 'to' },
+            geometry: { type: 'Point', coordinates: [leg.b.stop.lon, leg.b.stop.lat] }
+          });
+        });
+        return features;
+      }
+      function coordsAfterDistance(line, distance) {
+        if (distance <= 0) return line.coords;
+        if (distance >= line.len) return [];
+        let i = 0;
+        while (i < line.cum.length - 2 && line.cum[i + 1] < distance) i++;
+        const at = positionOnLine(line, distance);
+        const remaining = [at, ...line.coords.slice(i + 1)];
+        return remaining.filter((point, index) => !index || hav(remaining[index - 1], point) > 0.25);
+      }
+      function updateRouteTraceFromSimulation() {
+        const source = map?.getSource('trip');
+        if (!source || !simulationSegments.length) return;
+        const features = [];
+        simulationSegments.forEach((part, index) => {
+          if (index < simulationSegmentIndex) return;
+          const coords = index === simulationSegmentIndex
+            ? coordsAfterDistance(part.line, simulationDistance)
+            : part.coords;
+          if (coords.length > 1) {
+            features.push({
+              type: 'Feature',
+              properties: { kind: part.kind, color: part.color },
+              geometry: { type: 'LineString', coordinates: coords }
+            });
+          }
+        });
+        source.setData({ type: 'FeatureCollection', features });
+
+        const stationSource = map?.getSource('trip-pts');
+        const activePart = simulationSegments[simulationSegmentIndex];
+        if (stationSource && simulationOption) {
+          const activeLegIndex = activePart ? (activePart.legIndex || 0) : simulationOption.legs.length;
+          const currentPosition = [testOrigin.lon, testOrigin.lat];
+          const stationFeatures = routeStationFeatures(simulationOption).filter(feature => {
+            const legIndex = feature.properties.legIndex;
+            const stationKey = `${legIndex}:${feature.properties.endpoint}`;
+            if (hav(currentPosition, feature.geometry.coordinates) <= CFG.STEP_ADVANCE_RADIUS_M) {
+              simulationPassedStations.add(stationKey);
+            }
+            if (legIndex < activeLegIndex) return false;
+            return !simulationPassedStations.has(stationKey);
+          });
+          stationSource.setData({ type: 'FeatureCollection', features: stationFeatures });
+        }
+      }
+      function resetGpsNoise(now = 0) {
+        gpsNoiseStartedAt = now;
+        gpsNoiseSidePhase = Math.random() * 2 * Math.PI;
+        gpsNoiseForwardPhase = Math.random() * 2 * Math.PI;
+      }
+      function gpsNoisyPosition(point, now) {
+        const seconds = Math.max(0, now - gpsNoiseStartedAt) / 1000;
+        // Randomized phase, even smooth sway, and zero offset when a route starts.
+        const side = CFG.GPS_NOISE_SIDE_M * 0.5 * (Math.sin(seconds * 2 * Math.PI / 3.6 + gpsNoiseSidePhase) - Math.sin(gpsNoiseSidePhase));
+        const forward = CFG.GPS_NOISE_FORWARD_M * 0.5 * (Math.sin(seconds * 2 * Math.PI / 5.2 + gpsNoiseForwardPhase) - Math.sin(gpsNoiseForwardPhase));
+        const heading = simulatedHeading * RAD;
+        const east = side * Math.cos(heading) + forward * Math.sin(heading);
+        const north = -side * Math.sin(heading) + forward * Math.cos(heading);
+        const lat = point[1] + north / 111320;
+        const lon = point[0] + east / (111320 * Math.max(0.2, Math.cos(point[1] * RAD)));
+        return { lat, lon };
+      }
+      function setSimulatedHeading(from, to) {
+        if (!from || !to || hav(from, to) < 0.05) return;
+        const lat1 = from[1] * RAD, lat2 = to[1] * RAD, dLon = (to[0] - from[0]) * RAD;
+        const y = Math.sin(dLon) * Math.cos(lat2);
+        const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+        const bearing = (Math.atan2(y, x) / RAD + 360) % 360;
+        simulatedHeading = bearing;
+        updateSimulatedMarkerData();
+      }
+      function stopRouteSimulation(resetChoice = false) {
+        if (simulationFrame) cancelAnimationFrame(simulationFrame);
+        simulationFrame = 0; simulationSegments = []; simulationSegmentIndex = 0; simulationLastFrame = 0; simulationSig = null;
+        simulationLastRouteRender = 0; simulationLastRenderedSegment = -1;
+        simulationLastCameraUpdate = 0;
+        simulationArrived = false;
+        if (resetChoice) { simulationChosen = false; simulationOption = null; simulationLastUiSegment = -1; simulationLastUiLegIndex = -1; }
+      }
+      function updateSimulationCamera(point, now = performance.now(), force = false) {
+        if (!map || !point || (!force && now - simulationLastCameraUpdate < CFG.SIMULATION_CAMERA_UPDATE_MS)) return;
+        const height = window.innerHeight || map.getCanvas().clientHeight || 1;
+        const sheet = $('trip-sheet');
+        const sheetHeight = sheet?.classList.contains('open') ? sheet.getBoundingClientRect().height : 0;
+        const visibleMapHeight = Math.max(height * 0.35, height - sheetHeight);
+        const targetY = Math.min(visibleMapHeight * 0.62, height * 0.72);
+        map.easeTo({
+          center: point,
+          zoom: CFG.SIMULATION_CAMERA_ZOOM,
+          pitch: simulationCameraNorthUp ? 0 : CFG.SIMULATION_CAMERA_PITCH,
+          bearing: simulationCameraNorthUp ? 0 : simulatedHeading,
+          offset: [0, targetY - height / 2],
+          duration: force ? 900 : CFG.SIMULATION_CAMERA_DURATION_MS,
+          essential: true
+        });
+        simulationLastCameraUpdate = now;
+      }
+      function syncCompassNeedle() {
+        const needle = $('compass-needle');
+        if (needle && map) needle.setAttribute('transform', `rotate(${-map.getBearing()} 12 12)`);
+      }
+      function resetMapToNorth() {
+        if (!map) return;
+        if (simulationChosen && simulationSegments.length) {
+          simulationCameraNorthUp = true;
+          updateSimulationCamera([testOrigin.lon, testOrigin.lat], performance.now(), true);
+        } else {
+          map.easeTo({ bearing: 0, pitch: 0, duration: 500, essential: true });
+        }
+      }
+      function animateRouteSimulation(now) {
+        if (!simulationSegments.length) { simulationFrame = 0; return; }
+        if (!simulationLastFrame) simulationLastFrame = now;
+        const elapsed = Math.min(1000, Math.max(0, now - simulationLastFrame));
+        simulationLastFrame = now;
+        const previousSegmentIndex = simulationSegmentIndex;
+        let remaining = CFG.SIMULATION_SPEED_MPS * elapsed / 1000;
+        while (remaining > 0 && simulationSegmentIndex < simulationSegments.length) {
+          const segment = simulationSegments[simulationSegmentIndex].line;
+          const left = Math.max(0, segment.len - simulationDistance);
+          if (left <= 0.001) {
+            if (simulationSegmentIndex < simulationSegments.length - 1) { simulationSegmentIndex++; simulationDistance = 0; }
+            else break;
+          } else if (remaining < left) {
+            simulationDistance += remaining; remaining = 0;
+          } else {
+            remaining -= left;
+            if (simulationSegmentIndex < simulationSegments.length - 1) { simulationSegmentIndex++; simulationDistance = 0; }
+            else { simulationDistance = segment.len; remaining = 0; }
+          }
+        }
+        const segmentPart = simulationSegments[simulationSegmentIndex];
+        const segment = segmentPart.line;
+        const current = positionOnLine(segment, simulationDistance);
+        if (current) {
+          testOrigin = { lat: current[1], lon: current[0] };
+          const ahead = simulationDistance + 12 <= segment.len
+            ? positionOnLine(segment, simulationDistance + 12)
+            : simulationSegments[simulationSegmentIndex + 1]
+              ? positionOnLine(simulationSegments[simulationSegmentIndex + 1].line, Math.min(12, simulationSegments[simulationSegmentIndex + 1].line.len))
+              : current;
+          if (ahead) setSimulatedHeading(current, ahead);
+          setOriginMarker(gpsNoisyPosition(current, now));
+          updateSimulationCamera(current, now);
+          const routeSegmentChanged = simulationSegmentIndex !== previousSegmentIndex || simulationSegmentIndex !== simulationLastRenderedSegment;
+          if (routeSegmentChanged || now - simulationLastRouteRender >= CFG.ROUTE_TRACE_UPDATE_MS) {
+            updateRouteTraceFromSimulation();
+            simulationLastRouteRender = now;
+            simulationLastRenderedSegment = simulationSegmentIndex;
+          }
+          if (simulationSegmentIndex !== simulationLastUiSegment || now - simulationLastUiUpdate >= 250) {
+            updateSimulationRoutePanel(now);
+            simulationLastUiUpdate = now;
+            simulationLastUiSegment = simulationSegmentIndex;
+          }
+        }
+        if (simulationSegmentIndex === simulationSegments.length - 1 && simulationDistance >= segment.len) {
+          updateRouteTraceFromSimulation();
+          resetGpsNoise(now);
+          setOriginMarker(testOrigin);
+          updateSimulationCamera([testOrigin.lon, testOrigin.lat], now, true);
+          simulationArrived = true;
+          updateSimulationRoutePanel(now, true, true);
+          simulationFrame = 0; simulationLastFrame = 0;
+          return;
+        }
+        simulationFrame = requestAnimationFrame(animateRouteSimulation);
+      }
+      function startRouteSimulation(option) {
+        if (!option || !['test', 'test (GPS failed)'].includes(option.ctx.origin.source)) {
+          stopRouteSimulation(true);
+          return;
+        }
+        const segments = routeSimulationSegments(option);
+        if (!segments.length) return;
+        stopRouteSimulation();
+        // Start at the chosen itinerary's actual origin and follow its displayed geometry from the beginning.
+        testOrigin = { lat: option.ctx.origin.lat, lon: option.ctx.origin.lon };
+        simulationSegments = segments;
+        simulationSegmentIndex = 0;
+        simulationDistance = 0;
+        simulationPassedStations = new Set();
+        simulationCameraNorthUp = false;
+        simulationSig = option.sig;
+        simulationChosen = true; simulationArrived = false;
+        simulationOption = option; simulationLastUiSegment = -1; simulationLastUiLegIndex = -1; simulationLastUiUpdate = 0;
+        simulationLastRouteRender = 0; simulationLastRenderedSegment = -1;
+        resetGpsNoise(performance.now());
+        simulationLastCameraUpdate = 0;
+        const firstPoint = [testOrigin.lon, testOrigin.lat];
+        const firstAhead = positionOnLine(segments[0].line, Math.min(12, segments[0].line.len));
+        if (firstAhead) setSimulatedHeading(firstPoint, firstAhead);
+        setOriginMarker(testOrigin);
+        showTestMarker(true);
+        updateSimulationCamera(firstPoint, performance.now(), true);
+        updateRouteTraceFromSimulation();
+        updateSimulationRoutePanel(performance.now(), true);
+        simulationFrame = requestAnimationFrame(animateRouteSimulation);
+      }
+      function refreshChosenRouteSimulation(option) {
+        if (!simulationChosen) return;
+        if (option.sig !== simulationSig || !['test', 'test (GPS failed)'].includes(option.ctx.origin.source)) {
+          stopRouteSimulation(true);
+          return;
+        }
+        const segments = routeSimulationSegments(option);
+        if (!segments.length) return;
+        if (simulationArrived) {
+          simulationOption = option;
+          simulationSegments = segments;
+          simulationSegmentIndex = segments.length - 1;
+          simulationDistance = segments[simulationSegmentIndex].line.len;
+          updateRouteTraceFromSimulation();
+          updateSimulationRoutePanel(performance.now(), true, true);
+          return;
+        }
+        if (simulationFrame) cancelAnimationFrame(simulationFrame);
+        simulationSegments = segments;
+        simulationOption = option;
+        // Preserve the current spot if refined walking geometry updates the same selected route.
+        let best = { gap: Infinity, segmentIndex: 0, distance: 0 };
+        simulationSegments.forEach((part, index) => {
+          const distance = closestDistanceOnLine(part.line, [testOrigin.lon, testOrigin.lat]);
+          const point = positionOnLine(part.line, distance);
+          const gap = point ? hav([testOrigin.lon, testOrigin.lat], point) : Infinity;
+          if (gap < best.gap) best = { gap, segmentIndex: index, distance };
+        });
+        simulationSegmentIndex = best.segmentIndex;
+        simulationDistance = best.distance;
+        simulationLastRenderedSegment = -1; simulationLastUiSegment = -1; simulationLastUiLegIndex = -1;
+        simulationLastFrame = 0;
+        updateRouteTraceFromSimulation();
+        updateSimulationRoutePanel(performance.now(), true);
+        simulationFrame = requestAnimationFrame(animateRouteSimulation);
+      }
+
       async function resolveOrigin() {
         if (CFG.USE_TEST_ORIGIN) return { ...testOrigin, source: 'test' };
         return { ...testOrigin, source: 'test (GPS failed)' };
       }
 
       const $ = id => document.getElementById(id);
-      // ── FAVOURITES SYSTEM ──────────────────────────────────────────────
-      const FAV_KEY = 'atlas_favourites';
-
-      function getFavourites() {
+      // ── SAVED LOCATIONS / COLLECTIONS ─────────────────────────────────
+      const FAV_KEY = 'atlas_favourites'; // legacy key kept only for one-time migration
+      const SAVED_COLLECTIONS_KEY = 'atlas_saved_collections';
+      const DELETED_COLLECTIONS_KEY = 'atlas_deleted_collections';
+      const DEFAULT_COLLECTIONS = [
+        { id: 'adresses-preferees', nameKey: 'list_favorite_places', icon: '★', isDefault: true },
+        { id: 'a-visiter', nameKey: 'list_want_to_visit', icon: '⚑', isDefault: true },
+        { id: 'projets-de-voyages', nameKey: 'list_travel_plans', icon: '✈️', isDefault: true },
+        { id: 'saved-places', nameKey: 'list_saved_places', icon: '🔖', isDefault: true },
+        { id: 'lieux-marques', nameKey: 'list_starred_places', icon: '✦', isDefault: true }
+      ];
+      const DEFAULT_COLLECTION_IDS = new Set(DEFAULT_COLLECTIONS.map(collection => collection.id));
+      function getDeletedDefaultCollectionIds() {
         try {
-          return JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+          const ids = JSON.parse(localStorage.getItem(DELETED_COLLECTIONS_KEY) || '[]');
+          return new Set(Array.isArray(ids) ? ids.filter(id => DEFAULT_COLLECTION_IDS.has(id)) : []);
+        } catch (e) { return new Set(); }
+      }
+      let savedItemsPanelMode = 'collections';
+      let currentCollectionId = null;
+      let pendingSavePlace = null;
+      let pendingDeleteCollectionId = null, pendingDeleteTrigger = null;
+
+      function normalizeSavedPlace(place) {
+        const lat = Number(place?.lat), lon = Number(place?.lon);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+        return {
+          id: place.id || `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          name: String(place.name || place.name_en || place.name_ar || place.n || place.nl || place.na || `${lat.toFixed(6)}, ${lon.toFixed(6)}`),
+          name_ar: String(place.name_ar || place.nameAr || place.na || ''),
+          name_en: String(place.name_en || place.nameEn || place.nl || place.n || ''),
+          lat,
+          lon,
+          category: String(place.category || place.c || ''),
+          addedAt: Number(place.addedAt) || Date.now()
+        };
+      }
+
+      function readLegacyFavourites() {
+        try {
+          const legacy = JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+          return Array.isArray(legacy) ? legacy.map(normalizeSavedPlace).filter(Boolean) : [];
         } catch (e) { return []; }
       }
 
-      function saveFavourites(favs) {
-        localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+      function getSavedCollections() {
+        let stored = null;
+        try { stored = JSON.parse(localStorage.getItem(SAVED_COLLECTIONS_KEY) || 'null'); } catch (e) { stored = null; }
+        const deletedDefaults = getDeletedDefaultCollectionIds();
+        if (Array.isArray(stored)) {
+          const byId = new Map(stored.filter(item => item && item.id).map(item => [item.id, item]));
+          const defaults = DEFAULT_COLLECTIONS.filter(base => !deletedDefaults.has(base.id)).map(base => {
+            const saved = byId.get(base.id);
+            return { ...(saved || {}), ...base, isDefault: true, places: Array.isArray(saved?.places) ? saved.places.map(normalizeSavedPlace).filter(Boolean) : [] };
+          });
+          const custom = stored.filter(item => item && item.id && !DEFAULT_COLLECTION_IDS.has(item.id) && String(item.name || '').trim())
+            .map(item => ({ ...item, name: String(item.name).trim(), icon: item.icon || '📁', isDefault: false, places: Array.isArray(item.places) ? item.places.map(normalizeSavedPlace).filter(Boolean) : [] }));
+          return [...defaults, ...custom];
+        }
+
+        const initialized = DEFAULT_COLLECTIONS.filter(collection => !deletedDefaults.has(collection.id)).map(collection => ({ ...collection, places: [] }));
+        const legacyTarget = initialized.find(collection => collection.id === 'saved-places');
+        if (legacyTarget) legacyTarget.places = readLegacyFavourites();
+        try { localStorage.setItem(SAVED_COLLECTIONS_KEY, JSON.stringify(initialized)); } catch (e) { /* storage can be unavailable */ }
+        return initialized;
+      }
+
+      function saveSavedCollections(collections) {
+        try { localStorage.setItem(SAVED_COLLECTIONS_KEY, JSON.stringify(collections)); } catch (e) { /* storage can be unavailable */ }
         updateFavBadge();
       }
 
+      function collectionHasPlace(collection, place) {
+        return collection.places.some(item => Math.abs(Number(item.lat) - place.lat) < 0.00001 && Math.abs(Number(item.lon) - place.lon) < 0.00001);
+      }
+
       function isFavourite(lat, lon) {
-        return getFavourites().some(f =>
-          Math.abs(f.lat - lat) < 0.00001 && Math.abs(f.lon - lon) < 0.00001
-        );
-      }      // The main search renderer lives outside this wrapper, and result buttons use inline handlers.
-      // Expose these two functions so both paths can call the favourites system.
+        const point = { lat: Number(lat), lon: Number(lon) };
+        if (!Number.isFinite(point.lat) || !Number.isFinite(point.lon)) return false;
+        return getSavedCollections().some(collection => collection.places.some(place =>
+          Math.abs(Number(place.lat) - point.lat) < 0.00001 && Math.abs(Number(place.lon) - point.lon) < 0.00001
+        ));
+      }
       window.isFavourite = isFavourite;
 
-      function addFavourite(place) {
-        const favs = getFavourites();
-        if (favs.some(f => Math.abs(f.lat - place.lat) < 0.00001 && Math.abs(f.lon - place.lon) < 0.00001)) {
-          return; // already saved
-        }
-        favs.unshift({
-          id: Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-          name: place.name || place.n || place.na || place.nl || 'Unknown',
-          name_ar: place.name_ar || place.na || '',
-          name_en: place.name_en || place.nl || place.n || '',
-          lat: place.lat,
-          lon: place.lon,
-          category: place.category || place.c || '',
-          addedAt: Date.now()
-        });
-        saveFavourites(favs);
-        showToast(LANG === 'ar' ? '✓ تمت الإضافة إلى المفضّلة' : '✓ Added to favourites');
-      }
-
-      window.saveMapTapFavourite = function (point) {
-        const coords = point.lat.toFixed(6) + ', ' + point.lng.toFixed(6);
-        const nameEn = point.nameEn || T.en.map_location + ' (' + coords + ')';
-        const nameAr = point.nameAr || T.ar.map_location + ' (' + coords + ')';
-        addFavourite({
-          lat: point.favoriteLat ?? point.lat,
-          lon: point.favoriteLon ?? point.lng,
-          name: nameEn,
-          name_ar: nameAr,
-          name_en: nameEn,
-          category: point.category || ''
-        });
-        renderFavourites();
-        refreshSearchStars();
-      };
-      function removeFavourite(id) {
-        const favs = getFavourites().filter(f => f.id !== id);
-        saveFavourites(favs);
-        renderFavourites();
-        refreshSearchStars();
-      }
-
       function updateFavBadge() {
-        const count = getFavourites().length;
+        const uniquePlaces = new Set();
+        getSavedCollections().forEach(collection => collection.places.forEach(place => {
+          uniquePlaces.add(`${Number(place.lat).toFixed(5)},${Number(place.lon).toFixed(5)}`);
+        }));
         const badge = document.getElementById('fav-badge');
         if (badge) {
-          badge.textContent = count;
-          badge.style.display = count > 0 ? 'flex' : 'none';
+          badge.textContent = uniquePlaces.size;
+          badge.style.display = uniquePlaces.size > 0 ? 'flex' : 'none';
+        }
+      }
+      window.updateFavBadge = updateFavBadge;
+
+      function collectionName(collection) {
+        return collection.nameKey ? t(collection.nameKey) : String(collection.name || '');
+      }
+
+      function collectionMeta(collection) {
+        const count = collection.places.length;
+        const unit = t(count === 1 ? 'place_one' : 'place_many');
+        return `${t('private')} · ${count} ${unit}`;
+      }
+
+      function setSavedPanelTitle(title, iconClass = '', iconText = '') {
+        const heading = document.getElementById('fav-panel-title');
+        const back = document.getElementById('saved-panel-back');
+        if (heading && iconClass) {
+          heading.replaceChildren();
+          const icon = document.createElement('span');
+          icon.className = iconClass;
+          icon.textContent = iconText;
+          heading.append(icon, document.createTextNode(' ' + title));
+        } else if (heading) heading.textContent = title;
+        if (back) {
+          back.style.display = savedItemsPanelMode === 'collection' ? 'inline-flex' : 'none';
+          back.setAttribute('aria-label', t('back'));
+          back.title = t('back');
         }
       }
 
-      window.updateFavBadge = updateFavBadge;
-      function renderFavourites() {
+      function renderSavedPanelFooter() {
+        const footer = document.getElementById('saved-panel-footer');
+        const newListButton = document.getElementById('saved-new-list-btn');
+        const doneButton = document.getElementById('saved-picker-done-btn');
+        const form = document.getElementById('saved-new-list-form');
+        const canCreate = savedItemsPanelMode === 'collections' || savedItemsPanelMode === 'picker';
+        if (footer) footer.style.display = canCreate ? 'block' : 'none';
+        if (newListButton) newListButton.style.display = canCreate ? 'flex' : 'none';
+        if (doneButton) doneButton.style.display = savedItemsPanelMode === 'picker' ? 'block' : 'none';
+        if (!canCreate && form) form.style.display = 'none';
+      }
+
+      function openDeleteCollectionDialog(collection, trigger) {
+        pendingDeleteCollectionId = collection.id;
+        pendingDeleteTrigger = trigger;
+        $('list-delete-message').textContent = t('delete_collection_confirm', { name: collectionName(collection) });
+        const modal = $('list-delete-modal');
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        $('list-delete-keep').focus();
+      }
+
+      function closeDeleteCollectionDialog(restoreFocus = true) {
+        const modal = $('list-delete-modal');
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        const trigger = pendingDeleteTrigger;
+        pendingDeleteCollectionId = null;
+        pendingDeleteTrigger = null;
+        if (restoreFocus && trigger?.isConnected) trigger.focus();
+      }
+
+      function confirmDeleteCollection() {
+        const id = pendingDeleteCollectionId;
+        if (!id) return;
+        const collections = getSavedCollections();
+        const target = collections.find(item => item.id === id);
+        closeDeleteCollectionDialog(false);
+        if (!target) return;
+        if (target.isDefault) {
+          const deleted = getDeletedDefaultCollectionIds();
+          deleted.add(target.id);
+          try { localStorage.setItem(DELETED_COLLECTIONS_KEY, JSON.stringify([...deleted])); } catch (e) { /* storage can be unavailable */ }
+        }
+        saveSavedCollections(collections.filter(item => item.id !== target.id));
+        showToast(t('list_deleted'));
+        renderSavedCollections();
+        refreshSearchStars();
+      }
+
+      function renderSavedCollections() {
+        savedItemsPanelMode = 'collections';
+        currentCollectionId = null;
+        setSavedPanelTitle('🔖 ' + t('saved_locations'));
+        renderSavedPanelFooter();
         const list = document.getElementById('fav-list');
-        const title = document.getElementById('fav-panel-title');
-        if (title) title.textContent = t('favourites');
-
-        const favs = getFavourites();
         if (!list) return;
+        const collections = getSavedCollections();
+        list.innerHTML = collections.map(collection => `
+      <div class="fav-item saved-collection-row" data-collection-id="${_escS(collection.id)}" role="button" tabindex="0">
+        <div class="fav-item-icon${collection.id === 'adresses-preferees' ? ' saved-list-star-icon' : ''}${collection.id === 'a-visiter' ? ' saved-list-flag-icon' : ''}">${_escS(collection.icon || '📁')}</div>
+        <div class="fav-item-info">
+          <div class="fav-item-name">${_escS(collectionName(collection))}</div>
+          <div class="fav-item-cat">${_escS(collectionMeta(collection))}</div>
+        </div>
+        <button class="fav-item-delete saved-collection-delete" type="button" data-delete-collection="${_escS(collection.id)}" title="${t('delete_list')}" aria-label="${t('delete_list')}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
+          </svg>
+        </button>
+        <span class="collection-row-arrow" aria-hidden="true">›</span>
+      </div>`).join('');
+        list.querySelectorAll('.saved-collection-row').forEach(row => {
+          const open = () => renderSavedCollection(row.dataset.collectionId);
+          row.onclick = event => {
+            if (event.target.closest('.saved-collection-delete')) return;
+            open();
+          };
+          row.onkeydown = event => {
+            if ((event.key === 'Enter' || event.key === ' ') && !event.target.closest('.saved-collection-delete')) {
+              event.preventDefault();
+              open();
+            }
+          };
+        });
+        list.querySelectorAll('.saved-collection-delete').forEach(button => {
+          button.onclick = event => {
+            event.stopPropagation();
+            const collections = getSavedCollections();
+            const target = collections.find(item => item.id === button.dataset.deleteCollection);
+            if (!target) return;
+            openDeleteCollectionDialog(target, button);
+          };
+        });
+      }
 
-        if (favs.length === 0) {
-          list.innerHTML = `
-      <div class="fav-empty">
-        <div class="fav-empty-icon">★</div>
-        <div><b>${t('no_favourites')}</b></div>
-        <div style="margin-top:6px;">${t('no_favourites_hint')}</div>
-      </div>`;
+      $('list-delete-keep').onclick = () => closeDeleteCollectionDialog();
+      $('list-delete-confirm').onclick = confirmDeleteCollection;
+      $('list-delete-modal').addEventListener('click', event => {
+        if (event.target === $('list-delete-modal')) closeDeleteCollectionDialog();
+      });
+      document.addEventListener('keydown', event => {
+        const modal = $('list-delete-modal');
+        if (!modal.classList.contains('open')) return;
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeDeleteCollectionDialog();
+        } else if (event.key === 'Tab') {
+          const buttons = modal.querySelectorAll('button:not([disabled])');
+          const first = buttons[0], last = buttons[buttons.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault(); last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault(); first.focus();
+          }
+        }
+      });
+
+      function renderSavedCollection(collectionId) {
+        const collection = getSavedCollections().find(item => item.id === collectionId);
+        if (!collection) return renderSavedCollections();
+        savedItemsPanelMode = 'collection';
+        currentCollectionId = collectionId;
+        const titleIconClass = collection.id === 'adresses-preferees' ? 'saved-title-star-icon' : (collection.id === 'a-visiter' ? 'saved-title-flag-icon' : '');
+        setSavedPanelTitle(collectionName(collection), titleIconClass, collection.icon || '📁');
+        renderSavedPanelFooter();
+        const list = document.getElementById('fav-list');
+        if (!list) return;
+        if (!collection.places.length) {
+          list.innerHTML = `<div class="fav-empty"><div class="fav-empty-icon">${_escS(collection.icon || '📁')}</div><div><b>${t('empty_list')}</b></div></div>`;
           return;
         }
-
-        list.innerHTML = favs.map(f => {
-          const displayName = LANG === 'ar' && f.name_ar ? f.name_ar : (f.name_en || f.name);
+        list.innerHTML = collection.places.map(place => {
+          const displayName = LANG === 'ar' ? (place.name_ar || place.name) : (place.name_en || place.name);
           const safeName = _escS(displayName);
-          const safeCategoryLabel = _escS(catLabel(f.category));
+          const safeCategory = _escS(catLabel(place.category));
           return `
-      <div class="fav-item" data-id="${f.id}" data-lat="${f.lat}" data-lon="${f.lon}" data-name="${safeName}" data-category="${_escS(f.category || '')}">
-        <div class="fav-item-icon">★</div>
+      <div class="fav-item saved-place-row" data-lat="${place.lat}" data-lon="${place.lon}" data-name="${safeName}" data-category="${_escS(place.category || '')}">
+        <div class="fav-item-icon${collection.id === 'adresses-preferees' ? ' saved-list-star-icon' : ''}${collection.id === 'a-visiter' ? ' saved-list-flag-icon' : ''}">${_escS(collection.icon || '🔖')}</div>
         <div class="fav-item-info">
           <div class="fav-item-name">${safeName}</div>
-          ${safeCategoryLabel ? `<div class="fav-item-cat">${safeCategoryLabel}</div>` : ''}
+          ${safeCategory ? `<div class="fav-item-cat">${safeCategory}</div>` : ''}
         </div>
-        <button class="fav-item-delete" data-delete-id="${f.id}" title="${t('remove')}">✕</button>
+        <button class="fav-item-delete saved-place-delete" data-lat="${place.lat}" data-lon="${place.lon}" title="${t('remove')}" aria-label="${t('remove')}">✕</button>
       </div>`;
         }).join('');
-
-        // Wire up clicks
-        list.querySelectorAll('.fav-item').forEach(item => {
-          item.onclick = (e) => {
-            if (e.target.closest('.fav-item-delete')) return;
-            const lat = parseFloat(item.dataset.lat);
-            const lon = parseFloat(item.dataset.lon);
-            const name = item.dataset.name;
-            const category = item.dataset.category || '';
+        list.querySelectorAll('.saved-place-row').forEach(row => {
+          row.onclick = event => {
+            if (event.target.closest('.saved-place-delete')) return;
+            const lat = Number(row.dataset.lat), lon = Number(row.dataset.lon);
+            const name = row.dataset.name, category = row.dataset.category || '';
             closeFavPanel();
             if (typeof window.goToPlace === 'function') window.goToPlace(lon, lat, name, category);
             else if (typeof flyToCoordinates === 'function') flyToCoordinates(lat, lon);
           };
         });
-
-        list.querySelectorAll('.fav-item-delete').forEach(btn => {
-          btn.onclick = (e) => {
-            e.stopPropagation();
-            removeFavourite(btn.dataset.deleteId);
+        list.querySelectorAll('.saved-place-delete').forEach(button => {
+          button.onclick = event => {
+            event.stopPropagation();
+            const lat = Number(button.dataset.lat), lon = Number(button.dataset.lon);
+            const collections = getSavedCollections();
+            const target = collections.find(item => item.id === currentCollectionId);
+            if (!target) return;
+            target.places = target.places.filter(place => Math.abs(Number(place.lat) - lat) >= 0.00001 || Math.abs(Number(place.lon) - lon) >= 0.00001);
+            saveSavedCollections(collections);
+            renderSavedCollection(currentCollectionId);
+            refreshSearchStars();
           };
         });
       }
 
-      function openFavPanel() {
-        renderFavourites();
+      function renderCollectionPicker() {
+        savedItemsPanelMode = 'picker';
+        currentCollectionId = null;
+        setSavedPanelTitle(t('save_to_list'));
+        renderSavedPanelFooter();
+        const list = document.getElementById('fav-list');
+        if (!list || !pendingSavePlace) return;
+        list.innerHTML = getSavedCollections().map(collection => {
+          const selected = collectionHasPlace(collection, pendingSavePlace);
+          return `
+      <div class="fav-item collection-picker-row" data-collection-id="${_escS(collection.id)}" role="button" tabindex="0">
+        <div class="fav-item-icon${collection.id === 'adresses-preferees' ? ' saved-list-star-icon' : ''}${collection.id === 'a-visiter' ? ' saved-list-flag-icon' : ''}">${_escS(collection.icon || '📁')}</div>
+        <div class="fav-item-info">
+          <div class="fav-item-name">${_escS(collectionName(collection))}</div>
+          <div class="fav-item-cat">${_escS(collectionMeta(collection))}</div>
+        </div>
+        <span class="collection-picker-check${selected ? ' selected' : ''}" aria-hidden="true">${selected ? '✓' : '+'}</span>
+      </div>`;
+        }).join('');
+        list.querySelectorAll('.collection-picker-row').forEach(row => {
+          const toggle = () => {
+            const collections = getSavedCollections();
+            const target = collections.find(item => item.id === row.dataset.collectionId);
+            if (!target || !pendingSavePlace) return;
+            if (collectionHasPlace(target, pendingSavePlace)) {
+              target.places = target.places.filter(place => Math.abs(Number(place.lat) - pendingSavePlace.lat) >= 0.00001 || Math.abs(Number(place.lon) - pendingSavePlace.lon) >= 0.00001);
+              saveSavedCollections(collections);
+              showToast(t('removed_from_list'));
+            } else {
+              const place = normalizeSavedPlace(pendingSavePlace);
+              place.addedAt = Date.now();
+              target.places.unshift(place);
+              saveSavedCollections(collections);
+              showToast(t('saved_to_list'));
+            }
+            refreshSearchStars();
+            renderCollectionPicker();
+          };
+          row.onclick = toggle;
+          row.onkeydown = event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(); } };
+        });
+      }
+
+      function formatRecentTimestamp(timestamp) {
+        if (!Number.isFinite(Number(timestamp)) || Number(timestamp) <= 0) return t('recent_time_unavailable');
+        try {
+          const date = new Date(Number(timestamp));
+          const locale = LANG === 'ar' ? 'ar-TN' : 'en-GB';
+          const dateText = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(date);
+          const twoDigits = value => new Intl.NumberFormat(locale, {
+            minimumIntegerDigits: 2,
+            useGrouping: false
+          }).format(value);
+          const timeText = `${twoDigits(date.getHours())}:${twoDigits(date.getMinutes())}`;
+          return `${dateText} · ${timeText}`;
+        } catch (e) {
+          const date = new Date(Number(timestamp));
+          return `${date.toLocaleDateString()} · ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        }
+      }
+
+      function renderRecentDestinations() {
+        savedItemsPanelMode = 'recent';
+        currentCollectionId = null;
+        setSavedPanelTitle('🕘 ' + t('recently_visited'));
+        renderSavedPanelFooter();
+        const list = document.getElementById('fav-list');
+        if (!list) return;
+        const recent = getRecentDestinations().sort((a, b) => b.routedAt - a.routedAt);
+        if (!recent.length) {
+          list.innerHTML = `
+      <div class="fav-empty">
+        <div class="fav-empty-icon">🕘</div>
+        <div><b>${t('no_recent_destinations')}</b></div>
+        <div style="margin-top:6px;">${t('no_recent_destinations_hint')}</div>
+      </div>`;
+          return;
+        }
+        list.innerHTML = recent.map(place => {
+          const displayName = LANG === 'ar' ? (place.nameAr || place.name) : (place.nameEn || place.name);
+          const safeName = _escS(displayName || `${place.lat.toFixed(6)}, ${place.lon.toFixed(6)}`);
+          const dateTime = _escS(formatRecentTimestamp(place.routedAt));
+          return `
+      <div class="fav-item recent-item" data-lat="${place.lat}" data-lon="${place.lon}" data-name="${safeName}">
+        <div class="fav-item-icon recent-item-icon">🕘</div>
+        <div class="fav-item-info">
+          <div class="fav-item-name">${safeName}</div>
+          <div class="fav-item-cat">${dateTime}</div>
+        </div>
+        <button class="fav-item-delete recent-item-delete" data-lat="${place.lat}" data-lon="${place.lon}" title="${t('remove')}" aria-label="${t('remove')}">✕</button>
+      </div>`;
+        }).join('');
+        list.querySelectorAll('.recent-item').forEach(item => {
+          item.onclick = event => {
+            if (event.target.closest('.recent-item-delete')) return;
+            const lat = parseFloat(item.dataset.lat), lon = parseFloat(item.dataset.lon), name = item.dataset.name;
+            closeFavPanel();
+            if (typeof window.goToPlace === 'function') window.goToPlace(lon, lat, name, '');
+            else if (typeof flyToCoordinates === 'function') flyToCoordinates(lat, lon);
+          };
+        });
+        list.querySelectorAll('.recent-item-delete').forEach(button => {
+          button.onclick = event => {
+            event.stopPropagation();
+            const lat = parseFloat(button.dataset.lat), lon = parseFloat(button.dataset.lon);
+            const updated = getRecentDestinations().filter(place => Math.abs(place.lat - lat) >= 0.00005 || Math.abs(place.lon - lon) >= 0.00005);
+            try { localStorage.setItem(RECENT_DESTINATIONS_KEY, JSON.stringify(updated)); } catch (e) { /* storage can be unavailable */ }
+            renderRecentDestinations();
+          };
+        });
+      }
+
+      function openSavedPanel() {
+        pendingSavePlace = null;
+        renderSavedCollections();
         document.getElementById('fav-panel').classList.add('open');
+      }
+
+      function openRecentPanel() {
+        pendingSavePlace = null;
+        renderRecentDestinations();
+        document.getElementById('fav-panel').classList.add('open');
+      }
+
+      function openCollectionPicker(place) {
+        pendingSavePlace = normalizeSavedPlace(place);
+        if (!pendingSavePlace) return;
+        renderCollectionPicker();
+        document.getElementById('fav-panel').classList.add('open');
+      }
+
+      function createSavedCollectionFromInput() {
+        const input = document.getElementById('saved-list-name');
+        const name = input?.value.trim();
+        if (!name) { input?.focus(); return; }
+        const collections = getSavedCollections();
+        const collection = {
+          id: `custom_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          name,
+          icon: '📁',
+          isDefault: false,
+          places: []
+        };
+        if (pendingSavePlace) {
+          const place = normalizeSavedPlace(pendingSavePlace);
+          place.addedAt = Date.now();
+          collection.places.push(place);
+        }
+        collections.push(collection);
+        saveSavedCollections(collections);
+        if (input) input.value = '';
+        const form = document.getElementById('saved-new-list-form');
+        if (form) form.style.display = 'none';
+        showToast(pendingSavePlace ? t('saved_to_list') : t('list_created'));
+        refreshSearchStars();
+        if (savedItemsPanelMode === 'picker') renderCollectionPicker();
+        else renderSavedCollections();
+      }
+
+      function setNewListFormVisible(visible) {
+        const form = document.getElementById('saved-new-list-form');
+        const button = document.getElementById('saved-new-list-btn');
+        if (form) form.style.display = visible ? 'flex' : 'none';
+        if (button) button.style.display = visible ? 'none' : (savedItemsPanelMode === 'collections' || savedItemsPanelMode === 'picker' ? 'flex' : 'none');
+        if (visible) document.getElementById('saved-list-name')?.focus();
       }
 
       function closeFavPanel() {
         document.getElementById('fav-panel').classList.remove('open');
-      }      // setupUI() is outside this wrapper, so expose the panel callbacks it uses.
-      window.openFavPanel = openFavPanel;
+        pendingSavePlace = null;
+        setNewListFormVisible(false);
+      }
+
+      window.openSavedPanel = openSavedPanel;
+      window.openFavPanel = openSavedPanel;
+      window.openRecentPanel = openRecentPanel;
+      window.openSavedCollectionPicker = openCollectionPicker;
+      window.createSavedCollectionFromInput = createSavedCollectionFromInput;
+      window.setNewListFormVisible = setNewListFormVisible;
+      window.refreshSavedPanel = () => {
+        if (savedItemsPanelMode === 'recent') renderRecentDestinations();
+        else if (savedItemsPanelMode === 'picker') renderCollectionPicker();
+        else if (savedItemsPanelMode === 'collection' && currentCollectionId) renderSavedCollection(currentCollectionId);
+        else renderSavedCollections();
+      };
       window.closeFavPanel = closeFavPanel;
+
+      window.saveMapTapFavourite = function (point) {
+        const coords = point.lat.toFixed(6) + ', ' + point.lng.toFixed(6);
+        const nameEn = point.nameEn || T.en.map_location + ' (' + coords + ')';
+        const nameAr = point.nameAr || T.ar.map_location + ' (' + coords + ')';
+        openCollectionPicker({
+          lat: point.favoriteLat ?? point.lat,
+          lon: point.favoriteLon ?? point.lng,
+          name: LANG === 'ar' ? nameAr : nameEn,
+          name_ar: nameAr,
+          name_en: nameEn,
+          category: point.category || ''
+        });
+      };
+
       function toggleSearchFav(btn) {
-        const lat = parseFloat(btn.dataset.lat);
-        const lon = parseFloat(btn.dataset.lon);
-        if (isFavourite(lat, lon)) {
-          const favs = getFavourites().filter(f =>
-            !(Math.abs(f.lat - lat) < 0.00001 && Math.abs(f.lon - lon) < 0.00001)
-          );
-          saveFavourites(favs);
-          btn.classList.remove('active');
-          btn.textContent = '☆';
-          showToast(LANG === 'ar' ? '✓ تمت الإزالة من المفضّلة' : '✓ Removed from favourites');
-        } else {
-          addFavourite({
-            lat, lon,
-            name: btn.dataset.nameAr || btn.dataset.nameEn || btn.dataset.name,
-            category: btn.dataset.cat,
-            name_ar: btn.dataset.nameAr || '',
-            name_en: btn.dataset.nameEn || btn.dataset.name
-          });
-          btn.classList.add('active');
-          btn.textContent = '★';
-        }
+        openCollectionPicker({
+          lat: parseFloat(btn.dataset.lat),
+          lon: parseFloat(btn.dataset.lon),
+          name: btn.dataset.name || btn.dataset.nameEn || btn.dataset.nameAr,
+          name_ar: btn.dataset.nameAr || '',
+          name_en: btn.dataset.nameEn || btn.dataset.name || '',
+          category: btn.dataset.cat || ''
+        });
       }
       window.toggleSearchFav = toggleSearchFav;
+
       function refreshSearchStars() {
         document.querySelectorAll('.fav-star[data-lat]').forEach(star => {
           const lat = parseFloat(star.dataset.lat);
@@ -5319,7 +7255,7 @@
         return m < 60 ? `${m} ${t('min')}` : (m % 60 === 0 ? `${m / 60} ${t('h')}` : `${Math.floor(m / 60)} ${t('h')} ${String(m % 60).padStart(2, '0')} ${t('min')}`);
       };
       const fmtDist = m => m < 950 ? `${Math.round(m / 10) * 10} ${t('meters')}` : `${(m / 1000).toFixed(1)} ${t('km')}`;
-      const clock = s => new Date(Date.now() + s * 1000).toLocaleTimeString(LANG === 'ar' ? 'ar-TN' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: true }); const stopIcon = s => s.kind === 'station' ? ' 🚉' : s.kind === 'bench' ? ' 🪑' : '';
+      const clock = s => { const d = new Date(Date.now() + s * 1000), locale = LANG === 'ar' ? 'ar-TN' : 'en-GB'; const twoDigits = n => new Intl.NumberFormat(locale, { minimumIntegerDigits: 2, useGrouping: false }).format(n); return `${twoDigits(d.getHours())}:${twoDigits(d.getMinutes())}`; }; const stopIcon = s => s.kind === 'station' ? ' 🚉' : s.kind === 'bench' ? ' 🪑' : '';
       const lineChip = dl => `<span class="chip" style="background:${CFG.MODES[dl.mode].color}">${CFG.MODES[dl.mode].icon} ${esc(lineLabel(dl))}</span>`;
       const OR = '<span class="chip-or">or</span>';
       const allLines = l => [l.dl, ...(l.alts || []).map(a => a.dl)];
@@ -5335,8 +7271,9 @@
       // total trip distance: walking legs + distance along the track/route for each transit leg
       const optDist = o => o.legs.reduce((s, l) => s + (l.type === 'walk' ? l.meters : Math.abs(l.b.d - l.a.d)), 0);
       let runId = 0, lastDest = null, options = [], selectedSig = null, lastOriginOv = null, lastResolvedOrigin = null;
-      let sortPreference = 'fastest';
+      let sortPreference = 'least_transfers';
       let enabledTransitModes = new Set(['bus', 'metro', 'rfr']);
+      let sheetAnimationFrame = 0, sheetAnimationTimer = null, sheetAnimationToken = 0;
 
       // Expose a safe global refresh function for language switching
       window.refreshTripUI = function () {
@@ -5344,6 +7281,10 @@
           renderOptions();
           const o = options.find(x => x.sig === selectedSig);
           if (o && map.getSource('trip-pts')) drawOption(o, false);   // relabel stops on the map
+          if (simulationChosen && simulationOption) {
+            updateRouteTraceFromSimulation();
+            updateSimulationRoutePanel(performance.now(), true, simulationArrived);
+          }
         }
       };
 
@@ -5360,29 +7301,69 @@
         if (typeof MutationObserver !== 'undefined') new MutationObserver(updateMapControlsPosition).observe(sheet, { attributes: true, attributeFilter: ['class'] });
         window.addEventListener('resize', updateMapControlsPosition);
       }
+      function stopSheetAnimation() {
+        sheetAnimationToken++;
+        if (sheetAnimationFrame) cancelAnimationFrame(sheetAnimationFrame);
+        if (sheetAnimationTimer) clearTimeout(sheetAnimationTimer);
+        sheetAnimationFrame = 0;
+        sheetAnimationTimer = null;
+        const sheet = $('trip-sheet');
+        sheet.classList.remove('animating');
+        sheet.style.height = '';
+      }
       function openSheet() {
         const sheet = $('trip-sheet');
+        stopSheetAnimation();
         sheet.classList.add('open', 'expanded');
         sheet.classList.remove('collapsed');
         updateMapControlsPosition();
       }
       function toggleSheet(force) {
         const sheet = $('trip-sheet');
-        sheet.classList.toggle('collapsed', force ?? !sheet.classList.contains('collapsed'));
+        const shouldCollapse = force ?? !sheet.classList.contains('collapsed');
+        if (shouldCollapse === sheet.classList.contains('collapsed')) return;
+
+        if (sheetAnimationFrame) cancelAnimationFrame(sheetAnimationFrame);
+        if (sheetAnimationTimer) clearTimeout(sheetAnimationTimer);
+        sheetAnimationFrame = 0;
+        sheetAnimationTimer = null;
+        const token = ++sheetAnimationToken;
+        const startHeight = sheet.getBoundingClientRect().height;
+        sheet.classList.toggle('collapsed', shouldCollapse);
+        sheet.style.height = 'auto';
+        const endHeight = sheet.getBoundingClientRect().height;
+        sheet.style.height = `${startHeight}px`;
+        sheet.classList.add('animating');
+        void sheet.offsetHeight;
+
+        sheetAnimationFrame = requestAnimationFrame(() => {
+          if (token !== sheetAnimationToken) return;
+          sheetAnimationFrame = 0;
+          sheet.style.height = `${endHeight}px`;
+        });
+        sheetAnimationTimer = window.setTimeout(() => {
+          if (token !== sheetAnimationToken) return;
+          sheetAnimationTimer = null;
+          sheet.style.height = '';
+          sheet.classList.remove('animating');
+          updateMapControlsPosition();
+        }, 500);
         updateMapControlsPosition();
       }
       // ── STARTING POINT PICKER ───────────────────────────────────────────────
       // Picking a destination opens a bar under the search box: type a starting place (same search + district logic as the
       // main box) or tap "Current location" (the fake test coordinates while testing). The route is planned once one is chosen.
       let pendingDest = null, customOriginMarker = null, _originShown = [];
-      const showTestMarker = on => { if (originMarker) originMarker.getElement().style.display = on ? '' : 'none'; };
+      const showTestMarker = on => { testMarkerVisible = !!on; updateSimulatedMarkerData(); };
       function clearCustomMarker() { if (customOriginMarker) { customOriginMarker.remove(); customOriginMarker = null; } showTestMarker(true); }
       function hideOriginBar() {
         $('origin-bar').classList.remove('open'); $('origin-results').classList.remove('open');
         pendingDest = null; clearCustomMarker();
       }
       function clearTripVisuals() {                                   // wipe a previous route before asking for a new start
+        stopRouteSimulation(true);
         runId++; lastDest = null; lastOriginOv = null; lastResolvedOrigin = null; options = [];
+        stopSheetAnimation();
         $('trip-sheet').classList.remove('open');
         updateMapControlsPosition();
         if (map.getSource('trip')) { map.getSource('trip').setData(EMPTY); map.getSource('trip-pts').setData(EMPTY); }
@@ -5435,11 +7416,22 @@
         planTripTo(pendingDest.lat, pendingDest.lon, pendingDest.name, { lat: p.la, lon: p.lo, source: 'custom', place: p });
       };
 
-      function closeTrip() {
-        runId++; lastDest = null; lastResolvedOrigin = null; options = [];
-        $('trip-sheet').classList.remove('open');
-        updateMapControlsPosition();
+      function dismissRouteCancelDialog(restoreFocus = true) {
+        const modal = $('route-cancel-modal');
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        if (restoreFocus && $('trip-sheet').classList.contains('open')) $('trip-close').focus();
+      }
+      function confirmRouteCancellation() {
+        dismissRouteCancelDialog(false);
+        clearTripVisuals();
         hideOriginBar();
+      }
+      function closeTrip() {
+        const modal = $('route-cancel-modal');
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        $('route-cancel-keep').focus();
       }
       function setBody(html) { $('trip-list').innerHTML = html; }
       function renderOptions(note) {
@@ -5447,8 +7439,21 @@
         const o0 = options[0];
         $('trip-title').textContent = `${t('to')} ${dispName(o0.ctx.dest.name)}`;
         const sel0 = options.find(x => x.sig === selectedSig) || o0;
-        const orWord = ' ' + t('or') + ' ';
-        $('trip-mini').innerHTML = `<b>${fmtMin(sel0.total)}</b> · ` + (sel0.legs.filter(l => l.type === 'transit').map(l => allLines(l).map(lineLabel).join(orWord)).join(' + ') || t('walking_only')) + ' · ' + t('tap_show');
+        const firstLeg = sel0.legs[0];
+        let currentStep = t('walking_only');
+        if (firstLeg?.type === 'walk') {
+          const nextPlace = firstLeg.toStop ? fmtStopName(firstLeg.toStop.name) : esc(dispName(firstLeg.toName));
+          currentStep = t('collapsed_walk_step', { place: nextPlace });
+        } else if (firstLeg) {
+          currentStep = t('collapsed_board_step', {
+            line: esc(lineLabel(firstLeg.dl)),
+            station: fmtStopName(firstLeg.a.stop.name)
+          });
+        }
+        const firstStepMode = firstLeg?.type === 'transit' && CFG.MODES[firstLeg.dl?.mode]
+          ? firstLeg.dl.mode
+          : 'walk';
+        $('trip-mini').innerHTML = `<b>${fmtMin(sel0.total)}</b> · <span class="trip-mini-step mode-${firstStepMode}">${currentStep}</span> · ${t('tap_show')}`;
         $('trip-sub').innerHTML = `${o0.ctx.origin.source === 'custom' ? t('from_word') + ' ' + esc(placeLabel(o0.ctx.origin.place)) : (o0.ctx.origin.source === 'gps' ? t('from_location') : t('from_test'))}${note ? ' · ' + note : ''}`;
 
         $('trip-list').innerHTML = options.map((o, i) => {
@@ -5463,17 +7468,118 @@
             ? `${i === 0 ? `<b class="tag">${t('best')}</b> ` : ''}${t('walk')} ${fmtMin(o.walkSec)} · ${o.transfers ? (o.transfers > 1 ? t('transfer_many', { n: o.transfers }) : t('transfer_one')) : t('no_transfer')}`
             : `${i === 0 ? `<b class="tag">${t('best')}</b> ` : ''}${t('walking_only')} · ${fmtDist(o.legs[0].meters)}`;
 
-          const steps = sel ? `<div class="trip-steps">${o.legs.map(l => l.type === 'walk'
-            ? `<div class="step"><span class="ico">🚶</span><div>${fmtMin(l.sec)} ${t('walk')}<br><small>${t('to')} <b><bdi>${l.toStop ? fmtStopName(l.toStop.name) : esc(dispName(l.toName))}</bdi></b></small></div></div>`
-            : `<div class="step"><span class="ico">${CFG.MODES[l.dl.mode].icon}</span><div><small>${t('at_station')} <b><bdi>${fmtStopName(l.a.stop.name)}</bdi></b>${l.a.stop.kind === 'bench' ? ' 🪑' : ''} ${t('board')}<br>
+          const steps = sel ? `<div class="trip-steps">${o.legs.map((l, legIndex) => l.type === 'walk'
+            ? `<div class="step" data-route-leg-index="${legIndex}"><span class="ico">🚶</span><div>${fmtMin(l.sec)} ${t('walk')}<br><small>${t('to')} <b><bdi>${l.toStop ? fmtStopName(l.toStop.name) : esc(dispName(l.toName))}</bdi></b></small></div></div>`
+            : `<div class="step" data-route-leg-index="${legIndex}"><span class="ico">${CFG.MODES[l.dl.mode].icon}</span><div><small>${t('at_station')} <b><bdi>${fmtStopName(l.a.stop.name)}</bdi></b>${l.a.stop.kind === 'bench' ? ' 🪑' : ''} ${t('board')}<br>
 ${linesList(l)}<br>
 ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind === 'bench' ? ' 🪑' : ''}</small></div></div>`
           ).join('')}</div>` : '';
+          const canSimulate = ['test', 'test (GPS failed)'].includes(o.ctx.origin.source);
+          const startButton = sel && canSimulate
+            ? `<button class="trip-start-simulation" type="button" data-start-route="${esc(o.sig)}">▶ ${LANG === 'ar' ? 'ابدأ محاكاة المسار' : 'Start route simulation'}</button>`
+            : '';
 
           return `<div class="trip-card${sel ? ' sel' : ''}" data-sig="${esc(o.sig)}">
 <div class="trip-top"><span class="trip-time">${fmtMin(o.total)} <span class="trip-dist">· ${fmtDist(optDist(o))}</span></span></div>
-<div class="trip-chips">${chips}</div><div class="trip-subline">${sub}</div>${steps}</div>`;
+<div class="trip-chips">${chips}</div><div class="trip-subline">${sub}</div>${steps}${startButton}</div>`;
         }).join('') + `<div class="trip-foot">${t('estimates')}</div>`;
+      }
+      function updateSimulationRoutePanel(now = performance.now(), force = false, arrived = false) {
+        const option = simulationOption;
+        if (!option) return;
+        const stepEls = document.querySelectorAll('#trip-list .trip-card.sel .step[data-route-leg-index]');
+        if (arrived) {
+          stepEls.forEach(el => {
+            el.classList.remove('active');
+            el.classList.add('done');
+            el.removeAttribute('aria-current');
+          });
+          simulationLastUiLegIndex = -1;
+          $('trip-mini').innerHTML = `<b>${t('simulation_arrived')}</b> · ${esc(dispName(option.ctx.dest.name))} · ${t('tap_show')}`;
+          return;
+        }
+
+        const part = simulationSegments[simulationSegmentIndex];
+        if (!part) return;
+        const actualLegIndex = Math.max(0, Math.min(option.legs.length - 1, part.legIndex || 0));
+        const currentPosition = [testOrigin.lon, testOrigin.lat];
+        const actualLeg = option.legs[actualLegIndex];
+        let displayLegIndex = actualLegIndex;
+        let displayPart = part;
+
+        // If the route geometry has a short walking connector onto transit, switch to the boarding instruction
+        // as soon as the simulated location is within the approach radius of the named station.
+        if (actualLeg.type === 'transit' && part.kind === 'walk') {
+          const boardingPoint = [actualLeg.a.stop.lon, actualLeg.a.stop.lat];
+          if (hav(currentPosition, boardingPoint) <= CFG.STEP_ADVANCE_RADIUS_M) {
+            const ridePart = simulationSegments.find((candidate, index) => index > simulationSegmentIndex &&
+              candidate.legIndex === actualLegIndex && candidate.kind === 'transit');
+            if (ridePart) displayPart = ridePart;
+          }
+        }
+
+        const nextLegIndex = actualLegIndex + 1;
+        const nextLeg = option.legs[nextLegIndex];
+        if (nextLeg) {
+          const nextStepPoint = nextLeg.type === 'transit'
+            ? [nextLeg.a.stop.lon, nextLeg.a.stop.lat]
+            : (nextLeg.fromStop ? [nextLeg.fromStop.lon, nextLeg.fromStop.lat] : nextLeg.from);
+          if (nextStepPoint && hav(currentPosition, nextStepPoint) <= CFG.STEP_ADVANCE_RADIUS_M) {
+            const expectedKind = nextLeg.type === 'walk' ? 'walk' : 'transit';
+            const nextPart = simulationSegments.find((candidate, index) => index > simulationSegmentIndex &&
+              candidate.legIndex === nextLegIndex && candidate.kind === expectedKind);
+            if (nextPart) { displayLegIndex = nextLegIndex; displayPart = nextPart; }
+          }
+        }
+
+        const legIndex = displayLegIndex;
+        const leg = option.legs[legIndex];
+        if (force || legIndex !== simulationLastUiLegIndex) {
+          stepEls.forEach(el => {
+            const index = Number(el.dataset.routeLegIndex);
+            const active = index === legIndex;
+            el.classList.toggle('active', active);
+            el.classList.toggle('done', index < legIndex);
+            if (active) el.setAttribute('aria-current', 'step');
+            else el.removeAttribute('aria-current');
+          });
+          simulationLastUiLegIndex = legIndex;
+        }
+
+        const fmtStopName = name => esc(String(name || '')
+          .replace('· bench', ` · ${t('bench')}`)
+          .replace('· stop', ` · ${t('stop')}`));
+        let currentStep = t('walking_only');
+        if (displayPart.kind === 'walk') {
+          const target = leg.type === 'walk'
+            ? (leg.toStop ? fmtStopName(leg.toStop.name) : esc(dispName(leg.toName || option.ctx.dest.name)))
+            : fmtStopName(leg.a.stop.name);
+          currentStep = t('collapsed_walk_step', { place: target });
+        } else if (leg.type === 'transit') {
+          currentStep = t('collapsed_ride_step', {
+            line: esc(lineLabel(leg.dl)),
+            station: fmtStopName(leg.b.stop.name)
+          });
+        }
+        const currentStepMode = displayPart.kind === 'transit' && leg.type === 'transit' && CFG.MODES[leg.dl?.mode]
+          ? leg.dl.mode
+          : 'walk';
+
+        let legDistance = 0, legProgress = 0;
+        simulationSegments.forEach((segment, index) => {
+          if (segment.legIndex !== actualLegIndex) return;
+          legDistance += segment.line.len;
+          if (index < simulationSegmentIndex) legProgress += segment.line.len;
+          else if (index === simulationSegmentIndex) legProgress += simulationDistance;
+        });
+        const fraction = legDistance > 0 ? Math.max(0, Math.min(1, legProgress / legDistance)) : 0;
+        const remainingSeconds = option.legs.reduce((total, item, index) => {
+          const duration = item.type === 'walk' ? item.sec : item.wait + item.ride;
+          if (index > actualLegIndex) return total + duration;
+          if (index === actualLegIndex) return total + duration * (1 - fraction);
+          return total;
+        }, 0);
+        $('trip-mini').innerHTML = `<b>${fmtMin(remainingSeconds)}</b> · <span class="trip-mini-step mode-${currentStepMode}">${currentStep}</span> · ${t('tap_show')}`;
       }
       const EMPTY = { type: 'FeatureCollection', features: [] };
       function ensureLayers() {
@@ -5488,27 +7594,26 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
       }
       function drawOption(o, fit) {
         ensureLayers();
-        const feats = [], pts = [], all = [];
-        o.legs.forEach(l => {
-          const color = l.type === 'walk' ? '#374151' : CFG.MODES[l.dl.mode].color;
-          feats.push({ type: 'Feature', properties: { kind: l.type === 'walk' ? 'walk' : 'transit', color }, geometry: { type: 'LineString', coordinates: l.coords } });
-          l.coords.forEach(c => all.push(c));
-          if (l.type === 'transit') {
-            pts.push({ type: 'Feature', properties: { color, label: l.a.stop.name }, geometry: { type: 'Point', coordinates: [l.a.stop.lon, l.a.stop.lat] } });
-            pts.push({ type: 'Feature', properties: { color, label: l.b.stop.name }, geometry: { type: 'Point', coordinates: [l.b.stop.lon, l.b.stop.lat] } });
-          }
+        const feats = [], all = [];
+        routeGeometryParts(o).forEach(part => {
+          feats.push({ type: 'Feature', properties: { kind: part.kind, color: part.color }, geometry: { type: 'LineString', coordinates: part.coords } });
+          part.coords.forEach(c => all.push(c));
         });
+        const pts = routeStationFeatures(o);
         map.getSource('trip').setData({ type: 'FeatureCollection', features: feats });
         map.getSource('trip-pts').setData({ type: 'FeatureCollection', features: pts });
+        bringSimulatedMarkerToTop();
         if (fit && all.length) {
           const b = all.reduce((bb, c) => bb.extend(c), new maplibregl.LngLatBounds(all[0], all[0]));
           map.fitBounds(b, { padding: { top: 90, bottom: Math.min(window.innerHeight * 0.55, 420), left: 40, right: 40 }, maxZoom: 16, duration: 600 });
         }
       }
-      function selectOption(sig, fit = true) {
+      function selectOption(sig, fit = true, userChoseRoute = false) {
         selectedSig = sig;
         const o = options.find(x => x.sig === sig); if (!o) return;
         renderOptions(); drawOption(o, fit);
+        if (userChoseRoute) startRouteSimulation(o);
+        else refreshChosenRouteSimulation(o);
       }
 
       // Replace the straight-line walking estimates with real pedestrian routes from Valhalla (runs in the background).
@@ -5545,6 +7650,16 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
       }
 
       async function planTripTo(lat, lon, name, originOv) {          // originOv = a typed starting point; omit it to start from the current position
+        stopRouteSimulation(true);
+        if (!originOv && CFG.USE_TEST_ORIGIN) {
+          // Every new simulated trip begins at the fixed south-of-Lac test location.
+          testOrigin = { ...CFG.TEST_ORIGIN };
+          simulatedHeading = 0;
+          resetGpsNoise(performance.now());
+          setOriginMarker(testOrigin);
+          showTestMarker(true);
+        }
+        rememberRecentDestination(lat, lon, name);
         const my = ++runId; lastDest = { lat, lon, name }; lastOriginOv = originOv || null; lastResolvedOrigin = null;
         openSheet();
         $('trip-title').textContent = `${t('to')} ${dispName(name)}`; $('trip-sub').textContent = '';
@@ -5570,6 +7685,32 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         $('trip-close').onclick = closeTrip;
         $('trip-toggle').onclick = () => toggleSheet();
         $('trip-handle').onclick = () => toggleSheet();
+        $('btn-compass').onclick = resetMapToNorth;
+        map.on('rotate', syncCompassNeedle);
+        syncCompassNeedle();
+        const routeCancelModal = $('route-cancel-modal');
+        $('route-cancel-keep').onclick = () => dismissRouteCancelDialog();
+        $('route-cancel-confirm').onclick = confirmRouteCancellation;
+        routeCancelModal.addEventListener('click', event => {
+          if (event.target === routeCancelModal) dismissRouteCancelDialog();
+        });
+        document.addEventListener('keydown', event => {
+          if (!routeCancelModal.classList.contains('open')) return;
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            dismissRouteCancelDialog();
+            return;
+          }
+          if (event.key === 'Tab') {
+            const buttons = routeCancelModal.querySelectorAll('button:not([disabled])');
+            const first = buttons[0], last = buttons[buttons.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault(); last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault(); first.focus();
+            }
+          }
+        });
         watchTripSheet();
         // starting-point bar
         const oi = $('origin-input');
@@ -5578,7 +7719,17 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         oi.addEventListener('keydown', e => { if (e.key === 'Enter' && _originShown.length) window.pickOrigin(0); });
         $('origin-here').onclick = chooseCurrent;
         $('origin-clear').onclick = () => { if (oi.value) { oi.value = ''; $('origin-results').classList.remove('open'); oi.focus(); } else hideOriginBar(); };   // 2nd tap on an empty box cancels
-        $('trip-list').addEventListener('click', e => { const c = e.target.closest('.trip-card'); if (c && c.dataset.sig !== selectedSig) selectOption(c.dataset.sig); });
+        $('trip-list').addEventListener('click', e => {
+          const startButton = e.target.closest('[data-start-route]');
+          if (startButton) {
+            e.stopPropagation();
+            const option = options.find(item => item.sig === startButton.dataset.startRoute);
+            if (option) startRouteSimulation(option);
+            return;
+          }
+          const c = e.target.closest('.trip-card');
+          if (c) selectOption(c.dataset.sig, c.dataset.sig !== selectedSig, true);
+        });
 
         const sortEl = $('trip-sort');
         if (sortEl) {
@@ -5594,7 +7745,10 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         const modeFilters = $('trip-mode-filters');
         if (modeFilters) modeFilters.addEventListener('change', refreshRoutesForModeSelection);
 
-        if (CFG.USE_TEST_ORIGIN) setOriginMarker(testOrigin);
+        if (CFG.USE_TEST_ORIGIN) {
+          setOriginMarker(testOrigin);
+          map.jumpTo({ center: [testOrigin.lon, testOrigin.lat] });
+        }
         loadTransitData().catch(e => dbg('❌ Transit data: ' + e.message));
       }
       window.initTransitPlanner = initTransitPlanner;
