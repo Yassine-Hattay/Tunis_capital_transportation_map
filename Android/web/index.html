@@ -37,6 +37,24 @@
       color: var(--c-text);
     }
 
+    /* No blue tap flash and no text-selection tint on buttons, panels or anything else you press */
+    *,
+    *::before,
+    *::after {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* ...but typing fields must keep working normally (cursor, selecting, paste) */
+    input,
+    textarea,
+    [contenteditable="true"] {
+      -webkit-user-select: text;
+      user-select: text;
+    }
+
     #map {
       position: absolute;
       top: 0;
@@ -1438,6 +1456,20 @@
       font-size: 13px;
     }
 
+    #trip-list,
+    .trip-card,
+    .trip-chips-wrapper,
+    .trip-chips {
+      -webkit-tap-highlight-color: transparent;
+      /* only the arrow buttons flash on tap, not the whole panel */
+    }
+
+    .trip-chips-wrapper {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
     .trip-card {
       border: 1.5px solid var(--c-border);
       border-radius: 14px;
@@ -1494,33 +1526,441 @@
       color: var(--c-muted);
     }
 
+    /* ── Trip Chips Scroll Wrapper & Arrows ────────────────────────────────────── */
+    .trip-chips-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin: 8px 0 6px;
+    }
+
+    .trip-chips-arrow {
+      flex: 0 0 auto;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: 2px solid var(--c-accent2, #818cf8);
+      border-radius: 999px;
+      background: var(--c-surface, #fff);
+      color: var(--c-accent2, #818cf8);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      position: relative;
+      transition: all 0.15s ease;
+      pointer-events: auto !important;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      user-select: none;
+      outline: none;
+    }
+
+    .trip-chips-arrow:hover {
+      background: var(--c-accent2, #818cf8);
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(129, 140, 248, .4);
+    }
+
+    .trip-chips-arrow:active {
+      transform: scale(0.9);
+      background: var(--c-accent2, #818cf8);
+      color: #fff;
+    }
+
+    .trip-chips-arrow svg {
+      width: 16px;
+      height: 16px;
+      pointer-events: none !important;
+    }
+
+    .trip-chips-arrow.is-disabled,
+    .trip-chips-arrow:disabled {
+      opacity: .3;
+      cursor: default;
+      pointer-events: auto !important;
+      /* keep catching taps so they never fall through to the route card */
+    }
+
+    .trip-chips-arrow-left {
+      margin-right: 8px;
+    }
+
+    .trip-chips-arrow-right {
+      margin-left: 8px;
+    }
+
+    html[dir="rtl"] .trip-chips-arrow-left {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+
+    html[dir="rtl"] .trip-chips-arrow-right {
+      margin-left: 0;
+      margin-right: 8px;
+    }
+
+    html[dir="rtl"] .trip-chips-arrow-left svg {
+      transform: rotate(180deg);
+    }
+
+    html[dir="rtl"] .trip-chips-arrow-right svg {
+      transform: rotate(180deg);
+    }
+
+    .trip-chips-arrow svg {
+      width: 14px;
+      height: 14px;
+    }
+
+
+
+    .trip-chips-arrow-left {
+      margin-right: 6px;
+    }
+
+    .trip-chips-arrow-right {
+      margin-left: 6px;
+    }
+
+    /* RTL support for arrows */
+    html[dir="rtl"] .trip-chips-arrow-left {
+      margin-right: 0;
+      margin-left: 6px;
+    }
+
+    html[dir="rtl"] .trip-chips-arrow-right {
+      margin-left: 0;
+      margin-right: 6px;
+    }
+
+    html[dir="rtl"] .trip-chips-arrow-left svg {
+      transform: rotate(180deg);
+    }
+
+    html[dir="rtl"] .trip-chips-arrow-right svg {
+      transform: rotate(180deg);
+    }
+
     .trip-chips {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: center;
-      gap: 4px;
-      margin: 6px 0 4px;
+      gap: 0;
+      margin: 8px 0 6px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 4px 0;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Hide scrollbar but keep functionality */
+    .trip-chips::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .trip-chips::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .trip-chips::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 2px;
+    }
+
+    .trip-chips::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.7);
     }
 
     .chip {
-      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      border-radius: 20px;
       font-size: 11px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 999px;
+      font-weight: 600;
       white-space: nowrap;
+      position: relative;
+      z-index: 1;
     }
 
+
     .chip-walk {
-      background: #e5e7eb;
-      color: #374151;
+      --chip-color: #64748b;
+      background: var(--chip-color);
+      color: #fff;
+    }
+
+    /* ── Start / End chips: outlined arrow shapes ───────────────────── */
+    .chip-start,
+    .chip-end {
+      padding: 0;
+      background: transparent;
+      font-weight: 700;
+    }
+
+    .chip-start {
+      --chip-color: #16a34a;
+      color: #166534;
+    }
+
+    .chip-end {
+      --chip-color: #dc2626;
+      color: #991b1b;
+    }
+
+    /* outer shape = coloured outline, inner shape = white fill */
+    .chip-shape {
+      display: inline-block;
+      padding: 2px 2.5px 2px 2px;
+      background: var(--chip-color);
+    }
+
+    .chip-in {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 16px 5px 10px;
+      background: #fff;
+    }
+
+    /* start: flat back, pointed front (arrow) */
+    .chip-start .chip-shape,
+    .chip-start .chip-in {
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+    }
+
+    /* end: notched back, pointed front (chevron) */
+    .chip-end .chip-shape,
+    .chip-end .chip-in {
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%, 10px 50%);
+    }
+
+    .chip-end .chip-in {
+      padding-left: 20px;
+    }
+
+    /* the connector must reach into the notch of the end chip */
+    .chip.chip-end:not(:first-child)::before {
+      width: 18px;
+    }
+
+    /* higher specificity so it beats the generic 8px connector */
+
+    html[dir="rtl"] .chip-shape {
+      padding: 2px 2px 2px 2.5px;
+    }
+
+    html[dir="rtl"] .chip-in {
+      padding: 5px 10px 5px 16px;
+    }
+
+    html[dir="rtl"] .chip-end .chip-in {
+      padding-right: 20px;
+    }
+
+    html[dir="rtl"] .chip-start .chip-shape,
+    html[dir="rtl"] .chip-start .chip-in {
+      clip-path: polygon(100% 0, 10px 0, 0 50%, 10px 100%, 100% 100%);
+    }
+
+    html[dir="rtl"] .chip-end .chip-shape,
+    html[dir="rtl"] .chip-end .chip-in {
+      clip-path: polygon(100% 0, 10px 0, 0 50%, 10px 100%, 100% 100%, calc(100% - 10px) 50%);
+    }
+
+    html[dir="rtl"] .chip-end:not(:first-child)::before {
+      right: -8px;
+      width: 18px;
+      left: auto;
+    }
+
+    .chip-start .chip-dot {
+      background: #16a34a;
+    }
+
+    .chip-end .chip-dot {
+      background: #dc2626;
+    }
+
+    .chip-transit {
+      color: #fff;
+    }
+
+    /* Circle icon for start/end (was ::before, now a real element) */
+    .chip-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      flex-shrink: 0;
+    }
+
+
+    /* Left half of the connector — takes the LEFT chip's colour */
+    .chip:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -8px;
+      width: 8px;
+      height: 3px;
+      background: var(--chip-color, #94a3b8);
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    /* Right half of the connector — takes the RIGHT chip's colour */
+    .chip:not(:first-child)::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: -8px;
+      width: 8px;
+      height: 3px;
+      background: var(--chip-color, #94a3b8);
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    /* RTL mirror */
+    html[dir="rtl"] .chip:not(:last-child)::after {
+      right: auto;
+      left: -8px;
+    }
+
+    html[dir="rtl"] .chip:not(:first-child)::before {
+      left: auto;
+      right: -8px;
+    }
+
+    /* Consistent gap between chips — lines will fill it perfectly */
+    .chip:not(:last-child) {
+      margin-right: 16px;
+    }
+
+    /* Give the end chip extra left margin for the connecting line */
+    .chip-end {
+      margin-left: 0;
+    }
+
+    /* RTL: chips flow right-to-left, so the spacing goes on the left of every chip but the last */
+    html[dir="rtl"] .chip:not(:last-child) {
+      margin-right: 0;
+      margin-left: 16px;
+    }
+
+    html[dir="rtl"] .chip-transit .chip {
+      margin: 0;
     }
 
     .chip-or {
-      font-size: 11px;
-      font-style: italic;
+      display: block;
+      align-self: center;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 800;
+      line-height: 1;
+      color: #0f172a;
+      background: #fff;
+      border-radius: 8px;
+      padding: 2px 7px;
+      margin: 3px 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+    }
+
+    /* several alternative lines stack vertically inside one transit chip */
+    .chip-transit {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      border-radius: 16px;
+    }
+
+    .chip-transit .chip {
+      margin: 0;
+      padding: 3px 4px;
+      background: transparent !important;
+      justify-content: center;
+    }
+
+    .chip-transit .chip::before,
+    .chip-transit .chip::after {
+      display: none;
+    }
+
+    /* white outline so the bus / metro / train icons stand out on coloured chips */
+    .chip .mode-icon-img {
+      filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff);
+    }
+
+    /* ── Stylized Sort Segmented Control ─────────────────────────────── */
+    .sort-segmented-control {
+      display: flex;
+      background: var(--c-bg);
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 12px;
+      gap: 4px;
+    }
+
+    .sort-segment {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 4px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
       color: var(--c-muted);
-      padding: 0 2px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sort-segment:hover {
+      background: rgba(129, 140, 248, 0.08);
+      color: var(--c-text);
+    }
+
+    .sort-segment.active {
+      background: var(--c-accent2);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(129, 140, 248, 0.3);
+    }
+
+    .sort-segment .sort-icon {
+      font-size: 14px;
+    }
+
+    /* ── Mode Icon Images ────────────────────────────────────────────── */
+    .mode-icon-img {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      vertical-align: middle;
+      margin-right: 4px;
+      object-fit: contain;
+    }
+
+    html[dir="rtl"] .mode-icon-img {
+      margin-right: 0;
+      margin-left: 4px;
+    }
+
+    .trip-mode-option .mode-icon-img {
+      width: 20px;
+      height: 20px;
     }
 
     /* ── Favourites ─────────────────────────────────────────────────── */
@@ -2022,6 +2462,54 @@
       color: var(--c-accent2);
     }
 
+    /* ── Violet press / selected state (same look as the active tabs) ───── */
+    .menu-action,
+    #lang-toggle,
+    .lang-choice,
+    #menu-toggle {
+      transition: background-color .12s ease, color .12s ease, box-shadow .12s ease;
+    }
+
+    /* Menu / settings items: solid violet + white text while pressed */
+    .menu-action:active,
+    #lang-toggle:active,
+    .lang-choice:active,
+    #menu-toggle:active {
+      background: var(--c-accent2) !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 8px rgba(129, 140, 248, .3);
+    }
+
+    .menu-action:active .menu-chevron,
+    #lang-toggle:active .menu-chevron {
+      color: #ffffff;
+    }
+
+    /* The language currently selected looks like the active tab */
+    .lang-choice.active {
+      background: var(--c-accent2);
+      color: #ffffff;
+    }
+
+    /* Hover shouldn't leave a grey patch behind on touch screens */
+    @media (hover: none) {
+
+      .menu-action:hover,
+      #lang-toggle:hover,
+      .lang-choice:hover:not(.active) {
+        background: transparent;
+        color: var(--c-text);
+      }
+    }
+
+    /* Lists, cards and other buttons: soft violet wash while pressed */
+    .search-result-item:active,
+    .trip-card:active,
+    .icon-btn:active,
+    .map-tap-action:not(.primary):active {
+      background: rgba(129, 140, 248, .18) !important;
+    }
+
     /* ── RTL Support (Arabic) ───────────────────────────────────────────── */
     html[dir="rtl"] body {
       font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
@@ -2087,8 +2575,9 @@
     .step {
       display: flex;
       gap: 10px;
-      font-size: 13px;
-      padding: 5px 0;
+      font-size: 15px;
+      line-height: 1.45;
+      padding: 6px 0;
       border-radius: 8px;
       transition: background-color 180ms ease, opacity 180ms ease;
     }
@@ -2114,8 +2603,17 @@
 
     .step small {
       color: var(--c-muted);
-      font-size: 12px;
-      line-height: 1.5;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Arabic glyphs render smaller, so give them one more step */
+    html[dir="rtl"] .step {
+      font-size: 17px;
+    }
+
+    html[dir="rtl"] .step small {
+      font-size: 16px;
     }
 
     #trip-handle {
@@ -2182,11 +2680,11 @@
     }
 
     .trip-mini-step.mode-metro {
-      color: #dc2626;
+      color: #16a34a;
     }
 
     .trip-mini-step.mode-rfr {
-      color: #7c3aed;
+      color: #2563eb;
     }
 
     #route-cancel-modal,
@@ -2438,6 +2936,8 @@
               dir="rtl">العربية</button>
             <button class="lang-choice" type="button" role="menuitemradio" data-language-choice="en" lang="en"
               dir="ltr">English</button>
+            <button class="lang-choice" type="button" role="menuitemradio" data-language-choice="fr" lang="fr"
+              dir="ltr">Français</button>
           </div>
         </div>
         <button id="recent-btn" class="menu-action" type="button" role="menuitem" title="Recently visited">
@@ -2683,18 +3183,28 @@
         <button id="trip-close" aria-label="Cancel route" title="Cancel route">×</button>
       </div>
     </div>
-    <select id="trip-sort"
-      style="width:100%; padding:8px 10px; border:1px solid var(--c-border); border-radius:8px; background:var(--c-bg); color:var(--c-text); font-size:13px; margin-bottom:8px; outline:none;">
+    <select id="trip-sort" style="display: none;">
       <option value="least_transfers">🔄 أقل تحويلات</option>
       <option value="least_walking">🚶 أقل مشي</option>
     </select>
+    <div id="trip-sort-control" class="sort-segmented-control">
+      <button class="sort-segment active" data-value="least_transfers" type="button">
+        <span data-menu-label="sort_least_transfers">أقل تحويلات</span>
+      </button>
+      <button class="sort-segment" data-value="least_walking" type="button">
+        <span data-menu-label="sort_least_walk">أقل مشي</span>
+      </button>
+    </div>
     <div id="trip-mode-filters" role="group" aria-labelledby="trip-mode-heading">
       <span id="trip-mode-heading" class="trip-mode-heading">وسائل النقل:</span>
-      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="bus" checked><span>🚌 <span
+      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="bus" checked><span><img
+            src="./emojis/bus.png" class="mode-icon-img" alt="bus"> <span
             data-mode-label="bus">حافلة</span></span></label>
-      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="metro" checked><span>🚊 <span
+      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="metro" checked><span><img
+            src="./emojis/metro.png" class="mode-icon-img" alt="metro"> <span
             data-mode-label="metro">مترو</span></span></label>
-      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="rfr" checked><span>🚆 <span
+      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="rfr" checked><span><img
+            src="./emojis/rfr.png" class="mode-icon-img" alt="rfr"><span
             data-mode-label="rfr">قطار</span></span></label>
     </div>
     <div id="trip-list"></div>
@@ -2852,23 +3362,51 @@
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     }
 
+    // ── Debounced POI marker refresh ─────────────────────────────
+    // Prevents destroying/recreating POI DOM markers on every tiny map movement.
+    // ── POI MARKER REFRESH SCHEDULER ────────────────────────────────────
+    let _poiRefreshTimer;
+    function schedulePOIMarkerRefresh(delay = 250) {
+      clearTimeout(_poiRefreshTimer);
+      _poiRefreshTimer = setTimeout(() => refreshPOIMarkers(), delay);
+    }
+
+
     function refreshPOIMarkers() {
-      if (!map || !poiMapReady) return;
+      // ── DIAGNOSTIC LOGS ───────────────────────────────────────────────
+      console.log('=== POI DEBUG ===');
+      console.log('Offline places loaded:', _offlinePlaces?.length);
+      console.log('Selected categories:', [...selectedPOICategories]);
+      console.log('Map ready:', poiMapReady);
+      dbg(`🔍 POI Debug: places=${_offlinePlaces?.length}, selected=[${[...selectedPOICategories].join(',')}], mapReady=${poiMapReady}`);
+
+      if (!map || !poiMapReady) {
+        console.log('⚠️ Exiting: map or poiMapReady not ready');
+        return;
+      }
+
       poiMapMarkers.forEach(marker => marker.remove());
       poiMapMarkers = [];
-      if (!selectedPOICategories.size || !_offlinePlaces.length) return;
+
+      if (!selectedPOICategories.size || !_offlinePlaces?.length) {
+        console.log('⚠️ Exiting: no categories selected or no places loaded');
+        return;
+      }
 
       const bounds = map.getBounds();
       const center = map.getCenter();
       const visible = [];
+
       for (const place of _offlinePlaces) {
         const category = _cat(place);
         const group = Object.keys(POI_CATEGORY_CONFIG).find(key =>
           selectedPOICategories.has(key) && POI_CATEGORY_CONFIG[key].categories.includes(category)
         );
         if (!group) continue;
+
         const lat = Number(place.la), lon = Number(place.lo);
         if (!Number.isFinite(lat) || !Number.isFinite(lon) || !bounds.contains([lon, lat])) continue;
+
         visible.push({ place, lat, lon, group, config: POI_CATEGORY_CONFIG[group] });
       }
 
@@ -2899,6 +3437,11 @@
           .setLngLat([item.lon, item.lat])
           .addTo(map));
       });
+
+      // ── FINAL DIAGNOSTIC LOG ──────────────────────────────────────────
+      console.log('✅ Markers after refresh:', poiMapMarkers.length);
+      console.log('===================');
+      dbg(`✅ POI markers created: ${poiMapMarkers.length}`);
     }
 
     function showPOIPlacePanel(place) {
@@ -2930,6 +3473,139 @@
     // ── LANGUAGE SYSTEM ─────────────────────────
     let LANG = localStorage.getItem('atlas_lang') || 'ar';
     const T = {
+      fr: {
+        search_placeholder: 'Où voulez-vous aller ?',
+        poi_categories: 'Lieux à proximité',
+        poi_scroll_left: 'Défiler les catégories à gauche',
+        poi_scroll_right: 'Défiler les catégories à droite',
+        poi_restaurants: 'Restaurants',
+        poi_cafes: 'Cafés',
+        poi_hotels: 'Hôtels',
+        poi_museums: 'Musées',
+        poi_pharmacies: 'Pharmacies',
+        poi_hospitals: 'Hôpitaux',
+        meters: 'm',
+        km: 'km',
+        min: 'min',
+        h: 'h',
+        or: 'ou',
+        last_recorded_stop: 'dernier arrêt enregistré',
+        bench: 'banc',
+        stop: 'arrêt',
+        finding: 'Recherche du meilleur itinéraire…',
+        to: 'Vers',
+        from_location: 'Depuis votre position',
+        from_test: 'Depuis 📍 position test',
+        from_word: 'De',
+        tap_show: 'appuyez sur ⌄ pour afficher les itinéraires',
+        best: 'Meilleur',
+        walk: 'Marche',
+        transfer_one: '1 correspondance',
+        transfer_many: '{n} correspondances',
+        no_transfer: 'sans correspondance',
+        walking_only: 'Marche uniquement',
+        arrive: 'arrivée',
+        at: 'à',
+        board: 'Montez',
+        at_station: 'à',
+        major_station: '(station principale)',
+        wait: 'attente ≈',
+        stops_one: 'un arrêt',
+        stops_many: '{n} arrêts',
+        on_board: 'à bord',
+        get_off: 'Descendez à',
+        estimates: 'Estimations uniquement — pas d\'horaires en direct. Les attentes sont des moyennes.',
+        no_connection: 'Aucune connexion bus, métro ou RFR trouvée près des deux extrémités ({km} km d\'écart).',
+        no_data: 'Aucune donnée de transport trouvée. Vérifiez les chemins du dossier data.',
+        data_failed: 'Échec du chargement des données de transport.',
+        gps_failed: 'Impossible d\'obtenir votre position. Activez le GPS et réessayez.',
+        start_moved: '𖦏 Point de départ déplacé',
+        location_finding: '𖦏 Recherche de votre position...',
+        location_found: '✅ Position trouvée !',
+        location_denied: '🚫 Accès à la position refusé. Veuillez l\'activer dans les paramètres du téléphone.',
+        location_unavailable: '📡 Position indisponible. Le GPS fonctionne mieux à l\'extérieur.',
+        location_timeout: '⏳ Délai de position expiré. Réessayez.',
+        device_no_gps: '❌ Votre appareil ne prend pas en charge la géolocalisation.',
+        sort_least_walk: '🚶 Moins de marche',
+        sort_least_transfers: '🔄 Moins de correspondances',
+        transport_modes: 'Modes de transport',
+        no_selected_mode_route: 'Aucun itinéraire avec les modes sélectionnés. Activez un autre mode et réessayez.',
+        your_location: 'votre position',
+        favourites: '★ Favoris',
+        no_favourites: 'Aucun favori',
+        no_favourites_hint: 'Appuyez sur ★ sur un lieu pour l\'enregistrer ici',
+        remove: 'Supprimer',
+        bus: 'Bus',
+        metro: 'Métro',
+        rfr: 'RFR',
+        menu_language: 'Langue',
+        menu: 'Menu',
+        cancel_route_action: 'Annuler l\'itinéraire',
+        compass_reset: 'Réinitialiser la boussole',
+        list_name: 'Nom de la liste',
+        cancel: 'Annuler',
+        back: 'Retour',
+        close_panel: 'Fermer',
+        saved_locations: 'Lieux enregistrés',
+        recently_visited: 'Récemment visités',
+        origin_placeholder: 'Point de départ',
+        current_location: 'Position actuelle',
+        poi_categories: 'Catégories de lieux',
+        copy_coordinates: 'Copier les coordonnées',
+        route_to_location: 'Trouver des itinéraires de transport ici',
+        coordinates_copied: 'Coordonnées copiées',
+        copy_failed: 'Impossible de copier les coordonnées',
+        map_location: 'Position sur la carte',
+        fastest: 'Le plus rapide (Défaut)',
+        less_walking: 'Moins de marche',
+        fewer_transfers: 'Moins de correspondances',
+        save_to_favourites: 'Enregistrer dans les lieux sauvegardés',
+        save_to_saved_locations: 'Enregistrer dans les lieux sauvegardés',
+        // Route cancellation dialog
+        cancel_route_title: 'Annuler cet itinéraire ?',
+        confirm_cancel_route: 'Êtes-vous sûr de vouloir annuler cet itinéraire ? Il sera retiré de la carte.',
+        keep_route: 'Garder l\'itinéraire',
+
+        // Map tap panel
+
+        // Saved locations panel
+        saved_locations: 'Lieux sauvegardés',
+        new_list: 'Nouvelle liste',
+        create: 'Créer',
+        done: 'Terminé',
+        list_name: 'Nom de la liste',
+        delete_list: 'Supprimer la liste',
+        delete_list_title: 'Supprimer cette liste ?',
+        delete_collection_confirm: 'Supprimer « {name} » et tous les lieux sauvegardés dedans ?',
+        list_created: '✓ Liste créée',
+        list_deleted: '✓ Liste supprimée',
+        saved_to_list: '✓ Ajouté à la liste',
+        removed_from_list: 'Retiré de la liste',
+
+        // Recent destinations
+        no_recent_destinations: 'Aucune destination récente',
+        no_recent_destinations_hint: 'Les endroits vers lesquels vous planifiez un itinéraire apparaîtront ici',
+
+        // Collapsed trip steps
+        collapsed_walk_step: 'Marchez jusqu\'à {place}',
+        collapsed_board_step: 'Prenez {line} depuis {station}',
+        collapsed_ride_step: 'Restez dans {line} jusqu\'à {station}',
+        simulation_arrived: 'Vous êtes arrivé à destination',
+
+        // Location errors
+        location_unavailable: '📡 Position indisponible. Le GPS fonctionne mieux à l\'extérieur.',
+        location_timeout: '⏳ Délai de position expiré. Réessayez.',
+        device_no_gps: '❌ Votre appareil ne prend pas en charge la géolocalisation.',
+
+        // Transport mode filters
+        no_selected_mode_route: 'Aucun itinéraire avec les modes sélectionnés. Activez un autre mode et réessayez.',
+
+        // POI categories (if missing)
+        poi_hotels: 'Hôtels',
+        poi_museums: 'Musées',
+        poi_pharmacies: 'Pharmacies',
+        poi_hospitals: 'Hôpitaux'
+      },
       ar: {
         search_placeholder: 'إلى أين تريد الذهاب؟',
         poi_categories: 'أماكن قريبة',
@@ -3269,7 +3945,7 @@
           label.textContent = t(label.dataset.poiLabel);
         });
       }
-      refreshPOIMarkers();
+      schedulePOIMarkerRefresh(100);
       if (typeof window.refreshMapTapPanel === 'function') window.refreshMapTapPanel();
       if (oi && document.getElementById('origin-here')?.classList.contains('active')) oi.value = '𖦏 ' + t('current_location');
       const rs = document.getElementById('search-results');
@@ -3665,7 +4341,7 @@
           dbg('✓ MAP LOADED');
           poiMapReady = true;
           map.resize();
-          refreshPOIMarkers();
+          schedulePOIMarkerRefresh(80);
           initTransitPlanner();
           dbg(`🔍 Initial Zoom: ${map.getZoom().toFixed(2)}`);
 
@@ -4197,7 +4873,7 @@
         map.on('moveend', () => {
           const c = map.getCenter();
           dbg(`📍 Map Center: ${c.lat.toFixed(5)}, ${c.lng.toFixed(5)}`);
-          refreshPOIMarkers();
+          schedulePOIMarkerRefresh(250);
         });
         map.on('idle', () => dbg('🏁 Map idle (tiles finished rendering)'));
 
@@ -4331,7 +5007,7 @@
           const active = selectedPOICategories.has(category);
           button.classList.toggle('active', active);
           button.setAttribute('aria-pressed', String(active));
-          refreshPOIMarkers();
+          schedulePOIMarkerRefresh(80);
         };
       });
       const menuContainer = document.getElementById('menu-container');
@@ -4657,8 +5333,8 @@
         return `<div class="search-result-item" onclick="pickPlace(${i})">
           <div class="sri-icon">📍</div>
           <div style="flex:1;min-width:0;">
-            <div class="sri-name">${_escS(label)}</div>
-            <div class="sri-sub">${_escS(catLabel(_cat(p)))}</div>
+          <div class="sri-name">${_escS(label)}</div>
+<div class="sri-sub">${_escS(catLabel(_cat(p)))}${p.d ? ' · ' + _escS(LANG === 'ar' && p.da ? p.da : p.d) : ''}${p.g ? ' · ' + _escS(p.g) : ''}${p.q ? ' · ' + _escS(LANG === 'ar' && p.qa ? p.qa : p.q) : ''}</div>
           </div>
           <button class="fav-star ${fav ? 'active' : ''}" data-lat="${p.la}" data-lon="${p.lo}" data-name="${_escS(label)}" data-name-ar="${_escS(arabicName)}" data-name-en="${_escS(englishName)}" data-cat="${_escS(_cat(p))}" onclick="event.stopPropagation(); window.toggleSearchFav(this)">${fav ? '★' : '☆'}</button>
         </div>`;
@@ -4840,15 +5516,35 @@
       out.sort((a, b) => a.s - b.s || a.d - b.d);
       return out.map(x => x.p);
     }
+
+    // Remove duplicate places based on displayed text (name + district + governorate + sub-district)
+    function deduplicatePlaces(places) {
+      const seen = new Set();
+      return places.filter(p => {
+        // Create a display key based on what the user sees
+        const name = LANG === 'ar' && p.na ? p.na : (p.nl || p.n);
+        const district = LANG === 'ar' && p.da ? p.da : (p.d || '');
+        const governorate = p.g || '';
+        const subDistrict = LANG === 'ar' && p.qa ? p.qa : (p.q || '');
+
+        const key = `${name}|${district}|${governorate}|${subDistrict}`;
+
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
     // the full list: district results first, then the normal name matches that aren't already in it
     function searchAll(raw) {
       const normal = rankPlaces(raw);
       const dq = parseDistrictQuery(raw);
-      if (!dq) return { list: normal, info: null };
+      if (!dq) return { list: deduplicatePlaces(normal), info: null };
       const term = resolveTerm(dq.rest), hits = districtSearch(dq.dist, term);
       if (!hits.length) return { list: normal, info: null };
       const seen = new Set(hits);
-      return { list: hits.concat(normal.filter(p => !seen.has(p))), info: { dist: dq.dist, term, n: hits.length } };
+      const combined = hits.concat(normal.filter(p => !seen.has(p)));
+      return { list: deduplicatePlaces(combined), info: { dist: dq.dist, term, n: hits.length } };
     }
     function districtHeader(info) {
       const dn = LANG === 'ar' ? info.dist.ar : info.dist.en, inw = LANG === 'ar' ? 'في' : 'in';
@@ -4861,7 +5557,7 @@
         const r = await fetch('./data/places.json');
         _offlinePlaces = await r.json();
         dbg(`🔍 Loaded ${_offlinePlaces.length} places`);
-        refreshPOIMarkers();
+        schedulePOIMarkerRefresh(80);
         loadDistricts();            // district polygons for "hotel marsa" style searches (loads in the background)
       } catch (e) { dbg('❌ Search load failed'); }
       const input = document.getElementById('search-input'), resultsEl = document.getElementById('search-results');
@@ -4883,17 +5579,37 @@
           }
         }
       });
+      let searchTimeout;
 
       input.addEventListener('input', e => {
         const raw = e.target.value.trim();
         document.getElementById('search-clear').classList.toggle('visible', raw.length > 0);
-        if (raw.length < 2) { resultsEl.classList.remove('open'); _lastQ = raw; _placeFilter = null; _distInfo = null; return; }
-        if (_lastQ.length < 2) _placeFilter = null;          // a new search starts without a leftover filter
-        _lastQ = raw;
-        const found = searchAll(raw);              // name matches + (if the query names a district) everything inside that district
-        _ranked = found.list; _distInfo = found.info;
-        dbg(`🔎 Search "${raw}": ${_ranked.length} matches${_distInfo ? ' (' + _distInfo.n + ' in district)' : ''}`);
-        renderSearchResults();
+
+        // Immediate UI feedback for short queries
+        if (raw.length < 2) {
+          resultsEl.classList.remove('open');
+          _lastQ = raw;
+          _placeFilter = null;
+          _distInfo = null;
+          clearTimeout(searchTimeout); // Cancel any pending search
+          return;
+        }
+
+        // Clear the previous timer so we don't search on every single keystroke
+        clearTimeout(searchTimeout);
+
+        // Delay the heavy lifting (searchAll + DOM rendering) by 150ms
+        searchTimeout = setTimeout(() => {
+          if (_lastQ.length < 2) _placeFilter = null; // a new search starts without a leftover filter
+          _lastQ = raw;
+
+          const found = searchAll(raw); // name matches + (if the query names a district) everything inside that district
+          _ranked = found.list;
+          _distInfo = found.info;
+
+          dbg(`🔎 Search "${raw}": ${_ranked.length} matches${_distInfo ? ' (' + _distInfo.n + ' in district)' : ''}`);
+          renderSearchResults();
+        }, 150); // 150ms is the sweet spot: feels instant, but prevents jank
       });
     }
 
@@ -5116,8 +5832,15 @@
     }
 
     function showPanel(title, sub, content) {
-      document.getElementById('panel-title').innerText = title;
-      document.getElementById('panel-sub').innerText = sub;
+      // Coordinates ("36.8, 10.1") must stay left-to-right in Arabic, otherwise the bidi algorithm swaps the two numbers
+      const isCoordText = v => /^\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*$/.test(String(v));
+      const setLtrSafe = (id, v) => {
+        const el = document.getElementById(id);
+        if (isCoordText(v)) { el.textContent = ''; const b = document.createElement('bdi'); b.dir = 'ltr'; b.textContent = String(v).trim(); el.appendChild(b); }
+        else el.innerText = v;
+      };
+      setLtrSafe('panel-title', title);
+      setLtrSafe('panel-sub', sub);
       document.getElementById('panel-content').innerHTML = content;
       document.getElementById('panel').classList.add('open');
       dbg('📂 Info panel opened');
@@ -5782,9 +6505,9 @@
         BUS_BOARD_NON_BENCH: true, BUS_BENCH_PENALTY_S: 480, BUS_NON_BENCH_PENALTY_S: 180,
         BUS_STATION_SNAP_M: 120, BUS_STATION_MERGE_M: 60, BUS_MERGE_M: 20,
         MODES: {
-          bus: { label: 'Bus', icon: '🚌', color: '#f59e0b', speed: 4.5, wait: 600 },
-          metro: { label: 'Métro', icon: '🚊', color: '#dc2626', speed: 5.3, wait: 240 },
-          rfr: { label: 'RFR', icon: '🚆', color: '#7c3aed', speed: 9.7, wait: 720 }
+          bus: { label: 'Bus', icon: '<img src="./emojis/bus.png" class="mode-icon-img" alt="bus">', color: '#f59e0b', speed: 4.5, wait: 600 },
+          metro: { label: 'Métro', icon: '<img src="./emojis/metro.png" class="mode-icon-img" alt="metro">', color: '#16a34a', speed: 5.3, wait: 240 },
+          rfr: { label: 'RFR', icon: '<img src="./emojis/rfr.png" class="mode-icon-img" alt="rfr">', color: '#2563eb', speed: 6.0, wait: 300 },
         }
       };
 
@@ -6474,6 +7197,36 @@
       }
       function routeStationFeatures(option) {
         const features = [];
+
+        // ── START NODE ────────────────────────────────────────────────────
+        const startCoord = option.ctx.op; // origin point
+        features.push({
+          type: 'Feature',
+          properties: {
+            color: '#16a34a',       // green for start
+            label: 'start',
+            legIndex: -1,
+            endpoint: 'start',
+            nodeType: 'start'
+          },
+          geometry: { type: 'Point', coordinates: startCoord }
+        });
+
+        // ── END NODE ──────────────────────────────────────────────────────
+        const endCoord = option.ctx.dp; // destination point
+        features.push({
+          type: 'Feature',
+          properties: {
+            color: '#dc2626',       // red for end
+            label: option.ctx.dest.name || 'end',
+            legIndex: -2,
+            endpoint: 'end',
+            nodeType: 'end'
+          },
+          geometry: { type: 'Point', coordinates: endCoord }
+        });
+
+        // ── TRANSIT STATIONS (existing logic) ─────────────────────────────
         option.legs.forEach((leg, legIndex) => {
           if (leg.type !== 'transit') return;
           const color = CFG.MODES[leg.dl.mode].color;
@@ -6488,6 +7241,7 @@
             geometry: { type: 'Point', coordinates: [leg.b.stop.lon, leg.b.stop.lat] }
           });
         });
+
         return features;
       }
       function coordsAfterDistance(line, distance) {
@@ -7260,7 +8014,7 @@
       const OR = '<span class="chip-or">or</span>';
       const allLines = l => [l.dl, ...(l.alts || []).map(a => a.dl)];
       const getTowards = (dl) => dl.towards === 'last recorded stop' ? t('last_recorded_stop') : dl.towards;
-      const linesList = l => allLines(l).map(dl => `<b style="color:${CFG.MODES[dl.mode].color}">${esc(lineLabel(dl))}</b>`).join('<br><span style="font-size: 11px; font-style: italic; color: var(--c-muted); display: inline-block; margin: 2px 0 2px 18px;">' + t('or') + '</span><br>'); const lineLabel = dl => {
+      const linesList = l => allLines(l).map(dl => `<b style="color:${CFG.MODES[dl.mode].color}">${esc(lineLabel(dl))}</b>`).join(`<span style="font-size: 11px; font-style: italic; color: var(--c-muted); margin: 0 6px;">${t('or')}</span>`); const lineLabel = dl => {
         // Extract just the number from short codes like "M1", "M2", "A", "D", "E"
         const num = dl.short.replace(/^[A-Z]+/, '');
         if (dl.mode === 'bus') return `${t('bus')} ${num || dl.short}`;
@@ -7398,8 +8152,8 @@
           return `<div class="search-result-item" onclick="pickOrigin(${i})">
             <div class="sri-icon">📍</div>
             <div style="flex:1;min-width:0;">
-              <div class="sri-name">${esc(label)}</div>
-              <div class="sri-sub">${esc(catLabel(_cat(p)))}</div>
+              <div class="sri-name">${esc(placeLabel(p))}</div>
+<div class="sri-sub">${esc(catLabel(_cat(p)))}${p.d ? ' · ' + esc(LANG === 'ar' && p.da ? p.da : p.d) : ''}${p.g ? ' · ' + esc(p.g) : ''}${p.q ? ' · ' + esc(LANG === 'ar' && p.qa ? p.qa : p.q) : ''}</div>
             </div>
             <button class="fav-star ${fav ? 'active' : ''}" data-lat="${p.la}" data-lon="${p.lo}" data-name="${esc(label)}" data-name-ar="${esc(arabicName)}" data-name-en="${esc(englishName)}" data-cat="${esc(_cat(p))}" onclick="event.stopPropagation(); window.toggleSearchFav(this)">${fav ? '★' : '☆'}</button>
           </div>`;
@@ -7434,6 +8188,61 @@
         $('route-cancel-keep').focus();
       }
       function setBody(html) { $('trip-list').innerHTML = html; }
+
+      function setArrowDisabled(btn, off) {
+        btn.classList.toggle('is-disabled', off);
+        btn.setAttribute('aria-disabled', off ? 'true' : 'false');
+      }
+
+      function updateChipsArrows() {
+        const isRTL = document.documentElement.getAttribute('dir') === 'rtl';
+
+        document.querySelectorAll('.trip-chips-wrapper').forEach(wrapper => {
+          const container = wrapper.querySelector('.trip-chips');
+          const leftBtn = wrapper.querySelector('.trip-chips-arrow-left');
+          const rightBtn = wrapper.querySelector('.trip-chips-arrow-right');
+          if (!container || !leftBtn || !rightBtn) return;
+
+          const hasScrollableContent = container.scrollWidth > container.clientWidth + 2;
+          if (!hasScrollableContent) {
+            leftBtn.style.display = 'none';
+            rightBtn.style.display = 'none';
+            return;
+          }
+
+          leftBtn.style.display = 'flex';
+          rightBtn.style.display = 'flex';
+
+          // Work in physical terms: physX = 0 at the physical left edge, maxScroll at the physical right edge.
+          // (In RTL, scrollLeft runs from 0 at the right edge down to -maxScroll at the left edge.)
+          const maxScroll = container.scrollWidth - container.clientWidth;
+          const physX = isRTL ? maxScroll - Math.abs(container.scrollLeft) : container.scrollLeft;
+          const atPhysLeft = physX <= 1;
+          const atPhysRight = physX >= maxScroll - 1;
+          if (isRTL) {
+            // In RTL the "left"-class button is drawn on the right side and scrolls right (and vice versa)
+            setArrowDisabled(leftBtn, atPhysRight);
+            setArrowDisabled(rightBtn, atPhysLeft);
+          } else {
+            setArrowDisabled(leftBtn, atPhysLeft);
+            setArrowDisabled(rightBtn, atPhysRight);
+          }
+        });
+      }
+
+      window.chipsScroll = function (btn, direction) {
+        const wrapper = btn.closest('.trip-chips-wrapper');
+        const container = wrapper && wrapper.querySelector('.trip-chips');
+        if (!container) return;
+        const isRTL = document.documentElement.getAttribute('dir') === 'rtl';
+        let delta = (direction === 'left' ? -1 : 1) * Math.max(80, container.clientWidth * 0.6);
+        if (isRTL) delta = -delta;
+        const max = container.scrollWidth - container.clientWidth;
+        const target = Math.max(isRTL ? -max : 0, Math.min(isRTL ? 0 : max, container.scrollLeft + delta));
+        container.scrollTo({ left: target, behavior: 'smooth' });
+        [60, 200, 450].forEach(ms => setTimeout(updateChipsArrows, ms));
+      };
+
       function renderOptions(note) {
         const fmtStopName = (name) => esc(name.replace('· bench', ` · ${t('bench')}`).replace('· stop', ` · ${t('stop')}`));
         const o0 = options[0];
@@ -7458,10 +8267,35 @@
 
         $('trip-list').innerHTML = options.map((o, i) => {
           const sel = o.sig === selectedSig;
-          const chips = o.legs.map(l => l.type === 'walk'
+
+          // ── Start chip (origin) ───────────────────────────────────────────
+          const originName = o.ctx.origin.place
+            ? (placeLabel(o.ctx.origin.place) || t('your_location'))
+            : t('your_location');
+          const startChip = `<span class="chip chip-start" title="${esc(originName)}"><span class="chip-shape"><span class="chip-in"><span class="chip-dot"></span>${esc(originName)}</span></span></span>`;
+
+          // ── End chip (destination) ────────────────────────────────────────
+          const destName = o.ctx.dest?.name || '';
+          const endChip = destName
+            ? `<span class="chip chip-end" title="${esc(destName)}"><span class="chip-shape"><span class="chip-in"><span class="chip-dot"></span>${esc(destName)}</span></span></span>` : '';
+
+          // ── Middle chips (the actual legs) ────────────────────────────────
+          const legChips = o.legs.map(l => l.type === 'walk'
             ? `<span class="chip chip-walk">🚶 ${fmtMin(l.sec)}</span>`
-            : `<div style="display:inline-flex; flex-direction:column; align-items:flex-start; vertical-align:middle; margin: 0 4px;">${allLines(l).map(lineChip).join('<span class="chip-or" style="display:block; text-align:center; width:100%; margin: 1px 0;">' + t('or') + '</span>')}</div>`
-          ).join('<span class="chip-sep">›</span>');
+            : `<div class="chip chip-transit" style="--chip-color: ${CFG.MODES[l.dl.mode].color}; background: ${CFG.MODES[l.dl.mode].color};">${allLines(l).map(lineChip).join('<span class="chip-or">' + t('or') + '</span>')}</div>`
+          ).join('');
+
+          // ── Wrap chips in scrollable wrapper with arrow buttons ─────────────
+          const chipsHTML = `
+      <div class="trip-chips-wrapper">
+<button class="trip-chips-arrow trip-chips-arrow-left" type="button" data-chips-dir="left" aria-label="Scroll left">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+</button>
+        <div class="trip-chips">${startChip + legChips + endChip}</div>
+<button class="trip-chips-arrow trip-chips-arrow-right" type="button" data-chips-dir="right" aria-label="Scroll right">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+</button>
+      </div>`;
 
           const tl = o.legs.filter(l => l.type === 'transit');
           const sub = tl.length
@@ -7474,16 +8308,32 @@
 ${linesList(l)}<br>
 ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind === 'bench' ? ' 🪑' : ''}</small></div></div>`
           ).join('')}</div>` : '';
+
           const canSimulate = ['test', 'test (GPS failed)'].includes(o.ctx.origin.source);
           const startButton = sel && canSimulate
             ? `<button class="trip-start-simulation" type="button" data-start-route="${esc(o.sig)}">▶ ${LANG === 'ar' ? 'ابدأ محاكاة المسار' : 'Start route simulation'}</button>`
             : '';
 
           return `<div class="trip-card${sel ? ' sel' : ''}" data-sig="${esc(o.sig)}">
-<div class="trip-top"><span class="trip-time">${fmtMin(o.total)} <span class="trip-dist">· ${fmtDist(optDist(o))}</span></span></div>
-<div class="trip-chips">${chips}</div><div class="trip-subline">${sub}</div>${steps}${startButton}</div>`;
+      <div class="trip-top"><span class="trip-time">${fmtMin(o.total)} <span class="trip-dist">· ${fmtDist(optDist(o))}</span></span></div>
+      ${chipsHTML}
+      <div class="trip-subline">${sub}</div>${steps}${startButton}
+    </div>`;
         }).join('') + `<div class="trip-foot">${t('estimates')}</div>`;
+
+        // ── Update scroll arrows after chips render ─────────────────────────
+        requestAnimationFrame(updateChipsArrows);
+        setTimeout(updateChipsArrows, 100); // Re-check after layout settles
+
+        // Attach scroll listeners to all chips containers
+        document.querySelectorAll('.trip-chips').forEach(chips => {
+          if (chips.dataset.scrollAttached) return;
+          chips.dataset.scrollAttached = '1';
+          chips.addEventListener('scroll', updateChipsArrows, { passive: true });
+        });
       }
+
+
       function updateSimulationRoutePanel(now = performance.now(), force = false, arrived = false) {
         const option = simulationOption;
         if (!option) return;
@@ -7591,6 +8441,43 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         map.addLayer({ id: 'trip-transit', type: 'line', source: 'trip', filter: ['==', ['get', 'kind'], 'transit'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 5.5 } });
         map.addLayer({ id: 'trip-pts-circle', type: 'circle', source: 'trip-pts', paint: { 'circle-radius': 6.5, 'circle-color': '#ffffff', 'circle-stroke-width': 3, 'circle-stroke-color': ['get', 'color'] } });
         map.addLayer({ id: 'trip-pts-label', type: 'symbol', source: 'trip-pts', layout: { 'text-field': ['get', 'label'], 'text-font': ['Noto Sans Regular'], 'text-size': 11, 'text-offset': [0, 1.2], 'text-anchor': 'top', 'text-allow-overlap': false }, paint: { 'text-color': '#111827', 'text-halo-color': '#ffffff', 'text-halo-width': 1.6 } });
+        // ── START/END NODE MARKERS ──────────────────────────────────────────
+        if (!map.getLayer('trip-start-end-circles')) {
+          map.addLayer({
+            id: 'trip-start-end-circles',
+            type: 'circle',
+            source: 'trip-pts',
+            filter: ['any', ['==', ['get', 'nodeType'], 'start'], ['==', ['get', 'nodeType'], 'end']],
+            paint: {
+              'circle-radius': 10,
+              'circle-color': ['get', 'color'],
+              'circle-stroke-width': 3,
+              'circle-stroke-color': '#ffffff'
+            }
+          }, 'trip-pts-labels'); // insert before labels
+        }
+
+        if (!map.getLayer('trip-start-end-labels')) {
+          map.addLayer({
+            id: 'trip-start-end-labels',
+            type: 'symbol',
+            source: 'trip-pts',
+            filter: ['any', ['==', ['get', 'nodeType'], 'start'], ['==', ['get', 'nodeType'], 'end']],
+            layout: {
+              'text-field': ['get', 'label'],
+              'text-font': ['Noto Sans Bold'],
+              'text-size': 12,
+              'text-offset': [0, -1.8],
+              'text-anchor': 'bottom',
+              'text-allow-overlap': true
+            },
+            paint: {
+              'text-color': ['get', 'color'],
+              'text-halo-color': '#ffffff',
+              'text-halo-width': 2
+            }
+          });
+        }
       }
       function drawOption(o, fit) {
         ensureLayers();
@@ -7663,10 +8550,12 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         const my = ++runId; lastDest = { lat, lon, name }; lastOriginOv = originOv || null; lastResolvedOrigin = null;
         openSheet();
         $('trip-title').textContent = `${t('to')} ${dispName(name)}`; $('trip-sub').textContent = '';
-        setBody('<div class="trip-msg">Finding the best way…</div>');
-        let origin;
+        setBody('<div class="trip-msg">Loading transit data…</div>'); let origin;
         try { origin = originOv || await resolveOrigin(); } catch (e) { return; }
-        try { await loadTransitData(); } catch (e) { return; }
+        try {
+          await loadTransitData();
+          setBody('<div class="trip-msg">Finding the best way…</div>');
+        } catch (e) { return; }
         if (my !== runId) return;
         if (!G.stops.length) { setBody('<div class="trip-msg">No transit data found.</div>'); return; }
         lastResolvedOrigin = origin;
@@ -7716,10 +8605,61 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         const oi = $('origin-input');
         oi.addEventListener('input', () => { $('origin-here').classList.remove('active'); renderOriginResults(); });
         oi.addEventListener('focus', e => e.target.select());
-        oi.addEventListener('keydown', e => { if (e.key === 'Enter' && _originShown.length) window.pickOrigin(0); });
-        $('origin-here').onclick = chooseCurrent;
+        oi.addEventListener('keydown', e => {
+          if (e.key === 'Enter') {
+            const val = oi.value.trim();
+            // Check if it's coordinates (lat, lon format)
+            const match = val.match(/^\s*(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)\s*$/);
+            if (match) {
+              const lat = parseFloat(match[1]);
+              const lon = parseFloat(match[3]);
+              // Validate coordinates
+              if (lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+                e.preventDefault();
+                // Create a coordinate place object
+                const coords = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+                const coordPlace = {
+                  la: lat,
+                  lo: lon,
+                  n: LANG === 'ar' ? (T.ar.map_location + ' (' + coords + ')') : (T.en.map_location + ' (' + coords + ')'),
+                  nl: T.en.map_location + ' (' + coords + ')',
+                  na: T.ar.map_location + ' (' + coords + ')',
+                  c: 'coordinate',
+                  d: '',
+                  da: '',
+                  g: '',
+                  q: '',
+                  qa: ''
+                };
+                // Use these coordinates as origin
+                clearCustomMarker();
+                customOriginMarker = new maplibregl.Marker({ color: '#16a34a' }).setLngLat([lon, lat]).addTo(map);
+                showTestMarker(false);
+                oi.value = placeLabel(coordPlace);
+                $('origin-here').classList.remove('active');
+                $('origin-results').classList.remove('open');
+                oi.blur();
+                planTripTo(pendingDest.lat, pendingDest.lon, pendingDest.name, { lat: lat, lon: lon, source: 'custom', place: coordPlace });
+                dbg(`📍 Using coordinates as origin: [${lat}, ${lon}]`);
+                return;
+              }
+            }
+            // Otherwise, pick from search results if available
+            if (_originShown.length) window.pickOrigin(0);
+          }
+        }); $('origin-here').onclick = chooseCurrent;
         $('origin-clear').onclick = () => { if (oi.value) { oi.value = ''; $('origin-results').classList.remove('open'); oi.focus(); } else hideOriginBar(); };   // 2nd tap on an empty box cancels
         $('trip-list').addEventListener('click', e => {
+          // Arrow taps scroll the chips and never reach the route-card handler
+          const arrowBtn = e.target.closest('.trip-chips-arrow');
+          if (arrowBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!arrowBtn.classList.contains('is-disabled')) window.chipsScroll(arrowBtn, arrowBtn.dataset.chipsDir);
+            return;
+          }
+          if (e.target.closest('.trip-chips-wrapper') && !e.target.closest('.trip-chips')) return;
+
           const startButton = e.target.closest('[data-start-route]');
           if (startButton) {
             e.stopPropagation();
@@ -7742,6 +8682,37 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
             }
           };
         }
+
+        // Update stylized sort control and sync with the hidden native select
+        const sortSelect = document.getElementById('trip-sort');
+
+        document.querySelectorAll('.sort-segment').forEach(btn => {
+          const val = btn.dataset.value;
+          const labelSpan = btn.querySelector('span[data-menu-label]');
+
+          // Update label based on current language
+          if (val === 'least_transfers') labelSpan.textContent = t('sort_least_transfers');
+          if (val === 'least_walking') labelSpan.textContent = t('sort_least_walk');
+
+          btn.onclick = () => {
+            // Update UI
+            document.querySelectorAll('.sort-segment').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Sync with the hidden native select and trigger its change event
+            if (sortSelect) {
+              sortSelect.value = val;
+              sortSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          };
+        });
+
+        // Set initial active state based on current select value
+        if (sortSelect) {
+          document.querySelectorAll('.sort-segment').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.value === sortSelect.value);
+          });
+        }
         const modeFilters = $('trip-mode-filters');
         if (modeFilters) modeFilters.addEventListener('change', refreshRoutesForModeSelection);
 
@@ -7749,7 +8720,6 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
           setOriginMarker(testOrigin);
           map.jumpTo({ center: [testOrigin.lon, testOrigin.lat] });
         }
-        loadTransitData().catch(e => dbg('❌ Transit data: ' + e.message));
       }
       window.initTransitPlanner = initTransitPlanner;
       window.planTripTo = planTripTo;
