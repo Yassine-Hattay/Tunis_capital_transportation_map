@@ -94,7 +94,6 @@
       padding: 0 14px;
       height: 48px;
       gap: 10px;
-      backdrop-filter: blur(16px);
       box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
     }
 
@@ -392,7 +391,6 @@
       border: 1.5px solid var(--c-border);
       border-radius: var(--r);
       box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
-      backdrop-filter: blur(16px);
     }
 
     /* Keep the field/button positions fixed, but match each language inside them. */
@@ -518,7 +516,6 @@
       justify-content: center;
       cursor: pointer;
       transition: all .15s;
-      backdrop-filter: blur(16px);
       box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
     }
 
@@ -594,7 +591,6 @@
       padding: 16px;
       z-index: 250;
       box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
-      backdrop-filter: blur(16px);
     }
 
     #panel {
@@ -734,7 +730,6 @@
       border-radius: 12px;
       padding: 12px 20px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
-      backdrop-filter: blur(16px);
       z-index: 500;
       display: flex;
       align-items: center;
@@ -774,7 +769,6 @@
       padding: 16px;
       z-index: 250;
       box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
-      backdrop-filter: blur(16px);
     }
 
     .bus-route-item,
@@ -885,7 +879,6 @@
       border-radius: var(--r);
       padding: 16px;
       box-shadow: 0 4px 24px rgba(0, 0, 0, .15);
-      backdrop-filter: blur(16px);
     }
 
     #data-collection-panel.visible {
@@ -2005,7 +1998,6 @@
       border: 1.5px solid var(--c-border);
       color: var(--c-text);
       cursor: pointer;
-      backdrop-filter: blur(16px);
       box-shadow: 0 4px 24px rgba(0, 0, 0, .1);
     }
 
@@ -2029,7 +2021,6 @@
       border: 1.5px solid var(--c-border);
       border-radius: 12px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
-      backdrop-filter: blur(16px);
     }
 
     #main-menu.open {
@@ -2504,10 +2495,27 @@
 
     /* Lists, cards and other buttons: soft violet wash while pressed */
     .search-result-item:active,
-    .trip-card:active,
     .icon-btn:active,
     .map-tap-action:not(.primary):active {
       background: rgba(129, 140, 248, .18) !important;
+    }
+
+    /* Route card: wash only when the card itself is pressed, never when a button inside it is */
+    .trip-card:active:not(:has(.trip-chips-arrow:active)):not(:has(button:active)) {
+      background: rgba(129, 140, 248, .18) !important;
+    }
+
+    /* Category-tab scroll arrows: violet while pressed */
+    .poi-scroll-arrow:not(:disabled):active {
+      background: var(--c-accent2);
+      border-color: var(--c-accent2);
+      color: #ffffff;
+      transform: scale(0.92);
+    }
+
+    .trip-chips-arrow:active {
+      background: var(--c-accent2) !important;
+      color: #ffffff !important;
     }
 
     /* ── RTL Support (Arabic) ───────────────────────────────────────────── */
@@ -3109,7 +3117,7 @@
     display:none; position:fixed; bottom:20px; left:12px; right:12px;
     background:var(--c-surface); border:1.5px solid var(--c-border);
     border-radius:var(--r); padding:14px; z-index:300;
-    box-shadow:0 8px 32px rgba(0,0,0,.15); backdrop-filter:blur(16px);
+    box-shadow:0 8px 32px rgba(0,0,0,.15);
   ">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
       <span style="font-weight:600;font-size:13px">🔢 Coordinate Order Debug</span>
@@ -3373,15 +3381,9 @@
 
 
     function refreshPOIMarkers() {
-      // ── DIAGNOSTIC LOGS ───────────────────────────────────────────────
-      console.log('=== POI DEBUG ===');
-      console.log('Offline places loaded:', _offlinePlaces?.length);
-      console.log('Selected categories:', [...selectedPOICategories]);
-      console.log('Map ready:', poiMapReady);
-      dbg(`🔍 POI Debug: places=${_offlinePlaces?.length}, selected=[${[...selectedPOICategories].join(',')}], mapReady=${poiMapReady}`);
+      if (DEV_UI) dbg(`🔍 POI Debug: places=${_offlinePlaces?.length}, selected=[${[...selectedPOICategories].join(',')}], mapReady=${poiMapReady}`);
 
       if (!map || !poiMapReady) {
-        console.log('⚠️ Exiting: map or poiMapReady not ready');
         return;
       }
 
@@ -3389,7 +3391,6 @@
       poiMapMarkers = [];
 
       if (!selectedPOICategories.size || !_offlinePlaces?.length) {
-        console.log('⚠️ Exiting: no categories selected or no places loaded');
         return;
       }
 
@@ -3397,11 +3398,14 @@
       const center = map.getCenter();
       const visible = [];
 
+      const catToGroup = new Map();
+      for (const key of Object.keys(POI_CATEGORY_CONFIG)) {
+        if (!selectedPOICategories.has(key)) continue;
+        for (const c of POI_CATEGORY_CONFIG[key].categories) if (!catToGroup.has(c)) catToGroup.set(c, key);
+      }
+
       for (const place of _offlinePlaces) {
-        const category = _cat(place);
-        const group = Object.keys(POI_CATEGORY_CONFIG).find(key =>
-          selectedPOICategories.has(key) && POI_CATEGORY_CONFIG[key].categories.includes(category)
-        );
+        const group = catToGroup.get(_cat(place));
         if (!group) continue;
 
         const lat = Number(place.la), lon = Number(place.lo);
@@ -3438,9 +3442,6 @@
           .addTo(map));
       });
 
-      // ── FINAL DIAGNOSTIC LOG ──────────────────────────────────────────
-      console.log('✅ Markers after refresh:', poiMapMarkers.length);
-      console.log('===================');
       dbg(`✅ POI markers created: ${poiMapMarkers.length}`);
     }
 
@@ -3985,6 +3986,11 @@
 
     // ── DEBUG ────────────────────────────────────────────────────────────────
     function dbg(msg) {
+      // Production: no console spam and no DOM writes (dbg is called from hot paths).
+      if (!DEV_UI) {
+        if (typeof msg === 'string' && /^(❌|⚠️)/.test(msg)) console.warn('[Atlas]', msg);
+        return;
+      }
       console.log('[Atlas]', msg);
       const content = document.getElementById('debug-content');
       if (!content) return;
@@ -3992,6 +3998,7 @@
       div.style.cssText = 'border-bottom:1px solid rgba(255,255,255,0.1);padding:2px 0';
       div.innerHTML = `<span style="color:var(--c-muted)">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
       content.appendChild(div);
+      while (content.childElementCount > 300) content.firstElementChild.remove();
       content.scrollTop = content.scrollHeight;
     }
 
@@ -4347,7 +4354,7 @@
 
           // Auto-run rail debug after tiles settle so we can see what
           // classes the public_transport layer actually contains here.
-          setTimeout(() => debugRails(), 1800);
+          if (DEV_UI) setTimeout(() => debugRails(), 1800);
 
           if (DEV_UI) { // ← legacy full-network layers: dev only (paths below may be stale after the data/ reorganisation)
             // ── MANUALLY TRACED METRO ROUTES ───────────────────────────────────
@@ -4998,6 +5005,21 @@
         poiTabs.addEventListener('scroll', () => requestAnimationFrame(updatePOIScrollArrows), { passive: true });
         window.addEventListener('resize', updatePOIScrollArrows);
         requestAnimationFrame(updatePOIScrollArrows);
+        // Tab labels/widths change after language switches, font loading and layout settling,
+        // so re-check the arrows whenever the tabs change size or content (not only on scroll).
+        let _poiArrowRaf = 0;
+        const recheckPOIArrows = () => {
+          cancelAnimationFrame(_poiArrowRaf);
+          _poiArrowRaf = requestAnimationFrame(updatePOIScrollArrows);
+        };
+        if (window.ResizeObserver) {
+          const ro = new ResizeObserver(recheckPOIArrows);
+          ro.observe(poiTabs);
+          poiTabs.querySelectorAll('.poi-category-tab').forEach(b => ro.observe(b));
+        }
+        new MutationObserver(recheckPOIArrows).observe(poiTabs, { childList: true, subtree: true, characterData: true });
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(recheckPOIArrows);
+        [150, 500, 1200].forEach(ms => setTimeout(recheckPOIArrows, ms));
       }
       document.querySelectorAll('.poi-category-tab').forEach(button => {
         button.onclick = () => {
