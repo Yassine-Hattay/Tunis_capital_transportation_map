@@ -1,0 +1,26 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 1 }, "geometry": { "type": "Point", "coordinates": [10.17982, 36.79652] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 2 }, "geometry": { "type": "Point", "coordinates": [10.17864, 36.80131] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 3 }, "geometry": { "type": "Point", "coordinates": [10.18081, 36.80649] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 4 }, "geometry": { "type": "Point", "coordinates": [10.17239, 36.8103] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 5 }, "geometry": { "type": "Point", "coordinates": [10.16817, 36.81331] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 6 }, "geometry": { "type": "Point", "coordinates": [10.16219, 36.80986] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 7 }, "geometry": { "type": "Point", "coordinates": [10.15026, 36.80953] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 8 }, "geometry": { "type": "Point", "coordinates": [10.14238, 36.80835] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 9 }, "geometry": { "type": "Point", "coordinates": [10.13523, 36.80724] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 10 }, "geometry": { "type": "Point", "coordinates": [10.12664, 36.80541] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 11 }, "geometry": { "type": "Point", "coordinates": [10.12177, 36.80421] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 12 }, "geometry": { "type": "Point", "coordinates": [10.11601, 36.80293] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 13 }, "geometry": { "type": "Point", "coordinates": [10.11075, 36.80221] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 14 }, "geometry": { "type": "Point", "coordinates": [10.10269, 36.80211] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 15 }, "geometry": { "type": "Point", "coordinates": [10.09908, 36.80334] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 16 }, "geometry": { "type": "Point", "coordinates": [10.09065, 36.80528] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 17 }, "geometry": { "type": "Point", "coordinates": [10.08247, 36.80739] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 18 }, "geometry": { "type": "Point", "coordinates": [10.08053, 36.80811] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 19 }, "geometry": { "type": "Point", "coordinates": [10.07461, 36.8092] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 20 }, "geometry": { "type": "Point", "coordinates": [10.05981, 36.81396] } },
+    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 21 }, "geometry": { "type": "Point", "coordinates": [10.05678, 36.81533] } }
+  ]
+}

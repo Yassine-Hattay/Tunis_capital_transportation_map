@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 1 }, "geometry": { "type": "Point", "coordinates": [10.13411, 36.83083] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 2 }, "geometry": { "type": "Point", "coordinates": [10.13454, 36.82588] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 3 }, "geometry": { "type": "Point", "coordinates": [10.13986, 36.82289] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 4 }, "geometry": { "type": "Point", "coordinates": [10.14385, 36.82605] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 5 }, "geometry": { "type": "Point", "coordinates": [10.15085, 36.82365] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 6 }, "geometry": { "type": "Point", "coordinates": [10.15626, 36.8132] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 7 }, "geometry": { "type": "Point", "coordinates": [10.16219, 36.80986] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 8 }, "geometry": { "type": "Point", "coordinates": [10.16817, 36.81331] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 9 }, "geometry": { "type": "Point", "coordinates": [10.17239, 36.8103] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 10 }, "geometry": { "type": "Point", "coordinates": [10.18081, 36.80649] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 11 }, "geometry": { "type": "Point", "coordinates": [10.17864, 36.80131] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 12 }, "geometry": { "type": "Point", "coordinates": [10.17982, 36.79652] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 13 }, "geometry": { "type": "Point", "coordinates": [10.1862, 36.7979] } },
+    { "type": "Feature", "properties": { "line": "Ligne 3", "station_id": 14 }, "geometry": { "type": "Point", "coordinates": [10.19283, 36.8002] } }
+  ]
+}

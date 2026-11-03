@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 1 }, "geometry": { "type": "Point", "coordinates": [10.19283, 36.8002] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 2 }, "geometry": { "type": "Point", "coordinates": [10.1862, 36.7979] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 3 }, "geometry": { "type": "Point", "coordinates": [10.18055, 36.7961] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 4 }, "geometry": { "type": "Point", "coordinates": [10.17981, 36.7858] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 5 }, "geometry": { "type": "Point", "coordinates": [10.17984, 36.7821] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 6 }, "geometry": { "type": "Point", "coordinates": [10.1792, 36.77504] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 7 }, "geometry": { "type": "Point", "coordinates": [10.18388, 36.76788] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 8 }, "geometry": { "type": "Point", "coordinates": [10.18701, 36.76065] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 9 }, "geometry": { "type": "Point", "coordinates": [10.18765, 36.75466] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 10 }, "geometry": { "type": "Point", "coordinates": [10.18873, 36.74844] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 11 }, "geometry": { "type": "Point", "coordinates": [10.19049, 36.74517] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 12 }, "geometry": { "type": "Point", "coordinates": [10.19319, 36.7429] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 13 }, "geometry": { "type": "Point", "coordinates": [10.19774, 36.74218] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 14 }, "geometry": { "type": "Point", "coordinates": [10.20657, 36.73854] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 15 }, "geometry": { "type": "Point", "coordinates": [10.21038, 36.7331] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 16 }, "geometry": { "type": "Point", "coordinates": [10.21073, 36.7287] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 17 }, "geometry": { "type": "Point", "coordinates": [10.2121, 36.72364] } },
+    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 18 }, "geometry": { "type": "Point", "coordinates": [10.21639, 36.71965] } }
+  ]
+}
