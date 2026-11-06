@@ -1,23 +1,311 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 1 }, "geometry": { "type": "Point", "coordinates": [10.19283, 36.8002] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 2 }, "geometry": { "type": "Point", "coordinates": [10.1862, 36.7979] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 3 }, "geometry": { "type": "Point", "coordinates": [10.18055, 36.7961] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 4 }, "geometry": { "type": "Point", "coordinates": [10.17981, 36.7858] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 5 }, "geometry": { "type": "Point", "coordinates": [10.17984, 36.7821] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 6 }, "geometry": { "type": "Point", "coordinates": [10.1792, 36.77504] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 7 }, "geometry": { "type": "Point", "coordinates": [10.18388, 36.76788] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 8 }, "geometry": { "type": "Point", "coordinates": [10.18701, 36.76065] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 9 }, "geometry": { "type": "Point", "coordinates": [10.18765, 36.75466] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 10 }, "geometry": { "type": "Point", "coordinates": [10.18873, 36.74844] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 11 }, "geometry": { "type": "Point", "coordinates": [10.19049, 36.74517] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 12 }, "geometry": { "type": "Point", "coordinates": [10.19319, 36.7429] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 13 }, "geometry": { "type": "Point", "coordinates": [10.19774, 36.74218] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 14 }, "geometry": { "type": "Point", "coordinates": [10.20657, 36.73854] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 15 }, "geometry": { "type": "Point", "coordinates": [10.21038, 36.7331] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 16 }, "geometry": { "type": "Point", "coordinates": [10.21073, 36.7287] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 17 }, "geometry": { "type": "Point", "coordinates": [10.2121, 36.72364] } },
-    { "type": "Feature", "properties": { "line": "Ligne 6", "station_id": 18 }, "geometry": { "type": "Point", "coordinates": [10.21639, 36.71965] } }
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 1,
+        "name_ar": "تونس البحرية",
+        "name_en": "Tunis Marine",
+        "name_fr": "Tunis Marine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19283,
+          36.8002
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 2,
+        "name_ar": "الطاهر صفر",
+        "name_en": "Tahar Sfar",
+        "name_fr": "Tahar Sfar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1862,
+          36.7979
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 3,
+        "name_ar": "برشلونة",
+        "name_en": "Barcelona",
+        "name_fr": "Barcelone"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18055,
+          36.7961
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 4,
+        "name_ar": "الباساج",
+        "name_en": "Le Passage",
+        "name_fr": "Le Passage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17981,
+          36.7858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 5,
+        "name_ar": "الجمهورية",
+        "name_en": "Republique",
+        "name_fr": "Republique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17984,
+          36.7821
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 6,
+        "name_ar": "باب عليوة",
+        "name_en": "Bab Alioua",
+        "name_fr": "Bab Alioua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1792,
+          36.77504
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 7,
+        "name_ar": "المفتاحية",
+        "name_en": "El Meftahia",
+        "name_fr": "El Meftahia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18388,
+          36.76788
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 8,
+        "name_ar": "مقرين",
+        "name_en": "Megrine",
+        "name_fr": "Megrine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18701,
+          36.76065
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 9,
+        "name_ar": "رياض السيف",
+        "name_en": "Rades",
+        "name_fr": "Rades"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18765,
+          36.75466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 10,
+        "name_ar": "زهور",
+        "name_en": "Zouhour",
+        "name_fr": "Zouhour"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18873,
+          36.74844
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 11,
+        "name_ar": "بن عروس",
+        "name_en": "Ben Arous",
+        "name_fr": "Ben Arous"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19049,
+          36.74517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 12,
+        "name_ar": "الزهراء",
+        "name_en": "Ezzahra",
+        "name_fr": "Ezzahra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19319,
+          36.7429
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 13,
+        "name_ar": "حمام الانف",
+        "name_en": "Hammam Lif",
+        "name_fr": "Hammam Lif"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19774,
+          36.74218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 14,
+        "name_ar": "البصري",
+        "name_en": "Basri",
+        "name_fr": "Basri"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.20657,
+          36.73854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 15,
+        "name_ar": "بوقرنين",
+        "name_en": "Bou Kornine",
+        "name_fr": "Bou Kornine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.21038,
+          36.7331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 16,
+        "name_ar": "عين زغوان",
+        "name_en": "Ain Zaghouan",
+        "name_fr": "Ain Zaghouan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.21073,
+          36.7287
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 17,
+        "name_ar": "المرسى",
+        "name_en": "La Marsa",
+        "name_fr": "La Marsa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.2121,
+          36.72364
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 6",
+        "station_id": 18,
+        "name_ar": "نهاية المرسى",
+        "name_en": "La Marsa Terminal",
+        "name_fr": "Terminus La Marsa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.21639,
+          36.71965
+        ]
+      }
+    }
   ]
 }

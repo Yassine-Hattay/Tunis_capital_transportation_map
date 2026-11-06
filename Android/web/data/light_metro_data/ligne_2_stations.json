@@ -1,27 +1,379 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 1 }, "geometry": { "type": "Point", "coordinates": [10.19748, 36.85979] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 2 }, "geometry": { "type": "Point", "coordinates": [10.19591, 36.85441] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 3 }, "geometry": { "type": "Point", "coordinates": [10.19237, 36.84699] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 4 }, "geometry": { "type": "Point", "coordinates": [10.18406, 36.84428] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 5 }, "geometry": { "type": "Point", "coordinates": [10.18196, 36.83852] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 6 }, "geometry": { "type": "Point", "coordinates": [10.18277, 36.83329] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 7 }, "geometry": { "type": "Point", "coordinates": [10.19037, 36.82923] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 8 }, "geometry": { "type": "Point", "coordinates": [10.18556, 36.82346] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 9 }, "geometry": { "type": "Point", "coordinates": [10.18206, 36.82001] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 10 }, "geometry": { "type": "Point", "coordinates": [10.18357, 36.81568] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 11 }, "geometry": { "type": "Point", "coordinates": [10.18333, 36.81248] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 12 }, "geometry": { "type": "Point", "coordinates": [10.18081, 36.80649] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 13 }, "geometry": { "type": "Point", "coordinates": [10.18081, 36.80649] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 14 }, "geometry": { "type": "Point", "coordinates": [10.17239, 36.8103] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 15 }, "geometry": { "type": "Point", "coordinates": [10.16817, 36.81331] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 16 }, "geometry": { "type": "Point", "coordinates": [10.16219, 36.80986] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 17 }, "geometry": { "type": "Point", "coordinates": [10.15626, 36.8132] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 18 }, "geometry": { "type": "Point", "coordinates": [10.15085, 36.82365] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 19 }, "geometry": { "type": "Point", "coordinates": [10.14385, 36.82605] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 20 }, "geometry": { "type": "Point", "coordinates": [10.13986, 36.82289] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 21 }, "geometry": { "type": "Point", "coordinates": [10.1345, 36.82588] } },
-    { "type": "Feature", "properties": { "line": "Ligne 2", "station_id": 22 }, "geometry": { "type": "Point", "coordinates": [10.13411, 36.83083] } }
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 1,
+        "name_ar": "أريانة",
+        "name_en": "Ariana",
+        "name_fr": "Ariana"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19748,
+          36.85979
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 2,
+        "name_ar": "المختار السوسي",
+        "name_en": "Mukhtar Susi",
+        "name_fr": "Mukhtar Susi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19591,
+          36.85441
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 3,
+        "name_ar": "الحدائق",
+        "name_en": "Jardin",
+        "name_fr": "Jardin"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19237,
+          36.84699
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 4,
+        "name_ar": "حي الخضراء",
+        "name_en": "Chedly Zouiten",
+        "name_fr": "Chedly Zouiten"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18406,
+          36.84428
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 5,
+        "name_ar": "الشارقي",
+        "name_en": "El Agba",
+        "name_fr": "El Agba"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18196,
+          36.83852
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 6,
+        "name_ar": "البوليتكنيك",
+        "name_en": "Polytechnique",
+        "name_fr": "Polytechnique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18277,
+          36.83329
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 7,
+        "name_ar": "العمران",
+        "name_en": "El Omrane",
+        "name_fr": "El Omrane"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19037,
+          36.82923
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 8,
+        "name_ar": "فلسطين",
+        "name_en": "Palestine",
+        "name_fr": "Palestine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18556,
+          36.82346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 9,
+        "name_ar": "الجمهورية",
+        "name_en": "Republique",
+        "name_fr": "Republique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18206,
+          36.82001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 10,
+        "name_ar": "الباساج",
+        "name_en": "Le Passage",
+        "name_fr": "Le Passage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18357,
+          36.81568
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 11,
+        "name_ar": "محمد الخامس",
+        "name_en": "Mohammed V",
+        "name_fr": "Mohammed V"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18333,
+          36.81248
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 12,
+        "name_ar": "الباب العسل",
+        "name_en": "Bab Saadoun",
+        "name_fr": "Bab Saadoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18081,
+          36.80649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 13,
+        "name_ar": "الباب العسل",
+        "name_en": "Bab Saadoun",
+        "name_fr": "Bab Saadoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18081,
+          36.80649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 14,
+        "name_ar": "باب الخضراء",
+        "name_en": "Bab Khadra",
+        "name_fr": "Bab Khadra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17239,
+          36.8103
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 15,
+        "name_ar": "بشهر",
+        "name_en": "Bouchoucha",
+        "name_fr": "Bouchoucha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16817,
+          36.81331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 16,
+        "name_ar": "باردو",
+        "name_en": "Bardo",
+        "name_fr": "Bardo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16219,
+          36.80986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 17,
+        "name_ar": "السعيدة",
+        "name_en": "Saida",
+        "name_fr": "Saida"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15626,
+          36.8132
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 18,
+        "name_ar": "منوبة",
+        "name_en": "Manouba",
+        "name_fr": "Manouba"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15085,
+          36.82365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 19,
+        "name_ar": "البرتقال",
+        "name_en": "Orange",
+        "name_fr": "Orange"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.14385,
+          36.82605
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 20,
+        "name_ar": "القامرة",
+        "name_en": "Gammarth",
+        "name_fr": "Gammarth"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.13986,
+          36.82289
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 21,
+        "name_ar": "القباعة",
+        "name_en": "Koubaa",
+        "name_fr": "Koubaa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1345,
+          36.82588
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 2",
+        "station_id": 22,
+        "name_ar": "حي هلال",
+        "name_en": "Hay Hlel",
+        "name_fr": "Hay Hlel"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.13411,
+          36.83083
+        ]
+      }
+    }
   ]
 }

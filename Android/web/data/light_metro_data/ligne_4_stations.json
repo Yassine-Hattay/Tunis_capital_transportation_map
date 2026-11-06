@@ -1,26 +1,362 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 1 }, "geometry": { "type": "Point", "coordinates": [10.17982, 36.79652] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 2 }, "geometry": { "type": "Point", "coordinates": [10.17864, 36.80131] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 3 }, "geometry": { "type": "Point", "coordinates": [10.18081, 36.80649] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 4 }, "geometry": { "type": "Point", "coordinates": [10.17239, 36.8103] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 5 }, "geometry": { "type": "Point", "coordinates": [10.16817, 36.81331] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 6 }, "geometry": { "type": "Point", "coordinates": [10.16219, 36.80986] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 7 }, "geometry": { "type": "Point", "coordinates": [10.15026, 36.80953] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 8 }, "geometry": { "type": "Point", "coordinates": [10.14238, 36.80835] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 9 }, "geometry": { "type": "Point", "coordinates": [10.13523, 36.80724] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 10 }, "geometry": { "type": "Point", "coordinates": [10.12664, 36.80541] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 11 }, "geometry": { "type": "Point", "coordinates": [10.12177, 36.80421] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 12 }, "geometry": { "type": "Point", "coordinates": [10.11601, 36.80293] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 13 }, "geometry": { "type": "Point", "coordinates": [10.11075, 36.80221] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 14 }, "geometry": { "type": "Point", "coordinates": [10.10269, 36.80211] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 15 }, "geometry": { "type": "Point", "coordinates": [10.09908, 36.80334] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 16 }, "geometry": { "type": "Point", "coordinates": [10.09065, 36.80528] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 17 }, "geometry": { "type": "Point", "coordinates": [10.08247, 36.80739] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 18 }, "geometry": { "type": "Point", "coordinates": [10.08053, 36.80811] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 19 }, "geometry": { "type": "Point", "coordinates": [10.07461, 36.8092] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 20 }, "geometry": { "type": "Point", "coordinates": [10.05981, 36.81396] } },
-    { "type": "Feature", "properties": { "line": "Ligne 4", "station_id": 21 }, "geometry": { "type": "Point", "coordinates": [10.05678, 36.81533] } }
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 1,
+        "name_ar": "محطة ساحة الابطال",
+        "name_en": "Heroes Square",
+        "name_fr": "Place des Heros"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17982,
+          36.79652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 2,
+        "name_ar": "باب سعدون",
+        "name_en": "Bab Saadoun",
+        "name_fr": "Bab Saadoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17864,
+          36.80131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 3,
+        "name_ar": "الباب العسل",
+        "name_en": "Bab Saadoun",
+        "name_fr": "Bab Saadoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18081,
+          36.80649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 4,
+        "name_ar": "باب الخضراء",
+        "name_en": "Bab Khadra",
+        "name_fr": "Bab Khadra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17239,
+          36.8103
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 5,
+        "name_ar": "بشهر",
+        "name_en": "Bouchoucha",
+        "name_fr": "Bouchoucha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16817,
+          36.81331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 6,
+        "name_ar": "باردو",
+        "name_en": "Bardo",
+        "name_fr": "Bardo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16219,
+          36.80986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 7,
+        "name_ar": "بوحنش",
+        "name_en": "Bouhanche",
+        "name_fr": "Bouhanche"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15026,
+          36.80953
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 8,
+        "name_ar": "المرجعي",
+        "name_en": "Marja",
+        "name_fr": "Marja"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.14238,
+          36.80835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 9,
+        "name_ar": "العمران الأعلى",
+        "name_en": "El Omrane Superieur",
+        "name_fr": "El Omrane Superieur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.13523,
+          36.80724
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 10,
+        "name_ar": "الرجيش",
+        "name_en": "Rejiche",
+        "name_fr": "Rejiche"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12664,
+          36.80541
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 11,
+        "name_ar": "سيدي حسين",
+        "name_en": "Sidi Hcine",
+        "name_fr": "Sidi Hcine"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12177,
+          36.80421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 12,
+        "name_ar": "العطار",
+        "name_en": "Attar",
+        "name_fr": "Attar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.11601,
+          36.80293
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 13,
+        "name_ar": "المتلوي",
+        "name_en": "Metlaoui",
+        "name_fr": "Metlaoui"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.11075,
+          36.80221
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 14,
+        "name_ar": "حاسي الفريد",
+        "name_en": "Hassi Frid",
+        "name_fr": "Hassi Frid"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.10269,
+          36.80211
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 15,
+        "name_ar": "الدندان",
+        "name_en": "Denden",
+        "name_fr": "Denden"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.09908,
+          36.80334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 16,
+        "name_ar": "وادي الليل",
+        "name_en": "Oued Ellil",
+        "name_fr": "Oued Ellil"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.09065,
+          36.80528
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 17,
+        "name_ar": "البطان",
+        "name_en": "El Batan",
+        "name_fr": "El Batan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.08247,
+          36.80739
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 18,
+        "name_ar": "الطريفاوي",
+        "name_en": "Tarifaoui",
+        "name_fr": "Tarifaoui"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.08053,
+          36.80811
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 19,
+        "name_ar": "الشبيلية",
+        "name_en": "Chbiliya",
+        "name_fr": "Chbiliya"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.07461,
+          36.8092
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 20,
+        "name_ar": "البروڨية",
+        "name_en": "Borj El Amri",
+        "name_fr": "Borj El Amri"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.05981,
+          36.81396
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 4",
+        "station_id": 21,
+        "name_ar": "الخضراء النهائية",
+        "name_en": "Terminal Khadra",
+        "name_fr": "Terminal Khadra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.05678,
+          36.81533
+        ]
+      }
+    }
   ]
 }

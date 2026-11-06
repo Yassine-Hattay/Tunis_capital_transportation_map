@@ -1,20 +1,260 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 1 }, "geometry": { "type": "Point", "coordinates": [10.17982, 36.79652] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 2 }, "geometry": { "type": "Point", "coordinates": [10.17864, 36.80131] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 3 }, "geometry": { "type": "Point", "coordinates": [10.18081, 36.80649] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 4 }, "geometry": { "type": "Point", "coordinates": [10.17239, 36.8103] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 5 }, "geometry": { "type": "Point", "coordinates": [10.16817, 36.81331] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 6 }, "geometry": { "type": "Point", "coordinates": [10.16219, 36.80986] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 7 }, "geometry": { "type": "Point", "coordinates": [10.15626, 36.8132] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 8 }, "geometry": { "type": "Point", "coordinates": [10.15085, 36.82365] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 9 }, "geometry": { "type": "Point", "coordinates": [10.14385, 36.82605] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 10 }, "geometry": { "type": "Point", "coordinates": [10.13986, 36.82289] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 11 }, "geometry": { "type": "Point", "coordinates": [10.13454, 36.82588] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 12 }, "geometry": { "type": "Point", "coordinates": [10.12862, 36.82918] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 13 }, "geometry": { "type": "Point", "coordinates": [10.12411, 36.83049] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 14 }, "geometry": { "type": "Point", "coordinates": [10.11759, 36.83584] } },
-    { "type": "Feature", "properties": { "line": "Ligne 5", "station_id": 15 }, "geometry": { "type": "Point", "coordinates": [10.11695, 36.83935] } }
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 1,
+        "name_ar": "محطة ساحة الابطال",
+        "name_en": "Heroes Square",
+        "name_fr": "Place des Heros"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17982,
+          36.79652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 2,
+        "name_ar": "باب سعدون",
+        "name_en": "Bab Saadoun",
+        "name_fr": "Bab Saadoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17864,
+          36.80131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 3,
+        "name_ar": "الباب العسل",
+        "name_en": "Bab Saadoun",
+        "name_fr": "Bab Saadoun"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18081,
+          36.80649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 4,
+        "name_ar": "باب الخضراء",
+        "name_en": "Bab Khadra",
+        "name_fr": "Bab Khadra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17239,
+          36.8103
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 5,
+        "name_ar": "بشهر",
+        "name_en": "Bouchoucha",
+        "name_fr": "Bouchoucha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16817,
+          36.81331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 6,
+        "name_ar": "باردو",
+        "name_en": "Bardo",
+        "name_fr": "Bardo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.16219,
+          36.80986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 7,
+        "name_ar": "السعيدة",
+        "name_en": "Saida",
+        "name_fr": "Saida"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15626,
+          36.8132
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 8,
+        "name_ar": "منوبة",
+        "name_en": "Manouba",
+        "name_fr": "Manouba"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.15085,
+          36.82365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 9,
+        "name_ar": "البرتقال",
+        "name_en": "Orange",
+        "name_fr": "Orange"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.14385,
+          36.82605
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 10,
+        "name_ar": "القامرة",
+        "name_en": "Gammarth",
+        "name_fr": "Gammarth"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.13986,
+          36.82289
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 11,
+        "name_ar": "حي التضامن",
+        "name_en": "Intilaka",
+        "name_fr": "Intilaka"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.13454,
+          36.82588
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 12,
+        "name_ar": "حي التضامن 2",
+        "name_en": "Intilaka 2",
+        "name_fr": "Intilaka 2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12862,
+          36.82918
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 13,
+        "name_ar": "حي التضامن 3",
+        "name_en": "Intilaka 3",
+        "name_fr": "Intilaka 3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.12411,
+          36.83049
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 14,
+        "name_ar": "حي التضامن 4",
+        "name_en": "Intilaka 4",
+        "name_fr": "Intilaka 4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.11759,
+          36.83584
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 5",
+        "station_id": 15,
+        "name_ar": "نهاية التضامن",
+        "name_en": "Intilaka Terminal",
+        "name_fr": "Terminus Intilaka"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.11695,
+          36.83935
+        ]
+      }
+    }
   ]
 }

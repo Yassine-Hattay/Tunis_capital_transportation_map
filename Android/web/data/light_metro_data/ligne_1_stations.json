@@ -1,16 +1,192 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 1 }, "geometry": { "type": "Point", "coordinates": [10.18055, 36.7961] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 2 }, "geometry": { "type": "Point", "coordinates": [10.17981, 36.7858] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 3 }, "geometry": { "type": "Point", "coordinates": [10.17984, 36.7821] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 4 }, "geometry": { "type": "Point", "coordinates": [10.1792, 36.77504] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 5 }, "geometry": { "type": "Point", "coordinates": [10.18388, 36.76788] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 6 }, "geometry": { "type": "Point", "coordinates": [10.19059, 36.75978] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 7 }, "geometry": { "type": "Point", "coordinates": [10.19393, 36.75428] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 8 }, "geometry": { "type": "Point", "coordinates": [10.19906, 36.75424] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 9 }, "geometry": { "type": "Point", "coordinates": [10.20473, 36.7515] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 10 }, "geometry": { "type": "Point", "coordinates": [10.21474, 36.75246] } },
-    { "type": "Feature", "properties": { "line": "Ligne 1", "station_id": 11 }, "geometry": { "type": "Point", "coordinates": [10.21898, 36.7554] } }
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 1,
+        "name_ar": "برشلونة",
+        "name_en": "Barcelona",
+        "name_fr": "Barcelone"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18055,
+          36.7961
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 2,
+        "name_ar": "الباساج",
+        "name_en": "Le Passage",
+        "name_fr": "Le Passage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17981,
+          36.7858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 3,
+        "name_ar": "الجمهورية",
+        "name_en": "Republique",
+        "name_fr": "Republique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.17984,
+          36.7821
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 4,
+        "name_ar": "باب عليوة",
+        "name_en": "Bab Alioua",
+        "name_fr": "Bab Alioua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.1792,
+          36.77504
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 5,
+        "name_ar": "المفتاحية",
+        "name_en": "El Meftahia",
+        "name_fr": "El Meftahia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.18388,
+          36.76788
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 6,
+        "name_ar": "الجبل الاحمر",
+        "name_en": "Djebel Jelloud",
+        "name_fr": "Djebel Jelloud"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19059,
+          36.75978
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 7,
+        "name_ar": "الابيار",
+        "name_en": "El Aassouil",
+        "name_fr": "El Aassouil"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19393,
+          36.75428
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 8,
+        "name_ar": "مفترق الروضة",
+        "name_en": "Ezzouhour",
+        "name_fr": "Ezzouhour"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.19906,
+          36.75424
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 9,
+        "name_ar": "المروجو 1",
+        "name_en": "El Mourouj 1",
+        "name_fr": "El Mourouj 1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.20473,
+          36.7515
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 10,
+        "name_ar": "المروجو 3",
+        "name_en": "El Mourouj 3",
+        "name_fr": "El Mourouj 3"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.21474,
+          36.75246
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "line": "Ligne 1",
+        "station_id": 11,
+        "name_ar": "المروجو 4",
+        "name_en": "El Mourouj 4",
+        "name_fr": "El Mourouj 4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.21898,
+          36.7554
+        ]
+      }
+    }
   ]
 }

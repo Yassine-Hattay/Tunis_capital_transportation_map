@@ -10,7 +10,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.1803806, 36.7947693]
+        "coordinates": [
+          10.1803806,
+          36.7947693
+        ]
       }
     },
     {
@@ -22,7 +25,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.1919152, 36.7840267]
+        "coordinates": [
+          10.1919152,
+          36.7840267
+        ]
       }
     },
     {
@@ -34,7 +40,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.2082258, 36.7727251]
+        "coordinates": [
+          10.2082258,
+          36.7727251
+        ]
       }
     },
     {
@@ -46,7 +55,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.2229004, 36.7702743]
+        "coordinates": [
+          10.2229004,
+          36.7702743
+        ]
       }
     },
     {
@@ -58,7 +70,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.2339183, 36.768327]
+        "coordinates": [
+          10.2339183,
+          36.768327
+        ]
       }
     },
     {
@@ -70,7 +85,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.2445454, 36.7673336]
+        "coordinates": [
+          10.2445454,
+          36.7673336
+        ]
       }
     },
     {
@@ -82,7 +100,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.2608437, 36.7667869]
+        "coordinates": [
+          10.2608437,
+          36.7667869
+        ]
       }
     },
     {
@@ -94,7 +115,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.269735, 36.7683604]
+        "coordinates": [
+          10.269735,
+          36.7683604
+        ]
       }
     },
     {
@@ -106,7 +130,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.2842731, 36.7629769]
+        "coordinates": [
+          10.2842731,
+          36.7629769
+        ]
       }
     },
     {
@@ -118,7 +145,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.3070495, 36.7468002]
+        "coordinates": [
+          10.3070495,
+          36.7468002
+        ]
       }
     },
     {
@@ -130,7 +160,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.3179647, 36.7390405]
+        "coordinates": [
+          10.3179647,
+          36.7390405
+        ]
       }
     },
     {
@@ -142,7 +175,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.3239341, 36.7347949]
+        "coordinates": [
+          10.3239341,
+          36.7347949
+        ]
       }
     },
     {
@@ -154,7 +190,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.3342066, 36.7294393]
+        "coordinates": [
+          10.3342066,
+          36.7294393
+        ]
       }
     },
     {
@@ -166,7 +205,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.3482081, 36.7234436]
+        "coordinates": [
+          10.3482081,
+          36.7234436
+        ]
       }
     },
     {
@@ -178,7 +220,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.3596743, 36.7175239]
+        "coordinates": [
+          10.3596743,
+          36.7175239
+        ]
       }
     },
     {
@@ -190,7 +235,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.369405, 36.7136003]
+        "coordinates": [
+          10.369405,
+          36.7136003
+        ]
       }
     },
     {
@@ -202,7 +250,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.3786432, 36.7102497]
+        "coordinates": [
+          10.3786432,
+          36.7102497
+        ]
       }
     },
     {
@@ -214,7 +265,10 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.3974291, 36.7034822]
+        "coordinates": [
+          10.3974291,
+          36.7034822
+        ]
       }
     },
     {
@@ -226,7 +280,25 @@
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [10.41484, 36.699504]
+        "coordinates": [
+          10.41484,
+          36.699504
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "شبّاك التذاكر",
+        "name_en": "ticket_booth",
+        "line": "Ligne A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.180422134938704,
+          36.79517121556636
+        ]
       }
     }
   ]

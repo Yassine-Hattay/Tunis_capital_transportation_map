@@ -3233,6 +3233,9 @@
       <label class="trip-mode-option"><input type="checkbox" data-transit-mode="rfr" checked><span><img
             src="./emojis/rfr.png" class="mode-icon-img" alt="rfr"><span
             data-mode-label="rfr">قطار</span></span></label>
+      <label class="trip-mode-option"><input type="checkbox" data-transit-mode="tgm" checked><span><img
+            src="./emojis/TGM.png" class="mode-icon-img" alt="tgm"> <span
+            data-mode-label="tgm">TGM</span></span></label>
     </div>
     <div id="trip-list"></div>
   </div>
@@ -3535,7 +3538,7 @@
         on_board: 'à bord',
         get_off: 'Descendez à',
         estimates: 'Estimations uniquement — pas d\'horaires en direct. Les attentes sont des moyennes.',
-        no_connection: 'Aucune connexion bus, métro ou RFR trouvée près des deux extrémités ({km} km d\'écart).',
+        no_connection: 'Aucune correspondance bus, métro, RFR ou TGM trouvée près des deux extrémités ({km} km d\'écart).',
         no_data: 'Aucune donnée de transport trouvée. Vérifiez les chemins du dossier data.',
         data_failed: 'Échec du chargement des données de transport.',
         gps_failed: 'Impossible d\'obtenir votre position. Activez le GPS et réessayez.',
@@ -3558,6 +3561,7 @@
         bus: 'Bus',
         metro: 'Métro',
         rfr: 'RFR',
+        tgm: 'TGM',
         menu_language: 'Langue',
         menu: 'Menu',
         cancel_route_action: 'Annuler l\'itinéraire',
@@ -3679,7 +3683,7 @@
         on_board: 'على متن',
         get_off: 'انزل في',
         estimates: 'تقديرات فقط — لا توجد جداول مباشرة. أوقات الانتظار متوسطة.',
-        no_connection: 'لا يوجد اتصال بالحافلة أو المترو أو RFR بالقرب من الطرفين ({km} كم بينهما).',
+        no_connection: 'لا يوجد اتصال بالحافلة أو المترو أو RFR أو TGM بالقرب من الطرفين ({km} كم بينهما).',
         no_data: 'لا توجد بيانات نقل. تحقق من مجلد البيانات.',
         data_failed: 'فشل تحميل بيانات النقل.',
         gps_failed: 'تعذر الحصول على موقعك. شغّل GPS وحاول مرة أخرى.',
@@ -3732,7 +3736,7 @@
         remove: 'إزالة',
         bus: 'حافلة',
         metro: 'مترو',
-        map_location: 'موقع على الخريطة',
+        tgm: 'TGM', map_location: 'موقع على الخريطة',
         close_panel: 'إغلاق',
         copy_coordinates: 'نسخ الإحداثيات',
         save_to_favourites: 'حفظ في المواقع المحفوظة',
@@ -3794,7 +3798,7 @@
         on_board: 'on board',
         get_off: 'get off at',
         estimates: 'Estimates only — no live schedules. Waits are averages.',
-        no_connection: 'No bus, métro or RFR connection found near both ends ({km} km apart).',
+        no_connection: 'No bus, métro, RFR or TGM connection found near both ends ({km} km apart).',
         no_data: 'No transit data found. Check the data folder paths.',
         data_failed: 'Transit data failed to load.',
         gps_failed: 'Couldn\'t get your location. Turn on GPS and try again.',
@@ -3847,6 +3851,7 @@
         remove: 'Remove',
         bus: 'Bus',
         metro: 'Métro',
+        tgm: 'TGM',
         map_location: 'Map location',
         close_panel: 'Close',
         copy_coordinates: 'Copy coordinates',
@@ -6549,6 +6554,7 @@
           bus: { label: 'Bus', icon: '<img src="./emojis/bus.png" class="mode-icon-img" alt="bus">', color: '#f59e0b', speed: 4.5, wait: 600 },
           metro: { label: 'Métro', icon: '<img src="./emojis/metro.png" class="mode-icon-img" alt="metro">', color: '#16a34a', speed: 5.3, wait: 240 },
           rfr: { label: 'RFR', icon: '<img src="./emojis/rfr.png" class="mode-icon-img" alt="rfr">', color: '#2563eb', speed: 6.0, wait: 300 },
+          tgm: { label: 'TGM', icon: '<img src="./emojis/TGM.png" class="mode-icon-img" alt="tgm">', color: '#7c3aed', speed: 5.5, wait: 300 }
         }
       };
 
@@ -6719,15 +6725,13 @@
         busStations: 'data/bus_data/major_bus_stations.json',
         metroStations: 'data/TGM_data/tgm_stations.json',
         metro: [1, 2, 3, 4, 5, 6].map(n => ({
-          base: `Métro ${n}`, short: `M${n}`, stationLine: `TGM ${n}`,
+          base: `Métro ${n}`, short: `M${n}`, stationLine: `Ligne ${n}`,
+          stations: `data/light_metro_data/ligne_${n}_stations.json`,
           dep: `data/light_metro_data/light_metro_${n}_departure_track.json`,
-          ret: `data/light_metro_data/light_metro_${n}_return_track.json`
+          ret: null  // return track = reversed departure track
         })),
-        rfr: [
-          { base: 'RFR A', short: 'A', track: 'data/RFR_data/RFR_Tunis_Ville_Erriadh_Track.json', stations: 'data/RFR_data/Linge_A_stations.json' },
-          { base: 'RFR D', short: 'D', track: 'data/RFR_data/RFR_Tunis_Ville_Gobaa.json', stations: 'data/RFR_data/Linge_D_stations.json' },
-          { base: 'RFR E', short: 'E', track: 'data/RFR_data/RFR_Tunis_Ville_Bougatfa_Sidi Hassine.json', stations: 'data/RFR_data/Linge_E_stations.json' }
-        ]
+        rfr: [{ base: 'RFR A', short: 'A', track: 'data/RFR_data/RFR_A.json', stations: 'data/RFR_data/Linge_A_stations.json' }, { base: 'RFR D', short: 'D', track: 'data/RFR_data/RFR_D.json', stations: 'data/RFR_data/Linge_D_stations.json' }, { base: 'RFR E', short: 'E', track: 'data/RFR_data/RFR_E.json', stations: 'data/RFR_data/Linge_E_stations.json' }],
+        tgm: [{ base: 'TGM', short: 'TGM', track: 'data/TGM_data/TGM_track.json', stations: 'data/TGM_data/TGM_track.json' }]
       };
 
       const R_EARTH = 6371000, RAD = Math.PI / 180;
@@ -6774,23 +6778,27 @@
         return r.json();
       }
       function lineCoords(fc) {
-        const out = [];
-        for (const f of fc.features || []) {
-          const g = f.geometry; if (!g) continue;
-          if (g.type === 'LineString') g.coordinates.forEach(c => out.push(c));
-          else if (g.type === 'MultiLineString') g.coordinates.forEach(l => l.forEach(c => out.push(c)));
-        }
-        return out;
+        const line = fc.features.find(f => f.geometry?.type === 'LineString');
+        if (!line) return [];
+        return line.geometry.coordinates;
       }
 
       function loadTransitData() {
         if (!readyPromise) readyPromise = (async () => {
+          dbg('🔄 loadTransitData: Starting...');
           const stopsAll = [], dls = [], warn = [];
           let busStations = [];
           async function addRail(mode, base, short, depUrl, retUrl, stationList) {
+            dbg(`⚙️ addRail called for ${mode} ${base}. Stations: ${stationList.length}, depUrl: ${depUrl}`);
             let dep;
-            try { dep = lineCoords(await jget(depUrl)); } catch (e) { warn.push(`${base}: ${e.message}`); return; }
-            if (dep.length < 2) return;
+            try {
+              dep = lineCoords(await jget(depUrl));
+              dbg(`   -> Loaded departure track: ${dep.length} points`);
+            } catch (e) {
+              dbg(`❌ ${base} departure track failed: ${e.message}`);
+              warn.push(`${base}: ${e.message}`);
+              return;
+            } if (dep.length < 2) return;
             let ret = null;
             if (retUrl) { try { ret = lineCoords(await jget(retUrl)); } catch (e) { } }
             if (!ret || ret.length < 2) ret = dep.slice().reverse();
@@ -6864,33 +6872,103 @@
               lat: f.geometry.coordinates[1]
             }));
           } catch (e) { }
-          let metroFC = null;
-          try { metroFC = await jget(SRC.metroStations); } catch (e) { }
+          let metroFC = null; try { metroFC = await jget(SRC.metroStations); } catch (e) { }
           const jobs = [];
           for (const m of SRC.metro) {
-            const list = (metroFC?.features || []).filter(f => f.properties?.line_id === m.stationLine).map(f => ({
-              ...srcNames(f.properties, 'name'),
-              lon: f.geometry.coordinates[0],
-              lat: f.geometry.coordinates[1]
-            }));
-            if (list.length) jobs.push(addRail('metro', m.base, m.short, m.dep, m.ret, list));
+            jobs.push((async () => {
+              try {
+                dbg(`🚇 Loading ${m.base} from ${m.stations}`);
+                const fc = await jget(m.stations);
+                const list = fc.features
+                  .filter(f => f.geometry?.type === 'Point').map(f => {
+                    const props = f.properties || {};
+                    // Use srcNames() to get the standard {nameEn, nameAr} format
+                    // that withName() expects — just like RFR/TGM does
+                    const names = srcNames(props, 'name');
+                    const fallbackEn = `${m.base} - Station #${props.station_id || '?'}`;
+                    return {
+                      nameEn: names.nameEn || props.name_fr || fallbackEn,
+                      nameAr: names.nameAr || fallbackEn,
+                      lon: f.geometry.coordinates[0],
+                      lat: f.geometry.coordinates[1],
+                      kind: 'station'
+                    };
+                  });
+                dbg(`   -> ${m.base}: ${list.length} stations`);
+                if (list.length) await addRail('metro', m.base, m.short, m.dep, m.ret, list);
+              } catch (e) {
+                dbg(`❌ ${m.base} failed: ${e.message}`);
+                warn.push(`${m.base}: ${e.message}`);
+              }
+            })());
           }
+
+          // ── RFR loader (uses separate stations file) ────────────────────────
           for (const r of SRC.rfr) {
             jobs.push((async () => {
               try {
+                dbg(`🚆 Loading RFR ${r.base} from ${r.stations}`);
                 const fc = await jget(r.stations);
                 const list = fc.features.filter(f => f.geometry?.type === 'Point').map(f => ({
                   ...srcNames(f.properties, 'name'),
                   lon: f.geometry.coordinates[0],
-                  lat: f.geometry.coordinates[1]
+                  lat: f.geometry.coordinates[1],
+                  kind: 'station'
                 }));
+                dbg(`   -> ${r.base}: ${list.length} stations`);
                 await addRail('rfr', r.base, r.short, r.track, null, list);
-              } catch (e) { }
+              } catch (e) {
+                dbg(`❌ ${r.base} failed: ${e.message}`);
+                warn.push(`${r.base}: ${e.message}`);
+              }
+            })());
+          }
+
+          // ── TGM loader (special: track + stations in ONE file) ──────────────
+          for (const r of SRC.tgm) {
+            jobs.push((async () => {
+              try {
+                dbg(`🚆 Loading TGM from ${r.track}`);
+                const fc = await jget(r.track);
+
+                // Filter only Point features with type="station"
+                const list = fc.features
+                  .filter(f => f.geometry?.type === 'Point' && f.properties?.type === 'station')
+                  .map(f => {
+                    // Use srcNames to automatically extract name_en, name_ar, name_fr
+                    const names = srcNames(f.properties, 'name');
+                    const fallback = f.properties.name || 'TGM Station';
+
+                    return {
+                      nameEn: names.nameEn || fallback,
+                      nameAr: names.nameAr || fallback,
+                      lon: f.geometry.coordinates[0],
+                      lat: f.geometry.coordinates[1],
+                      kind: 'station'
+                    };
+                  });
+
+                dbg(`   -> TGM: ${list.length} stations`);
+                // Use the SAME file for track (it contains the LineString)
+                await addRail('tgm', r.base, r.short, r.track, null, list);
+              } catch (e) {
+                dbg(`❌ TGM failed: ${e.message}`);
+                warn.push(`TGM: ${e.message}`);
+              }
             })());
           }
           SRC.bus.forEach(b => jobs.push(addBus(b)));
-          await Promise.all(jobs);
-          const nodes = [], adj = [];
+          dbg(`⏳ Waiting for ${jobs.length} transit jobs to complete...`);
+          await Promise.all(jobs.map((job, i) =>
+            Promise.race([
+              job,
+              new Promise((_, reject) => setTimeout(() => reject(new Error(`Job ${i} timed out after 15s`)), 15000))
+            ]).catch(e => {
+              dbg(`⚠️ Job ${i} error: ${e.message}`);
+              warn.push(e.message);
+            })
+          ));
+          dbg('✅ All transit jobs finished'); const nodes = [], adj = [];
           const addNode = n => { nodes.push(n); adj.push([]); return nodes.length - 1; };
           const addEdge = (a, b, cost, extra) => adj[a].push(Object.assign({ from: a, to: b, cost }, extra));
           const stops = [...new Map(stopsAll.map(s => [s.id, s])).values()];
@@ -8594,9 +8672,15 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         setBody('<div class="trip-msg">Loading transit data…</div>'); let origin;
         try { origin = originOv || await resolveOrigin(); } catch (e) { return; }
         try {
+          dbg('🔄 Step 1: Starting loadTransitData...');
           await loadTransitData();
+          dbg('✅ Step 2: Transit data loaded successfully');
           setBody('<div class="trip-msg">Finding the best way…</div>');
-        } catch (e) { return; }
+        } catch (e) {
+          dbg('❌ Step 2 FAILED: ' + e.message);
+          setBody(`<div class="trip-msg">Error: ${e.message}</div>`);
+          return;
+        }
         if (my !== runId) return;
         if (!G.stops.length) { setBody('<div class="trip-msg">No transit data found.</div>'); return; }
         lastResolvedOrigin = origin;
