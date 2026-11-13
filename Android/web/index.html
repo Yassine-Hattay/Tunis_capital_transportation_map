@@ -3288,20 +3288,27 @@
     let _fetchPromise = null;
     let _offlinePlaces = [];
     let tappedMapPoint = null;
-    // Read manually authored place names directly from places.json:
-    // na is preferred for Arabic; nl/n provide the Latin label.
+    // Read the explicit language fields from places.json first: ar / fr / en.
+    // The older na / nl / n fields are kept only as fallbacks for legacy records.
     const _placeName = value => typeof value === 'string' ? value.trim() : '';
     function placeArabicName(p) {
-      return [p.na, p.n, p.nl].map(_placeName).find(name => /[\u0600-\u06FF]/.test(name)) || '';
+      return _placeName(p?.ar) ||
+        [p?.na, p?.n, p?.nl].map(_placeName).find(name => /[\u0600-\u06FF]/.test(name)) || '';
+    }
+    const _legacyLatinName = p => [p?.nl, p?.n].map(_placeName).find(name => /[A-Za-z\u00C0-\u024F]/.test(name)) || '';
+    function placeFrenchName(p) {
+      return _placeName(p?.fr) || _legacyLatinName(p);
     }
     function placeEnglishName(p) {
-      const names = [p.nl, p.n, p.na].map(_placeName);
-      return names.find(name => /[A-Za-z\u00C0-\u024F]/.test(name)) || names.find(Boolean) || '';
+      return _placeName(p?.en) || _legacyLatinName(p);
     }
     function placeLabel(p) {
       const arabic = placeArabicName(p);
-      const latin = placeEnglishName(p);
-      return LANG === 'ar' ? (arabic || latin) : (latin || arabic);
+      const french = placeFrenchName(p);
+      const english = placeEnglishName(p);
+      if (LANG === 'ar') return arabic || french || english;
+      if (LANG === 'fr') return french || english || arabic;
+      return english || french || arabic;
     }
     function nearestPlaceAt(lat, lng, maxMeters = 50) {
       const cosLat = Math.cos(lat * Math.PI / 180);
@@ -3316,6 +3323,42 @@
         }
       }
       return nearest;
+    }
+
+    // ADD THIS UPDATED BLOCK:
+    function fmtStop(stop) {
+      if (!stop) return '';
+      let name = stop.name;
+
+      // If it's a generic bus stop/bench without a proper station name, resolve location from coords
+      if (stop.kind !== 'station' || (!stop.nameEn && !stop.nameAr)) {
+        let bestDistrict = null;
+        let bestDistrictDist = 400; // Search up to 400m for a district/neighborhood
+        const cosLat = Math.cos(stop.lat * Math.PI / 180);
+
+        // 1. PRIORITIZE: Look for districts, neighborhoods, suburbs, etc.
+        for (const p of _offlinePlaces) {
+          if (!PLACE_CATS.has(_cat(p))) continue; // Skip shops, cafes, etc.
+          const north = (Number(p.la) - stop.lat) * 111320;
+          const east = (Number(p.lo) - stop.lon) * 111320 * cosLat;
+          const meters = Math.hypot(north, east);
+          if (meters < bestDistrictDist) {
+            bestDistrictDist = meters;
+            bestDistrict = p;
+          }
+        }
+
+        if (bestDistrict) {
+          name = placeLabel(bestDistrict);
+        } else {
+          // 2. FALLBACK: If no district is found nearby, use the nearest shop/POI within 150m
+          const nearest = nearestPlaceAt(stop.lat, stop.lon, 150);
+          if (nearest) {
+            name = placeLabel(nearest);
+          }
+        }
+      }
+      return _escS(String(name || '').replace('· bench', ` · ${t('bench')}`).replace('· stop', ` · ${t('stop')}`));
     }
 
     const POI_CATEGORY_CONFIG = {
@@ -3975,6 +4018,8 @@
       if (oi && document.getElementById('origin-here')?.classList.contains('active')) oi.value = '𖦏 ' + t('current_location');
       const rs = document.getElementById('search-results');
       if (rs && rs.classList.contains('open') && input) input.dispatchEvent(new Event('input'));
+      const originResults = document.getElementById('origin-results');
+      if (originResults && originResults.classList.contains('open') && oi) oi.dispatchEvent(new Event('input'));
 
       if (typeof window.refreshTripUI === 'function') window.refreshTripUI();
       if (typeof window.refreshSavedPanel === 'function') window.refreshSavedPanel();
@@ -5316,7 +5361,11 @@
       .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, ' ');
     function _keys(p) {
       if (p._k) return p._k;
-      const set = new Set([p.na, p.nl, p.n].filter(Boolean).map(_norm));
+      // Index every available language so a place can be found whether the user
+      // types its Arabic, French or English name. Display labels still follow LANG.
+      const set = new Set([p.ar, p.fr, p.en, p.na, p.nl, p.n]
+        .map(name => _norm(_placeName(name)).trim())
+        .filter(Boolean));
       p._k = [...set].map(full => ({
         full,
         bare: full.replace(/^(la |le |les |el |al |l'|ال)/, '').trim() || full,   // "La Marsa" → "marsa"
@@ -5346,7 +5395,7 @@
         const t = _tier(p, q, toks);
         if (t === 9) continue;
         const pen = PLACE_CATS.has(_cat(p)) ? 0 : MAJOR_CATS.has(_cat(p)) ? 5 : 10;
-        out.push({ p, s: t * 10 + pen + Math.min(30, (p.n || p.nl || p.na || '').length) / 100 });   // shorter names first on ties
+        out.push({ p, s: t * 10 + pen + Math.min(30, placeLabel(p).length) / 100 });   // shorter localized names first on ties
       }
       out.sort((a, b) => a.s - b.s);
       return out.map(x => x.p);
@@ -5567,11 +5616,11 @@
     function deduplicatePlaces(places) {
       const seen = new Set();
       return places.filter(p => {
-        // Create a display key based on what the user sees
-        const name = LANG === 'ar' && p.na ? p.na : (p.nl || p.n);
-        const district = LANG === 'ar' && p.da ? p.da : (p.d || '');
-        const governorate = p.g || '';
-        const subDistrict = LANG === 'ar' && p.qa ? p.qa : (p.q || '');
+        // Use the same localized name that the suggestion row will display.
+        const name = _norm(placeLabel(p)).trim();
+        const district = _norm(LANG === 'ar' ? (p.da || p.d) : (p.d || p.da)).trim();
+        const governorate = _norm(p.g || '').trim();
+        const subDistrict = _norm(LANG === 'ar' ? (p.qa || p.q) : (p.q || p.qa)).trim();
 
         const key = `${name}|${district}|${governorate}|${subDistrict}`;
 
@@ -6548,7 +6597,7 @@
         STEP_ADVANCE_RADIUS_M: 100,
         TRANSFER_MAX_M: 400, TRANSFER_MIN_S: 60, WALK_ONLY_MAX_M: 2500, MAX_OPTIONS: 4,
         SIMILAR_M: 60, OFF_TRACK_MAX_M: 250, DWELL_S: 25, ALIGHT_S: 15,
-        BUS_BOARD_NON_BENCH: true, BUS_BENCH_PENALTY_S: 480, BUS_NON_BENCH_PENALTY_S: 180,
+        BUS_BOARD_NON_BENCH: false, BUS_BENCH_PENALTY_S: 480, BUS_NON_BENCH_PENALTY_S: 180,
         BUS_STATION_SNAP_M: 120, BUS_STATION_MERGE_M: 60, BUS_MERGE_M: 20,
         MODES: {
           bus: { label: 'Bus', icon: '<img src="./emojis/bus.png" class="mode-icon-img" alt="bus">', color: '#f59e0b', speed: 4.5, wait: 600 },
@@ -6721,7 +6770,7 @@
       }
 
       const SRC = {
-        bus: ['19c', '20', '38b'].map(id => ({ id, url: `data/bus_data/${id}.geojson` })),
+        bus: ['19c', '38b', '104', '635', '32b', '33b', '12_return', '12', '28e'].map(id => ({ id, url: `data/bus_data/${id}.geojson` })),
         busStations: 'data/bus_data/major_bus_stations.json',
         metroStations: 'data/TGM_data/tgm_stations.json',
         metro: [1, 2, 3, 4, 5, 6].map(n => ({
@@ -6820,10 +6869,12 @@
             if (used) stops.forEach(s => stopsAll.push(s));
           }
           async function addBus(src) {
-            let fc; try { fc = await jget(src.url); } catch (e) { return; }
+            let fc; try { fc = await jget(src.url); } catch (e) { dbg(`❌ Bus ${src.id} failed: ${e.message}`); warn.push(`Bus ${src.id}: ${e.message}`); return; }
             const coords = lineCoords({ features: fc.features.filter(f => /LineString/.test(f.geometry?.type)) });
             if (coords.length < 2) return;
-            const label = src.id.toUpperCase(), base = `Bus ${label}`;
+            const rawLabel = src.id.toUpperCase();
+            const base = `Bus ${rawLabel}`;                 // internal: "Bus 12_RETURN" (keeps stops unique)
+            const label = rawLabel.replace(/_RETURN$/, ''); // display: "12"        (strips the suffix for the user)
             const pts = fc.features.filter(f => f.geometry?.type === 'Point' && f.properties?.point_type && f.properties.point_type !== 'ticket_booth')
               .map(f => ({ lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1], type: f.properties.point_type, t: Date.parse(f.properties.timestamp) / 1000, num: (/(\d+)\s*$/.exec(f.properties.name || '') || [])[1] }))
               .filter(p => isFinite(p.t)).sort((a, b) => a.t - b.t);
@@ -6861,7 +6912,8 @@
               let idx = entries.findIndex(en => en.d > pr.d); if (idx < 0) idx = entries.length;
               entries.splice(idx, 0, entry); stops.push(stop);
             });
-            if (entries.length < 2) return;
+            if (entries.length < 2) { dbg(`⚠️ ${base}: fewer than 2 usable stops`); return; }
+            if (DEV_UI) dbg(`🚌 ${base}: ${entries.length} stops (${stops.filter(x => x.boardPen != null).length} boardable, ${stops.filter(x => x.boardPen == null).length} exit-only)`);
             dls.push({ id: `${base}:dep`, base, short: label, mode: 'bus', dir: 'dep', line, entries, oneWay: true, towards: 'last recorded stop' });
             stops.forEach(s => stopsAll.push(s));
           }
@@ -6999,9 +7051,12 @@
         return readyPromise;
       }
 
-      function nearbyStops(pt) {
+      // forBoarding = true: only stops where the user can actually get ON (bus benches / stations, any rail station).
+      // Destination side (forBoarding = false) accepts every stop, so an 'out' point can be used to get off.
+      function nearbyStops(pt, forBoarding = false) {
         const byBase = {};
         for (const s of G.stops) {
+          if (forBoarding && s.mode === 'bus' && s.boardPen == null) continue;
           const d = hav(pt, [s.lon, s.lat]);
           if (d <= CFG.ACCESS_MAX_M) (byBase[s.base] = byBase[s.base] || []).push({ stop: s, d });
         }
@@ -7093,7 +7148,7 @@
       function computeOptions(origin, dest) {
         const O = G.nodes.length, D = O + 1, op = [origin.lon, origin.lat], dp = [dest.lon, dest.lat];
         const extra = {}; const push = (n, e) => (extra[n] = extra[n] || []).push(e);
-        for (const { stop, d } of nearbyStops(op)) push(O, { from: O, to: stop.node, cost: walkSec(d), kind: 'walk' });
+        for (const { stop, d } of nearbyStops(op, true)) push(O, { from: O, to: stop.node, cost: walkSec(d), kind: 'walk' });
         for (const { stop, d } of nearbyStops(dp)) push(stop.node, { from: stop.node, to: D, cost: walkSec(d), kind: 'walk' });
         const ctx = { O, D, op, dp, origin, dest };
         const found = new Map();
@@ -7101,7 +7156,8 @@
           const p = dijkstra(O, D, ban, extra); if (!p) return null;
           const opt = makeOption(p, ctx); if (!opt) return null; if (!found.has(opt.sig)) found.set(opt.sig, opt); return opt;
         };
-        const disabledModes = () => new Set(['bus', 'metro', 'rfr'].filter(mode => !enabledTransitModes.has(mode)));
+        const ALL_MODES = ['bus', 'metro', 'rfr', 'tgm'];
+        const disabledModes = () => new Set(ALL_MODES.filter(mode => !enabledTransitModes.has(mode)));
         const none = () => ({ bases: new Set(), modes: disabledModes() });
         const best = run(none());
         if (best) {
@@ -7121,6 +7177,13 @@
           bannedModes.add(mode);
           run({ bases: new Set(), modes: bannedModes });
         });
+        // Best route that uses ONLY one mode (e.g. bus only), so a bus suggestion is never crowded out by
+        // faster metro / RFR / TGM combinations.
+        const onlyModeSigs = new Map();
+        enabledTransitModes.forEach(mode => {
+          const opt = run({ bases: new Set(), modes: new Set(ALL_MODES.filter(m => m !== mode)) });
+          if (opt && [...opt.bases].length) onlyModeSigs.set(mode, opt.sig);
+        });
         const out = [...found.values()];
         const directM = hav(op, dp) * CFG.WALK_DETOUR;
         if (directM <= CFG.WALK_ONLY_MAX_M) {
@@ -7129,8 +7192,70 @@
         }
         out.sort((a, b) => a.score - b.score);
         if (!out.length) return out;
-        return mergeSimilar(out.filter(o => o.score <= out[0].score * 2 + 900)).slice(0, CFG.MAX_OPTIONS);
+        const kept = mergeSimilar(out.filter(o => o.score <= out[0].score * 2 + 900));
+        const result = kept.slice(0, CFG.MAX_OPTIONS);
+        // guarantee one option per mode that can do the trip alone (if it is not absurdly slower)
+        for (const [mode, sig] of onlyModeSigs) {
+          if (result.some(o => o.legs.some(l => l.type === 'transit' && l.dl.mode === mode))) continue;
+          const opt = found.get(sig);
+          if (!opt || opt.score > out[0].score * 3 + 1800) continue;
+          if (result.length >= CFG.MAX_OPTIONS) result.pop();
+          result.push(opt);
+        }
+        if (DEV_UI) {
+          try { busDebugReport({ O, D, op, dp, extra, ctx, result, out, disabledModes, ALL_MODES, makeOption, dijkstra }); }
+          catch (e) { dbg(`⚠️ route debug failed: ${e.message}`); }
+        }
+        return result.sort((a, b) => a.score - b.score);
       }
+
+      // ── DEV ONLY: explains, for every bus line, why it is (not) suggested for the current trip ──────────────
+      function busDebugReport(c) {
+        const { O, D, op, dp, extra, ctx, result, out, disabledModes, ALL_MODES } = c;
+        const bases = [...new Set(G.dls.filter(d => d.mode === 'bus').map(d => d.base))];
+        const km = m => m >= 1000 ? `${(m / 1000).toFixed(2)} km` : `${Math.round(m)} m`;
+        const bestScore = out.length ? out[0].score : null;
+        dbg(`🔎 ROUTE DEBUG  from ${op.map(v => v.toFixed(5))}  to ${dp.map(v => v.toFixed(5))}  (${km(hav(op, dp))} apart)`);
+        dbg(`🔎 bus lines loaded: ${bases.length ? bases.join(', ') : 'NONE'}  |  best option score: ${bestScore == null ? 'n/a' : Math.round(bestScore)} s`);
+        const wanted = SRC.bus.map(b => `Bus ${b.id.toUpperCase()}`);
+        wanted.filter(b => !bases.includes(b)).forEach(b => dbg(`🔎 ${b}: NOT LOADED (file missing / failed / <2 stops) – see earlier ❌ lines`));
+        for (const base of bases) {
+          const dl = G.dls.find(d => d.base === base);
+          const stops = G.stops.filter(s => s.base === base);
+          const nearest = (pt, list) => list.map(s => ({ s, d: hav(pt, [s.lon, s.lat]) })).sort((a, b) => a.d - b.d);
+          const boardable = stops.filter(s => s.boardPen != null);
+          const o = nearest(op, boardable), d = nearest(dp, stops);
+          const idx = s => dl.entries.findIndex(e => e.stop === s);
+          const lim = CFG.ACCESS_MAX_M;
+          const oTxt = o.length ? `${o[0].s.name} at ${km(o[0].d)}` : 'no boardable stop (bench/station)';
+          const dTxt = d.length ? `${d[0].s.name} at ${km(d[0].d)}` : 'no stop';
+          let verdict;
+          if (!o.length || o[0].d > lim) verdict = `✗ origin too far from a boardable stop (limit ${km(lim)})`;
+          else if (!d.length || d[0].d > lim) verdict = `✗ destination too far from any stop (limit ${km(lim)})`;
+          else {
+            const oc = o.filter(x => x.d <= lim).slice(0, CFG.ACCESS_PER_LINE), dc = d.filter(x => x.d <= lim).slice(0, CFG.ACCESS_PER_LINE);
+            const ok = oc.some(a => dc.some(b => idx(a.s) < idx(b.s)));
+            if (!ok) verdict = `✗ WRONG DIRECTION: line runs stop #${idx(dl.entries[0].stop) + 1} → #${dl.entries.length}; boarding stop(s) #${oc.map(x => idx(x.s) + 1)} are not before alighting stop(s) #${dc.map(x => idx(x.s) + 1)}`;
+            else {
+              const ban = { bases: new Set(bases.filter(b => b !== base)), modes: disabledModes() };
+              const p = dijkstra(O, D, ban, extra);
+              if (!p) verdict = '✗ no path even though stops are near (graph problem)';
+              else {
+                const opt = makeOption(p, ctx);
+                if (!opt) verdict = '✗ path found but it contains no transit leg';
+                else {
+                  const inList = result.some(r => r.legs.some(l => l.type === 'transit' && l.dl.base === base));
+                  const cutoff = bestScore == null ? Infinity : bestScore * 2 + 900;
+                  verdict = inList ? `✓ SUGGESTED (score ${Math.round(opt.score)} s)`
+                    : `• path exists (score ${Math.round(opt.score)} s) but was dropped: ${opt.score > cutoff ? `score above cutoff ${Math.round(cutoff)} s` : `list is full (max ${CFG.MAX_OPTIONS})`}`;
+                }
+              }
+            }
+          }
+          dbg(`🔎 ${base}: board near origin → ${oTxt} | alight near dest → ${dTxt} | ${verdict}`);
+        }
+      }
+      window.busDebugReport = busDebugReport;
 
       function refreshRoutesForModeSelection() {
         const group = $('trip-mode-filters');
@@ -8145,7 +8270,7 @@
       const optDist = o => o.legs.reduce((s, l) => s + (l.type === 'walk' ? l.meters : Math.abs(l.b.d - l.a.d)), 0);
       let runId = 0, lastDest = null, options = [], selectedSig = null, lastOriginOv = null, lastResolvedOrigin = null;
       let sortPreference = 'least_transfers';
-      let enabledTransitModes = new Set(['bus', 'metro', 'rfr']);
+      let enabledTransitModes = new Set(['bus', 'metro', 'rfr', 'tgm']);
       let sheetAnimationFrame = 0, sheetAnimationTimer = null, sheetAnimationToken = 0;
 
       // Expose a safe global refresh function for language switching
@@ -8362,20 +8487,25 @@
         [60, 200, 450].forEach(ms => setTimeout(updateChipsArrows, ms));
       };
 
+
       function renderOptions(note) {
-        const fmtStopName = (name) => esc(name.replace('· bench', ` · ${t('bench')}`).replace('· stop', ` · ${t('stop')}`));
         const o0 = options[0];
         $('trip-title').textContent = `${t('to')} ${dispName(o0.ctx.dest.name)}`;
         const sel0 = options.find(x => x.sig === selectedSig) || o0;
         const firstLeg = sel0.legs[0];
         let currentStep = t('walking_only');
         if (firstLeg?.type === 'walk') {
-          const nextPlace = firstLeg.toStop ? fmtStopName(firstLeg.toStop.name) : esc(dispName(firstLeg.toName));
-          currentStep = t('collapsed_walk_step', { place: nextPlace });
+          const nextPlace = firstLeg.toStop ? fmtStop(firstLeg.toStop) : esc(dispName(firstLeg.toName)); currentStep = t('collapsed_walk_step', { place: nextPlace });
         } else if (firstLeg) {
+          const isBench = firstLeg.a.stop.kind === 'bench';
+          const stationName = fmtStop(firstLeg.a.stop);
+          // If it's a bench, prepend "bus bench in" (translated for AR/FR/EN)
+          const stationLabel = isBench
+            ? (LANG === 'ar' ? `مقعد الحافلة في ${stationName}` : LANG === 'fr' ? `l'arrêt (banc) à ${stationName}` : `bus bench in ${stationName}`)
+            : stationName;
           currentStep = t('collapsed_board_step', {
             line: esc(lineLabel(firstLeg.dl)),
-            station: fmtStopName(firstLeg.a.stop.name)
+            station: stationLabel
           });
         }
         const firstStepMode = firstLeg?.type === 'transit' && CFG.MODES[firstLeg.dl?.mode]
@@ -8422,10 +8552,17 @@
             : `${i === 0 ? `<b class="tag">${t('best')}</b> ` : ''}${t('walking_only')} · ${fmtDist(o.legs[0].meters)}`;
 
           const steps = sel ? `<div class="trip-steps">${o.legs.map((l, legIndex) => l.type === 'walk'
-            ? `<div class="step" data-route-leg-index="${legIndex}"><span class="ico">🚶</span><div>${fmtMin(l.sec)} ${t('walk')}<br><small>${t('to')} <b><bdi>${l.toStop ? fmtStopName(l.toStop.name) : esc(dispName(l.toName))}</bdi></b></small></div></div>`
-            : `<div class="step" data-route-leg-index="${legIndex}"><span class="ico">${CFG.MODES[l.dl.mode].icon}</span><div><small>${t('at_station')} <b><bdi>${fmtStopName(l.a.stop.name)}</bdi></b>${l.a.stop.kind === 'bench' ? ' 🪑' : ''} ${t('board')}<br>
+            ? `<div class="step" data-route-leg-index="${legIndex}"><span class="ico">🚶</span><div>${fmtMin(l.sec)} ${t('walk')}<br><small>${t('to')} <b><bdi>${l.toStop ? fmtStop(l.toStop) : esc(dispName(l.toName))}</bdi></b></small></div></div>`
+            : (() => {
+              const isBenchA = l.a.stop.kind === 'bench';
+              const isBenchB = l.b.stop.kind === 'bench';
+              // Dynamic prefixes for boarding and alighting based on bench vs station
+              const preA = isBenchA ? (LANG === 'ar' ? 'من مقعد محطة الحافلة في' : LANG === 'fr' ? "au banc à" : 'at bus bench in') : (LANG === 'ar' ? 'في' : LANG === 'fr' ? 'à' : 'at');
+              const preB = isBenchB ? (LANG === 'ar' ? 'انزل من مقعد محطة الحافلة في' : LANG === 'fr' ? "descendez au banc à" : 'get off at bus bench in') : (LANG === 'ar' ? 'انزل في' : LANG === 'fr' ? 'descendez à' : 'get off at');
+              return `<div class="step" data-route-leg-index="${legIndex}"><span class="ico">${CFG.MODES[l.dl.mode].icon}</span><div><small>${preA} <b><bdi>${fmtStop(l.a.stop)}</bdi></b> ${t('board')}<br>
 ${linesList(l)}<br>
-${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind === 'bench' ? ' 🪑' : ''}</small></div></div>`
+${preB} <b><bdi>${fmtStop(l.b.stop)}</bdi></b></small></div></div>`;
+            })()
           ).join('')}</div>` : '';
 
           const canSimulate = ['test', 'test (GPS failed)'].includes(o.ctx.origin.source);
@@ -8514,20 +8651,30 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
           });
           simulationLastUiLegIndex = legIndex;
         }
+        // ── Find nearest named place from coordinates ───────────────────────
+        function nearestPlaceName(lat, lon, maxDistM = 150) {
+          if (!_offlinePlaces || !_offlinePlaces.length) return null;
+          let best = null, bestDist = Infinity;
+          for (const p of _offlinePlaces) {
+            const d = hav([lon, lat], [p.lo, p.la]);
+            if (d < bestDist) {
+              bestDist = d;
+              best = p;
+            }
+          }
+          if (!best || bestDist > maxDistM) return null;
+          return placeLabel(best);
+        }
 
-        const fmtStopName = name => esc(String(name || '')
-          .replace('· bench', ` · ${t('bench')}`)
-          .replace('· stop', ` · ${t('stop')}`));
         let currentStep = t('walking_only');
         if (displayPart.kind === 'walk') {
           const target = leg.type === 'walk'
-            ? (leg.toStop ? fmtStopName(leg.toStop.name) : esc(dispName(leg.toName || option.ctx.dest.name)))
-            : fmtStopName(leg.a.stop.name);
+            ? (leg.toStop ? fmtStop(leg.toStop) : esc(dispName(leg.toName || option.ctx.dest.name))) : fmtStop(leg.a.stop);
           currentStep = t('collapsed_walk_step', { place: target });
         } else if (leg.type === 'transit') {
           currentStep = t('collapsed_ride_step', {
             line: esc(lineLabel(leg.dl)),
-            station: fmtStopName(leg.b.stop.name)
+            station: fmtStop(leg.b.stop)
           });
         }
         const currentStepMode = displayPart.kind === 'transit' && leg.type === 'transit' && CFG.MODES[leg.dl?.mode]
@@ -8558,6 +8705,31 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
         map.addLayer({ id: 'trip-walk', type: 'line', source: 'trip', filter: ['==', ['get', 'kind'], 'walk'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#374151', 'line-width': 4, 'line-dasharray': [0.1, 2] } });
         map.addLayer({ id: 'trip-transit-casing', type: 'line', source: 'trip', filter: ['==', ['get', 'kind'], 'transit'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#ffffff', 'line-width': 9 } });
         map.addLayer({ id: 'trip-transit', type: 'line', source: 'trip', filter: ['==', ['get', 'kind'], 'transit'], layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 5.5 } });
+        // Directional arrows along transit routes
+        // ADD THIS UPDATED BLOCK:
+        map.addLayer({
+          id: 'trip-transit-arrows',
+          type: 'symbol',
+          source: 'trip',
+          filter: ['==', ['get', 'kind'], 'transit'],
+          layout: {
+            'symbol-placement': 'line',
+            'text-field': '▶',
+            'text-size': 12,
+            'text-font': ['Noto Sans Bold'],
+            'text-offset': [0, 0],
+            'text-allow-overlap': true,
+            'text-ignore-placement': true,
+            'text-keep-upright': false,
+            'symbol-spacing': 100
+          },
+          paint: {
+            'text-color': '#ffffff',
+            'text-halo-color': ['get', 'color'],
+            'text-halo-width': 3,
+            'text-opacity': 0.95
+          }
+        });
         map.addLayer({ id: 'trip-pts-circle', type: 'circle', source: 'trip-pts', paint: { 'circle-radius': 6.5, 'circle-color': '#ffffff', 'circle-stroke-width': 3, 'circle-stroke-color': ['get', 'color'] } });
         map.addLayer({ id: 'trip-pts-label', type: 'symbol', source: 'trip-pts', layout: { 'text-field': ['get', 'label'], 'text-font': ['Noto Sans Regular'], 'text-size': 11, 'text-offset': [0, 1.2], 'text-anchor': 'top', 'text-allow-overlap': false }, paint: { 'text-color': '#111827', 'text-halo-color': '#ffffff', 'text-halo-width': 1.6 } });
         // ── START/END NODE MARKERS ──────────────────────────────────────────
@@ -8746,7 +8918,10 @@ ${t('get_off')} <b><bdi>${fmtStopName(l.b.stop.name)}</bdi></b>${l.b.stop.kind =
                 const coordPlace = {
                   la: lat,
                   lo: lon,
-                  n: LANG === 'ar' ? (T.ar.map_location + ' (' + coords + ')') : (T.en.map_location + ' (' + coords + ')'),
+                  ar: T.ar.map_location + ' (' + coords + ')',
+                  fr: T.fr.map_location + ' (' + coords + ')',
+                  en: T.en.map_location + ' (' + coords + ')',
+                  n: LANG === 'ar' ? (T.ar.map_location + ' (' + coords + ')') : (LANG === 'fr' ? (T.fr.map_location + ' (' + coords + ')') : (T.en.map_location + ' (' + coords + ')')),
                   nl: T.en.map_location + ' (' + coords + ')',
                   na: T.ar.map_location + ' (' + coords + ')',
                   c: 'coordinate',
