@@ -3534,6 +3534,8 @@
     let satelliteVisible = false;
 
     // Dev UI (data collection, debug, layer toggles). Off by default.
+    // Set to true to show the "Start route simulation" button again (the simulation code itself is untouched).
+    const SHOW_SIMULATION_BUTTON = false;
     const DEV_UI = new URLSearchParams(location.search).has('dev') || localStorage.getItem('atlas_dev') === '1';
 
     // ── LANGUAGE SYSTEM ─────────────────────────
@@ -5359,6 +5361,46 @@
     // lower-case, strip accents + Arabic diacritics, unify alef / ya / ta-marbuta forms
     const _norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f\u064B-\u065F\u0670\u0640]/g, '').toLowerCase()
       .replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/\s+/g, ' ');
+    // "sounds-like" form: the same word spelled differently folds to the same string
+    //   mouroj / mourouj → muruj,  mohamed / muhammed → muhamid,  cafe / kafe → kafi,  ahmed / ahmad(→ahmid vs ahmad stays close)
+    const _fold = s => {
+      let t = _norm(s)
+        .replace(/[أإآٱ]/g, 'ا').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').replace(/ء/g, '')       // Arabic hamza / alef variants
+        .replace(/ph/g, 'f').replace(/ck|q/g, 'k').replace(/x/g, 'ks').replace(/dj/g, 'j').replace(/g(?=[eiy])/g, 'j')   // "mourouge" ≈ "mourouj"
+        .replace(/c(?=[aouklrt]|$)/g, 'k').replace(/c/g, 's')
+        .replace(/ou|oo|w/g, 'u').replace(/[oy]/g, m => (m === 'y' ? 'i' : 'u')).replace(/e/g, 'i')
+        .replace(/[^a-z0-9\u0600-\u06FF ]/g, '');
+      return t.replace(/(.)\1+/g, '$1').trim();                                              // double letters / vowels collapse
+    };
+    // bounded Damerau–Levenshtein (insert / delete / replace / swap); returns max+1 when it exceeds `max`
+    function _osa(a, b, max) {
+      const n = a.length, m = b.length;
+      if (Math.abs(n - m) > max) return max + 1;
+      let prev2 = null, prev = Array.from({ length: m + 1 }, (_, j) => j);
+      for (let i = 1; i <= n; i++) {
+        const cur = [i]; let rowMin = i;
+        for (let j = 1; j <= m; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          let v = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+          if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, prev2[j - 2] + 1);
+          cur[j] = v; if (v < rowMin) rowMin = v;
+        }
+        if (rowMin > max) return max + 1;
+        prev2 = prev; prev = cur;
+      }
+      return prev[m];
+    }
+    const _tol = x => x.length <= 3 ? 0 : x.length <= 7 ? 1 : 2;           // typos allowed grow with the word length
+    // distance between a typed word and a name word (also accepts a typed prefix with a typo)
+    function _wordDist(x, w, memo) {
+      const hit = memo.get(w); if (hit !== undefined) return hit;
+      const tol = _tol(x);
+      if (x[0] !== w[0]) { memo.set(w, tol + 1); return tol + 1; }            // people rarely mistype the first letter
+      let d = _osa(x, w, tol);
+      if (d > tol && w.length > x.length && w[0] === x[0]) d = Math.min(d, _osa(x, w.slice(0, x.length), tol) + 0.5);
+      memo.set(w, d);
+      return d;
+    }
     function _keys(p) {
       if (p._k) return p._k;
       // Index every available language so a place can be found whether the user
@@ -5371,6 +5413,11 @@
         bare: full.replace(/^(la |le |les |el |al |l'|ال)/, '').trim() || full,   // "La Marsa" → "marsa"
         words: full.split(/[\s\-'’]+/)
       }));
+      for (const k of p._k) {                                                   // sound-alike forms for typo-tolerant search
+        k.ffull = _fold(k.full);
+        k.fbare = _fold(k.bare);
+        k.fwords = k.words.map(w => _fold(w.replace(/^ال/, ''))).filter(Boolean);
+      }
       return p._k;
     }
     function _tier(p, q, toks) {
@@ -5387,15 +5434,54 @@
       }
       return best;
     }
+    // tier 4: same sound (mouroj = mourouj).  tier 5: a typo or two (mourouge, moruj, mouruj).  Returns { t, d } or null.
+    function _fuzzyTier(p, fq, ftoks, memos) {
+      let best = null;
+      for (const k of _keys(p)) {
+        let t = 9, d = 0;
+        if (k.ffull === fq || k.fbare === fq) t = 4;
+        else if (k.ffull.startsWith(fq) || k.fwords.some(w => w.startsWith(fq))) t = 4;
+        else if (ftoks.length > 1 && ftoks.every(x => k.fwords.some(w => w.startsWith(x)))) t = 4;
+        else if (ftoks.length) {
+          let total = 0, all = true;
+          for (let i = 0; i < ftoks.length && all; i++) {
+            const x = ftoks[i]; if (x.length < 3) { all = false; break; }
+            let bd = Infinity;
+            for (const w of k.fwords) { const dd = _wordDist(x, w, memos[i]); if (dd < bd) bd = dd; if (bd === 0) break; }
+            if (bd > _tol(x)) all = false; else total += bd;
+          }
+          if (all) { t = 5; d = total; }
+        }
+        if (t < 9 && (!best || t < best.t || (t === best.t && d < best.d))) best = { t, d };
+      }
+      return best;
+    }
+    const FUZZY_MIN_RESULTS = 8;          // typo-tolerant pass only runs when the exact search finds fewer results than this
     function rankPlaces(raw) {
       const q = _norm(raw).trim();
       if (q.length < 2) return [];
-      const toks = q.split(' ').filter(x => !['la', 'le', 'les', 'el', 'al', 'de', 'du', 'des'].includes(x)), out = [];
+      const STOP = ['la', 'le', 'les', 'el', 'al', 'de', 'du', 'des'];
+      const toks = q.split(' ').filter(x => !STOP.includes(x)), out = [];
+      const seen = new Set();
       for (const p of _offlinePlaces) {
         const t = _tier(p, q, toks);
         if (t === 9) continue;
+        seen.add(p);
         const pen = PLACE_CATS.has(_cat(p)) ? 0 : MAJOR_CATS.has(_cat(p)) ? 5 : 10;
         out.push({ p, s: t * 10 + pen + Math.min(30, placeLabel(p).length) / 100 });   // shorter localized names first on ties
+      }
+      if (out.length < FUZZY_MIN_RESULTS && q.length >= 3) {
+        const fq = _fold(q), ftoks = fq.split(' ').map(x => x.replace(/^ال(?=.{3})/, '')).filter(x => x && !STOP.includes(x));
+        if (ftoks.length) {
+          const memos = ftoks.map(() => new Map());
+          for (const p of _offlinePlaces) {
+            if (seen.has(p)) continue;
+            const f = _fuzzyTier(p, fq, ftoks, memos);
+            if (!f) continue;
+            const pen = PLACE_CATS.has(_cat(p)) ? 0 : MAJOR_CATS.has(_cat(p)) ? 5 : 10;
+            out.push({ p, s: f.t * 10 + f.d * 3 + pen + Math.min(30, placeLabel(p).length) / 100 });
+          }
+        }
       }
       out.sort((a, b) => a.s - b.s);
       return out.map(x => x.p);
@@ -5561,6 +5647,15 @@
     }
 
     // "hotels in la marsa" → { dist: <La Marsa>, rest: ['hotels'] }
+    let _distAliasesFold = null;
+    function _distLookup(key) {
+      const hit = _distAliases.get(key); if (hit) return hit;
+      if (!_distAliasesFold) {                                    // built once: sound-alike form of every alias
+        _distAliasesFold = new Map();
+        for (const [a, d] of _distAliases) { const f = _fold(a); if (f && !_distAliasesFold.has(f)) _distAliasesFold.set(f, d); }
+      }
+      return _distAliasesFold.get(_fold(key));
+    }
     function parseDistrictQuery(raw) {
       if (!_distAliases) return null;
       const toks = _norm(raw).trim().split(' ').map(_stripAp).filter(Boolean);
@@ -5569,7 +5664,7 @@
       for (let len = Math.min(3, toks.length - 1); len >= 1; len--) {
         for (let i = 0; i + len <= toks.length; i++) {
           const key = toks.slice(i, i + len).join(' ');
-          const dist = _distAliases.get(key) || _distAliases.get(fixAr(key));
+          const dist = _distLookup(key) || _distLookup(fixAr(key));
           if (!dist) continue;
           const rest = [...toks.slice(0, i), ...toks.slice(i + len)].filter(t => !DIST_STOP.has(t));
           if (rest.length) return { dist, rest };
@@ -5653,6 +5748,12 @@
         _offlinePlaces = await r.json();
         dbg(`🔍 Loaded ${_offlinePlaces.length} places`);
         schedulePOIMarkerRefresh(80);
+        // build the search index (incl. sound-alike forms) in small background chunks so the first search is instant
+        (function warmSearchIndex(i = 0) {
+          const end = Math.min(_offlinePlaces.length, i + 1500);
+          for (; i < end; i++) _keys(_offlinePlaces[i]);
+          if (i < _offlinePlaces.length) setTimeout(() => warmSearchIndex(i), 16);
+        })();
         loadDistricts();            // district polygons for "hotel marsa" style searches (loads in the background)
       } catch (e) { dbg('❌ Search load failed'); }
       const input = document.getElementById('search-input'), resultsEl = document.getElementById('search-results');
@@ -8566,7 +8667,7 @@ ${preB} <b><bdi>${fmtStop(l.b.stop)}</bdi></b></small></div></div>`;
           ).join('')}</div>` : '';
 
           const canSimulate = ['test', 'test (GPS failed)'].includes(o.ctx.origin.source);
-          const startButton = sel && canSimulate
+          const startButton = SHOW_SIMULATION_BUTTON && sel && canSimulate
             ? `<button class="trip-start-simulation" type="button" data-start-route="${esc(o.sig)}">▶ ${LANG === 'ar' ? 'ابدأ محاكاة المسار' : 'Start route simulation'}</button>`
             : '';
 
@@ -8790,8 +8891,9 @@ ${preB} <b><bdi>${fmtStop(l.b.stop)}</bdi></b></small></div></div>`;
         selectedSig = sig;
         const o = options.find(x => x.sig === sig); if (!o) return;
         renderOptions(); drawOption(o, fit);
-        if (userChoseRoute) startRouteSimulation(o);
-        else refreshChosenRouteSimulation(o);
+
+        // Stop any running simulation when a route is selected/changed
+        stopRouteSimulation(true);
       }
 
       // Replace the straight-line walking estimates with real pedestrian routes from Valhalla (runs in the background).
